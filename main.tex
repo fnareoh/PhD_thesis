@@ -11,11 +11,13 @@
 %    pdfkeywords = {mots-cl\'{e}s},
 }
 
-\geometry{vmargin=4.0cm}
+\input{preamble}
+\geometry{margin=1in}
 
 % Spécifier vos fichiers de bibliographie
 % Specify you bibliography files here
 \addbibresource{./biblio/biblio.bib}
+\addbibresource{./Part_Two_Lossy/streaming_regex_pattern_matching/ref.bib}
 
 \begin{document}
 
@@ -25,17 +27,21 @@
 
 % Sélectionner la langue du contenu suivant cette ligne
 % Select the content language following this line
-\selectlanguage{french}
+\selectlanguage{english}
+
+\input{./Abstract/abstract}
+\input{./Abstract/resume_francais}
 
 % Inclusion du chapitre remerciement
 % Input acknowledgement chapter
-\clearemptydoublepage
-\input{./Acknowledgement/acknowledgement}
+%\clearemptydoublepage
+%\input{./Acknowledgement/acknowledgement}
+
 
 % Ne pas oublier cette commande qui g\'{e}n\`{e}re la page de couverture avant
 % This command will generate the front cover
-\frontmatter
-\clearemptydoublepage
+%\frontmatter
+%\clearemptydoublepage
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents %sommaire %table of content
 %\shorttableofcontents{Sommaire}{0}
@@ -43,20 +49,15 @@
 \clearemptydoublepage
 \input{./Introduction/introduction}
 
-\clearemptydoublepage
-\mainmatter
-\input{./Chapitre1/chapitre1}
+
+\input{./Part_One_Gapped/gapped}
 
 
 \clearemptydoublepage
-\ifenvsetTF{COMPILE_ALL}{
-	% Compile the chapter when the COMPILE_ALL environment variable is set
-	\input{./Chapitre2/chapitre2}
-}{
-	% Uncomment this line to compile this chapter locally (when the COMPILE_ALL variable is not set)
-	%\input{./Chapitre2/chapitre2}
-}
+\part{Lossy Compression}
+\input{./Part_Two_Lossy/streaming_regexp}
 
+\part{Lossless Compression}
 
 \clearemptydoublepage
 \backmatter
@@ -76,10 +77,5 @@
 \nocite{*}
 \printbibliography[heading=secondary,keyword=secondary]
 
-\clearemptydoublepage
-% Pour avoir la quatrième de couverture sur une page paire
-% To have the back cover on an even page
-\cleartoevenpage[\thispagestyle{empty}]
-\input{./Couverture-these/resume}
 
 \end{document}

@@ -1,0 +1,82 @@
+\usepackage{amsthm,amsfonts,amssymb,amsmath} %symboles maths
+\usepackage{tabularx} %depassement des tableau hors page
+\usepackage{float} %position des figures
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{multirow}
+\usepackage{tikz} %figures
+\usetikzlibrary{automata,positioning,calc}
+\usetikzlibrary{decorations.pathreplacing}
+%\usepackage[noend,boxed]{algorithm2e}
+\usepackage{enumitem}
+
+\usepackage{hyperref} %liens web
+\hypersetup{
+    colorlinks=false,
+    linkcolor=blue,
+    urlcolor=cyan,
+}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Oh}{\mathcal{O}}
+\newcommand{\Ohtilde}{\tilde{\Oh}}
+\newcommand{\RLE}{\textsf{RLE}}
+\newcommand{\LCP}{\textsf{LCP}}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\per}{\mathrm{per}}
+\def\polylog{\operatorname{polylog}}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
+\newcommand{\ed}{\mathsf{ed}}
+\newcommand{\gr}{\mathsf{GR}}
+\newcommand{\ga}{\mathsf{GA}}
+
+\newtheorem{thm}{Theorem}[section] % reset theorem numbering for each section
+
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{observation}[thm]{Observation}
+\newtheorem{lemma}[thm]{Lemma}
+\newtheorem{theorem}[thm]{Theorem}
+\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{example}[thm]{Example}
+\newtheorem{proposition}[thm]{Proposition}
+\newtheorem{fact}[thm]{Fact}
+\newtheorem{claim}[thm]{Claim}
+
+\makeatletter
+\let\c@proposition\c@thm
+\let\c@corollary\c@thm
+\let\c@theorem\c@thm
+\let\c@lemma\c@thm
+\let\c@fact\c@thm
+%\let\c@definition\c@thm
+%\let\c@example\c@theorem
+\makeatother
+
+\renewcommand{\paragraph}[1]{\vspace{1mm}\noindent\textbf{#1}}
+
+   \newcommand{\defproblem}[3]{
+  \vspace{2mm}
+\noindent\fbox{
+  \begin{minipage}{0.96\textwidth}
+  #1\\
+  #2
+  \end{minipage}
+  }
+  \vspace{2mm}
+}
+
+\usepackage{makecell} % NEw line in tabular cell
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+
+%Tikzit for figures - it requires compiling with pdflatex
+\usepackage{tikzit}
+\input{Part_Two_Lossy/streaming_regex_pattern_matching/figures/simple.tikzstyles}
+
+\usepackage{caption}
+\usepackage{subcaption}

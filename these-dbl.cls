@@ -17,14 +17,14 @@
 % Ajouts de boites et encarts grises
 % revision de l'enchainement des chapitres
 % Mise aux normes typographiques suivant les Regles Typographiques
-% en usage \`{a} l'Imprimerie Nationale
+% en usage \`{a} l'Imprimerie Nationale
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{these-dbl}[11/07/2021 v5.1]
 
-\LoadClass[twoside,multicol,12pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
+\LoadClass[twoside,leqno,multicol,12pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
 
 \RequirePackage[utf8]{inputenc} 
 \RequirePackage[english,french]{babel} % Last language is the default, use \selectlanguage{english} to switch
@@ -127,9 +127,9 @@
 \makeatletter
 \newcommand*{\jolipart}[1]{%
 	\begin{center}
-		\begin{Huge}\color{black}
+		\begin{huge}\color{black}
 			#1
-		\end{Huge}
+		\end{huge}
 		\end{center}
 		\vspace{1cm}		
 	\begin{center}
@@ -157,7 +157,8 @@
 \RequirePackage[hyperref,backend=biber,
   % Exemples de styles: alphabetic, ieee, nature, numeric, verbose-trad1 (en utilisant \footcite{}).
   % https://www.overleaf.com/learn/latex/Biblatex_bibliography_styles
-  style=verbose-trad1
+  style=numeric-comp,
+  refsection=chapter
   ]{biblatex}
 
 % Style biblatex avec gestion des mots cl\'{e}s des entr\'{e}es bibliographiques
@@ -176,7 +177,7 @@
 %\DeclareFieldFormat{pages}{page(s): #1} % page(s) en toutes lettres, si on veut...
 
 % Locutions latines en italique (comme ibid, loc.cit. , etc.) Merci \`{a} Josquin Debaz
-\renewcommand{\mkibid}[1]{\emph{#1}}
+\newcommand{\mkibid}[1]{\emph{#1}}
 
 % Et pour mettre le in en italique dans la ref\'{e}rence biblio (merci encore \`{a} Josquin Debaz)
 \DefineBibliographyStrings{english}{%
