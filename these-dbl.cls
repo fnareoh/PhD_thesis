@@ -88,6 +88,12 @@
  }
 \ExplSyntaxOff
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% NUMBERING SECTIONS %%%%%%%%%%%%%%%%%%%%%
+\def\thesection{\arabic{section}}
+%\def\thesubsection{\arabic{subsection}}
+%\def\thesubsubsection{\arabic{subsubsection}}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
@@ -96,15 +102,16 @@
 \def\thickhrulefill{\leavevmode \leaders \hrule height 1ex \hfill \kern \z@}
 \def\@makechapterhead#1{%
   \vspace*{-30\p@}%
-  {\parindent \z@ \raggedleft \reset@font
-            \scshape \@chapapp{} \thechapter
-        \par\nobreak
-        \interlinepenalty\@M
-    \selectfontchapheads \Huge \bfseries #1\par\nobreak
+  {\parindent \z@  \reset@font
+            \scshape \Large{\@chapapp{} \thechapter :}
+        %\par\nobreak
+        %\interlinepenalty\@M
+    %\selectfontchapheads 
+    \Huge \bfseries #1\par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
-    \vskip 50\p@
+    \vskip 20\p@
   }}
 \def\@makeschapterhead#1{%
  \vspace*{-50\p@}%
@@ -112,11 +119,12 @@
             \scshape \vphantom{\@chapapp{} \thechapter}
         \par\nobreak
         \interlinepenalty\@M
-    \selectfontchapheads \Huge \bfseries #1 \par\nobreak
+    %\selectfontchapheads 
+    \Huge \bfseries #1 \par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
-    \vskip 30\p@
+    \vskip 20\p@
   }}
 
 
@@ -127,22 +135,19 @@
 \makeatletter
 \newcommand*{\jolipart}[1]{%
 	\begin{center}
-		\begin{huge}\color{black}
+		\begin{Huge}\color{black}
 			#1
-		\end{huge}
+		\end{Huge}
 		\end{center}
 		\vspace{1cm}		
 	\begin{center}
-%\begin{Huge}
-		%\ding{167}
-	%\end{Huge}	
 	\hrulefill
 	\end{center}		
 	}
 
 \parttitlefont{\jolipart}
 
-\partnumberfont{\sc\normalsize}
+\partnumberfont{\sc\huge}
 
 
 
@@ -158,7 +163,8 @@
   % Exemples de styles: alphabetic, ieee, nature, numeric, verbose-trad1 (en utilisant \footcite{}).
   % https://www.overleaf.com/learn/latex/Biblatex_bibliography_styles
   style=numeric-comp,
-  refsection=chapter
+  refsection=chapter,
+  maxcitenames=99,
   ]{biblatex}
   
 % font small
@@ -531,6 +537,24 @@
 \definecolor{shadecolor}{RGB}{232,232,232}
 
 \ProcessOptions
+
+%%%%%%%%%% Chapter context box %%%%%%%%%%%%
+
+\newcommand*{\contextbox}[2]{
+\begin{center}
+\begin{tikzpicture}
+\node[rectangle,draw=fondtitre!100,fill=fonddeboite!100,inner sep=10pt, inner ysep=20pt] (mabox)
+{
+\begin{minipage}{0.95\textwidth}
+#2
+\end{minipage}
+};
+% le titre de la boite
+\node[fill=fondtitre!100, text=white, rectangle] at (mabox.north) {\sffamily\textbf{#1}};
+\end{tikzpicture}
+\end{center}
+}
+
 
 %%%%%%%%%% Boitemagique  %%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand*{\boitemagique}[2]{

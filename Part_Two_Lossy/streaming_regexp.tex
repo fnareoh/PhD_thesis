@@ -1,5 +1,5 @@
 \chapter{Streaming Regular Expression Membership and Pattern Matching}
-
+\mainmatter
 \newcommand{\rot}{\mathsf{rot}}
 \newcommand{\dd}{\mathinner{.\,.\allowbreak}}
 \newcommand{\Ohtilda}{\tilde{O}}
@@ -9,10 +9,10 @@
 \newcommand{\Overlap}{\mathsf{Overlap}}
 \newcommand{\Zp}{Z_+}
 
-\boitemagique{This chapter coresponds to the following publication}{
-Full citation TODO
-%
-My personal contribution has been TODO
+\contextbox{Chapter based on publication}{
+This chapter coresponds to the following publication: \fullcite{streaming_regexp}\\
+My personal contribution to this work has been the formalization of anchors and proofs of their key properties. I also participated to the overal algorithms design.
+TODO: Detail (also in the intro) how it connects to the rest of the thesis and which preliminaries are helpfull.
 }
 \begin{small}
 Regular expression search is a key primitive in myriads of applications, from web scrapping to bioinformatics.
@@ -70,4 +70,7 @@ In this section, we address the problems of regular expression membership and pa
 \input{Part_Two_Lossy/streaming_regex_pattern_matching/paths-in-graph}
 
 \BiblatexSplitbibDefernumbersWarningOff
+
+\backmatter
+\todo[inline]{Fix links to some DOI not working}
 \printbibliography[heading=subbibintoc]
