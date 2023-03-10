@@ -9,12 +9,12 @@
 \newcommand{\Overlap}{\mathsf{Overlap}}
 \newcommand{\Zp}{Z_+}
 
-\boitemagique{This chapter is based on the following publication}{
+\boitemagique{This chapter coresponds to the following publication}{
 Full citation TODO
+%
+My personal contribution has been TODO
 }
-
 \begin{small}
-\baselineskip=9pt
 Regular expression search is a key primitive in myriads of applications, from web scrapping to bioinformatics.
 A regular expression is a formalism for compactly describing a set of strings, built recursively from single characters
 using three operators: concatenation, union, and Kleene star. Two basic algorithmic problems concerning
@@ -39,12 +39,7 @@ it has been observed that in practice it is significantly smaller than the lengt
 We design general randomised Monte Carlo algorithms for both problems that use $\Oh(d^3 \polylog n)$ space
 in the streaming setting.
 
-A crucial technical ingredient of our algorithms is an adaptation of the general framework for evaluating a circuit with addition
-and convolution gates in a space-efficient manner [Lokshtanov and Nederlof (STOC 2010), Bringmann (SODA 2017)],
-initially designed as a key component of a pseudopolynomial time algorithm for the subset sum problem. We show
-how to replace the Extended Generalised Riemann Hypothesis in [Bringmann (SODA 2017)] by an application
-of the Bombieri--Vinogradov theorem to achieve the same bounds (but unconditionally), which might be of independent
-interest.
+A crucial technical ingredient of our algorithms is an adaptation of the general framework for evaluating a circuit with addition and convolution gates in a space-efficient manner [Lokshtanov and Nederlof (STOC 2010), Bringmann (SODA 2017)], initially designed as a key component of a pseudopolynomial time algorithm for the subset sum problem. We show how to replace the Extended Generalised Riemann Hypothesis in [Bringmann (SODA 2017)] by an application of the Bombieri--Vinogradov theorem to achieve the same bounds (but unconditionally), which might be of independentinterest.
 \end{small}
 
 \section{Introduction}
@@ -64,7 +59,7 @@ In this section, we address the problems of regular expression membership and pa
 
 \subsection{Anchors}
 \label{sec:anchors}
-%\input{Part_Two_Lossy/streaming_regex_pattern_matching/anchors}
+\input{Part_Two_Lossy/streaming_regex_pattern_matching/anchors}
 
 \subsection{Algorithms}
 \label{sec:algorithms}
@@ -74,5 +69,5 @@ In this section, we address the problems of regular expression membership and pa
 \label{sec:paths-in-graph}
 \input{Part_Two_Lossy/streaming_regex_pattern_matching/paths-in-graph}
 
-
+\BiblatexSplitbibDefernumbersWarningOff
 \printbibliography[heading=subbibintoc]

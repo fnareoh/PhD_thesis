@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{these-dbl}[11/07/2021 v5.1]
 
-\LoadClass[twoside,leqno,multicol,12pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
+\LoadClass[twoside,10pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
 
 \RequirePackage[utf8]{inputenc} 
 \RequirePackage[english,french]{babel} % Last language is the default, use \selectlanguage{english} to switch
@@ -47,7 +47,7 @@
 \RequirePackage{color}
 \RequirePackage{comment}
 \RequirePackage{wallpaper}
-\RequirePackage[inner=30mm,outer=20mm,top=30mm,bottom=20mm]{geometry}
+\RequirePackage[inner=30mm,outer=20mm,top=30mm,bottom=30mm]{geometry}
 \RequirePackage{setspace}
 %Ou bien : \RequirePackage[top=4 cm, bottom=4 cm, left=3 cm, right=3 cm]{geometry} % On peut modifier ces valeurs pour augmenter ou r\'{e}duire les marges. Attention aux en-têtes de chapitres. 
 \RequirePackage{epigraph} % \cleartoevenpage
@@ -60,7 +60,7 @@
 \RequirePackage{eso-pic} % For \AddToShipoutPicture used for cover backgrounds
 \RequirePackage{framed} % utilise pour coloriser les encarts
 
-\onehalfspacing %Interligne 1,5
+%\onehalfspacing %Interligne 1,5
 
 \RequirePackage{ifthen} % Entrer valeurs bool\'{e}ennes et autres options
 \RequirePackage{csquotes} % Assurer les guillemets français
@@ -160,6 +160,9 @@
   style=numeric-comp,
   refsection=chapter
   ]{biblatex}
+  
+% font small
+\renewcommand*{\bibfont}{\small}
 
 % Style biblatex avec gestion des mots cl\'{e}s des entr\'{e}es bibliographiques
 % + les abbr\'{e}viations idem, ibidem, op cit. Pr\'{e}voir un fichier bib

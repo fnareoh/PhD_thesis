@@ -12,7 +12,6 @@
 }
 
 \input{preamble}
-\geometry{margin=1in}
 
 % Spécifier vos fichiers de bibliographie
 % Specify you bibliography files here
@@ -63,19 +62,7 @@
 \backmatter
 \input{./Conclusion/conclusion}
 
-% Chapitre pour la bibliographie
-% Bibliography chapter
-\clearemptydoublepage
-\phantomsection % To have a correct link in the table of contents
-\addcontentsline{toc}{chapter}{Bibliography}
 
-% nocite: Pour citer la totalit\'{e} des r\'{e}f\'{e}rences contenues dans le fichier biblio
-% nocite: In order to cite all the references included biblio
-\nocite{*}
-\printbibliography[heading=primary,keyword=primary]
-\newpage
-\nocite{*}
-\printbibliography[heading=secondary,keyword=secondary]
 
 
 \end{document}
