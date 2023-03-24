@@ -16,19 +16,16 @@
 % Spécifier vos fichiers de bibliographie
 % Specify you bibliography files here
 \addbibresource{./biblio/biblio.bib}
-\addbibresource{./Part_Two_Lossy/streaming_regex_pattern_matching/ref.bib}
+\addbibresource{./Part_One/streaming_regex_pattern_matching/ref.bib}
 
 \begin{document}
 
-% Page de garde avec commande \maketitle
-% Front cover calling \maketitle
-\input{./Couverture-these/pagedegarde}
 
 % Sélectionner la langue du contenu suivant cette ligne
 % Select the content language following this line
 \selectlanguage{english}
 
-%\input{./Abstract/abstract}
+\input{./Abstract/abstract}
 \input{./Abstract/resume_francais}
 
 % Inclusion du chapitre remerciement
@@ -43,18 +40,15 @@
 %\clearemptydoublepage
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents %sommaire %table of content
-%\shorttableofcontents{Sommaire}{0}
 
-\clearemptydoublepage
+%\clearemptydoublepage
 \input{./Introduction/introduction}
 \input{./Preliminaries/prelim}
 
-\input{./Part_One_Gapped/gapped}
+\input{./Part_One/part_one}
 
+\input{./Part_Two/part_two}
 
-\input{./Part_Two_Lossy/lossy}
-
-\input{./Part_Three_Lossless/lossless}
 
 \clearemptydoublepage
 \backmatter

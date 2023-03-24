@@ -1,2 +1,22 @@
 \chapter*{Abstract}
-TODO
+
+% Overall context on strings
+The simplicity of strings puts their processing at the heart of many applications in bioinformatics, information retrieval, or cyber security. Exact pattern matching has been extensively studied \cite{} as the most natural problem, however, more general queries are also needed for many applications\cite{}. Additionally, in all of those fields, the quantity of data to process has been increasing at a staggering rate\cite{} and exact queries are sometimes too time or space expensive. Approximate queries are often considered to speed up the computations.
+
+% First part 
+In the first part of this Ph.D. thesis, we study complex queries such as regular expressions, gapped consecutive matching, and square detection. 
+% Regexp
+For regular expression, we provide a space-efficient algorithm in the streaming model where characters of the text arrive one at a time and where past characters can only be accessed if they have been explicitly stored. 
+% Gapped
+Gapped consecutive matching is a simpler type of query where given two patterns $P_1$, $P_2$ and a range $[a,b]$, one must report all consecutive occurrences of $P_1$ followed by $P_2$ separated by a distance in $[a,b]$. We study this problem in various models: streaming, pattern matching on a compressed text, and compressed indexing.
+% Squares
+We then study squares for their inherent meaning \cite{} as well as the key role periodicity has in string algorithms and data structures. We investigate square detection and reporting for general alphabets (the most abstract setting where squares can be defined). We provide an optimal algorithm and therefore answer an open question asked by Main and Lorentz in 1984 \cite{}.
+
+% Second part
+In the second part of this work, we focus on approximate matching with applications in bioinformatics.
+% LCS and DTW
+Motivated by the lower bounds on the computation of several similarity measures we provide efficient parametrized algorithms for two other similarity measures: the length of the Longest Common Substring with approximately k mismatches (LCS approx k) and the Dynamic Time warping distance (DTW).
+% XBWT
+Finally, we propose a compressed index for large collections of next-generation sequencing (NGS) reads which takes advantage of alignments to an assembled genome to improve the overall compression but can incur false positive occurrences.
+
+
