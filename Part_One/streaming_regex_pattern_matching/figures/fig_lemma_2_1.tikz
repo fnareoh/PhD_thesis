@@ -1,0 +1,68 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (0) at (-19.25, -0.275) {};
+		\node [style=none] (1) at (-19.25, 1) {};
+		\node [style=none] (2) at (-14.75, 1) {};
+		\node [style=none] (3) at (-14.75, -0.275) {};
+		\node [style=none] (4) at (-6.975, 1) {};
+		\node [style=none] (5) at (-6.975, -0.275) {};
+		\node [style=none] (6) at (13.5, -0.275) {};
+		\node [style=none] (7) at (13.5, 1) {};
+		\node [style=none] (9) at (-17, 0.35) {$U$};
+		\node [style=none] (10) at (-11, 0.375) {$V$};
+		\node [style=none] (11) at (2.5, 0.3) {$W[\dd r_{k_q}]$};
+		\node [style=none] (12) at (10.275, -0.05) {};
+		\node [style=none, label={below:$a^\Delta_{q-1}$}] (13) at (10.275, -0.55) {};
+		\node [style=none] (14) at (12.3, -0.05) {};
+		\node [style=none, label={below:$t$}] (15) at (12.3, -0.55) {};
+		\node [style=none] (16) at (7.775, -0.05) {};
+		\node [style=none, label={below:$a^\Delta_{q}$}] (17) at (7.775, -0.55) {};
+		\node [style=none] (18) at (8.5, 2.75) {};
+		\node [style=none] (19) at (9.25, 2.75) {};
+		\node [style=none] (20) at (10, 2.75) {};
+		\node [style=none] (24) at (10, 2.75) {};
+		\node [style=none] (25) at (10.75, 2.75) {};
+		\node [style=none] (27) at (11.5, 2.75) {};
+		\node [style=none] (29) at (11.875, 3.5) {$\pi$};
+		\node [style=none] (30) at (7.75, 1.25) {};
+		\node [style=none] (31) at (8.25, 1.25) {};
+		\node [style=none] (32) at (8.75, 1.25) {};
+		\node [style=none] (34) at (10, 1.925) {$\rho_q$};
+		\node [style=none] (37) at (7.6, -2.25) {Contradicts primitivity of $S[1\dd\pi]$};
+		\node [style=none] (38) at (12.25, 2.75) {};
+		\node [style=none] (39) at (7.75, 2.75) {};
+		\node [style=none] (40) at (8.5, 2.75) {};
+		\node [style=none] (41) at (9.25, 1.25) {};
+		\node [style=none] (42) at (9.75, 1.25) {};
+		\node [style=none] (43) at (9.75, 1.25) {};
+		\node [style=none] (44) at (10.25, 1.25) {};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw (1.center) to (2.center);
+		\draw (2.center) to (3.center);
+		\draw (3.center) to (0.center);
+		\draw (0.center) to (1.center);
+		\draw (2.center) to (4.center);
+		\draw (3.center) to (5.center);
+		\draw (4.center) to (5.center);
+		\draw (4.center) to (7.center);
+		\draw (7.center) to (6.center);
+		\draw (6.center) to (5.center);
+		\draw (12.center) to (13.center);
+		\draw (14.center) to (15.center);
+		\draw (16.center) to (17.center);
+		\draw [bend left=90, looseness=1.50] (18.center) to (19.center);
+		\draw [bend left=90, looseness=1.50] (19.center) to (20.center);
+		\draw [bend left=90, looseness=1.50] (24.center) to (25.center);
+		\draw [bend left=90, looseness=1.50] (25.center) to (27.center);
+		\draw [bend left=90, looseness=2.00] (30.center) to (31.center);
+		\draw [bend left=90, looseness=2.00] (31.center) to (32.center);
+		\draw [bend left=90, looseness=1.50] (27.center) to (38.center);
+		\draw [bend left=90, looseness=1.50] (39.center) to (40.center);
+		\draw [bend left=90, looseness=2.00] (41.center) to (42.center);
+		\draw [bend left=90, looseness=2.00] (32.center) to (41.center);
+		\draw [bend left=90, looseness=2.00] (43.center) to (44.center);
+		\draw [style=dot] (19.center) to (41.center);
+		\draw [style=dot] (39.center) to (30.center);
+	\end{pgfonlayer}
+\end{tikzpicture}

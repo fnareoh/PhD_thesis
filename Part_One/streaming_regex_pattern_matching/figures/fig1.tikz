@@ -1,0 +1,78 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (1) at (-14, -0.5) {};
+		\node [style=none] (4) at (0.75, -0.5) {};
+		\node [style=none] (5) at (6.5, 1.25) {};
+		\node [style=none] (6) at (-22, -1) {};
+		\node [style=none] (7) at (6.5, -1) {};
+		\node [style=none] (10) at (-22.5, -1) {$W$};
+		\node [style=none] (12) at (-21.975, -0.5) {};
+		\node [style=none] (14) at (6.5, -1.25) {};
+		\node [style=none] (15) at (6.5, -0.75) {};
+		\node [style=none] (18) at (-22, -1.25) {};
+		\node [style=none] (20) at (-18, 2.5) {$\rho_0=\rho$};
+		\node [style=none] (23) at (-6.475, -0.5) {};
+		\node [style=none, label={below:$a_0$}] (24) at (-6.475, -1.25) {};
+		\node [style=none] (26) at (-9.875, 5.25) {};
+		\node [style=none] (27) at (-10.25, 5.25) {};
+		\node [style=none] (28) at (-10.625, 5.25) {};
+		\node [style=none, label={below:$i_2$}] (29) at (-11, 5.25) {};
+		\node [style=none] (34) at (-9.5, 2.425) {};
+		\node [style=none] (54) at (-11.75, 4) {\small{$\rho_1$}};
+		\node [style=none] (56) at (-10.25, 4.75) {};
+		\node [style=none] (58) at (-10.975, 5.75) {\small{$\rho_2$}};
+		\node [style=none] (60) at (-8, 3) {};
+		\node [style=none] (61) at (-9.5, 3) {};
+		\node [style=none] (64) at (-3.5, 3) {};
+		\node [style=none] (65) at (-5, 3) {};
+		\node [style=none] (66) at (-6.5, 3) {};
+		\node [style=none] (67) at (-11, 3) {};
+		\node [style=none, label={below:$i_1$}] (68) at (-12.5, 3) {};
+		\node [style=none, label={below:$j_1$}] (69) at (-0.5, 3) {};
+		\node [style=none] (70) at (-2, 3) {};
+		\node [style=none, label={below:$a_1$}] (71) at (-9.5, -1.25) {};
+		\node [style=none] (72) at (-12.5, -1) {};
+		\node [style=none] (73) at (-0.5, -1) {};
+		\node [style=none, label={below:$j_2$}] (74) at (-8, 5.25) {};
+		\node [style=none] (75) at (-8.375, 5.25) {};
+		\node [style=none] (76) at (-8.75, 5.25) {};
+		\node [style=none] (77) at (-9.125, 5.25) {};
+		\node [style=none] (78) at (-9.5, 5.25) {};
+		\node [style=none, label={below:$a_2$}] (79) at (-10.25, -1.25) {};
+		\node [style=none] (80) at (-9.5, -0.75) {};
+		\node [style=none] (81) at (-10.25, -0.75) {};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw [style=blue, in=150, out=90, looseness=0.75] (4.center) to (5.center);
+		\draw (6.center) to (7.center);
+		\draw (12.center) to (18.center);
+		\draw (15.center) to (14.center);
+		\draw (23.center) to (24.center);
+		\draw [style=green, bend left=90, looseness=1.50] (29.center) to (28.center);
+		\draw [style=green, bend left=90, looseness=1.50] (28.center) to (27.center);
+		\draw [style=green, bend left=90, looseness=1.50] (27.center) to (26.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (61.center) to (60.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (60.center) to (66.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (66.center) to (65.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (65.center) to (64.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (68.center) to (67.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (70.center) to (69.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (67.center) to (61.center);
+		\draw [style=orange, bend left=90, looseness=1.50] (64.center) to (70.center);
+		\draw (61.center) to (34.center);
+		\draw [style=dot] (71.center) to (34.center);
+		\draw [style=blue, bend left=90] (23.center) to (4.center);
+		\draw [style=blue, bend left=90] (1.center) to (23.center);
+		\draw [style=green, bend left=90, looseness=1.50] (78.center) to (77.center);
+		\draw [style=green, bend left=90, looseness=1.50] (77.center) to (76.center);
+		\draw [style=green, bend left=90, looseness=1.50] (76.center) to (75.center);
+		\draw [style=green, bend left=90, looseness=1.50] (75.center) to (74.center);
+		\draw [style=green, bend left=90, looseness=1.50] (26.center) to (78.center);
+		\draw (27.center) to (56.center);
+		\draw [style=dot] (79.center) to (27.center);
+		\draw (80.center) to (71.center);
+		\draw (81.center) to (79.center);
+		\draw (81.center) to (79.center);
+		\draw [style=blue, bend left=90] (12.center) to (1.center);
+	\end{pgfonlayer}
+\end{tikzpicture}

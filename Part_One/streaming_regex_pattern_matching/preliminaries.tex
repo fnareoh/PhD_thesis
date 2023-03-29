@@ -1,0 +1,193 @@
+% !TEX root = main.tex
+We assume an integer alphabet $\Sigma = \{1, 2, \ldots, \sigma\}$ with $\sigma$ \emph{characters}. A \emph{string} $Y$ is a sequence of characters numbered from $1$ to $n = |Y|$.  For $1\le i \le n$, we denote the $i$-th character of $Y$ by~$Y[i]$. For $1\le i \le j\le n$, we define $Y[i \dd j]$ to be equal to $Y[i] \dots Y[j]$, called a \emph{fragment} of $Y$. We call a fragment $Y[1] \dots Y[j]$ \emph{a prefix} of $Y$ and use a simplified notation $Y[\dd j]$, and a fragment $Y[i] \dots Y[n]$ \emph{a suffix} of $Y$ denoted by $Y[i \dd]$. We say that a fragment $Y[i \dd j]$ contains a position $k$ if $i \le k \le j$. We denote by $\eps$ the empty string.
+
+We say that $X$ is a \emph{substring} of $Y$ if $X = Y[i \dd j]$ for some $1 \le i \le j \le n$. The fragment $Y[i \dd j]$ is called an \emph{occurrence} of $X$. 
+We say that an integer $p$ is a period of $Y$ if for each $1 \le i \le |Y|-p$, $Y[i] = Y[i+p]$. The smallest period of $Y$ is referred to as \emph{the period} of $Y$. We say that $Y$ is \emph{periodic} with period $\rho$ if~$\rho$ is the period of $Y$ and $\rho  \le |Y|/2$. For the period $\rho$ of $Y$, we define the string period of $Y$ to be equal to $Y[1 \dd \rho]$. 
+
+For an integer $k$, we denote the concatenation of $k$ copies of $Y$ by $Y^k$. We say that a string~$X$ is \emph{primitive} if~$X \neq Y^k$ for any string $Y \neq X$ and any integer $k$. Note that the string period of a string is always primitive. 
+
+\begin{definition}[Regular expression]
+We define regular expressions over $\Sigma$ as well as the languages they match recursively. Let $L(R)$ be the language matched by a regular expression $R$.
+\begin{itemize}
+\item Any $a \in \Sigma \cup \{\eps\}$ is a regular expression and $L(a)=\{a\}$.
+\end{itemize}
+For two regular expressions $A$ and $B$, we can form a new expression using one of the three symbols $\cdot$ (concatenation), $\mid$ (union), or ${}^\ast$ (Kleene star):
+\begin{itemize}
+\item $A \cdot B$ is a regular expression and $L(A \cdot B)=\{XY, \text{ for } X \in L(A) \text{and } Y \in L(B) \}$;
+\item $A \mid B$ is a regular expression and $L(A \mid B)= L(A) \cup L(B)$;
+\item $A^\ast$ is a regular expression and  $L(A^*)= \bigcup_{k  \geq 0} \{ X_1 X_2 \dots X_k, \text{ where } X_i \in L(A) \text{ for } 1 \leq i \leq k \}$.
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Thompson automaton~\cite{Thompson_automaton}]
+For a regular expression $R$ we define the Thompson automaton of $R$, $T(R)$, recursively. This non-deterministic finite automaton (NFA) accepts all strings $s \in L(R)$.
+\begin{itemize}
+\item If  $R=a \in \Sigma\cup\{ \eps \} $, $T(R)$ is constructed as in Figure~\ref{fig:Thompson:a};
+\item If $R=A \cdot B $, $T(R)$ is constructed as in Figure~\ref{fig:Thompson:AB}. Namely, the initial state of $T(A)$ becomes the initial state of $T(R)$, the final state of $T(A)$ becomes the initial state of $T(B)$, and the final state of $T(B)$ becomes the final state of $T(R)$;
+\item If $R=A | B$, $T(R)$ is constructed as in Figure~\ref{fig:Thompson:AorB}. Namely, the initial state of $T(R)$ goes via $\eps$-transitions both to the initial state of $T(A)$ and to the initial state of $T(B)$, and the final states of $T(A)$ and $T(B)$ go via $\eps$-transitions to the final state of $T(R)$;
+\item If $R=A^*$, $T(R)$ is constructed as in Figure~\ref{fig:Thompson:A*}. Namely, the initial state of $T(R)$ and the final state of $T(A)$ go via $\eps$-transitions both to the initial state of $T(A)$, and to the final state of $T(R)$. 
+\end{itemize}
+\end{definition}
+
+\begin{definition}[Compact Thompson automaton]
+Given a Thompson automaton $T(R)$, we define the compact Thompson automaton $T_C(R)$ as the automaton obtained from $T(R)$ by replacing every maximal path of transitions labelled by $a_1, a_2, \ldots, a_k \in \Sigma$ by a single transition labelled by $a_1 a_2 \ldots a_k$. The non-empty labels of $T_C(R)$ are called \emph{atomic strings}, and the size of the (multiset) of the atomic strings is defined to be the \emph{size} of $R$.
+\end{definition}
+
+Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for $R = b(ab|b)^*ab$. We note that in general the size of a regular expression is much smaller than the total number of characters in it and is bounded by twice the number of union and Kleene star symbols plus two. The size of a regular expression measures its ``complexity''.
+
+\begin{figure}[!ht]
+\begin{subfigure}{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+    \node[state,initial] (i)   {$i$}; 
+   	\node[state,accepting](f)[right=of i] {$f$};
+    \path[->] 
+    (i) edge [above] node {a} (f);
+\end{tikzpicture}
+\caption{$T(A)$ for $a\in \Sigma \cup \{ \eps \} $}
+\label{fig:Thompson:a}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\centering
+\begin{tikzpicture}
+    \node[state,initial] (i)   {$i$};
+    \node[state](f_1)[right=of i] {};
+    \node[state,accepting](f)[right=of f_1] {$f$};
+    \draw (1,0) ellipse (1.6cm and 0.8cm);
+    \node at (0.9,-0.5) {$T(A)$};
+    \draw (2.95,0) ellipse (1.6cm and 0.8cm);
+    \node at (2.95,-0.5) {$T(B)$};
+\end{tikzpicture}
+\caption{$T(A\cdot B)$}
+\label{fig:Thompson:AB}
+\end{subfigure}
+
+\begin{subfigure}{0.5\textwidth}
+\centering
+\begin{tikzpicture}
+    \node[state,initial] (i)   {$i$};
+    \node[state](i_1)[above right=of i] {};
+    \node[state](f_1)[right=of i_1] {};
+    \node[state](i_2)[below right=of i] {};
+    \node[state](f_2)[right=of i_2] {};
+    \node[state,accepting](f)[below right=of f_1] {$f$};
+    \path[->] 
+    (i) edge [above] node {$\eps$} (i_1)
+    (i) edge [above] node {$\eps$} (i_2)
+    (f_1) edge [above] node {$\eps$} (f)
+    (f_2) edge [above] node {$\eps$} (f);
+    \draw (2.57,1.7) ellipse (1.6cm and 0.8cm);
+    \node at (2.6,1.6) {$T(A)$};
+    \draw (2.57,-1.7) ellipse (1.6cm and 0.8cm);
+    \node at (2.6,-1.7) {$T(B)$};
+\end{tikzpicture}
+\caption{$T(A|B)$}
+\label{fig:Thompson:AorB}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\centering
+\begin{tikzpicture}
+    \node[state,initial] (i)   {$i$};
+    \node[state](i_1)[right=of i] {};
+    \node[state](f_1)[right=of i_1] {};
+    \node[state,accepting](f)[right=of f_1] {$f$};
+    \draw (2.85,0) ellipse (1.6cm and 0.8cm);
+    \path[->] 
+    (i) edge [above] node {$\eps$} (i_1)
+    (f_1) edge [above] node {$\eps$} (f);
+    \draw [->] (f_1) ..  controls  ($(f_1)+(-0.5,1.5cm)$) and ($(i_1)+(0.5,1.5cm)$) ..  (i_1);
+    \node at (2.85,1.4) {$\eps$};
+   	\draw [->] (i) ..  controls  ($(i)+(0.5,-1.5cm)$) and ($(f)+(-0.5,-1.5cm)$) ..  (f);
+   	\node at (2.85,-1.1) {$\eps$}; 
+    \node at (2.85,0) {$T(A)$};
+\end{tikzpicture}
+\caption{$T(A^*)$}
+\label{fig:Thompson:A*}
+\end{subfigure}
+\label{fig:thompson}
+\caption{Thompson automaton. In each automaton, $i$ and $f$ are the initial and final states, respectively.}
+\end{figure}
+
+\begin{figure}[!ht]
+\centering
+\begin{subfigure}{0.5\textwidth}
+\resizebox{\textwidth}{!}{
+ \begin{tikzpicture}
+    \node[state,initial] (i)   {$i$};
+    \node[state] (q1) [right=of i]  {}; 
+    \node[state] (i_or)[right=of q1]  {};
+    \node[state](i_1)[above right=of i_or] {};
+    \node[state] (q2) [right=of i_1]  {};
+    \node[state](f_1)[right=of q2] {};
+    \node[state](i_2) at (6.25,-1){};
+    \node[state](f_2)[right=of i_2] {};
+    \node[state](f_or)[below right=of f_1] {};
+    \node[state] (q3) [right=of f_or]  {};
+    \node[state] (q4) [right=of q3]  {};
+   	\node[state,accepting](f)[right=of q4] {$f$};
+    \path[->]
+    (q1) edge [above] node {$\eps$} (i_or)
+    (i_or) edge [above] node {$\eps$} (i_1)
+    (i_or) edge [above] node {$\eps$} (i_2)
+    (f_1) edge [above] node {$\eps$} (f_or)
+    (f_2) edge [above] node {$\eps$} (f_or)
+    (f_or) edge [above] node {$\eps$} (q3);
+    \path[->]
+    (i) edge [above] node {$b$} (q1)
+    (i_1) edge [above] node {$a$} (q2)
+    (q2) edge [above] node {$b$} (f_1)
+    (i_2) edge [above] node {$b$} (f_2)
+    (q3) edge [above] node {$a$} (q4)
+    (q4) edge [above] node {$b$} (f);
+    \draw [->] (f_or) ..  controls  ($(f_1)+(-0.1,2.5cm)$) and ($(i_1)+(0.1,2.5cm)$) ..  (i_or);
+    \node at (7.4,3.4) {$\eps$};
+   	\draw [->] (q1) ..  controls  ($(q1)+(0.5,-3cm)$) and ($(q3)+(-0.5,-3cm)$) ..  (q3);
+    \node at (7.5,-2.1) {$\eps$};
+\end{tikzpicture}}
+\caption{$T(b(ab|b)^*ab)$}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\resizebox{\textwidth}{!}{
+ \begin{tikzpicture}
+    \node[state,initial] (i)   {$i$};
+    \node[state] (q1) [right=of i]  {}; 
+    \node[state] (i_or)[right=of q1]  {};
+    \node[state](i_1)[above right=of i_or] {};
+    \node[state](f_1)[right=of i_1] {};
+    \node[state](i_2)[below right=of i_or] {};
+    \node[state](f_2)[right=of i_2] {};
+    \node[state](f_or)[below right=of f_1] {};
+    \node[state] (q3) [right=of f_or]  {};
+   	\node[state,accepting](f)[right=of q3] {$f$};
+    \path[->]
+    (q1) edge [above] node {$\eps$} (i_or)
+    (i_or) edge [above] node {$\eps$} (i_1)
+    (i_or) edge [above] node {$\eps$} (i_2)
+    (f_1) edge [above] node {$\eps$} (f_or)
+    (f_2) edge [above] node {$\eps$} (f_or)
+    (f_or) edge [above] node {$\eps$} (q3);
+    \path[->]
+    (i) edge [above] node {$b$} (q1)
+    (i_1) edge [above] node {$ab$} (f_1)
+    (i_2) edge [above] node {$b$} (f_2)
+    (q3) edge [above] node {$ab$} (f);
+    \draw [->] (f_or) ..  controls  ($(f_1)+(-0.1,2.5cm)$) and ($(i_1)+(0.1,2.5cm)$) ..  (i_or);
+    \node at (6.5,3.4) {$\eps$};
+   	\draw [->] (q1) ..  controls  ($(q1)+(0.5,-3cm)$) and ($(q3)+(-0.5,-3cm)$) ..  (q3);
+    \node at (6.5,-2.1) {$\eps$};
+\end{tikzpicture}}
+\caption{$T_C(b(ab|b)^*ab)$}
+\end{subfigure}
+ \caption{The Thompson automatons of the regular expression $b(ab|b)^*ab$.} 
+ \label{fig:Thompson_example}
+\end{figure}
+
+\begin{definition}[Occurrence of a regular expression]
+We say that a fragment $S[i \dd j]$ of a string~$S$, where $1\le i\le j \le |S|$, is an \emph{occurrence} of a regular expression $R$, if $S[i \dd j] \in L(R)$, or in other words if there is a walk from the initial state of $T_C(R)$ to the final state of $T_C(R)$ such that the concatenation of the labels of the transitions in this walk equals $S[i \dd j]$.
+\end{definition}
+
+We will also need a notion of a partial occurrence of $R$. Intuitively, $S[i \dd j]$ is a partial occurrence of $R$ if it is a prefix of a string in $L(R)$, but we will need a more precise definition.
+
+\begin{definition}[Partial occurrence of a regular expression]
+We say that a fragment $S[i \dd j]$ of a string $S$, where $1\le i\le j \le |S|$, is a \emph{partial occurrence} of a regular expression $R$ ending with a prefix $P$ of an atomic string $A$, if there is a walk from the initial state of $T_C(R)$ to the endpoint of the transition corresponding to $A$ such that the concatenation of the labels of the transitions in this walk equals $S[i \dd j] A[|P|+1\dd]$. 
+\end{definition}

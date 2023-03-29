@@ -1,0 +1,365 @@
+An important tool in our proof is the framework that allows computing output of a circuit time- and space-efficiently.
+Before we describe the framework in detail, we provide some notation following~\cite{Bringmann17}.
+A circuit is a directed acyclic graph with nodes of in-degree $0$ or $2$.
+Degree-0 nodes are called inputs and degree-2 nodes are gates.
+In our application, every node corresponds to a vector from $\mathbb{Z}_p^t$ (i.e. a vector of length $t$ with values in $\mathbb{Z}_p$) indexed from 0 to $t-1$, for some values of $p$ and $t$ that will be specified later.
+A vector in $\mathbb{Z}_p^t$ is a singleton if it has at most one non-zero entry.
+
+There are two types of gates: $\boxplus$~and $\boxtimes$ that denote respectively the pointwise addition and vector convolution binary gates, that is $(a\boxplus b)[i]=a[i]+b[i]$ and $(a\boxtimes b)[i]=\sum_{j=0}^ia[j]\cdot b[i-j]$.
+Every gate corresponds to the result of its underlying operation applied to its incoming nodes. We say that a convolution gate with input $a, b \in \mathbb{Z}_p^t$ does not overflow, if for all $i \ge t$, $(a\boxtimes b)[i] = 0$. 
+An element $\omega$ is a $t$-th root of unity in $\mathbb{Z}_p$ iff $\omega^t \equiv 1 \mod p$ but~$\omega^s \not\equiv 1 \mod p$ for all $0<s<t$.
+
+With the definitions at hand, we are ready to state the technique introduced by Lokshtanov and Nederlof \cite{LokshtanovN10} for complex numbers and its modular variant discussed by Bringmann \cite{Bringmann17}:
+
+%\todoinlineb{Differences compared to Karl's version: (a) added $\polylog p$ instead of $\Ohtilda$ (we had $\log t\log p \log \log p = \polylog p$) (b) he had root of unity in $\mathbb{Z}^t_p$.}
+
+\begin{thm}[{cf.~\cite[Theorem 4.2]{Bringmann17}}]\label{thm:circuits_framework}
+ Let $p$ be a prime, $t \geq 1$, and suppose that $\mathbb{Z}_p$ contains a $t$-th root of the unity, $\omega$.
+ Let $C$ be a circuit over $(\mathbb{Z}_p^t,\boxplus,\boxtimes)$ which takes as an input only singleton constants and outputs a vector $out(C) \in \mathbb{Z}_p^t$.
+ Suppose that no convolution gate overflows.
+ Then given $p,t,\omega$, and $0\leq x < t$ we can compute $out(C)[x]$ in time $\Oh(|C|t\polylog p)$ and space $\Oh(|C|\log p)$.
+\end{thm}
+
+For Bringmann's framework to be efficient, one must provide a method to choose $p$ and $\omega$. Bringmann~\cite{Bringmann17} showed two different methods, one requiring the Extended Riemann Hypothesis and the other one resulting in an 
+additional $t^\eps$ factor in both time and space~\cite[Lemma 4.4]{Bringmann17}. Below we show that one can achieve the bounds of the former method unconditionally.
+
+\subsection{Finding primes}\label{se:finding_primes}
+
+The goal of this section is to prove the following theorem:
+
+\begin{thm}\label{thm:good_p_and_omega}
+There is a procedure that, given $y$, finds in $\Oh(y\polylog y)$ arithmetic operations and $\Oh(\log y)$ space a prime $p$ and $\omega$ such that for every $N\leq 2^{\Oh(y\log y)}$, with probability at least $1/2$ the following holds:
+\begin{enumerate}
+\item $\omega$ is a $t$-th primitive root of unity in $\mathbb{Z}_{p}$, for some $t$ satisfying $y\leq  t = \Oh(y\polylog y)$;\label{root}
+\item $p = \Oh( y^2\polylog y)$;\label{und}
+\item $p \nmid N$.\label{notzero}
+\end{enumerate}
+\end{thm}
+ 
+\noindent
+Let $B$ be a constant to be determined later.
+To compute numbers $p$ and $\omega$ we run the following procedure:
+\begin{enumerate}
+ \item Set $x$ to be the smallest number such that $\frac 12 \sqrt x \log^{-B}x \geq y$ (using binary search);
+ \item Choose a random $q\in [\frac12,1]\cdot \sqrt{x}\log^{-B} x$;
+ \item Find a prime $p$ such that $p \leq x$ and  $p \equiv 1 \bmod q$ (by guessing candidate $p$ and checking all numbers up to $\sqrt{p}$ if they divide $p$ or not); \item Find a generator $g$ of $\mathbb{Z}^{*}_{p}$ (by guessing candidate $g$ and checking if $g^{\frac{p-1}{p'}} \not\equiv 1 \bmod p$ for all prime divisors $p'$ of $p-1$);
+ \item Set $t=q$  and $\omega=g^{\frac{p-1}{t}}$.
+\end{enumerate}
+
+Clearly, $t \mid p-1$ and $\omega=g^{\frac{p-1}{t}}$ is well-defined. As $g$ is a  generator, we have that $\omega$ is a $t$-th primitive root of unity in $\mathbb{Z}^{*}_{p}$.
+By the choice of $x$ and $p$, we have $p \leq x = \Oh(y^2\polylog y)$ and hence $y\leq  q = t = \Oh(y\polylog y)$.
+In the following lemma we show that with probability at least $7/8$, there are many primes $p$ satisfying $p \leq x$ and~$p \equiv 1 \bmod q$ and hence we can efficiently find one.
+Finally, we show how to find the generator $g$ efficiently.
+Let $\pi(x;q,a) = |\{p\leq x : p \equiv a \Mod q\}|$ and $\phi(n)=|\{1\leq a \leq n: \gcd(a,n)=1\}|$.
+
+\begin{lemma}\label{le:many_p_equal_1_mod_q}
+ Let $q$ be chosen uniformly at random from $[\frac12,1]\cdot \sqrt{x}\log^{-B} x$.
+ With probability at least $7/8$ we have~$\pi(x;q,1) = \Omega(\sqrt{x}(\log x)^{B-1})$.
+\end{lemma}
+
+Before we prove the lemma, we remind some number-theory notation and facts related to counting primes. 
+The reader familiar with this area can skip this part.
+We first remind the definitions of von Mangoldt function~$\Lambda(n)$ and Chebyshev functions $\psi$ and $\vartheta$:
+
+\begin{align*}
+\psi(x;q,a) &= \sum_{\substack{n\leq x\\ n\equiv a \Mod q}} \Lambda(n), \quad &\text{ where } &\Lambda(n) = \begin{cases} \log p  &\text{ if } n=p^{k} \text{ for some prime } p \text{ and } k \in \Zp, \\  0 &\text{ otherwise. } \end{cases} \\ 
+\vartheta(x;q,a) &= \sum_{\substack{p\leq x \\ p \equiv a\Mod q}} \log p, \quad &\text{ where } &\text{the summation is over prime numbers $p$.
+}
+\end{align*}
+\noindent
+By skipping the last two arguments we denote $\vartheta(x) = \sum_{0\leq a<q} \vartheta(x;q,a)$ and similarly for $\psi(x)$.
+
+\begin{fact}[By definition]\label{fa:vartheta_pi}
+ $ \vartheta(x;q,a) \leq  \pi(x;q,a)\cdot\log x$.
+\end{fact}
+% \pi(x;q,a) \leq \vartheta(x;q,a) ||  $\vartheta(x;q,a) \leq \psi(x;q,a)$.
+
+\begin{fact}[{cf. \cite[Theorem 13]{RosserS62}}]\label{fa:psi_vartheta}
+$\psi(x;q,a) \leq \vartheta(x;q,a) + \Oh(\sqrt x)$.
+\end{fact}
+\begin{proof}
+Theorem 13 of \cite{RosserS62} states that $\psi(x) - \vartheta(x) = \Oh(\sqrt x)$, so for completeness we show an adaptation of this property to numbers forming an arithmetic progression.
+ \begin{align*}
+  \psi(x;q,a) - \vartheta(x;q,a)&= \sum_{\substack{n \leq x \\ n \equiv a  \bmod q \\ n= p ^k, k\geq 1}} \log p - \sum_{\substack{p \leq x \\ p \equiv a  \bmod q }} \log p \\
+  &\leq \sum_{\substack{n \leq x \\ n= p ^2}} \log p  + \sum_{\substack{n \leq x \\ n= p ^k, k\geq 3}} \log p\\  
+  &\leq \vartheta(\sqrt x)+ \Oh(\sqrt[3]{x}\log^2x) = \Oh(\sqrt x)
+ \end{align*}
+as $\sum_{\substack{n \leq x \\ n= p ^2}} \log p  = \sum_{p\leq \sqrt x} \log p = \vartheta(\sqrt x) $ and finally  $\vartheta(x)= x+ o(x)$ by \cite[(2.29)]{RosserS62}.
+\end{proof}
+
+\begin{thm}[Bombieri--Vinogradov theorem~\cite{Bombieri}]\label{thm:bombieri}
+For every $A>0$ there exists $B=B(A)>0$ such that for every $x$:
+\[
+\sum_{q\leq \sqrt{x}(\log x)^{-B}} \max_{y\leq x}\max_{\gcd(a,q)=1} \left| \psi(y;q,a) - \frac{y}{\phi(q)}\right| = \Oh(x\log^{-A} x). 
+\]
+\end{thm}
+\noindent
+With all the notation at hand we are ready to prove Lemma~\ref{le:many_p_equal_1_mod_q}.
+
+\begin{proof}[Proof of Lemma~\ref{le:many_p_equal_1_mod_q}]
+
+Let $\mathcal{R}=[\frac12,1]\cdot \sqrt{x}\log^{-B} x$ be the range from which we draw $q$.
+By choosing $y=x$ and $a=1$ and summing only over $q\in\mathcal{R}$ we lower bound the left-hand side of Bombieri--Vinogradov theorem obtaining that, for every~$A>0$ there exists $B=B(A)>0$ such that 
+
+\begin{equation}\label{eq:sum_from_bombieri}
+\sum_{q \in \mathcal{R}} \left| \psi(x;q,1) - \frac{x}{\phi(q)}\right| = \Oh(x\log^{-A} x).  
+\end{equation}
+
+
+\noindent Similarly to Markov's inequality, for $q$ chosen uniformly at random from $\mathcal{R}$ we have with probability at least~$7/8$:
+
+\begin{equation}\label{eq:property_of_good_q}
+\left| \psi(x;q,1) - \frac{x}{\phi(q)}\right| = \Oh(\sqrt{x}(\log x)^{-A+B}) 
+\end{equation}
+
+Indeed, there can be at most $|\mathcal{R}|/8$ numbers $q$ in $\mathcal{R}$ such that $\psi(x;q,1)\geq \frac{8\cdot\Omega(x\log^{-A} x)}{|\mathcal{R}|}=\Omega(\sqrt{x}(\log x)^{-A+B})$ in order not to exceed the right-hand side of~\eqref{eq:sum_from_bombieri}.
+Let $B$ be the constant from Theorem~\ref{thm:bombieri} for $A=1$. 
+Without loss of generality, we assume $B\geq 3>A=1$.
+Now we rewrite~\eqref{eq:property_of_good_q} using properties of $\phi(n),\vartheta(n)$ and $\psi(n)$ and obtain:
+\[
+\pi(x;q,1) = \Omega(\sqrt{x}(\log x)^{B-1})
+\]
+In more detail:
+\begin{align*}
+ \frac{x}{\phi(q)} - \psi(x;q,1) &= \Oh(\sqrt x (\log x)^{-A+B}) & \text{ from~\eqref{eq:property_of_good_q}} \\
+ \frac xq & \le \vartheta(x;q,1) + \Oh(\sqrt x) + \Oh(\sqrt x (\log x)^{-A+B}) & \text{ from Fact~\ref{fa:psi_vartheta} and }\phi(q)\leq q \\
+ \frac xq & \le \pi(x;q,1)\cdot\log x + \Oh(\sqrt x (\log x)^{-A+B}) & \text{from Fact \ref{fa:vartheta_pi} and } B > A \\
+ \pi(x;q,1) & \ge  \sqrt x (\log x)^{B-1}  - \Oh(\sqrt x (\log x)^{-A+B-1}) & \text{ as } q\in\mathcal{R} \\
+ \pi(x;q,1) &= \Omega(\sqrt{x}(\log x)^{B-1}) & \text{ as } A=1 \\
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+ Suppose $\pi(x;q,1) = \Omega(\sqrt{x}(\log x)^{B-1})$. With probability at least $7/8$, in $\Oh(\sqrt x\log x)$ arithmetic operations and $\Oh(\log x)$ space we can find such a prime $p\leq x$ such that $p \equiv 1 \bmod q$.
+\end{lemma}
+\begin{proof}
+Clearly, we can check if a number $n$ is prime by iterating through all numbers $2,3,\ldots,\sqrt n$ and checking if they are a divisor of $n$.
+Let $\mathcal{Q}=\{n\leq x: n =1 \bmod q\}$.
+Observe that the probability that a number chosen uniformly at random from $\mathcal{Q}$ is prime is at least:
+
+\[
+ \frac{\pi(x;q,1)}{|\mathcal{Q}|}=\frac{\pi(x;q,1)}{x/q}=\Omega\left(\frac{\sqrt{x}(\log x)^{B-1}\sqrt x\log^{-B}x}{x}\right)=\Omega\left(\frac{1}{\log x}\right)
+\]
+Hence by checking $\Theta(\log x)$ numbers from $\mathcal{Q}$ we find a prime with probability at least $7/8$.
+\end{proof}
+
+\begin{lemma}
+With probability at least $7/8$, we can find a generator $g$ of $\mathbb{Z}^{*}_{p}$ in $\Oh(\sqrt p)$ arithmetic operations and $\Oh(\log p)$ space.
+\end{lemma}
+\begin{proof}
+
+First, we generate the set of all divisors of $p-1$ in $\Oh(\sqrt p)$ time by iterating through $2,3,\ldots, \sqrt{p-1}$ and checking if they are a divisor of $p-1$.
+By using an auxiliary accumulator we can restrict only to prime divisors, we call this set $\mathcal{D}$.
+Now we can check if a number $g$ is a generator of $\mathbb{Z}^{*}_{p}$ by checking if for every $p'\in\mathcal{D}$, a prime divisor of $p-1$, we have $g^{(p-1)/p'}\not\equiv 1 \bmod p$. Using exponentiating by squaring, this runs in total $\Oh(\polylog p)$ time.
+
+The probability of a random $g\in \{0,\ldots,p-2\}$ to be a generator is $\phi(p-1)/(p-1) = \Omega(1/\log\log p)$, as~$\phi(n)=\Omega(n/\log\log n)$ \cite[Theorem 15]{RosserS62}.
+Hence by checking $\Theta(\log \log p)$ numbers from $\mathbb{Z}^{*}_{p}$ we find a generator with probability at least $7/8$.
+\end{proof}
+
+Finally, as $x\geq y^2$ and $\pi(x;q,1) = \Omega(\sqrt{x}(\log x)^{B-1})$ and $B\geq 3$ we have $\pi(x;q,1) \geq y\log^2 y \geq 8\log N$, as~$N\leq 2^{\Oh(y\log y)}$.
+Because $N$ has at most $\log N$ prime divisors, the probability that the chosen prime $p$ is one of them is at most $1/8$.
+Summing up, there are four events due to which our algorithm can fail:
+
+\begin{enumerate}
+ \item The number $q$ does not satisfy $\pi(x;q,1) = \Omega(\sqrt{x}(\log x)^{B-1})$;
+ \item We did not find $p$ in the planned number of iterations;
+ \item The chosen $p$ divides $N$; 
+ \item We did not find $g$ in the planned number of iterations.
+\end{enumerate}
+We note that we do not have access to the value of $N$ during the algorithm, so we cannot spot immediately that the chosen $p$ is wrong.
+When we fail to find $g$ or $p$ in the planned number of iterations we terminate.
+However,  if~$q$ is chosen wrongly, we cannot detect it immediately, but then the subsequent steps (choosing $p$ or $g$) will have a larger probability of failure.
+To conclude, the overall probability of a failure is at most $1/2$ and the running time of the whole procedure is $\Oh(\sqrt x\polylog(x))=\Oh(y\polylog y)$.
+This concludes the proof of Theorem~\ref{thm:good_p_and_omega}.
+
+% \begin{thm}[Pollard-Strassen factorisation~\cite{pollard1974,Strassen1976}]
+% Given an integer $n$, its prime factorisation can be found with $\Oh(n^{1/4}\log^{4}n)$ arithmetical operations.
+% \end{thm}
+
+
+\subsection{Walks in a weighted graph.} 
+We can finally prove Theorem~\ref{thm:detecting_walk_specific_weight}. We first describe an algorithm that uses significantly much more time and space than desired, and then improve it.
+ We compute arrays $C_k$ for~$k\in \{0,\ldots, \lceil \log x \rceil\}$ indexed by nodes $u,v\in V(G)$, where $C_k[u,v]$ is a bit-vector of length $x+1$ such that:
+ \begin{enumerate}
+  \item $C_k[u,v][d]=1$ implies that there exists a walk of weight $d$ from $u$ to $v$;
+  \item For every $d\leq 2^k$, if there exists a walk of weight $d$ from $u$ to $v$ in $G$, we have $C_k[u,v][d]=1$.
+ \end{enumerate}
+In other words, $C_k$ contains the information about all walks of weight at most $2^k$ in $G$ and possibly some other walks of weight at most $x$.
+We initialize the array $C_0$ in the following way: $\forall_{u\in V(G)} C_0[u,u][0]=1$ and~$C_0[u,v][d]=1$ if there is an edge from $u$ to $v$ of weight $0 \le d \le x$.
+If there are 0-weight edges in $G$, we first need to compute their transitive closure in $G$ in $\Oh(|V(G)|^3)$ time and mark in $C_0$ all walks of total weight $0$ or $1$ in $G$.
+We define $(\textsc{or},\textsc{Convolution}_x)$-product of matrices consisting of bit-vectors, truncated to the first $x+1$ positions:
+
+$$\forall_{\substack{u,v\in V(G)\\ d\in\{0,\ldots,x\}}} (A\odot B)[u,v][d]:=\bigvee_{\substack{w\in V(G) \\  i\in \{0,\ldots,d\}}} A[u,w][i] \wedge B[w,v][d-i]$$
+
+\noindent Now we compute the consecutive arrays $C_k$ by repeated application of $(\textsc{or},\textsc{Convolution}_x)$-product as follows:
+$$C_{k+1}:=C_k \odot C_0 \odot C_k$$
+
+Both invariants for the array $C_k$ follow by inductive reasoning, as every walk of weight $d$ can be split into three parts of weights $d_1,d_2,d_3$ where $d_1,d_3\leq d/2$ and the middle part consists of a single edge (recall that for each edge $(u,v)$ of weight $0 \le d \le x$ we have $C_0[u,v][d] = 1$).
+Then, for the given nodes $v_1,v_2$ we can return the entry $C_{\lceil \log x \rceil}[v_1,v_2][x]$.
+
+This approach runs in $\Oh(|V(G)|^2 x)$ space and $\Oh(|V(G)|^3+|V(G)|^2 x \polylog x)$ time when we use the fast Fourier transform at every step.
+Observe that this complexity matches the time and space bounds stated in Theorem~\ref{thm:detecting_walk_specific_weight} for the case when $x=\Oh(|V(G)|)$.
+Hence, we focus on the case when~$x=\Omega(|V(G)|)$.
+
+\paragraph{Saving space with circuits.} To save both time and space, we will use circuits and the framework of Theorem~\ref{thm:circuits_framework}.
+In order to use this framework, we need to modify our algorithm in various aspects.
+First, in~$\Oh(x\polylog x)$ time we find the appropriate values of $p,t,\omega$ using Theorem~\ref{thm:good_p_and_omega} from Section~\ref{se:finding_primes} for $y=\Theta(x)$ that will be defined precisely later.
+Then $t=\Oh(x\polylog x)$.
+Instead of bit-vectors as entries of the array $C_k$, we operate on vectors from $\mathbb{Z}_p^t$ over $(\mathbb{Z}_p,+,\cdot)$.
+In other words we use $\boxplus$ (addition in $\mathbb{Z}_p^t$) instead of Boolean \textsc{or} and $\boxtimes$ (the standard $(+,\cdot)$-convolution modulo $p$) instead of the Boolean $(\vee,\wedge)$-convolution.
+Then the $\odot$ product between $A\odot B$ becomes $(A\odot B)[u,v]=\boxplus_{w\in V(G)} A[u,w] \boxtimes B[w,v]$.
+With $\odot$ defined this way, $C_k[u,v][d]$ counts modulo $p$ walks from $u$ to $v$ of weight $d$, possibly counting one walk more than once~--- we analyse these values in detail at the end of the proof.
+
+
+Now we describe the construction of the circuit.
+To simplify the presentation, we work with multi-ary addition gates $\boxplus^*$ which can be replaced with binary gates $\boxplus$ at the expense of doubling the total size of the circuit.
+
+\begin{enumerate}
+ \item For every $k\in \{0,\ldots, \lceil \log x \rceil\}$ and $u,v\in V(G)$ we create a $\boxplus^*$ gate $C_k[u,v]$;
+ \item For every node $v\in V(G)$ we create a singleton constant $V_v$ with only the $0$-th entry set to 1, connected to the $\boxplus^*$ gate $C_0[v,v]$;
+ \item For every edge $(u,v,d)\in E(G)$ from node $u$ to $v$ of weight $d$, we create a singleton constant $E_{u,v,d}$ with only the $d$-th entry set to 1, connected to the $\boxplus^*$ gate $C_0[u,v]$;
+ \item As $(A\odot B)[u,v]=\boxplus^*_{w\in V(G)} A[u,w] \boxtimes B[w,v]$, we can implement every product $X=A\odot B$ with $|V(G)|^3$ gates $X^w[u,v]:= A[u,w] \boxtimes B[w,v]$ and $|V(G)|^2$ gates $X[u,v]:=\boxplus^*_{w\in V(G)} X^w[u,v]$.
+ For every $k>0$, it holds~$C_{k}=C_{k-1} \odot C_0 \odot C_{k-1}$, so we need an intermediate product $C'_{k}:=C_{k-1} \odot C_0$ and then $C_{k}:= C'_k \odot C_{k-1}$.
+\end{enumerate}
+
+The above construction gives a circuit on $\Oh(|E(G)|+|V(G)|^3\log x)$ gates with singleton constants, out of which we need to output if $C_{\lceil \log x \rceil}[v_1,v_2][x]>0$.
+However, we still cannot use the framework from Theorem~\ref{thm:circuits_framework}, as we cannot guarantee that there are no convolution gate overflows.
+Indeed, if there are edges of weight almost~$x$, we would obtain walks of weight $x^2$.
+In the following paragraph we show a refined construction in which we have more control on the maximum weight of walks considered in the $k$-th step of the algorithm.
+
+\paragraph{Refined construction.}
+Let $\eps$ be a value to be determined precisely later.
+Instead of the arrays~$C_k$, we will compute arrays $D_k$ that, informally, describe all walks of total weight at most $(1+\eps)^k$, some walks of weight~$d \le (1+\eps)^k\cdot (1+\eps)^{2k\cdot \log(1+\eps)}$ and no longer walks. 
+As we operate on values modulo $p$, let~$D'_k[u,v][d]$ be the value of~$D_k[u,v][d]$ if computed exactly, without taking modulo $p$ at every step.
+Formally, for every~$k=\{0,\ldots, \lceil \log_{1+\eps} x \rceil\}$ we have:
+ \begin{enumerate}
+  \item $D'_k[u,v][d]>0$ implies that there exists a walk of weight $d$ from $u$ to $v$;
+  \item For each $d\leq (1+\eps)^k$, if there exists a walk of weight $d$ from $u$ to $v$ in $G$, we have $D'_k[u,v][d]>0$;
+  \item $D_k[u,v][d]=0$ for all $d>(1+\eps)^k\cdot (1+\eps)^{2k\cdot \log(1+\eps)}$.
+\end{enumerate}
+\noindent
+
+The array $D_0$ stores all walks of total weight at most $1$, that is $D_0[u,v][d]=1$ iff $d\in\{0,1\}$ and there is a walk from $u$ to $v$ of total weight $d$.
+It can be computed in $\Oh(|V(G)|^3)$ time as $C_0$, by first computing all pairs of nodes connected by a walk of 0-weight edges.
+Now we show how to obtain the array $D_k$.
+Again, every walk of weight $d$ can be cut into three parts of total weights $d_1,d_2,d_3$ where $d_1,d_3\leq d/2$ and the middle part consist of a single edge.
+We need to control the total weight of the walk, so we will iterate over all possible base-$(1+\eps)$ logarithms of weights of the three parts $k_1,k_2,k_3$.
+For all possible values $d_1,d_2,d_3$ such that $d_1+d_2+d_3\leq (1+\eps)^k$, we process the triple $k_1,k_2,k_3$ where $\forall_{i\in\{1,2,3\}} (1+\eps)^{k_i-1} < d_i \leq (1+\eps)^{k_i}$.
+Then, from the definition of arrays $D_k$, every walk of weight $d_i$ will be included in $D_{k_i}$.
+For single edges of particular weight, let $B_k$ describe all pairs of nodes connected by an edge of weight at most $(1+\eps)^{k}$: $B_k[u,v][d]=1$ iff $d\leq (1+\eps)^k$ and there is an edge of weight $d$ from $u$ to $v$.
+Note that $B_k=B_{k-1}\boxplus F_k$ where $F_k$ describes all edges of weight from $\big( (1+\eps)^{k-1},(1+\eps)^k\big]$.
+We restrict only to triples $k_1,k_2,k_3$ satisfying both:
+ \begin{align}
+ (a) \quad& (1+\eps)^{k_1-1} + (1+\eps)^{k_2-1} + (1+\eps)^{k_3-1}  \le (1+\eps)^k \label{eq:prop_k1,k2,k3}  \\
+ (b) \quad& 2\cdot\left(1+\eps\right)^{\max\{k_1,k_3\}-1} \le \left(1+\eps\right)^k \label{eq:relation_k1_k}
+\end{align}
+\noindent
+and call such triples $k$-\textit{good}. Then we compute $D_k$ in the following way:
+\begin{equation}\label{eq:definition_d_k}
+ D_k:=\boxplus^*_{k-\text{good }k_1,k_2,k_3} D_{k_1} \odot B_{k_2}\odot D_{k_3}
+\end{equation}
+
+Now we show that all the invariants about $D_k$ are satisfied.
+Clearly there are no false-positive entries in the array.
+We never miss a walk of weight at most $(1+\eps)^k$, as the condition (a) filters out the triples $k_i$ contributing only the walks of total weight larger than $(1+\eps)^k$.
+The condition (b) guarantees that the first and third part of the walk have weight at most $\frac 12 (1+\eps)^k$.
+In the following lemma we show that we also never construct walks of too large weight.
+
+\begin{lemma}\label{le:bound_max_weight}
+ For every $k$ and every $k$-good triple $k_1,k_2,k_3$, the largest weight of a walk in $D_{k_1} \odot B_{k_2}\odot D_{k_3}$ is at most $(1+\eps)^{k} \cdot (1+\eps)^{2k\cdot\log(1+\eps)}$.
+\end{lemma}
+\begin{proof}
+Induction on $k$. 
+Without loss of generality assume $k_1\geq k_3$ and then the walks in $D_{k_1} \odot B_{k_2}\odot D_{k_3}$ have total weight at most:
+\begin{align}
+\leq&(1+\eps)^{k_1} \cdot (1+\eps)^{2k_1\cdot\log(1+\eps)} + (1+\eps)^{k_2} + (1+\eps)^{k_3} \cdot(1+\eps)^{2k_3\cdot\log(1+\eps)} \nonumber \\ 
+\leq &[ (1+\eps)^{k_1} + (1+\eps)^{k_2} + (1+\eps)^{k_3} ]\cdot (1+\eps)^{2 k_1\cdot\log(1+\eps)} \nonumber \\
+ \leq &(1+\eps)^{k+1} \cdot (1+\eps)^{2 k_1\cdot\log(1+\eps)} \text{ (from the condition (a))} \label{eq:max_in_D_k}
+ %\text{Below } & \text{we show that it can be upper bounded by:}\\
+ %\leq &(1+\eps)^{k} \cdot (1+\eps)^{2k\cdot\log(1+\eps)}
+\end{align}
+Now we use the condition (b) of a good $k$-triple:
+\begin{align*}
+\left(1+\eps\right)^k &\ge 2\cdot\left(1+\eps\right)^{k_1-1} &\text{apply } \log_{1+\eps}(\cdot) \text{ and rearrange}\\
+k-k_1 &\ge \log_{1+\eps}2 -1 &\text{multiply both sides by } 2\cdot \log_2(1+\eps)\\
+2\cdot \log_2(1+\eps) \cdot (k-k_1) &\ge 2\cdot (1-\log_2(1+\eps)) > 1 &\text{as } 1+\eps<\sqrt 2\\
+2k\cdot\log_2(1+\eps) & \ge 2k_1\cdot\log_2(1+\eps) +1
+\end{align*}
+\noindent
+Applying the above inequality to \eqref{eq:max_in_D_k} concludes the inductive step.
+\end{proof}
+\noindent
+Setting $\eps=1/\log x$, as $\log(1+\eps)>\eps$ we obtain that there are 
+$$r=\lceil \log_{1+\eps}x\rceil \leq 1+ \frac{\log x}{\log(1+\eps)}=\Oh\left(\frac{\log x}{\eps}\right) =  \Oh(\log^2 x)$$
+arrays $D_k$ to compute. 
+As $\log (1+\eps)<2\eps$, the largest possible weight is bounded from above by
+\begin{align*}
+&(1+\eps)^r\cdot (1+\eps)^{2r\cdot \log(1+\eps)} \leq (1+\eps)^{r\cdot(4\eps+1)} \leq (1+\eps)^{(\log_{1+\eps}x+1)\cdot(4\eps+1)} \\
+& \leq x\cdot x^{4\eps}\cdot \left((1+\eps)^\eps\right)^4\cdot 2 = \Oh(x\cdot 2^{4\cdot \log x \cdot \frac{1}{\log x}})  = \Oh(x).
+\end{align*}
+Hence, the appropriate choice of $y=\Theta(x)$ guarantees that no convolution gate overflows.
+
+Now we estimate the size of the constructed circuit.
+We compute $r=\Oh(\log ^2 x)$ arrays $D_k$.
+For each of them we process $\Oh(r^3)$ $k$-good triples which perform two $\odot$ products each.
+Every $\odot$ product introduces $\Oh(|V(G)|^3)$ $\boxplus$ and $\boxtimes$ gates.
+Hence the total number of gates is $\Oh(|E(G)|+|V(G)|^3\cdot \polylog x)$.
+
+Finally we discuss the properties of the values computed in $D_r$ and all the intermediate gates.
+Recall that~$D'_k[u,v][d]$ is the value of $D_k[u,v][d]$ if computed exactly, without taking modulo $p$ at every step.
+For each~$d\leq (1+\eps)^k$, every walk between $u$ and $v$ of weight $d$ contributes at least 1 to $D'_k[u,v][d]$.
+Notice that such walk may contribute more than 1, as it can be cut into three parts in many ways, for different triples~$k_1,k_2,k_3$.
+As no walks of weight different from $d$ contribute to $D'_k[u,v][d]$, there is a walk from $u$ and $v$ of weight~$d$ iff~$D'_k[u,v][d]>0$.
+However, while computing the arrays $D_k$ we operate in $\mathbb{Z}_p$, so we might have false negative error if $p \mid D'_k[u,v][d]$.
+In Theorem~\ref{thm:good_p_and_omega} we include such situations in the probability of failure (we fail if $p \mid N$, where $N=D'_r[u,v][d]$), but we need to ensure that $D'_r[u,v][d]$ never exceeds $2^{\Oh(t\log t)}$.
+
+\begin{lemma}
+ Suppose we execute the above algorithm up to the $r$-th matrix $D_r$ in $\mathbb{Z}$, not applying modulo $p$ in every gate.
+ Then all the obtained values are bounded by $2^{\Oh(x\log x)}$.
+\end{lemma}
+\begin{proof}
+
+ Recall that $\eps=\frac{1}{\log x},\ r=\lceil \log_{1+\eps}x \rceil$, we operate on vectors with $t=\Oh(x\polylog x)$ entries, and the convolutions do not overflow as the result always fits in the first $y=\Oh(x)$ elements of the vectors.
+ Let $f(k)$ be a monotonous function that upper bounds the values in $D'_k$ and $g=|V(G)|$. 
+ Observe that a single product~$A \odot B$ of matrices with entries bounded by respectively $a_{\max}$ and $b_{\max}$ results in a matrix with entries bounded by~$g\cdot y \cdot a_{\max} \cdot b_{\max}$.
+ Hence, as values in $B_{k_2}$ are~$0$ or~$1$, from Equation~\eqref{eq:definition_d_k} we have the following bound:
+ 
+$$f(k)\leq \sum_{k-\text{good }k_1,k_2,k_3} f(k_1)\cdot (y\cdot g)^2\cdot f(k_3) \leq k^3 (y\cdot g)^2 \cdot f^2(k_{\max}) \leq W f^2(k_{\max})$$
+where $k_{\max}$ is the largest possible value of $k_i$ that can be a part of a $k$-good triple and $W=r^3\cdot (y\cdot g)^2=\Oh(x^5)$ as $y=\Oh(x)$ and we consider the case when $x = \Omega(g)$.
+From Equation~\eqref{eq:relation_k1_k} we have:
+\begin{align*}
+2\cdot\left(1+\eps\right)^{k_{\max}-1} &< \left(1+\eps\right)^k\\ 
+k_{\max}+\log_{1+\eps}2 -1 &< k
+\end{align*}
+As arguments of $f$ are integers, it would be more convenient to write $k_{\max} \leq k-c$ where $c=\lceil\log_{1+\eps}2-1\rceil\geq\log_{1+\eps}2 -1$.
+As $f$ is monotonous, we have:
+$$f(k) \leq 
+\begin{cases}
+ W \cdot f^2(k-c), &\quad k\geq c\\
+ W, &\quad k < c
+\end{cases}$$
+which solves by induction to $f(k) < W^{2^{\lceil \frac{k}{c} \rceil+1}-1}$.
+Then, as $W=\Oh(x^5)$  we have:
+
+$$f(r) < W^{2^{\lceil \frac{r}{c} \rceil+1}-1}<W^{\Oh(2^{r/c})}<2^{\Oh(2^{r/c}\log x)}$$
+Finally, we show that  $r/c \leq \log x+ \Oh(1)$.
+
+\begin{align*}
+\frac rc &\leq 
+\frac{\log_{1+\eps}x +1}{\log_{1+\eps}2-1} =
+\frac{\frac{\log x}{\log(1+\eps)} + 1}{\frac{\log 2}{\log(1+\eps)}-1} = 
+\frac{\log x + \log(1+\eps)}{1-\log(1+\eps)}\leq
+\frac{\log x + 2\eps}{1-2\eps} \quad ( \text{as } \log(1+\eps)<2\eps )\\
+&= \frac{\log^2 x + 2}{\log x - 2} = \log x +\Oh(1)
+\end{align*}
+Combining that with the above bound on $f(r)$ we obtain:
+
+$$f(r)<2^{\Oh(2^{r/c}\log x)} \leq 2^{\Oh(2^{\log x +\Oh(1)}\log x)}= 2^{\Oh(x\log x)}$$
+which gives the desired bound on the obtained values.
+\end{proof}
+\noindent
+Hence we can apply Theorem~\ref{thm:circuits_framework} to the circuit computing $D_r[u,v]$ for the values $p,t,\omega$ from Theorem~\ref{thm:good_p_and_omega}. 
+The running time of the algorithm is $\Oh(|C|t\polylog p)=\Oh((|E(G)|+|V(G)|^3) x \polylog x)$ as $|C|=\Oh(|E(G)|+|V(G)|^3\cdot \polylog x)$, $t=\Oh(x\polylog x)$, $p=\Oh(y^2\polylog y)$ and $y=\Theta(x)$.
+The space complexity is bounded by~$\Oh(|C|\log p)=\Oh((|E(G)|+|V(G)|^3) \polylog x)$.
+This concludes the proof of Theorem~\ref{thm:detecting_walk_specific_weight}.
+

@@ -1,0 +1,124 @@
+% !TEX root = main.tex
+In this section we define the notion of anchors that will allow us to store all occurrences (partial or not) of regular expressions detected by the algorithm efficiently. 
+
+%\begin{corollary}[Of Fact~\ref{fact:fine_wilf}]\label{cor:}
+%For a primitive string $X$ of length $x$, a string $D = XX$ can contain only two occurrences of string $X$, $D[1\dd x]$ and $D[x+1\dd 2x]$.
+%\end{corollary}
+
+\begin{definition}[Anchors]\label{def:anchors}
+Consider a periodic string $W$ with period $\rho$. Set the anchor $a_0 = 2\rho$ and the period~$\rho_0 = \rho$. Suppose that $(a_r, \rho_r)_{r = 0}^{q-1}$ are defined. We define $(a_{q}, \rho_{q})$ recursively. Consider the set $S$ of fragments $W[i \dd j]$ of $W$ satisfying the following properties:
+\begin{enumerate}
+\item $W[i \dd j]$ contains $a_{q-1}$ and is periodic with period $\pi < \rho_{q-1}$;
+\item $i+4\pi-1 \le a_{q-1}$ (there are at least four repetitions of the string period of $W[i \dd j]$ before $a_{q-1}$);
+\item $a_{q-1} \le j-4\pi-r$, where $r = (j-i+1) \pmod \pi$ (there are at least four repetitions of the string period of $W[i \dd j]$ after $a_{q-1}$).
+\end{enumerate}
+Let $i_q = \min\{i : W[i\dd j] \in S\}$ and $j_q = \max\{j : W[i_q\dd j] \in S\}$. If $W[i_{q} \dd j_{q}]$ is undefined, recursion stops. Otherwise, $\rho_q$ is defined to be the period of $W[i_q \dd j_q]$ and $a_{q} := i_{q}+2\rho_{q}-1$. 
+
+Let $\A(W) = \{a_0, a_1, \ldots, a_{Q}\}$, where $(a_Q,\rho_Q)$ is the last defined anchor-period pair. We call $\A$ the \emph{generator set of anchors} of $W$. Define $\A^\ast(W) = \left[\bigcup_{\Delta \in \mathbb{Z}_+} (\A(W) + \Delta \cdot \rho)\right] \cap [1, |W|-2\rho]$. We refer to $\A^\ast$ simply as the \emph{set of anchors} of $W$. For an illustration, see Fig.~\ref{fig:anchors}.
+\end{definition}
+
+\begin{figure}[ht!]
+\ctikzfig{Part_One/streaming_regex_pattern_matching/figures/fig1}
+\caption{Anchors of a periodic string $W$ with period $\rho$.}
+\label{fig:anchors}
+\end{figure}
+
+(In the next section we slightly abuse notation and extend the notion of the set of anchors to infinite strings in a natural way, i.e. for an infinite string $W$ with period $\rho$ the set $\A^\ast(W) = \left[\bigcup_{\Delta \in \mathbb{Z}_+} (\A(W) + \Delta \cdot \rho)\right]$.) 
+We first show that the generator set of anchors has logarithmic size:
+
+\begin{lemma}\label{lm:anchors}
+Let $W$ be a periodic string with period $\rho$. We have $|\A(W)| = \Oh(\log \rho)$. 
+\end{lemma}
+\begin{proof}
+Let $\A(W) = \{a_0, a_1, \ldots, a_Q\}$. For each $0 \le q \le Q$, let $W[i_q \dd j_q]$ be the fragment associated with $a_q$, and~$\rho_q$ be its period. (In particular, for $q = 0$ we have $i_0 = 1$, $j_0 = |W|$, $\rho_0 = \rho$.) We show that for each $1 \le q \le Q$ we have $|W[i_q \dd j_q]| \le 2 \rho_{q-1}$. This implies, in particular, that $|W[i_q\dd a_{q-1}]| \le  2 \rho_{q-1}$ and therefore $\rho_q \leq \rho_{q-1} / 2$. The lemma follows immediately. 
+
+Fix $0 \le q \le Q$. Assume by contradiction that $|W[i_q \dd j_q]| > 2 \rho_{q-1}$. We then have that $W[i_q \dd j_q]$ has periods $\rho_{q-1}$ and $\rho_q$ and $\rho_{q-1}+\rho_q < |W[i_q \dd j_q]|$. Hence, $W[i_q \dd j_q]$ is periodic with period $\pi = \gcd(\rho_{q-1},\rho_q)$ by Fact~\ref{fact:fine_wilf}. The substring $W[i_q \dd j_q]$ contains a full copy of $W[i_{q-1} \dd i_{q-1}+\rho_{q-1}-1]$. Therefore, $W[i_{q-1} \dd i_{q-1}+\rho_{q-1}-1]$ has a period $\pi$, which implies that it equals $(W[i_{q-1} \dd i_{q-1}+\pi-1])^{\rho_{q-1}/\pi}$, i.e. the string period of $W[i_{q-1} \dd j_{q-1}]$ is not primitive, a contradiction. 
+\end{proof}
+
+
+\begin{definition}
+Let $W$ be a periodic string with period $\rho$. We say that a fragment $F = W[i \dd j]$ is anchored by an anchor $a \in \A^\ast(W)$ if $i \leq a \leq j$ and for any strings $U \in \Sigma^\ast, V \in \Sigma^\rho$ such that $V \neq W[1 \dd \rho]$ there are at most eight occurrences of $F$ in $UV(W[1\dd j])$ containing the anchor (i.e., containing $|U|+|V|+a$). 
+\end{definition}
+
+\begin{lemma}\label{lm:anchors_catch_partial_match}
+Let $W$ be a periodic string with period $\rho$. Consider a fragment $W[\ell \dd r]$ of length at least $4 \rho$ and a partitioning $W[\ell \dd r] = W[\ell_1 \dd r_1] W[\ell_2 \dd r_2] \ldots W[\ell_k \dd r_k]$. 
+\begin{enumerate}[label=\textrm{(\alph*)}]
+\item There exists $1 \le k' \le k$ such that $W[\ell_{k'} \dd r_{k'}]$ is anchored by an anchor $a \in \A^\ast(W) \cap [r-4\rho+1, r]$.\label{it:anchor_gen}
+\item If, in addition, $1 \le \ell \le 2 \rho$, there exists $1 \le k' \le k$ such that $W[\ell_{k'} \dd r_{k'}]$ is anchored by an anchor $a \in \A^\ast(W) \cap [1, 4\rho]$.\label{it:anchor_beg}
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+The high-level idea of the proof of~\ref{it:anchor_gen} and~\ref{it:anchor_beg} is as follows. Let $\A(W)= \{a_0,a_1, \ldots a_Q \}$. For every~$0 \le q \le Q$ and an integer $\Delta > 0$ to be determined later, define $a_q^\Delta := a_q +\Delta \cdot \rho$. Let $F_q=W[\ell_{k_q},r_{k_q}]$ be the fragment that contains $a_q^{\Delta}$. We show that either $F_q$ is anchored by $a_q^{\Delta}$ or $q < Q$, which yields the lemma. We exploit two auxiliary claims:
+
+\begin{claim}\label{claim:many_reps}
+Let $\pi$ be the period of $F_q$, $0 \le q \le Q$. If $F_q$ is not anchored by $a_q^\Delta$, then there exist $U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there is a fragment $S[p \dd t]$ of the string $S = UV(W[\dd r_q])$ satisfying the following properties:
+\begin{enumerate}
+\item $p \le |U|+|V|+a_q^\Delta \le t$ (the fragment contains the anchor);
+\item $S[p \dd t]$ is periodic with period $\pi$;
+\item $p+7\cdot \pi \le |U|+|V|+a_q^\Delta$ (there are at least seven repetitions of the string period of the fragment before the anchor);
+\item $|U|+|V|+a_q^\Delta \le t-6\pi-r$, where $r = t-p+1 \pmod \pi$ (there are at least six repetitions of the string period of the fragment after the anchor). 
+\end{enumerate}
+\end{claim}
+\begin{proof}
+Let $U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there are least eight occurrences of $F_q$ in $S = UV(W[1 \dd r_q])$ containing $a := |U|+|V|+a_q^\Delta$. Let the last eight occurrences be $S[p_k \dd t_k]$, $1 \le k \le 8$. As all occurrences contain $a$, the length of $S[p_1 \dd t_8]$ is at most $2|F_q|$. By Observation~\ref{obs:few_progressions}, we obtain that $S[p_1 \dd t_8]$ is periodic with period $\pi$, $p_k = p_1 + (k-1) \pi$, and $t_k = t_1 + (k-1) \pi$. As $p_8 = p_1+7\pi \le a$,  we have $S[p_1 \dd a] \ge 7 \pi$. On the other hand, $t_2-r+1 \ge t_1+1 \ge a+1$. Therefore, $|S[a+1 \dd t_8-r]| \ge |S[t_2-r+1 \dd t_8-r]| \ge 6\pi$. By taking $p = p_1$ and $t = t_8$, we obtain the claim. For an illustration, see Fig.~\ref{fig:claim_many_reps}.
+\end{proof}
+
+\begin{figure}[ht!]
+\centering
+\ctikzfig{Part_One/streaming_regex_pattern_matching/figures/claim1}
+\caption{Illustration of Claim~\ref{claim:many_reps}.}
+\label{fig:claim_many_reps}
+\end{figure}
+
+\begin{claim}\label{claim:next_level}
+Assume that $q \ge 0$ and that the period of $F_q$ is $\pi < \rho_q$. If $F_q$ is not anchored by $a_q^\Delta$, then $q < Q$. 
+\end{claim}
+\begin{proof}
+By Claim~\ref{claim:many_reps}, there exist $U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there is a fragment $S[p \dd t]$ of the string $S = UV(W[\dd r_q])$ periodic with period $\pi$ that contains $a: = |U|+|V|+a_q^\Delta$ and such that there are at least six repetitions of the string period before and after $a$.
+
+Let us show that $a-2\rho_q+1 \le p < t \le a+2\rho_q$. Suppose by contradiction that $p < a-2\rho_q+1$. We have that $S[a-2\rho_q+1 \dd a] = W[a_q^\Delta-2\rho_q+1 \dd a_q^\Delta]$ (note that by definition $a_q^\Delta \ge 2 \rho_q$ for any~$\Delta$). Furthermore,~$W[a_q^\Delta-2\rho_q+1 \dd a_q^\Delta]$ has periods $\rho_q$ (by definition of $i_q$ and $a_q^\Delta$) and~$\pi$ (by the assumption). By Fact~\ref{fact:fine_wilf}, $W[a_q^\Delta-2\rho_q+1 \dd a_q^\Delta]$ has a period $\gcd(\rho_q, \pi) < \rho_q$. As $W[a_q^\Delta-2\rho_q+1 \dd a_q^\Delta]$ contains a full copy of the string period of $W[i_q \dd j_q]$, we obtain that it is not primitive, a contradiction. (See Fig.~\ref{fig:claim_next_level}). To show that~$t \le a+2\rho_q$, note that $S[a+1 \dd a+2\rho_q] = W[a_q^\Delta+1 \dd a_q^\Delta+2\rho_q]$, $a_0^\Delta+2\rho \le |W|$ and, for $q\ge 1$, $a_q^\Delta+2\rho_q \le a_{q-1}^\Delta$ by definition of $i_q$ and $a_q$. Therefore, for all $q \ge 0$, $W[a_q^\Delta+1 \dd a_q^\Delta+2\rho_q]$ is periodic with period~$\rho_q$. The rest of the argument is analogous. 
+
+From $a-2\rho_q+1 \le p < t \le a+2\rho_q$ and the fact that $S[p \dd t]$ contains at least six repetitions of its string period before and after $a$, we obtain that $i_{q+1}, j_{q+1}$ and hence $a_{q+1}, \rho_{q+1}$ are well-defined, which completes the proof of the claim.  
+\end{proof}
+
+\begin{figure}
+\centering
+\ctikzfig{Part_One/streaming_regex_pattern_matching/figures/claim2}
+\caption{Illustration of the proof of Claim~\ref{claim:next_level}, case $p < a-2\rho_q+1$.}
+\label{fig:claim_next_level}
+\end{figure}
+\noindent
+We are now ready to show~\ref{it:anchor_gen} and~\ref{it:anchor_beg}. 
+
+\begin{enumerate}[label=\textrm{(\alph*)}]
+\item Let $\Delta \le \lfloor |W|/\rho\rfloor-2$ be the smallest integer such that $a_0+\Delta \cdot \rho \ge r-4\rho$. Note that $\Delta$ is well-defined. 
+ Consider an anchor $a_0^\Delta = a_0+\Delta \cdot \rho \in \A^\ast(W) \cap [r-4\rho+1, r]$. Let $F_0 = W[\ell_{k_0} \dd r_{k_0}]$ be the fragment that contains $a_0^\Delta$ and~$\pi$ be its period. If $F_0$ is anchored by $a_0^\Delta$, we are done. Otherwise, by Claim~\ref{claim:many_reps}, there exist~$U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there is a fragment $S[p \dd t]$ of the string~$S = UV(W[\dd r_{k_0}])$ periodic with period $\pi$ that contains $a: = |U|+|V|+a_0^\Delta$ and such that there are at least six repetitions of the string period of $F_0$ before and after $a$. As we have $r_{k_0}-a_0^\Delta+1 \le r-a_0^\Delta+1 \le 4\rho$, there is $\pi \le 2\rho/3$. It follows that $i_1, j_1$ and hence $a_1, \rho_1$ are well-defined, i.e. $0 < Q$. 
+
+We now show that for arbitrary $q \ge 1$ either $a_q^\Delta = a_q + \Delta \cdot \rho$ anchors $F_q$ or the period $\pi$ of $F_q$ is smaller than~$\rho_q$, which by Claim~\ref{claim:next_level} implies that $q < Q$. By our choice of $\Delta$, $F_q$ is well-defined.  If $F_q$ is anchored by~$a_q^\Delta$, we are done.  
+Otherwise, by Claim~\ref{claim:many_reps}, there exist $U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there is a fragment $S[p \dd t]$ of the string $S = UV(W[\dd r_{k_q}])$ periodic with period $\pi$ that contains $|U|+|V|+a_q^\Delta$ and such that there are at least six repetitions of the string period of $S[p \dd t]$ before and after $|U|+|V|+a_q^\Delta$. Recall that $a_q^\Delta = (i_q+2\rho_q) + \Delta \cdot \rho$. 
+
+First, we have that $\pi \neq \rho_q$, otherwise we could have extended $W[i_q \dd j_q]$ to the left. Second, let us show that the case $\pi > \rho_q$ is impossible. Suppose otherwise. If $t-4\pi+1 \le |U|+|V|+a_{q-1}^\Delta$, then $W[a_q^\Delta+1 \dd a_{q-1}^\Delta]$ contains a copy of $S[1\dd 2\pi]$, and therefore $S[1\dd 2\pi]$ has a period $\rho_q$. By Fact~\ref{fact:fine_wilf}, the string period $S[1\dd \pi]$ of $S$ is not primitive, a contradiction. (See Fig. ~\ref{fig:lemma_2_case_t_leq}.) Otherwise, $|U|+|V|+a_{q-1}^\Delta$ is contained in $S[p \dd t]$, which has period $\pi > \rho_{q-1}$. In addition, there are at least four repetitions of the string period of $S[p \dd t]$ before and after $|U|+|V|+a_{q-1}^\Delta$, and $p < |U|+|V|+a_q^\Delta-2\rho_q \le |U|+|V|+i_q$, a contradiction with the choice of $W[i_q \dd j_q]$. (See Fig. ~\ref{fig:lemma_2_case_t_geq}.) It finally follows that $\pi < \rho_q$ and therefore by Claim~\ref{claim:next_level}, $q < Q$.
+
+
+\begin{figure}[ht!]
+\captionsetup[subfigure]{labelformat=empty}
+\begin{subfigure}{\textwidth}
+\centering
+\ctikzfig{Part_One/streaming_regex_pattern_matching/figures/fig_lemma_2_1}
+  \caption{Subcase $t-4\pi+1 \leq |U|+|V|+a_{q-1}^\Delta$.} 
+  \label{fig:lemma_2_case_t_leq}
+\end{subfigure}
+\begin{subfigure}{\textwidth}
+\centering
+\ctikzfig{Part_One/streaming_regex_pattern_matching/figures/fig_lemma_2_2}
+  \caption{Subcase $t-4\pi+1 \geq |U|+|V|+a_{q-1}^\Delta$.}
+  \label{fig:lemma_2_case_t_geq}
+\end{subfigure}
+\caption{Illustration of the proof of Lemma~\ref{lm:anchors_catch_partial_match}\ref{it:anchor_gen}, case $\pi > \rho_q$.}
+\end{figure}
+
+\item Let $\Delta$ be the smallest integer such that $a_0+(\Delta-2) \rho \ge \ell$ (note that $\Delta = 1,2$). Consider an anchor~$a_0^\Delta = a_0+\Delta \cdot \rho \in A^\ast(W) \cap [1, 4\rho]$. We first show that either $F_0$ is caught by $a_0^\Delta$, or $0 < Q$. If $F_0$ is anchored by $a_0^\Delta$, we are done. Otherwise, let $\pi$ be the period of $F_0$. We claim that $\pi < \rho = \rho_0$. As~$F_0$ is not anchored, by Claim~\ref{claim:many_reps} there exist $U \in \Sigma^\ast, V \in \Sigma^\rho$ with $V \neq W[1 \dd \rho]$ such that there is a fragment $S[p \dd t]$ of the string $S = UV(W[\dd r_{k_0}])$ periodic with period $\pi$ that contains $a: = |U|+|V|+a_0^\Delta$ and such that there are at least six repetitions of the string period of $S$ before and after $a$. We can immediately rule out the case $\pi = \rho$ as $a \leq 4\rho$ and $V \neq W[1 \dd \rho]$. Consider now the case $\pi > \rho_0$. Consider the suffix~$S[a+1\dd] = W[a_0^\Delta+1 \dd r_{k_0}]$. It contains an occurrence of $S[1\dd 2 \pi]$. By Fact~\ref{fact:fine_wilf}, $S[1\dd 2 \pi]$ has a period $\gcd(\pi, \rho)$, and therefore the string period of $S$ is not primitive, a contradiction. For $q \ge 1$, $F_q$ is well-defined by our choice of $\Delta$. 
+The rest of the argument repeats the argument in the proof of~\ref{it:anchor_gen}.
+\end{enumerate}
+This concludes the proof of Lemma~\ref{lm:anchors_catch_partial_match}.
+\end{proof}

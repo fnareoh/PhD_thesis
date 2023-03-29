@@ -1,0 +1,440 @@
+\documentclass{article}
+
+\input{preamble}
+
+\title{Regular expression pattern matching in streaming}
+\author{}
+\date{}
+
+
+
+\begin{document}
+
+\maketitle
+
+\section{Preliminaries}
+Strings
+
+Hamming distance
+
+Edit distance, alignments, optimal alignments
+
+\section{Algorithmic tools}
+
+\subsection{Read-only}
+The read-only model has been studied extensively in pattern matching~\cite{RYTTER2003763,10.1145/322234.322244,DBLP:conf/cpm/GasieniecPR95,
+DBLP:journals/tcs/GasieniecPR95,DBLP:journals/tcs/Crochemore92,
+Crochemore:1991:TS:116825.116845,GALIL1983280,BRESLAUER20132,BRESLAUER1996177,GALIL1981331,10.1007/3-540-60044-2_36}.
+We exploit the following results: 
+
+\begin{theorem}[Read-only constant-space real-time pattern matching~\cite{Crochemore:1991:TS:116825.116845}]
+\label{th:constant-space-pm}
+Assume that we are given a text $T$ of length $n$ and a pattern $P$ of length $m \le n$ that are read-only. There is an algorithm that finds all occurrences of $P$ in $T$ while using $\Oh(1)$ extra space and $\Oh(1)$ time per character of the text.  
+\end{theorem}
+
+\subsection{Streaming}
+\begin{theorem}[Streaming pattern matching~{\cite{pattern_match_PP09,pattern_match_BG14}}]
+\label{th:streaming-pm}
+Given a text $T$ of length $n$, and a pattern of length $m \leq n$. 
+There  exists  a  streaming algorithm for the pattern-matching problem which  uses $\Oh(\log m)$ space  and takes $ \Oh(\log m)$ time per arriving letter.  The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{theorem}
+
+\begin{theorem}[Streaming $k$-mismatch~{\cite[Theorem 1.2]{k_mismatch_streaming_CKP19,DBLP:conf/soda/CliffordFPSS16,pattern_match_PP09}}]
+\label{th:streaming-k-mismatch}
+Given a text $T$ of length $n$, and a pattern of length $m \leq n$. 
+There  exists  a  streaming algorithm for the $k$-mismatch problem which  uses $\Oh(k\log\frac{n}{k})$ space  and takes $ \Oh(k + \log\frac{n}{k} (\sqrt{k\log k}+\log^3 n))$ time per arriving letter.  The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{theorem}
+
+\section{Depth-2 expressions}
+In this section, we consider depth-2 regular expressions. It is not hard to see that treating expressions of types $*\cdot$, $*\mid$, $*+$, $+*$ is easy because these expressions match the empty substring, so we can report an occurrence at every position of the text. We also note that searching for a regular expression of the form $+\cdot$ reduces to pattern matching and searching for regular expressions of types $\mid \cdot$, $+ \mid$ , $\mid +$, $\mid *$ reduces to dictionary matching.
+
+%For example, if the regular expression $[aaba]^+$, then there is an occurrence ending at a position $i$ of the text iff of $aaba$ ending at the position $i$. The pattern matching problem, for a pattern of length $m$, can be solved in streaming using $\Oh(\log m)$ space and $\Oh(\log m)$ time correctly with high probability~\cite{pattern_match_PP09, pattern_match_BG14}. Therefore, there is also a streaming algorithm for $+\cdot$ that uses $\Oh(\log m)$ space and $\Oh(\log m)$ time and is correct with high probability.
+
+\begin{table}[H]
+    \centering
+    \label{tab:depth2}
+    
+    \begin{tabularx}{\textwidth}{|l|X|X|X|X|X|X|}
+   		\hline
+        \multirow{2}{*}{Type} & \multirow{2}{*}{Example} & \multirow{2}{*}{Solution} & \multicolumn{2}{c|}{Read-only} & \multicolumn{2}{c|}{Streaming} 
+         \\ \cline{4-7}
+		 &  &  & Time & Space & Time & Space\\ \hline \hline
+        
+        $*\cdot$, $*\mid$, $*+$,  $+*$ & $(ab)^*$, $(a|b|c)^*$, $(a^+)^* b^*$, $(b^*)^+$  & everything is a match & $\Oh(1)$ & $\Oh(1)$ & $\Oh(1)$ & $\Oh(1)$  \\ \hline
+        
+        $+\cdot$  & $(aca)^+$ & pattern matching & $\Oh(1)$ & $\Oh(1)$ & $\Ohtilde(1)$ & $\Ohtilde(1)$  \\ \hline
+        
+        $\mid \cdot$, $+ \mid$ , $\mid +$, $\mid *$  & $ab|abc|bc$, $(a|b)^+ $, $a^+ | b | a | c^+$, $a | b^* | c^*$ & dictionary matching & $\Oh(d)$ & $\Oh(d)$ & $\Ohtilde(1)$ & $\Ohtilde(d)$ \\ \hline
+        
+        $\cdot \mid$  & $aab(a|c)a $& Section~\ref{sec:cdot-or} & $\Oh(d)$ & $\Oh(d)$ & $\Ohtilde(d)$ & $\Ohtilde(d)$  \\ \hline        
+        
+        $\cdot +$ & $aab^+b$ & Section~\ref{sec:dot-plus} & $\Oh(d)$ & $\Oh(d)$ & $\Ohtilde(d)$ & $\Ohtilde(d)$ \\ \hline
+        
+        $\cdot *$  & $ab^*a$& Section~\ref{sec:dot-star} & $\Oh(d^2)$ & $\Oh(d^2)$ & $\poly(d)$ & $\poly(d)$ \\ \hline
+    \end{tabularx}
+    \caption{Read-only and streaming complexities of regular expression pattern matching for depth $2$. The time complexity is per arriving character of the text and does not account for preprocessing of the pattern.}
+\end{table}
+
+        \todo{What's the best read-only solution for dictionary matching? Check \url{https://arxiv.org/abs/1504.06647} and the papers that cite it. What are the preprocessing times?}
+
+\subsection{Regular expressions of type $\cdot|$}
+\label{sec:cdot-or}
+Consider a pattern $P$ of type $\cdot|$.
+Let $o_i$ be the $i$th group of ored letters in $P$.
+We replace each $o_i$ with a special symbol~$\# \notin \Sigma$, we call the result $P'$. For example, the pattern $P = aac(b|c)(a|b|d)aab(b|c)$ becomes $P'=aac\#\#aab\#$.
+
+\begin{observation}
+\label{obs:structural.|}
+Assume that $P$ contains at most $d$ ored letters (in other words, there are $d' \leq d$ groups $o_i$ and $\sum_{i=1}^{d'} |o_i| \leq d$). Let $p_1,\ldots,p_{d'}$  be the positions of the $\#$ in $P'$.
+A prefix $T[1,i]$ ends with an occurrence of $P$ iff it ends with a $d'$-mismatch occurrence of $P'$ and $T[i-|P'|+p_j] \in o_j$.
+\end{observation}
+
+\subsubsection{Read-only algorithm}
+Consider the factorisation of $P' = x_1 P_1 x_2 P_2 \ldots P_k x_k$, where each $x_j$ is a maximal run of the symbols $\#$. For each $P_j$, we run a constant-space linear-time pattern matching algorithm on $T$ with a delay of $|x_{j+1} P_{j+1} \ldots x_k|$ letters. By Observation~\ref{obs:structural.|}, we can then check whether $T[1,i]$ ends with $P$ in $\Oh(d)$ time, assuming that we store the sets $o_i$ as lists.
+
+\begin{corollary}
+Given a text $T$, and a regular expression pattern $P$ of type $\cdot|$ that contains $d$ $|$-symbols and $m$ letters. We assume $1 \leq d \leq m \leq n$. There is a streaming algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\Oh(d)$ space and $\Oh(d)$ time per arriving letter. 
+\end{corollary}
+
+\subsubsection{Streaming algorithm}
+We assume to receive $P$ as a stream and we convert into $P'$ on the fly. We also store all sets $o_i$ as lists. 
+We then feed $P'$ into the preprocessing of the $k$-mismatch algorithm with $k=d$.
+We run the algorithm on the text $T$. When we discover a $d$-mismatch occurrence of $P'$ in $T$, we check if it corresponds to an occurrence of $P$, which we can do in $\Oh(d)$ time using the mismatch information according to Observation~\ref{obs:structural.|}.
+
+
+\begin{corollary}
+Given a text $T$ of length $n$, and a regular expression pattern $P$ of type $\cdot|$ that contains $d$ $|$-symbols and $m$ letters. We assume $1 \leq d \leq m \leq n$. There is a streaming algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\Oh(d\log(n/d))$ space and $\Oh(d + \log\frac{n}{d} (\sqrt{d\log d}+\log^3 n))$ time per arriving letter. The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{corollary}
+
+\subsection{Regular expressions of type $\cdot+$}
+\label{sec:dot-plus}
+
+We start this section by reminding the notion of the run-length encoding, that allows us to establish crucial structural properties of occurrences of the pattern, and then explain how to use it to derive efficient algorithms for $\cdot+$.
+
+\begin{definition}
+\label{def:RLE}
+Consider a string $S$. We say that a substring $S[i,j]$ is a \emph{run} of a letter $a \in \Sigma$ if $S[i,j]=a^{j-i+1}$. We consider the factorization of $S$ into maximal runs of letters in the alphabet and replace each run $a^k$ by a pair $(a,k)$. The resulting sequence of pairs is referred to as the \emph{run-length encoding} (\RLE) of $S$. For example, the run-length encoding of $aaabccbbdd$ is $(a,3) (b, 1) (c,2) (b,2) (d,2)$.
+\end{definition}
+
+In what follows, we do not make distinction between the maximal runs and the corresponding pairs in the run-length encoding.
+
+Let $\RLE(T)$ be the run-length encoding of $T$.
+We compress $P$ with an encoding similar to \RLE, which we refer to as $\RLE^+$.
+Namely, we consider $P$ as a string on the alphabet $\Sigma \cup \Sigma^+$, where $ \Sigma^+ = \{a^+: a\in \Sigma \}$, and define a run in $P$ as a substring containing only two letters, $a$ and $a^+$, for some $a\in \Sigma$. Additionally, if a run contains $a^+$ we say that the run is a $+$-run. 
+We consider the factorization of $P$ into maximal runs of letters in $\Sigma \cup \Sigma^+$. We then replace a run $R \in \{a, a^+ \}^k$ by $(a,k)$. For example, the $\RLE^+$ encoding of $a^+ a a^+ b c^+$ is $(a, 3) (b, 1) (c, 1)$.
+
+\begin{observation}
+\label{obs:RLE+}
+If $P$ contains $d$ symbols $+$, then the $\RLE^+$ encoding of $P$ contains at most $d$ $+$-runs.
+\end{observation}
+
+\begin{observation}
+\label{obs:structural+.}
+Consider a prefix $T[1,i]$ of $T$. Let $i'$ be the number of the run in the maximal run factorization of $T$ that contains $i$ and $r = |\RLE^+(P)|$. The prefix $T[1,i]$ ends with an occurrence of $P$ iff the following two conditions are satisfied:
+\begin{enumerate}
+\item For each $k \in [1,r]$ the letter forming $\RLE^+(P)[k]$ is equal to the letter forming $\RLE(T)[i'+ k -r]$.
+\item If $\RLE^+(P)[k]$ is a $+$-run, or if $k \in \{1,r\}$, then the length of the run $\RLE^+(P)[k]$ is smaller or equal to the length of the run $\RLE(T)[i'+ k -r]$. Otherwise, the lengths of the runs are equal.
+\end{enumerate}
+\end{observation}
+
+%\todo{illustration, une image text non compressé, l'autre compressé.}
+\input{figure_cdot_plus}
+%\textcolor{red}{For example: when searching for $P=aab^+c$ in $T=aaabbcccabbcdd$, their respective run length encoding are $\RLE^+(P) = (a,2) (b,1)(c,1)$ and $\RLE(T)=(a,3) (b, 2) (c,2) (a,1) (b,2)(c,2) (d,2)$. }
+%We find two occurrences of the correct sequence of letter: $a$, $b$, then $c$, but only the first one has the right lengths for all runs.
+
+
+\subsubsection{Read-only algorithm}
+If the pattern and the text are read-only, we can solve the problem as follows. Consider a factorisation of $\RLE^+(P) = m_1 P_1 m_2 \ldots P_k m_k$, $k \le d$, where each substring $P_j$ is a maximal substring not containing neither $+$-runs nor the first or the last run of $P$. 
+
+\begin{example}
+For $P = a^+ a a^+ b c^+$ we have $m_1 = (a,3)$, $P_1 = (b,1)$, $m_2 = (c,1)$. 
+\end{example}
+
+Let $i'$, as before, be the number of the run in the maximal run factorization of $T$ that contains a position $i$. Observation~\ref{obs:RLE+} implies that $T[1,i]$ ends with an occurrence with $P$ iff the following two conditions are satisfied:
+\begin{enumerate}
+\item For each $j$, there is an occurrence of $P_j$ in $\RLE(T)$ that ends at position $i'-r_j$, where $r_j = |m_{j+1} P_{j+1} \ldots P_k m_k|$; 
+\item If $\RLE^+(P)[j]$ is a $+$-run, or if $j \in \{1,|\RLE^+(P)[k]|\}$, then the run $\RLE(T)[i'+ j -r]$ is formed by the same letter as $\RLE^+(P)[j]$ and its length is at least the length of $\RLE^+(P)[j]$. 
+\end{enumerate}
+
+The algorithm processes $T$ in an online fashion, computing $\RLE(T)$ on the fly. For each $j$, the algorithm maintains $\RLE(T)[i'-r_j-|m_j|+1, r_j]$ in a round-robin fashion, which requires $\Oh(d)$ space and $\Oh(d)$ time per letter of the text in total. With this information at hand, the second condition can be checked in $\Oh(d)$ time in a naive way. To check the first condition, we exploit a read-only constant-space and linear-time pattern matching algorithm. We run an instance of such algorithm for each $P_j$ on $\RLE(T)$ with a delay of $r_j$ runs and when we arrive to the position $i'$ of $\RLE(T)$ it allows us to check whether there is an occurrence of $P_j$ in $\RLE(T)$ that ends at position $i'-r_j$ in constant time.
+
+\begin{corollary}
+Given a text $T$, and a regular expression pattern $P$ of type $\cdot+$ that contains $d$ $+$-symbols and $m$ letters. There is a read-only deterministic algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\Oh(d)$ space and $\Oh(d)$ time per arriving letter. 
+\end{corollary}
+
+\subsubsection{Streaming algorithm}
+In this section, we show an efficient streaming algorithm for regular expressions of type $\cdot+$. Observation~\ref{obs:structural+.} allows to reduce the problem of searching for occurrences of $P$ to the exact pattern matching problem and the $k$-mismatch problem. Recall that in the $k$-mismatch problem we are given a pattern and a text and must find all substrings of the text that are at Hamming distance at most $k$ from the text, and for each such substring, the list of mismatched pairs of letters and their indices. We refer to this list as the mismatch information. The reduction is as follows:
+We define a pattern $P_1$ and a text $T_1$ and a pattern $P_2$ and a text $T_2$. $P_1,P_2$ are strings of length $|\RLE^+(P)|$ such that $(P_1[k],P_2[k])$ equals $\RLE^+(P)[k]$ for all $k \in [1,|\RLE^+(P)|]$. $T_1,T_2$ are defined analogously, namely $T_1,T_2$ are strings of length $|\RLE(T)|$ such that $(T_1[k],T_2[k])$ equals $\RLE(T)[k]$ for all $k \in [1,|\RLE(T)|]$.
+We apply the exact pattern matching problem to find all occurrences of $P_1$ in $T_1$, and then use the $k$-mismatch problem for $k=d+2$, a pattern $P_2$ and a text $T_2$, to check whether the lengths of the runs satisfy the conditions of Observation~\ref{obs:structural+.}.
+
+
+We assume the pattern $P$ arrives first. We compress it using run-length encoding in a streaming fashion, in a straightforward way. We separate the encoding in two streams $P_1$ and $P_2$ (see the definition above) and immediately feed $P_1$ into the preprocessing of the algorithm for exact pattern matching, and $P_2$ into the preprocessing of the $k$-mismatch algorithm for $k=d+2$.
+After the preprocessing phase, the algorithms start receiving the text $T$ as a stream.
+If at a position $i$, we detect an occurrence of $P_1$ and a $(d+2)$-mismatch occurrence of $P_2$, we check whether the conditions of Observation~\ref{obs:structural+.} are verified using the mismatch information in $\Oh(d)$ time. If so, we output an occurrence of $P$ in $T$.
+We summarize the results of this section:
+
+\begin{corollary}
+Given a text $T$ of length $n$, and a regular expression pattern $P$ of type $\cdot+$ that contains $d$ $+$-symbols and $m$ letters. We assume $1 \leq d \leq m \leq n$. There is a streaming algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\Oh(d\log n)$ space and $\Oh(d + \log\frac{n}{d} (\sqrt{d\log d}+\log^3 n))$ time per arriving letter. The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{corollary}
+
+\subsection{Regular expressions of type $\cdot*$}
+\label{sec:dot-star}
+Consider a pattern $P$ of the type $\cdot*$. W.l.o.g. we assume that $P$ starts with 
+a letter in $\Sigma$. We partition $P= P_1 \ldots x_k-1 P_k x_k$, where for $1 \leq j \leq k$, $P_j$ is the $j$th maximal substring in $P$ that does not contain a star. 
+For example, $P=a^*aabaa^*b^*bbbb^*a^*aab$ is decomposed as $P = x_0 P_1 x_1 P_2 x_2 P_3$ with $k=3$, $x_0=a^*$, $P_1=aaba$, $x_1 = a^* b^*$, $P_2 = bbb$, $x_2=b^* a^*$ and $P_3=aab$.
+We define $r= |\RLE(P_1 \ldots P_k)|$, $r_j = |\RLE(P_{j+1} \ldots P_k)|$ for $1 \leq j \leq k-1$, $r_0=r$ and $r_k=0$.
+
+\begin{observation}
+\label{obs:structural.*}
+A prefix $T[1,i]$ ends with an occurrence of $P$, iff there exist positions $p_1, \ldots, p_k$, such that, for all $1 \leq j \leq k$:
+\begin{enumerate}
+\item  There is a occurrence of $P_j$ ending at a position $p_j$.
+\item We have $ r_{j} \leq |\RLE(T[p_j,i])| \leq r_{j}+2d $.
+\item $T[p_j+1,p_{j+1}-|P_{j+1}|]$ matches $x_{j+1}$. 
+\end{enumerate}
+\end{observation}
+
+\todo{Probablement trop long}
+\textcolor{red}{For example, when we search for $P=ab^*ab^*a$ in $T=abbbabbaacba$, $P$ is decomposed in $P_1=P_2=P_3=1$, thus $r=r_1=r_2=1$, and $\RLE(T)=(a,1)(b,3)(a,1)(b,2)(a,2)(c,1)(b,1)(a,1)$. 
+Given a position $i$, if $T[1,i]$ ends with an occurrence of $P$, it has to end with an occurrence of $P_3$, so $T[i]=a$. 
+For $P_1$ and $P_2$ we know that there respective ending position $p_1$ and $p_2$ respect $r_1= 1 \leq |\RLE(T[p_1,i])| \leq r_1 +2d = 5 $ and  $r_2= 1 \leq |\RLE(T[p_1,i])| \leq r_2 +2d = 5 $, therefore we can look back $5$ runs in $\RLE(T)$ for occurrences of $P_1$ and $P_2$, and to be an occurrence of $P$ they have to be only separated by $b$s. 
+We find two occurrences, at the end of $T[1,8]$ and $T[1,9]$. $|\RLE(T[1,8])| = 5$ which respects  $r_1= 1 \leq |\RLE(T[p_1,i])| \leq r_1 +2d = 5 $.}
+
+%every prefix that ends with an $a$ and contains at least $3$ $a$ ends with an occurrence of P.   
+
+\begin{definition}
+We say that a string $S$ is \emph{homogeneous}, if $S = a^j$ for some $a \in \Sigma$.
+\end{definition}
+
+For the sake of clarity, we first present an algorithm that assumes that all $P_j$'s are non-homogeneous, and later explain how to extend it to arbitrary $P_j$'s. The following corollary of Observation~\ref{obs:structural.*} is crucial for our algorithm:
+
+For each $j$, we run the constant-space pattern matching algorithm for $P_j$ and $T$, with a delay of $r_j$ runs. At each moment, we store the $2d$ latest occurrences output by the algorithm. As $P_j$ is not homogeneous and by Observation~\ref{obs:structural.*}, only those occurrences of $P_j$ can form an occurrence of $P$ that ends at the current position of the text. 
+
+%Intuition
+To determine if $T[1,i]$ ends with an occurrence of $P$, we use dynamic programming. For $1 \le j \le k$, define $S_{2j} = P_j x_{j} \ldots P_k x_{k}$ and $S_{2j-1} = x_{j} \ldots P_k x_{k}$. Let $M$ be an (auxiliary) matrix of size $2k \times i$, where for all $1\le h \le i$ and $1 \leq j \leq 2k$: 
+$$
+M[j-1][h] = 
+\begin{cases}
+1, & \text{if } T[h,i] \text{ matches } S_j;\\
+0, & \text{otherwise}. 
+\end{cases}
+$$
+ 
+\begin{algorithm}[ht]
+\caption{Dynamic programming to check if $T[1,i]$ ends with an occurrence of $P$ of type $\cdot*$}
+ Let $M$ be a matrix of size $2k \times i$ filled with zeros\;
+%\State \textbf{Initialization} 
+$h$ $\leftarrow$ the smallest position such that $x_k$ matches $T[h,i]$\;
+Fill $M[2k][h,i]$ with ones\;
+%\State \textbf{Filling the matrix from Bottom to Top}
+\For { $r$ from $2k-1$ to $1$}{ %\label{ln:forloop} 
+	$j \leftarrow  \lfloor r/2 \rfloor$\;
+	\uIf {$r=2j+1$}{
+		\For {each $p$ ending position of an occurrence of $P_j$ that we stored}{
+			 $M[2j-1][p_j - |P_j|]=M[2j][p_j]$\; }
+		}
+	\uElse {
+		\For {each $p$ such that $M[2j+1][p]=1$}{
+			 $h$ $\leftarrow$ the smallest position before $p$ such that $x_j$ matches $T[h,p]$\;
+			 Fill $M[2j][h,p]$ with ones\;
+		}
+	}
+}
+
+\noindent\Return $1$ if there exists $p$ such that $M[1][p] = 1$\;
+\label{alg:dynprog.*}
+\end{algorithm}
+
+
+\todo{pseudocode and illustration}
+%To fill this matrix, via dynamic programming, we go from the bottom to the top. For the initialization of the line $M[2k]$, the positions $h$ such that $T[h,j]$ matches $x_j$ form an interval that can be easily computed.
+%
+%If we computed the matrix until the row $2j-1$, the row $2j$ is constituted of at most $2d$ intervals of $1$, and the rest are $0$. To compute $M[2j-1]$, we first fill it with zeros the we go through at the $2d$ occurrences of $P_j$ we stored and if one ends at $p_j$ such that $M[2j][p_j]=1$ then we put a $1$ in $M[2j-1][p_j - |P_j|]$.
+%
+%In $M[2j-1]$, there is at most $2d$ ones. To compute $M[2j-2]$, we consider all $2d$ positions with a $1$, let $p_j$ be one of them, and match in reverse $x_{j-1}$ until it's not possible, this gives a new position $p'_j$, $M[2j-2][p'_j,p_j]$ is filled with $1$. If $x_{j-1}$ is empty or can't be matched, then $p'_j = p_j$ and we only set $M[2j-2][p_j]=1$.
+
+
+
+\begin{corollary}
+Given a text $T$ of length $n$, and a regular expression pattern $P$ of type $\cdot*$ that contains $d$ $*$-symbols and $m$ letters. We assume $1 \leq d \leq m \leq n$. There is a streaming algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\Oh(d^2)$ space and $\Oh(d^2)$ time per arriving letter. The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{corollary}
+
+
+\subsubsection{Streaming algorithm}
+In this section, we show an efficient streaming algorithm for regular expressions of type $\cdot*$.
+
+\begin{definition}[Greedy alignment]\label{def:greedy_alignment}
+We say that an alignment $\A$ of two strings $X, Y$ is \emph{greedy} if one of the following conditions is satisfied:
+\begin{enumerate}
+\item $X$ is empty or $Y$ is empty;
+\item \label{it:first_letters_equal} $X[1] = Y[1]$, $\A$ aligns $X[1]$ and $Y[1]$, and the induced alignment of $X[2,|X|]$ and $Y[2,|Y|]$ is greedy;
+\item \label{it:substitution} $X[1] \neq Y[1]$, and one of the following conditions is satisfied:
+\begin{enumerate}
+\item $\A$ aligns $X[1]$ and $Y[1]$, and the induced alignment of $X[2,|X|]$ and $Y[2,|Y|]$ is greedy;
+\item $\A$ deletes $X[1]$, and the induced alignment of $X[2,|X|]$ and $Y$ is greedy;
+\item \label{it:deletion} $\A$ deletes $Y[1]$, and the induced alignment of $X$ and $Y[2,|Y|]$ is greedy.
+\end{enumerate}
+\end{enumerate}
+\end{definition}
+
+We compress $P$ with an encoding similar to \RLE, which we refer to as $\RLE^\ast$. Namely, we consider $P$ as a string on the alphabet $\Sigma \cup \Sigma^\ast$, where $ \Sigma^\ast = \{a^\ast: a\in \Sigma \}$, and define a run in $P$ as a substring containing only two letters, $a$ and $a^\ast$, for some $a\in \Sigma$. If a run contains $a^\ast$ or it is the first or the last run of $P$, we say that the run is an \emph{$\ast$-run}. We consider the factorization of $P$ into maximal runs of letters in $\Sigma \cup \Sigma^\ast$ and replace a run $R \in \{a, a^\ast \}^k$ that contains $\ell$ occurrences of $a^\ast$ by $(a,k-\ell)$. For example, the $\RLE^\ast$ encoding of $a^\ast a a^\ast b c^\ast$ is $(a, 1) (b, 1) (c, 0)$, and the $\ast$-runs are $(a,1)$ and $(c,0)$.
+
+\begin{observation}\label{obs:greedy_alignment}
+Consider a substring $T[i,j]$ of $T$. Suppose that $i$ (resp., $j$) belongs to the run $i'$ (resp., $j'$) of $\RLE(T)$. 
+If $T[i,j]$ matches $P$, then there is a greedy alignment of cost at most $d+2$ between $\RLE(T)[i',j']$ and $\RLE^\ast (P)$. 
+\end{observation}
+\begin{proof}
+We show that there is a greedy alignment between $\RLE(T)[i',j']$ and $\RLE^\ast (P)$ of cost $d+2$. We build it recursively by considering two cases:
+\begin{enumerate}
+\item If the first run of $\RLE^\ast (P)$ is not an $\ast$-run, it must match the first run of $\RLE(T[i,j])$ exactly (corresponds to Case~\ref{it:first_letters_equal} of Definition~\ref{def:greedy_alignment});
+\item Suppose now that the first run $(a, \ell)$, $a \in \Sigma$ of $\RLE^\ast (P)$ is an $\ast$-run, and consider two subcases:
+	\begin{enumerate}
+		\item If the first run of $\RLE(T[i,j])$ is $(b, \ell')$ where $b \neq a$, and $\ell = 0$, delete $(a, \ell)$ (corresponds to Case~\ref{it:deletion} of Definition~\ref{def:greedy_alignment});
+		\item If the first run of $\RLE(T[i,j])$ is $(a, \ell)$, match it with the first run of  $\RLE^\ast (P)$ (corresponds to Case~\ref{it:first_letters_equal} of Definition~\ref{def:greedy_alignment});		
+		\item If the first run of $\RLE(T[i,j])$ is $(a, \ell')$, where $\ell' > \ell$, substitute $(a, \ell)$ by $(a, \ell')$ (corresponds to Case~\ref{it:substitution} of Definition~\ref{def:greedy_alignment}).
+	\end{enumerate}
+\end{enumerate}
+We then build a greedy alignment between the remaining suffixes of $\RLE(T[i,j])$ and $\RLE^\ast (P)$ in a recursive manner. The resulting alignment is greedy by definition, and as it edits only the $\ast$-runs of $\RLE^\ast (P)$, its cost is at most $d+2$.
+\end{proof}
+
+
+Consider two strings $X, Y$. For each $\delta$, $-k \le \delta \le k$, denote by $\ga_{\delta, k}(X, Y)$ the set of all greedy alignments of cost at most $k-|\delta|$ between $X[\max\{1,1 +\delta\} , ]$ and $Y[\max\{1,1-\delta\}, ]$. Let $\ga_k(X, Y) = \bigcup_\delta \ga_{\delta, k}(X,Y)$. 
+
+Let $X^k$ be a string of length $|X|$ obtained from $X$ by replacing each character $X[x]$ with the dummy symbol $\#$ if there exists $y$ such that for each $\A \in \ga_k(X, Y)$, there is $X[x] \simeq_\A Y[y]$, and let $Y^k$ be a string of length $|Y|$ defined analogously. 
+
+\begin{fact}
+The strings $X^k, Y^k$ can be encoded in $\Oh(\log^2 (|X|+|Y|))$ space. 
+The encoding, which we denote by $\mathsf{Greedy}_k(X, Y)$ allows:
+\begin{enumerate}
+\item To retrieve a character of $X^k$ or $Y^k$ given its position in $\Oh(\log (|X| + |Y|))$ time;
+\item To answer $\LCP$ queries on the suffixes of $X^k$ and $Y^k$ in $\Oh(\log (|X| + |Y|))$ time, where an $\LCP$ query returns the length of the longest common prefix of the given strings.
+\end{enumerate}
+\end{fact}
+
+\todo{exact query and time complexity; probability}
+\begin{theorem}\label{th:streaming-k-edit}
+Given an integer $k$, a pattern $P$, and a text $T$ of length $n$.
+There is a streaming algorithm that at each position $j$ of the text can decide whether $T[1,j]$ ends with a $k$-edit occurrence of $P$. Suppose that it does and let $T[i,j]$ be the longest $k$-edit occurrence of $P$ ending at the position $j$. In this case, the algorithm outputs $\mathsf{Greedy}_k(T[i,j], P)$ in $\Ohtilde(1)$ time. The algorithm uses $\poly(k, \log n)$ space and time per character of the text and is correct with high probability. 
+\end{theorem} 
+
+We run the algorithm of Theorem~\ref{th:streaming-k-edit} for $k = d+2$, a pattern $P' = \RLE^\ast(P)$, and a text $T' = \RLE(T)$ (which it computes on-the-fly from $T$). Consider a position $j$ of $T$' and let $T'[i,j]$ be the longest substring ending at $j$ that it is a $k$-edit occurrence of $P'$. When the algorithm reaches $j$, it outputs $G = \mathsf{Greedy}_k(T'[i,j], P')$. It then uses $G$ to decide whether one of the substrings $T'[i',j]$, $i' \in [i, i+k-1]$ corresponds to a match of $P$ in $T$. Consider one such substring $T'[i',j]$. The algorithm checks whether $T'[i',j]$ and $P'$ can be aligned by the alignment built in Observation~\ref{obs:greedy_alignment} in $\Ohtilde(k)$ time: First, it computes $\ell = \LCP(T'[i',j], P')$, and then extracts $T'[i+\ell-1]$ and $P'[\ell]$. If $T[i',j]$ and $P'$ can be aligned by the alignment, then from $T'[i+\ell-1] \neq P'[\ell]$ we obtain that $(T')^k[i+\ell-1] \neq \#$ and $P'[\ell] \neq \#$. Therefore, the algorithm can decide which of the cases of Observation~\ref{obs:greedy_alignment} must take place (note that this choice is unique). The algorithm then continue recursively. We finally obtain:
+
+\begin{corollary}
+Given a text $T$ of length $n$, and a regular expression pattern $P$ of type $\cdot*$ that contains $d$ $*$-symbols and $m$ letters. We assume $1 \leq d \leq m \leq n$. There is a streaming algorithm that solves the regular expression pattern matching for $T$ and $P$ in $\poly(d, \log n)$ space and time per arriving letter. The  algorithm  is  randomised  and  errs  with  probability inverse polynomial in $n$, i.e., its answers are correct with high probability.
+\end{corollary}
+
+\subsection{Space lower bounds}
+The problem of less-than pattern matching is defined as follows. We are given a binary pattern $P$ of length $m$ and a binary text $T$. The less-than matching problem consists in identifying all substrings $T[j+1, j+m]$ such that for each $1\le i \le m$, we have $P[i] \le T[j+i]$. It is known that any streaming algorithm that solves the less-than pattern matching must use at least $\Omega(m)$ bits of space.
+
+\todo{Find a reference. Must be somewhere in Lohrey's works. Or re-prove by reduction from Index}
+
+\begin{lemma}
+Any streaming algorithm that solves pattern matching for a regular expression of type $\cdot +$ with $d$ $+$-symbols correctly with constant probability, must use at least $\Omega(d)$ bits of space.
+\end{lemma}
+\begin{proof}
+Let $P'$ be a regular expression pattern obtained by replacing each $P[i]$ with $a^+ a^+ b$ if $P[i] = 1$ and with $a^+ b$ otherwise. Let $T'$ be a text obtained by replacing each $T[i]$ with $aab$ if $T[i] = 1$ and with $ab$ otherwise. It is easy to see that the problem of less-than pattern matching for $P$ and $T$ reduces to the problem of regular expression pattern matching for $P'$ and $T'$, hence the bound.  
+\end{proof}
+
+\begin{corollary}
+Any streaming algorithm that solves pattern matching for a regular expression of type $\cdot *$ with $d$ $*$-symbols correctly with constant probability, must use at least $\Omega(d)$ bits of space.
+\end{corollary}
+\begin{proof}
+We can reduce the problem of pattern matching for a regular expression of type $\cdot +$ with $d$ $+$-symbols to the problem of pattern matching for a regular expression of type $\cdot *$ with $d$ $*$-symbols by replacing each $a^+$, $a \in \Sigma$, with $a a^*$. Hence, the lower bound for $\cdot +$ holds for $\cdot *$ as well.
+\end{proof}
+
+\begin{lemma}
+Any streaming algorithm that solves pattern matching for a regular expression of types $\mid \cdot$, $+ \mid$ , $\mid +$, $\mid *$, $\cdot \mid$ with $d$ $\mid$-symbols correctly with constant probability, must use at least $\Omega(d)$ bits of space.
+\end{lemma}
+\begin{proof}
+We apply Yao's principle. \todo{copy paste Yao's, check}
+
+Let $\Sigma = \{1, 2, \ldots, d\}$. Consider the following inputs: $P = (a_1 \mid a_2 \mid \ldots \mid a_k)$, where $\{a_1, a_2, \ldots, a_k\} \subseteq \Sigma$ and $T = 1 \; 2 \; 3; \ldots \; d$. All inputs have probability $1/2^d$. Let us show that any deterministic streaming algorithm that solves the problem on such inputs while using at most $d/2$ bits of memory has large error probability. The output of the algorithm on $P$ and $T$ allows to restore $P$. Hence, if after reading two different patterns the memory state of the algorithm is the same, the algorithm errs for at least one of the patterns. Therefore, the algorithm errs for at least $2^d - 2^{d/2}$ patterns, which results in error probability $\ge (2^d - 2^{d/2}) / 2^d > 1/2$. 
+\end{proof}
+
+\todo{time? time-space for read-only as in Sublinear Space Algorithms for the Longest Common Substring Problem}
+
+\section{Depth-3 expressions}
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|l|X|X|X|X|X|}
+   		\hline
+        \multirow{2}{*}{Type} & \multirow{2}{*}{Solution} & \multicolumn{2}{c|}{Read-only} & \multicolumn{2}{c|}{Streaming} 
+         \\ \cline{3-6}
+		 &  & Time & Space & Time & Space\\ \hline \hline
+		 
+        $\mid * \cdot$, $\mid * \mid$, $\mid * +$, all starting with $*$  & everything is a match & $\Ohtilde(1)$ & $\Ohtilde(1)$ & $\Ohtilde(1)$ & $\Ohtilde(1)$ \\ \hline
+
+        all that start with $+$ & \makecell{depth-2 \\ solutions} &  Table~\ref{tab:depth2} &  Table~\ref{tab:depth2} &  Table~\ref{tab:depth2} &  Table~\ref{tab:depth2} \\ \hline
+        
+$\mid + \cdot, \mid + \mid, \mid + *$ & dictionary matching & $\Oh(d)$ & $\Oh(d)$ & $\Ohtilde(d)$ & $\Ohtilde(d)$ \\ \hline  
+
+$\cdot * +, \cdot + *$ & reduces to $\cdot *$ & $\Oh(d^2)$ & $\Oh(d^2)$ & $\poly(d)$ & $\poly(d)$ \\ \hline
+
+$\mid \cdot +$, $\mid \cdot \mid$  & $d$ depth-2 solutions & $\Oh(d^2)$ & $\Oh(d^2)$ & $\Ohtilde(d^2)$ & $\Ohtilde(d^2)$ \\ \hline 
+
+$\mid \cdot *$  & $d$ depth-2 solutions & 	$\Oh(d^3)$ & $\Oh(d^3)$ & $\poly(d)$ & $\poly(d)$ \\ \hline 
+  
+  $\cdot \mid * $, $\cdot \mid + $  & edit dist? Section~\ref{sec:cdot-mid-plus} &  &  &  & \\ \hline 
+  
+  $\cdot + \cdot$, $\cdot * \cdot$  &  Some ideas in Section~\ref{sec:cdot-plus-cdot} &  &  &  & \\ \hline
+
+  $\cdot \mid \cdot $  &  &  &  & &  \\ \hline  
+   
+  $\cdot + \mid$, $\cdot * \mid$  & &  &  &  & \\ \hline
+\end{tabularx}
+    
+\caption{Read-only and streaming complexities of regular expression pattern matching for depth 3. The time complexity is per arriving character of the text and does not account for preprocessing of the pattern.}
+\end{table}
+
+\todo[inline]{add examples}
+
+\subsection{Regular expressions of types $\cdot \mid +$ and $\cdot \mid *$}
+\label{sec:cdot-mid-plus}
+Probably doable in $\poly(d)$ using the edit distance algorithm, to check.
+
+\subsection{Regular expressions of types $\cdot + \cdot$ and $\cdot * \cdot$}
+\label{sec:cdot-plus-cdot}
+\todo{Some ideas. Check if this gives a read-only solution indeed.}
+
+$\cdot + \cdot$ is reducible to $\cdot * \cdot$: we can replace each expression such as $(abc)^+$ by $abc (abc)^*$. (But probably, as above, this does not give an optimal solution for $\cdot + \cdot$.)
+
+Partition $P = x_0 P_1 x_2 P_2 \ldots P_k x_k$, where each $x_i$ is a regular expression of type $*\cdot$, and $P_i$ is a string in $\Sigma$ (can be empty). Let $x_i = (S_i)^*$, where $\S_i \in \Sigma^*$. Suppose that the period of $S_i$ (or the generator of the run of $S_i$'s?) is not equal to the period of $P_i$ and that the period of $S_{i+1}$ is not equal to the period of $P_i$. 
+
+\begin{observation}
+Given a run of $S_i$'s and a run of $S_{i+1}$'s, there are at most two positions in the runs where an occurrence of $P_i$ can start and end. Those positions correspond to the maximal prefix of $P_i$ periodic with the period $\per(S_i)$ and to the maximal suffix of $P_i$ periodic with the period $\per(S_{i+1})$. 
+\end{observation}
+
+Let $r_i$ be the number of runs of $\per(S_i)$ (or the generator, to check) in $P_{i} P_{i+1} \ldots P_k$. If we consider an occurrence of $P$ that ends at a position $j$ of $T$, then the number of runs between the run of $\per(S_i)$ matching $x_i$ and $j$ must be $r_i \pm \Oh(d)$. We can detect all such runs as follows. We run a constant-space pattern matching algorithm for $\per(S_i)$. Once we have found $r_i$ runs, we launch another instance of the algorithm (similar to the delay we had above, but here the notion of a delay is different for each $i$, but seems to be ok).
+
+Once we have the $\Oh(d)$ candidate runs for each $i$, we can probably test a position $j$ using a dynamic programming algorithm similar to above, due to the structural observation.
+
+\todo{What happens if the periods of $S_i$ and $P_i$ are equal?}
+
+\subsection{Regular expressions of type $\cdot \mid \cdot$}
+I do not know if this can be solved in read-only or streaming in $\poly(d)$ space and $\poly(d)$ time per character. There are some lower bounds of exponential form for text indexing with don't cares (Data Structure Lower Bounds for Document Indexing Problems), maybe it's related, maybe not. We know that pattern matching with $d$ don't cares can be solved in $\Oh(d)$ time, so for sure the hard case should or strings of length $> 1$.
+
+\paragraph{Streaming algorithm in $\Ohtilde(2^{d})$ space and $\Ohtilde(1)$ time per character:} simply consider all possible strings that can match the regular expression and run the dictionary pattern matching algorithm for them. 
+
+\paragraph{Streaming algorithm in $\Ohtilde(d 2^{d/2})$ space and $\Ohtilde(d 2^{d/2})$ time per character:} Partition the pattern $P = P_1 x P_2$, where the prefix $P_1$ contains $\le d/2$ or-symbols, the suffix $P_2$ contains $\le d/2$ or-symbols, and $x$ is either empty, or a regular expression of type $\mid \cdot$. Let $D_1$ be the set of strings matching $P_1$, and $D_2$ be the set of strings matching $P_2$. We have $|D_1| = \Oh(2^{d/2})$ and $|D_2| = \Oh(d 2^{d/2})$. We reformulate the problem as follows: find all positions $p$ that are the endpoints of an occurrence of a string in $D_2$ preceded by an occurrence of a string in $D_1$. 
+
+Fix a pattern $Q \in D_2$. 
+Recall that the streaming pattern matching algorithm for $Q$ stores, for each $0 \le i \le \lfloor \log |Q| \rfloor$, at most two chains (arithmetic progressions) of occurrences of the $2^i$-length prefix $Q_i$ of $Q$ in the $2^{i+1}$-length suffix of the text. Recall that the difference between consecutive positions in the chain is equal to the shortest period of $Q$, $per(Q)$. For each chain, we need to store some additional information to be able to tell, for any occurrence in chain, what is the longest string in $D_1$ preceding it.  We must be able to update this information efficiently when we delete the first occurrence in the chain or add an occurrence to the chain.
+
+During the preprocessing, for each $i$ we determine the longest string in $D_1$ that is a suffix of $per(Q_i)$. Let $D_1^R$ be the set of reverses of strings in $D_1$. For each string $S \in D_1^R$ we consider the maximal prefix that is a power of $per(Q_i)$, let it be $S[1, x] = [per(Q_i)]^j$. If $j \ge 2$, we add $S[x+1,|S|]$ into a compact trie corresponding to $Q_i$, and colour the corresponding node into colour $j$. By the periodicity lemma, the total size of the tries is $\Ohtilde(|D_1|) = \Ohtilde(2^{d/2})$. 
+
+When we run the algorithm for $Q$, for each $i$ and for each chain of occurrences of $Q_i$ we store the longest strings in $D_1$ that precedes the first two occurrences in the chain. (It is a bit tricky, but actually the chain that we store at any given moment is a segment of a bigger chain of occurrences of $Q_i$ in $T$, and when I say ``the first two occurrences'' I mean the first two occurrences in the bigger chain~--- the occurrences that are not preceded by a string with period $per(Q)$.) In addition, we store the string $S \in D_1$ that precedes some occurrence $p$ in the chain and such that $p - |S|$ is as small as possible. (I only update $S$ when I add a new occurrence to the chain, not upon deletion.) When I extract the leftmost occurrence in the chain, I can compute the longest string in $D_1$ that precedes it either because I store it explicitly (if it is the first or the second occurrence), or using the trie (if it is the $(j+1)$-st occurrence in the bigger chain, it must be preceded with $j$ copies of $per(Q)$, i.e. it corresponds to a node of the trie colored into colour $j$, and must be the closest to the string we store for the chain). This allows to maintain all the information in $\Ohtilde(d 2^{d/2})$ time per character.
+
+\paragraph{Read-only algorithm in $\Ohtilde(2^{d})$ space and $\Ohtilde(2^{d})$ time} Constant-space exact pattern matching for all strings that match the regular expression. 
+
+\paragraph{Read-only algorithm in $\Ohtilde(2^{d/2})$ space and $\Ohtilde(2^{d/2})$ time per character} Imitate the streaming algorithm by running a constant-space pattern matching algorithm for each $2^i$-length of a prefix of a pattern.
+
+\paragraph{Read-only algorithm in $\Oh(d)$ space and $\Oh(2^{d/2} d m)$ time} (Not online, but will output all ending positions of occurrences of $P$ in $T$). Partition the pattern $P = P_1 x P_2$, where the prefix $P_1$ contains $\le d/2$ $\mid$-symbols, the suffix $P_2$ contains $\le d/2$ $\mid$-symbols, and $x$ is either empty, or a regular expression of type $\mid \cdot$. For each position $i$ we check whether some suffix of $T[1,i]$ matches $P_1 x$ in $\Oh(2^{d/2} d m)$ time and whether some prefix of $T[i,n]$ matches $P_2$ in $\Oh(2^{d/2} m)$ time by considering each choice in turn, then stitch the answers together. It is possible that a position will be output multiple times. 
+
+\todo{What does Navarro's paper say?} 
+\bibliographystyle{plain}
+\bibliography{ref}
+
+
+\end{document}

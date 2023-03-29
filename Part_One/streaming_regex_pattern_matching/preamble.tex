@@ -1,0 +1,106 @@
+\usepackage{amsfonts,amssymb,amsmath} %symboles maths
+%\usepackage{fullpage} %marges
+%\usepackage[margin=1in]{geometry} %clash
+\usepackage{tabularx} %depassement des tableau hors page
+\usepackage{float} %position des figures
+\usepackage{cite} %bibtex
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{changes}
+\usepackage{multirow}
+%\usepackage{subfigure}
+%\usepackage{authblk}
+\usepackage{tikz} %figures
+\usetikzlibrary{automata,positioning,calc}
+\usetikzlibrary{decorations.pathreplacing}
+%\usepackage[noend,boxed]{algorithm2e}
+\usepackage{enumitem}
+
+\usepackage{hyperref} %liens web
+\hypersetup{
+    colorlinks=false,
+    linkcolor=blue,
+    urlcolor=cyan,
+}
+
+
+\newcommand{\colorTatiana}{yellow}
+\newcommand{\colorGarance}{magenta}
+\newcommand{\colorPawel}{red!70}
+\newcommand{\colorBartek}{blue!40}
+
+\definechangesauthor[color=\colorTatiana]{TA}
+\definechangesauthor[color=\colorGarance]{GA}
+\definechangesauthor[color=\colorBartek]{BA}
+\definechangesauthor[color=\colorPawel]{PA}
+
+\newcommand{\todot}[1]{\todo[color=\colorTatiana]{#1}}
+\newcommand{\todoinlinet}[1]{\todo[color=\colorTatiana,inline]{#1}}
+\newcommand{\todog}[1]{\todo[color=\colorGarance!40]{#1}}
+\newcommand{\todoinlineg}[1]{\todo[color=\colorGarance!40,inline]{#1}}
+\newcommand{\todop}[1]{\todo[color=\colorPawel]{#1}}
+\newcommand{\todoinlinep}[1]{\todo[color=\colorPawel,inline]{#1}}
+\newcommand{\todob}[1]{\todo[color=\colorBartek]{#1}}
+\newcommand{\todoinlineb}[1]{\todo[color=\colorBartek,inline]{#1}}
+
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\Oh}{\mathcal{O}}
+\newcommand{\Ohtilde}{\tilde{\Oh}}
+\newcommand{\RLE}{\textsf{RLE}}
+\newcommand{\LCP}{\textsf{LCP}}
+\newcommand{\poly}{\mathrm{poly}}
+\newcommand{\per}{\mathrm{per}}
+\def\polylog{\operatorname{polylog}}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+
+\newcommand{\ed}{\mathsf{ed}}
+\newcommand{\gr}{\mathsf{GR}}
+\newcommand{\ga}{\mathsf{GA}}
+
+\newtheorem{thm}{Theorem}[section] % reset theorem numbering for each section
+
+\newtheorem{definition}[thm]{Definition}
+\newtheorem{observation}[thm]{Observation}
+%\newtheorem{lemma}[thm]{Lemma}
+%\newtheorem{theorem}[thm]{Theorem}
+%\newtheorem{corollary}[thm]{Corollary}
+\newtheorem{example}[thm]{Example}
+%\newtheorem{proposition}[thm]{Proposition}
+%\newtheorem{fact}[thm]{Fact}
+\newtheorem{claim}[thm]{Claim}
+
+\makeatletter
+\let\c@proposition\c@thm
+\let\c@corollary\c@thm
+\let\c@theorem\c@thm
+\let\c@lemma\c@thm
+\let\c@fact\c@thm
+%\let\c@definition\c@thm
+%\let\c@example\c@theorem
+\makeatother
+
+\renewcommand{\paragraph}[1]{\vspace{1mm}\noindent\textbf{#1}}
+
+   \newcommand{\defproblem}[3]{
+  \vspace{2mm}
+\noindent\fbox{
+  \begin{minipage}{0.96\textwidth}
+  #1\\
+  #2
+  \end{minipage}
+  }
+  \vspace{2mm}
+}
+
+\usepackage{makecell} % NEw line in tabular cell
+
+\renewcommand\theadalign{bc}
+\renewcommand\theadfont{\bfseries}
+\renewcommand\theadgape{\Gape[4pt]}
+\renewcommand\cellgape{\Gape[4pt]}
+
+%Tikzit for figures - it requires compiling with pdflatex
+\usepackage{tikzit}
+\input{figures/simple.tikzstyles}
+\usepackage{caption}
+\usepackage{subcaption}

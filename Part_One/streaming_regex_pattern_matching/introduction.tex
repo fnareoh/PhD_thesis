@@ -1,0 +1,92 @@
+% !TEX root = main.tex
+
+The fundamental notion of regular expressions was introduced back in the 1951 by Kleene~\cite{RM-704}. Regular expression search is one of the key primitives in diverse areas of large scale data analysis: computer networks~\cite{10.1145/1159913.1159952}, databases and data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, human-computer interaction~\cite{10.1145/2207676.2208694}, internet traffic analysis~\cite{4221791,4579527}, protein search~\cite{10.1145/369133.369220}, and many others. As such, this primitive is often the main computational bottleneck in these areas and in the pursuit for efficiency has been implemented in many programming languages:
+Perl, Python, JavaScript, Ruby, AWK, Tcl and Google RE2, to name just a few.
+
+A regular expression $R$ is a sequence containing characters of a specified alphabet $\Sigma$ and three special symbols (operators): concatenation ($\cdot$), union ($|$), and Kleene star ($\ast$), and it describes a set of strings $L(R)$ on $\Sigma$. For example, a regular expression $R = (a|b)^\ast c$ specifies a set of strings $L(R)$ on the alphabet $\Sigma = \{a,b,c\}$ such that their last character equals $c$, and all other characters are equal to $a$ or $b$. (See formal definition in Section~\ref{sec:prelim}). In this work, we consider two classical formalisations of regular expressions search, regular expression membership and pattern matching. In the regular expression membership problem, we are given a string $T$ of length $n$, and must decide whether $T \in L(R)$ for a given regular expression $R$. In the regular expression pattern matching problem, we must find all positions $1 \le r \le n$ such that for some $1 \le \ell \le r$, the substring $T[\ell \dd r] \in L(R)$. 
+
+Assume that $T$ is read-only, and let $m$ be the length of the regular expression. The classical algorithm by Thompson~\cite{Thompson_automaton} allows to solve both problems in $\Oh(nm)$ time and $\Oh(m)$ space by constructing a non-deterministic finite automaton accepting $L(R)$. Galil~\cite{10.1007/978-3-642-82456-2_1} noted that while the space bound of Thompson's algorithm is optimal in the deterministic setting, the time bound could probably be improved. Since then, the effort has been mainly focused on improving the time complexity of regular expression search. The first breakthrough was achieved by Myers~\cite{10.1145/128749.128755}, who showed that both problems can be solved in $\Oh(mn/\log n + (n+m) \log n)$ time and $\Oh(mn/\log n)$ space. Bille and Farach-Colton~\cite{BILLE2008486} reduced the space complexity down to $\Oh(n^\eps+m)$, for an arbitrary constant $\eps > 0$. This result was further improved by Bille and Thorup~\cite{10.1007/978-3-642-02927-1_16} who showed an algorithm with running time $\Oh(nm(\log\log n)/\log^{3/2} n + n+m)$ time that uses $\Oh(n^\eps+m)$ space. The idea of the algorithms by Myers~\cite{10.1145/128749.128755}, Bille and Farach-Colton~\cite{BILLE2008486}, and Bille and Thorup~\cite{10.1007/978-3-642-02927-1_16} is to decompose Thompson's automaton into small non-deterministic finite automata and tabulate information to speed up simulating the behaviour of the original automaton when reading $T$.
+A slightly different approach was taken by 
+Bille~\cite{10.1007/11786986_56} who showed that the small non-deterministic finite automata can be simulated directly
+using the parallelism built-in in the Word RAM model.
+For $w$ being the size of the machine word, Bille showed  $\Oh(m)$-space algorithms with running times~$\Oh(n \frac{m \log w}{w} + m \log w)$ for $m > w$,  $\Oh(n \log m + m \log m)$ for $\sqrt{w} < m \le w$, and~$\Oh(\min\{n+m^2, n \log m+m \log m\})$ for $m \le \sqrt{w}$. Finally, Bille and Thorup~\cite{doi:10.1137/1.9781611973075.104} identified a new parameter affecting the complexity of regular expression search,
+which is particularly relevant to this paper.
+Namely, they noticed that in practice a regular expression contains $d \ll m$ occurrences of the union symbol and Kleene stars, and showed that regular expression membership and pattern matching can be solved in $\Oh(m)$ space and~$\Oh(n\cdot (\frac{d \log w}{w}+\log d))$ time\footnote{Formally, they consider a parameter $k$ equal to the number of strings in $R$, but it is not hard to see that $k=\Theta(d)$.}.
+
+It is easy to see, however, that in the general case the time complexity of all the algorithms above remains close to ``rectangular'', with some polylogarithmic factors shaved. Recently, fine-grained complexity provided an explanation for this.   
+Backurs and Indyk~\cite{DBLP:conf/focs/BackursI16} followed by Bringmann, Gr{\o}nlund, and Larsen~\cite{8104068} considered a subclass of regular expressions which they refer to as ``homogeneous''.  Intuitively, a regular expression is homogeneous, if the operators at the same level of the expression are equal. 
+Assume that the alphabet $\Sigma = \{1, 2,\ldots, \sigma\}$. To give a few examples, the following regular expressions are homogeneous: $R_1 = (P_1 | P_2 | \ldots | P_d)$, $R_2 = P_1 (1|2|\ldots|\sigma) P_2 (1|2|\ldots|\sigma) \ldots (1|2|\ldots|\sigma) P_d$, and $R_3 = (P_1 | P_2 | \ldots | P_d)^\ast$, where $P_i$, $1 \le i \le d$, are strings on $\Sigma$, i.e. concatenations of characters in $\Sigma$. \cite{DBLP:conf/focs/BackursI16,8104068} considered both the membership and the pattern matching problems. A careful reader might notice that in the pattern matching setting the expression $R_1$ corresponds to the famous dictionary matching problem~\cite{10.1145/360825.360855} and $R_2$ to pattern matching with wildcards (don't cares) ~\cite{10.5555/889566,10.5555/545381.545468,10.1145/509907.509992,10.5555/795664.796430,CLIFFORD200753}. 
+In the membership setting, $R_3$ corresponds to the Word Break problem~\cite{wordbreak1,wordbreak2}. As such, a seemingly simple class of homogeneous regular expressions covers many classical problems in stringology. The authors of~\cite{DBLP:conf/focs/BackursI16,8104068} provided a complete dichotomy of the time complexities for homogeneous regular expressions in both settings. Namely, they showed that in both settings, every regular expression either allows a solution in near-linear time, or requires $\Omega((nm)^{1-\alpha})$ time, conditioned on the Strong Exponential Time Hypothesis~\cite{IMPAGLIAZZO2001367}. The only exception is the Word Break problem in the membership setting, for which~\cite{8104068} showed an $\Oh(n (m \log m)^{1/3}+m)$-time algorithm and a matching combinatorial lower bound (up to polylogarithmic factors).
+Later, Abboud and Bringmann~\cite{DBLP:conf/icalp/AbboudB18} took an even more fine-grained approach and
+showed that in general, regular expression pattern matching and membership cannot be solved in time $\Oh(nm/ \log^{7+\alpha} n)$ for any constant $\alpha > 0$ under the Formula-SAT Hypothesis. Schepper~\cite{schepper:LIPIcs:2020:12946} extended their result
+by revisiting the dichotomy for homogeneous regular expressions,
+and showed an $\Oh(nm/2^{\Omega(\sqrt{\log {\min\{n,m\}}}})$ time bound for some regular expressions, and for the remaining ones an improved lower bound of $\Omega(nm/\polylog n)$.  
+ 
+By now we seem to have a rather good understanding of the time complexity of regular expression membership and pattern
+matching. However, in multiple practical applications one needs to work with the input arriving as a stream, one character at a time,
+without the possibility of going back and retrieving any of the previous characters on demand. This motivates studying
+both problems in the streaming model
+of computation. In this model, we mostly focus on designing algorithms with small space complexity, and need to account
+for storing any information about the input. On the other hand, we allow for randomised algorithms, more specifically
+Monte Carlo algorithm returning correct answers with high probability (with respect to the length to the input).
+The field of streaming algorithms for string processing is relatively recent but, because of its practical interest, quickly developing.
+It started with a seminal paper of  Porat and Porat~\cite{Porat:09}, who showed streaming algorithms for exact pattern matching and for the $k$-mismatches problem. This was followed by a series of works on streaming pattern matching~\cite{DBLP:journals/talg/BreslauerG14,DBLP:conf/esa/CliffordFPSS15,DBLP:conf/esa/GolanP17, DBLP:conf/soda/CliffordFPSS16, starikovskaya:LIPIcs:2017:7320, DBLP:conf/icalp/GolanKP18, gawrychowski_et_al:LIPIcs:2019:10492,clifford2018streaming,DBLP:conf/cpm/GolanKKP20, DBLP:journals/iandc/RadoszewskiS20,DBLP:journals/corr/abs-2106-06037}, search of repetitions in streams~\cite{Ergun:10,stream-periodicity-mismatches, stream-periodicity-wildcards,DBLP:journals/algorithmica/GawrychowskiMSU19, DBLP:conf/cpm/MerkurevS19, DBLP:conf/spire/MerkurevS19, DBLP:conf/cpm/GawrychowskiRS19}, and recognising formal languages in streams~\cite{DBLP:journals/siamcomp/MagniezMN14,ganardi_et_al:LIPIcs:2018:9131, DBLP:conf/lata/GanardiHL18, ganardi_et_al:LIPIcs:2018:8485, ganardi_et_al:LIPIcs:2016:6853, DBLP:conf/mfcs/GanardiJL18, DBLP:journals/tcs/BabuLRV13, franois_et_al:LIPIcs:2016:6355,ganardi_et_al:LIPIcs:2019:11502,bathie_et_al:LIPIcs.ICALP.2021.119}. 
+
+For a general regular expression membership and pattern matching, it is not hard to see that $\Omega(m)$ bits of
+space are required by a reduction from Set Intersection.
+However, there are at least two interesting special cases of regular expression pattern matching that admit better streaming algorithms.
+In the dictionary matching, we are given a dictionary of $d$ strings of length at most $m$ over an alphabet~$\Sigma$ and for each position $r$ in~$T$ must decide whether there is a position $\ell \le r$ such that $T[\ell \dd r]$ matches a dictionary string. A series of work~\cite{Porat:09,DBLP:journals/talg/BreslauerG14,DBLP:conf/esa/CliffordFPSS15,DBLP:conf/esa/GolanP17,DBLP:conf/icalp/GolanKP18} showed that this problem can be solved by a randomised Monte Carlo algorithm in~$\Oh(d \log m)$ space and $\Oh(\log \log |\Sigma|) $ time per character of the text.
+In the $(d-1)$-wildcard pattern matching the expression is~$R = P_1 (1|2|\ldots|\sigma) P_2 (1|2|\ldots|\sigma) \ldots (1|2|\ldots|\sigma) P_{d}$, where $P_i$, $1 \le i \le d$ are strings of total length at most $m$ over an alphabet $\Sigma = \{1,2,\ldots,\sigma\}$. Golan, Kopelowitz, and Porat~\cite{DBLP:journals/algorithmica/GolanKP19} showed that this problem can be solved by a randomised Monte Carlo algorithm in $\Oh(d \log m)$ space and $\Oh(d+\log m)$ time per character.
+The $d$-wildcard problem is a special case of the $k$-mismatch problem which asks to compute Hamming distances between a pattern and all its alignments to a text for which the Hamming distance does not exceed the given threshold~$k$.
+The most space efficient algorithm for the $d$-mismatch problem is by Clifford, Kociumaka and Porat \cite{clifford2018streaming} and implies an algorithm that uses $\Oh(d\log \frac{m}{d})$ words of space and spends $\Oh(\log\frac{m}{d}(\sqrt{d\log d}+\log^3m))$ time per character which is also the most efficient for the $d$-wildcard problem.
+
+In a related work, Ganardi et al.~\cite{ganardi_et_al:LIPIcs:2018:9131,DBLP:conf/lata/GanardiHL18,ganardi_et_al:LIPIcs:2018:8485,ganardi_et_al:LIPIcs:2016:6853} considered a variant of the regular expression membership problem, where the automaton describing the regular expression has constant size, and one must tell, for each position~$r$ of~$T$, whether $T[r-\ell+1\dd r] \in L(R)$, where~$\ell$ is an integer specified in advance (``window'' size). As a culmination of their work, they showed that any randomised Monte Carlo algorithm for this variant of the regular expression membership problem takes either constant, or $\Theta(\log\log \ell)$, or $\Theta(\log \ell)$, or $\Theta(\ell)$ bits of space, and provided descriptions of these complexity classes.
+
+This brings the challenge of identifying a structural parameter of a regular expression that determines whether it admits better
+streaming algorithms.
+As mentioned earlier, Bille and Thorup~\cite{doi:10.1137/1.9781611973075.104} observed that in practice  
+the number $d$ of occurrences of the union symbol and Kleene stars is significantly smaller than the size $m$ of the expression $R$.
+Furthermore, both the dictionary matching and the wildcard pattern matching can be casted
+as instances of the regular expression pattern matching, and streaming algorithms with space complexity of the form~$\poly(d,\log n)$
+are known. The main goal of this paper is to investigate whether this is also the case for the general
+regular expression membership and pattern matching.
+
+\subsection{Our results}
+We consider the space complexity of regular expression membership and pattern matching in the streaming model of
+computation. 
+As by now traditional in streaming string processing, we assume that we receive $R$ and $n$ first, preprocess them, and then receive the string $T$ character by character. We do not account neither for the time nor for the space used during the preprocessing stage.
+In the membership problem, we must output the answer after having read $T$ entirely, whereas in the pattern matching problem we must decide whether there is a substring $T[\ell \dd r] \in L(R)$ at the moment when we receive the character $T[r]$. 
+
+Our main conceptual contribution is that we identify the small number $d$ of occurrences of the union symbol and Kleene stars
+in $R$ as allowing for space-efficient streaming algorithms for regular expression membership and pattern matching.
+More specifically, we design randomised Monte Carlo algorithms that solve both problems
+using~$\Oh(d^3\polylog n)$ space and $\Oh(nd^5\polylog n)$ time per character of the text (Theorem~\ref{th:memb}).
+While it was known that the value of $d$ determines the space complexity in the two special cases of
+streaming dictionary matching and wildcard pattern matching, our approach works for any regular expression.
+We leave it as an open problem to obtain algorithms with $\poly(d, \log n)$ space complexity and $\poly(d, \log n)$ time complexity. 
+
+On a very high-level, our approach is based on storing carefully chosen subsets of occurrences of the strings appearing in $R$.
+As usual in the area, this is easier when the strings are not periodic, that is, any two occurrences of a string $S$ in $T$ must
+be more than $|S|/2$ characters apart. Of course, this is not always the case, and the usual remedy is to treat periodic
+and aperiodic strings separately (more specifically, in streaming pattern matching algorithms one applies this reasoning
+on every prefix of length being a power of 2).
+The technical novelty of our algorithms is that we apply this reasoning on $\Oh(\log n)$ levels, thus obtaining
+a hierarchical decomposition of a periodic string.
+Next, because not all occurrences are stored we need to recover the omitted information.
+Very informally, we need to decide whether a substring of $T$ sandwiched between two occurrences of strings $A_1,A_2$ is a label of some run from $A_1$ to $A_2$ in the compact Thompson automaton for $R$, where the period of the substring is equal to the period of
+some prefix of length $2^{k}$ of one of the strings. The difficulty is that, while the substring has a simple structure, it could be
+very long, and it is not clear how to implement this computation in a space-efficient manner.
+We overcome this difficulty by recasting the problem in the language of evaluating a circuit with addition
+and convolution gates. This technique was introduced by Lokshtanov and Nederlof~\cite{LokshtanovN10} for designing
+a space-efficient solution for the subset sum problem. Later, Bringmann~\cite{Bringmann17} replaced
+complex numbers with computation modulo a prime number $p$ to obtain a tighter bound on the time and space complexity.
+In more detail, he designed two solutions, one using the Extended Riemann Hypothesis and the other unconditional but
+with polynomially higher time and space.
+We revisit his approach and show that, in fact, one can replace the Extended Riemann Hypothesis by an application
+of the Bombieri--Vinogradov theorem to achieve the same bounds. We believe that this might be of independent interest.
+As a consequence of our improvement, we obtain an efficient randomised Monte Carlo algorithm for the following classical problem: given a directed multigraph $G$ with non-negative integer weights on edges, its two nodes $v_1,v_2$, and a number $x$, decide whether there is a walk from $v_1$ to $v_2$ of total weight $x$. Our algorithm requires $x\cdot\poly(|G|,\log x)$ time and $\poly(|G|,\log x)$ space.
+
+The rest of the paper is organised as follows. We first remind the necessary definitions in Section~\ref{sec:prelim}, and in Section~\ref{sec:overview} we give an overview of the main technical ideas we introduced in this paper. We describe the new algorithms for regular expression membership and pattern matching in Section~\ref{sec:algorithms}. Finally, in Section~\ref{sec:paths-in-graph} we describe how to
+replace the Extended Riemann Hypothesis with an application of the Bombieri--Vinogradov theorem
+in Bringmann's framework and design a space-efficient algorithm for checking if there is a walk of specified weight between
+two nodes of a directed multigraph.

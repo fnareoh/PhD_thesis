@@ -1,0 +1,103 @@
+
+\begin{figure}[H]
+\definecolor{mygray}{gray}{0.6}
+\definecolor{lessgray}{gray}{0.85}
+
+\caption{Observation~\ref{obs:structural+.} applied to searching $P=aab^+ac$ in the text $T=aaabbacccabbacdd$} 
+\begin{center}
+{\footnotesize
+\begin{tikzpicture}[scale=0.6]
+ \begin{scope}[shift={(0,-1)}]
+  % P
+  %\draw (-0,0.5) node[left] {$P=$};
+  \foreach \i/\word/\char/\n/\col in {0/$aa$/a/2/lessgray,2/$b^+$/b/1/mygray,3/$a$/a/1/lessgray,4/$c$/c/1/mygray}{
+  	%\draw (\i,0) rectangle +(\n,1) node[midway]{\normalsize{\word}};
+  }
+  \end{scope}
+  
+  \begin{scope}[shift={(0,-2.5)}]
+  %P_1
+  %\draw (-0,0.5) node[left] {$P_1=$};
+  \foreach \i/\word/\char/\n/\col in {0/$aa$/$a$/2/lessgray,1/$b^+$/$b$/1/mygray,2/$a$/$a$/1/lessgray,3/$c$/$c$/1/mygray}{
+  	%\draw (\i,0) rectangle +(1,1) node[midway]{\normalsize{\char}};
+  	}
+  \end{scope}
+  
+  \begin{scope}[shift={(6,-2.5)}]
+  %P_2
+  %\draw (-0,0.5) node[left] {$P_2=$};
+  \foreach \i/\word/\char/\n/\col in {0/$aa$/$a$/2/lessgray,1/$b^+$/$b$/1/mygray,2/$a$/$a$/1/lessgray,3/$c$/$c$/1/mygray}{
+  	%\draw (\i,0) rectangle +(1,1) node[midway]{\normalsize{\n}};
+  	}
+  \end{scope}
+  
+\begin{scope}[shift={(0,-4)}]
+  % T
+  \draw (-0,0.5) node[left] {$T=$};
+  \foreach \i/\word/\char/\n/\col in {0/$aaa$/$a$/3/lessgray,3/$bb$/$b$/2/mygray,5/$a$/$a$/1/lessgray,6/$ccc$/$c$/3/mygray,
+  9/$a$/$a$/1/lessgray,10/$bb$/$b$/2/mygray,12/$a$/$a$/1/lessgray,13/$c$/$c$/1/mygray, 14/$dd$/$d$/2/lessgray}{
+  	\draw (\i,0) rectangle +(\n,1) node[midway]{\normalsize{\word}};
+  }
+    \draw [->, > = stealth, black] (1.5, 0) -- (-1.5, -1.4) node [midway, fill = white] {letter};
+    \draw [->, > = stealth, black] (1.5, 0) -- (10, -1.4) node [midway, fill = white] {length of the run} ;
+\end{scope} 
+  
+\begin{scope}[shift={(-2,-6.5)}]
+  % T_1
+  \draw (-0,0.5) node[left] {$T_1=$};
+  \foreach \ind/\i/\word/\char/\n/\col in {0/0/$aaa$/$a$/3/lessgray,1/2/$bb$/$b$/2/mygray,2/5/$a$/$a$/1/lessgray,3/6/$ccc$/$c$/3/mygray,
+  4/9/$a$/$a$/1/lessgray,5/10/$bb$/$b$/2/mygray,6/12/$a$/$a$/1/lessgray,7/13/$c$/$c$/1/mygray, 8/14/$dd$/$d$/2/lessgray}{
+  	\draw (\ind,0) rectangle +(1,1) node[midway]{\normalsize{\char}};
+  }
+  
+  \foreach \i/\word/\char/\n/\col/\sym in {0/$aa$/$a$/2/lessgray/$\leq$,1/$b^+$/$b$/1/mygray/$\leq$,2/$a$/$a$/1/white/$=$,3/$c$/$c$/1/lessgray/$\leq$}{
+  	\filldraw[fill=white] (\i-0.1,-2) rectangle +(1,1) node[midway]{\normalsize{\char}};
+  	\draw (\i+0.5,-0.5) node[rotate=90] {=};
+  	}
+  	
+\foreach \i/\word/\char/\n/\col/\sym in {0/$aa$/$a$/2/lessgray/$\not\leq$,1/$b^+$/$b$/1/mygray/$\leq$,2/$a$/$a$/1/white/$=$,3/$c$/$c$/1/lessgray/$\leq$}{
+  	\filldraw[fill=white] (\i+4+0.1,-2) rectangle +(1,1) node[midway]{\normalsize{\char}};
+  	\draw (\i+0.5+4,-0.5) node[rotate=90] {=};
+  	}
+\end{scope}
+
+\begin{scope}[shift={(10,-6.5)}]
+  % T_2
+  \draw (-0,0.5) node[left] {$T_2=$};
+  \foreach \ind/\i/\word/\char/\n/\col in {0/0/$aaa$/$a$/3/lessgray,1/2/$bb$/$b$/2/mygray,2/5/$a$/$a$/1/lessgray,3/6/$ccc$/$c$/3/mygray,
+  4/9/$a$/$a$/1/lessgray,5/10/$bb$/$b$/2/mygray,6/12/$a$/$a$/1/lessgray,7/13/$c$/$c$/1/mygray,8/14/$dd$/$d$/2/lessgray}{
+  	\draw (\ind,0) rectangle +(1,1) node[midway]{\normalsize{\n}};
+  	
+  }
+  
+  \foreach \i/\word/\char/\n/\col/\sym in {0/$aa$/$a$/2/lessgray/$\leq$,1/$b^+$/$b$/1/mygray/$\leq$,2/$a$/$a$/1/white/$=$,3/$c$/$c$/1/lessgray/$\leq$}{
+  	\filldraw[fill=\col] (\i-0.1,-2) rectangle +(1,1) node[midway]{\normalsize{\n}};
+  	\draw (\i+0.5,-0.5) node[rotate=90] {\sym};
+  	}
+  	
+\foreach \i/\word/\char/\n/\col/\sym in {0/$aa$/$a$/2/lessgray/$\not\leq$,1/$b^+$/$b$/1/mygray/$\leq$,2/$a$/$a$/1/white/$=$,3/$c$/$c$/1/lessgray/$\leq$}{
+  	\filldraw[fill=\col] (\i+4+0.1,-2) rectangle +(1,1) node[midway]{\normalsize{\n}};
+  	\draw (\i+0.5+4,-0.5) node[rotate=90] {\sym};
+  	}
+ 
+\end{scope}
+
+\begin{scope}[shift={(5.5,-11)}]
+  % P
+  \draw [->, > = stealth, black] (-6, 2.5) -- (2.4,1.2) node [midway, fill = white] {match};
+    \draw [->, > = stealth, black] (6,2.5) -- (2.6, 1.2) node [midway, fill = white] {match};
+  \draw (-0,0.5) node[left] {$P=$};
+  \foreach \i/\word/\char/\n/\col in {0/$aa$/a/2/lessgray,2/$b^+$/b/1/mygray,3/$a$/a/1/lessgray,4/$c$/c/1/mygray}{
+  	\draw (\i,0) rectangle +(\n,1) node[midway]{\normalsize{\word}};
+  }
+ \end{scope}
+  
+   
+
+  
+  
+\end{tikzpicture}
+
+}
+\end{center}
+\end{figure}

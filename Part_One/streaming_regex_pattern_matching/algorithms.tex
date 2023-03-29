@@ -1,0 +1,121 @@
+% !TEX root = main.tex
+In this section, we give a description of our new streaming algorithms for regular expression membership and pattern matching. The structure of the algorithms is very similar, the main difference is how we define a witness (see Definitions~\ref{def:witness-memb} and~\ref{def:witness-matching}). For this reason, we describe the algorithms in parallel. Recall that~$T$ is a string of length $n$ over an alphabet $\Sigma  = \{1, 2, \ldots, \sigma\}$, where $\sigma = n^{\Oh(1)}$, and $A_1, A_2, \ldots, A_d$ are the atomic strings for the regular expression $R$. Recall also that $\Pi$ is the set of canonical prefixes of the atomic strings, defined as $\Pi = \{A_i[1 \dd \min\{2^j, |A_i|\}] : 1\le  i \le d, 0 \le j \le \lceil \log |A_i|\rceil\}$. 
+
+We make use of the following corollary of Fact~\ref{fact:fine_wilf}:
+
+\begin{corollary}[Of Fact~\ref{fact:fine_wilf}]\label{cor:primitive}
+For a primitive string $X$ of length $x$, a string $D = XX$ can contain only two occurrences of string $X$, $D[1\dd x]$ and $D[x+1\dd 2x]$.
+\end{corollary}
+
+\paragraph{Preprocessing.} 
+We start by deleting all transitions $(u,v)$ from $T_C(R)$ that are labelled by atomic strings of lengths larger than $n$. 
+
+Let $\mathcal{F}$ contain all atomic strings $A$ such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A$ to the final state of $T_C(R)$. In addition, for each atomic string $A$, compute the subset $A_{i_1}, A_{i_2}, \ldots, A_{i_j}$ of atomic strings such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A_{i_{j'}}$, $1 \le j' \le j$, to the starting point of the transition labelled by $A$.
+
+For each periodic $P \in \Pi$, consider a string $\Delta(P) = P[|P|-\rho+1 \dd ]$, where $\rho$ is the period of $P$. During the preprocessing step, the algorithm computes the generator set of anchors $\A$ (Definition~\ref{def:anchors}) for the string~$W = (\Delta(P))^\infty$. 
+
+Define the \emph{overlap} of two strings $X$ and $Y$ as the maximal length of a suffix of $X$ that equals a prefix of $Y$, $\Pi(P)$ to be the set of all canonical prefixes such that their overlap  with $W$ is at least $2 \rho$, and $\Overlap(P) = \bigcup_{P' \in  \Pi(P)} \{\ell: \ell \text{ is the overlap of } P' \text{ and }  W\}$. The algorithm computes $\Pi(P)$ and $\Overlap(P)$ during the preprocessing step as well. 
+
+For regular expression pattern matching, it also computes the smallest integer $\mu(P)$ such that $p = \mu(P) \cdot \rho \in \occ(P, W)$ and $p$ is a witness for $P$ in $W$ (in the sense of Definition~\ref{def:witness-matching}). 
+
+Finally, the algorithm creates a directed graph $G(P) = (V,E)$ from the compact Thompson automaton~$T_C(R)$. Consider again the string $W = (\Delta(P))^\infty$. For each canonical prefix $P' \in \Pi(P)$, the algorithm creates a node $v \in V$ corresponding to a pair $(P', r)$, where $r$ is the remainder of  the overlap of $P'$ and $W$ modulo $\rho$. Additionally, for every fragment $W[i \dd j] = P'' \in \Pi$ which is anchored by an anchor $a \in \A^\ast(W)$, it creates a node $v \in V$ corresponding to a pair $(P'', j \pmod{\rho})$ (for two identical prefix-remainder pairs, it creates just one node). 
+
+Consider two nodes $v',v'' \in V$. Suppose that $v'$ corresponds to $(P',r')$ and $v''$ to $(P'',r'')$, where $P',P''$ are canonical prefixes of atomic strings $A',A''$, respectively, and $r',r''$ are remainders modulo $\rho$. For $0 < \ell \le 10 \rho$, the algorithm adds an edge $(v',v'')$ of length $\ell$ to $E$ if there is a walk in $T_C(R)$ from the ending state of the transition labelled by $A'$ to the ending state   of the transition labelled by $A''$ such that the concatenation of the labels in this walk equals to a string $L = \Delta(P)[r' \dd] \Delta(P)^\alpha \Delta(P)[\dd r'']$, where the integer power $\alpha$ is chosen so that $|L| = \ell$ (in other words, the concatenation equals to a fragment of $W$ with the offsets defined by $v'$ and $v'$ and of an appropriate length, if such a fragment does not exist, the algorithm does not create the edge). 
+
+It might seem that the resulting graph is infinite, but as we show below, this is not the case.
+
+\begin{claim}\label{claim:shifts}
+Consider all occurrences $W[\ell_i \dd r_i]$, $i \in \Zp$, of a string $X$ in $W$. The size of the set $\{r_i \pmod \rho : W[\ell_i \dd r_i] \text{ is anchored by } a\in \A^\ast(W), i \in \Zp\}$ is $\Oh(\log \rho)$.
+\end{claim}
+\begin{proof}
+We consider two cases: $|X| \ge 2\rho$ and $|X| < 2\rho$. In the first case, by Fact~\ref{fact:fine_wilf}, if there is at least one occurrence of $X$ in $W$, then $X$ is periodic with period $\rho$. By Corollary~\ref{cor:primitive}, we have $r_i = q \pmod{\rho}$ for some fixed~$q$ and all $i \in \Zp$. The claim follows from Lemma~\ref{lm:anchors}. 
+
+In the second case, for all $a \in \A^\ast(W)$ such that $a \ge 2\rho$, and for all strings $U \in \Sigma^\ast, V \in \Sigma^\rho$ such that $V \neq W[1 \dd \rho]$, all occurrences of $X$ that contain $|U|+|V|+a$ are contained in $(UVW)[|U|+|V|+a-2\rho+1 \dd |U|+|V|+a-2\rho-1] = W[a-2\rho+1 \dd a-2\rho-1]$. It follows that for all $a,a' \in \A^\ast(W)$ such that $a,a' \ge 2\rho$ and $a = a' \pmod {\rho}$, the sets $\{r_i \pmod {\rho} : W[\ell_i \dd r_i] \text{ is anchored by } a, i \in \Zp\}$ and $\{r_i \pmod {\rho} : W[\ell_i \dd r_i] \text{ is anchored by } a', i \in \Zp\}$ are equal. Moreover, each of them contains only a constant number of elements. Therefore, the size of the set $\{r_i \pmod  {\rho} : W[\ell_i \dd r_i] \text{ is anchored by } a\in \A^\ast(W), a \ge 2\rho, i \in \Zp\}$ is $\Oh(\log \rho)$ by Lemma~\ref{lm:anchors}. It remains to estimate the size of the analogous sets for anchors smaller than $2\rho$. The number of such anchors is $\Oh(\log \rho)$ by Lemma~\ref{lm:anchors}, and each of them can anchor only a constant number of occurrences of $X$. The claim follows.
+\end{proof}
+
+\begin{corollary}\label{cor:size_of_G}
+$G(P)$ contains $|V| = \Oh(d \log^2 n)$ nodes and $|E| = \Oh(d^2 \log^4 n)$ edges, and can be constructed in $\Oh(\rho \cdot d^3 \log^4 n)$ time.
+\end{corollary}
+\begin{proof}
+The size of $\Pi$, and consequently $\Pi(P)$, is $\Oh(d \log n)$.
+For each string $P' \in \Pi(P)$, the remainder $r$ of the overlap of $P'$ and $W$ modulo $\rho$ is defined in a unique way.
+By Claim~\ref{claim:shifts}, for each string $P'' \in \Pi$ there are $\Oh(\log \rho)$ different remainders $r$ modulo $\rho$ such that there is an anchored occurrence of $P''$ ending at a position $p = r \pmod \rho$.
+Thus $|V| = \Oh(d \log^2 n)$.
+
+Observe that the interval $[0, 10\rho]$ can contain only a constant number of values $\ell$ such that the power $\alpha$ is an integer.
+Hence for each pair of nodes we have only a constant number of possible edges, so $|E| = \Oh(d^2 \log^4 n)$.
+For each edge, we can check whether it exists in time $\Oh(\rho \cdot |T(R)|) = \Oh(|\rho| \cdot d)$.
+\end{proof}
+
+\begin{corollary}[Of Theorem~\ref{thm:detecting_walk_specific_weight}]\label{cor:path_thompson}
+There exists an algorithm which, given the graph $G(P)$, its two nodes $v_1$ and $v_2$ and a number $x\leq n$,  decides if there is a walk from $v_1$ to $v_2$ of total weight $x$ in $\Oh(xd^3\polylog n)$ time and $\Oh(d^3\polylog n)$ space and succeeds with high probability.
+\end{corollary}
+\begin{proof}
+ Recall that $\rho \leq n$. 
+ We substitute the bounds from Corollary~\ref{cor:size_of_G} into Theorem~\ref{thm:detecting_walk_specific_weight}.
+ Then we repeat the algorithm of Theorem~\ref{thm:detecting_walk_specific_weight} $2c \lceil \log n \rceil$ times and output the majority answer to obtain a success probability of at~least~$1-1/n^c$.
+\end{proof}
+
+
+\paragraph{Main phase.}
+During the main phase of the algorithm, we run the pattern matching algorithm (Theorem~\ref{th:pattern_matching}) for every $P \in \Pi$. For every non-periodic $P \in \Pi$, we store (at most) two latest witnesses. For every periodic $P \in \Pi$, we run the pattern matching algorithm for $\Delta(P) = P[|P|-\rho+1\dd]$ and $T$, where $\rho$ is the period of $P$. 
+
+\begin{definition}
+We say that a fragment $T[i \dd j]$ is a \emph{streak} of a string $X$ if $T[i \dd j] = X^k$ for some integer~$k \ge 1$ and it is maximal, i.e. it cannot be extended neither to the left nor to the right. 
+\end{definition}
+
+The pattern matching algorithm detects streaks of $\Delta(P)$ in the arrived prefix of $T$. Every witness $r$ for $P$ belongs to $\occ(P,T)$ and by Observation~\ref{obs:few_progressions} ends in such a streak.  At any moment of the algorithm, we store (at most) two latest streaks and a compact representation of witnesses in $\occ(P,T)$ that end in it. For membership testing we assume that the witnesses are defined as in Definition~\ref{def:witness-memb}, and for pattern matching as in Definition~\ref{def:witness-matching}. Perhaps a bit counter-intuitively, the representation contains witnesses from $\occ(P,T)$ and witnesses for other canonical prefixes as well, the reason for it will become clear later. Formally, the representation of a streak~$S = T[i \dd j]$ consists of the following elements, where $\rho = |\Delta(P)|$:
+
+\begin{enumerate}
+\item For each $P' \in \Pi(P)$ and its overlap $\ell$ with $W$, the representation contains $p = i+\ell-1$ if $p \in \occ(P',T)$ and is a witness;
+\item All witnesses in $\occ(P,T)$ that belong to the interval $[i \dd  i+12 \rho-1]$;
+\item For every $\ell \in \Overlap(P)$, all witnesses in $\occ(P,T)$ that belong to the interval $[i+\ell \dd  (i+\ell-1)+8 \rho]$;
+\item For every $P' \in \Pi$, all witnesses $r \in \occ(P',T)$ such that $T[r-|P'|+1\dd r]$ is a fragment of $S$ and is anchored by an anchor in $\A^\ast(F) \cap [i,i+4\rho]$. 
+\end{enumerate}
+
+By Observation~\ref{obs:few_progressions} and Lemma~\ref{lm:anchors}, the compact representation of witnesses in a streak has size $\Oh(d \log^2n)$. The algorithm uses the compact representations of witnesses to decide whether a newly detected occurrence $r \in \occ(P,T)$ for some $P \in \Pi$ is a witness:
+
+\begin{lemma}\label{lm:restore_witnesses}
+Let $d<n$. Assume that $T[r]$ is the latest arrived character of the text and  that $r \in \occ(P,T)$. Assume that for each non-periodic $P'\in \Pi$ we store two latest witnesses in $\occ(P',T)$, and for each periodic $P' \in \Pi$ we store the two latest streaks of $\Delta(P')$ and compact representations of the witnesses in them. In addition, assume that we store the set of all atomic strings $A$ such that $(r-1)$ is a witness for $\occ(A,T)$. One can decide whether~$r$ is a witness for $P$ in $\Oh(nd^4 \polylog n)$ time and $\Oh(d^3\polylog n)$ (extra) space with high probability.
+\end{lemma} 
+\begin{proof}
+Let $P = A[1 \dd \min\{2^k,|A|\}]$, where $A$ is an atomic string. Consider two cases: $k = 0$ and $k \ge 1$.
+
+\underline{Case 1: $k = 0$.} If $k = 0$, let  $A_{i_1}, A_{i_2}, \ldots, A_{i_j}$ be the atomic strings such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A_{i_j'}$, $1 \le j' \le j$, to the starting point of the transition labelled by~$A$. The position $r$ is a witness for $P$ iff for some $1 \le j' \le j$, the position $(r-1)$ is a witness for $A_{i_{j'}}$. We can decide whether this holds in $\Oh(d)$ time.
+
+\underline{Case 2: $k \ge 1$.} If $k \ge 1$, the position $r$ is a witness for $P$ iff $r-2^{k-1}$ is a witness for $P[1\dd 2^{k-1}]$. For brevity, denote $r' = r-2^{k-1}$, $P' = P[1\dd 2^{k-1}]$, and $\rho = |\Delta(P')|$. If $P'$ is non-periodic and $r' \in \occ(P',T)$, the algorithm stores it explicitly by Observation~\ref{obs:few_occ}.
+Otherwise, by Observation~\ref{obs:few_progressions}, $r'$ belongs to one of the two latest streaks of $\Delta(P')$, let it be a fragment $S = T[i \dd i+ \ell \cdot \rho-1]$. Suppose that $r'$ is a witness for $P'$. Let us first explain the solution for the regular expression membership problem, and then we will show how to modify it for the regular expression pattern matching problem. 
+
+In the membership problem, if $r'$ is a witness for $P'$, then $T[1\dd r'] P[2^{k-1}+1\dd]$ is a partial occurrence of $R$ and there is a partition of $T[1 \dd r'] = T[\ell_1 \dd r_1] T[\ell_2 \dd r_2] \ldots T[\ell_m \dd r_m]$, where each $T[\ell_{m'} \dd r_{m'}]$, $1 \le m' < m$, is an atomic string, and $T[\ell_m \dd r_m] = P'$. Let $T[\ell_{m'} \dd r_{m'}]$ be the fragment containing~$i$. We consider two subcases: $r_{m'}-i+1 > 2\rho$ and $r_{m'}-i+1 \le 2\rho$. 
+
+\underline{Case 2(a): $r_{m'}-i+1 > 2\rho$.} We claim that in this subcase $r_{m'}-i+1$ equals the overlap $\ell$ of $T[\ell_{m'} \dd r_{m'}]$ and~$W = (\Delta(P'))^\infty$. By definition, $r_{m'}-i+1 \le \ell$. Suppose that $r_{m'}-i+1 < \ell$. If $\ell-(r_{m'}-i+1)$ is a multiple of~$\rho$, then we obtain that $T[r_{m'}-\rho\dd r_{m'}-1] = \Delta(P')$, a contradiction with the definition of $S$. If~$\ell-(r_{m'}-i+1)$ is not a multiple of $\rho$, then there is an occurrence of $\Delta(P')$ in the prefix $(\Delta(P'))^2$ of $S$ that does not end at positions $\rho$ or $2\rho$. By Corollary~\ref{cor:primitive}, we obtain a contradiction. Therefore, $r_{m'}-i+1 = \ell$ and the compact representation of witnesses in $S$ stores $r_{m'} \in \occ(T[\ell_{m'} \dd r_{m'}], T)$. 
+
+If $m' = m$ or $r_m-r_{m'} \le 8 \rho$, then we are done: if $r'$ is a witness, it must be stored explicitly, and we can check whether it is the case in $\Oh(d \log^2n)$ time. Otherwise, we use the following claim:
+
+\begin{claim}\label{claim:subseq}
+There is a sequence $m' = m_{0} < m_{1} < m_{2}  < \cdots < m_{q} = m$ such that each $T[\ell_{m_{q'}} \dd r_{m_{q'}}]$, $1 \le q' < q$, is either anchored by an anchor $a \in \A^\ast(S)$, or has length at least $2\rho$, and for each $1 \le q' \le q$, $\ell_{m_{q'}}- r_{m_{q'-1}} \le 10 \rho$. 
+\end{claim}
+\begin{proof}
+The sequence is built as follows. Let $m_{0} = m'$ and $m_{q'}$ be the latest index added to the sequence. If there is an index $m''$ such that $T[\ell_{m''} \dd r_{m''}]$ has length at least $2\rho$ or $m'' = m$ and $\ell_{m''}- r_{q'} \le 10 \rho$, then set~$m_{q'+1} = m''$ and continue. Otherwise, let $m''$ be the smallest index such that $\ell_{m''}- r_{m_{q'}} \ge 8 \rho$. Note that we also have~$\ell_{m''}- r_{m_{q'}} \le 10 \rho$ (otherwise, the length of $T[\ell_{m''-1} \dd r_{m''-1}]$ would have been larger than $2\rho$). By Lemma~\ref{lm:anchors}, there is $m_{q'} < \tilde{m} \le m''$ such that $T[\ell_{\tilde{m}} \dd r_{\tilde{m}}]$ is anchored by an anchor $a \in \A^\ast(S) \cap [r_{m''} - 4 \rho+1, r_{m''}]$. We set $m_{q'+1} = \tilde{m}$ and continue. 
+\end{proof}
+
+Let $v'$ be the node in $G(P)$ corresponding to $(T[\ell_{m'} \dd r_{m'}], r_{m'}-i+1 \pmod \rho)$, and $v$ be the node corresponding to $(P', r_m-i+1 \pmod \rho)$. We have that $j'$ is a witness iff there exists the sequence $m' = m_{0} < m_{1} < m_{2}  < \cdots < m_{q} = m$ as above iff there is a walk from $v$ to $v'$ of length $|T[r_{m'}+1 \dd r_{m}]|\leq n$, which we can check in $\Oh(nd^4 \polylog n)$time and $\Oh(d^3\polylog n)$ extra space with high probability via Corollary~\ref{cor:path_thompson} (we must check whether this condition is verified for each of the $\Oh(d \log^2 n)$ witnesses stored in the compact representation of $S$). \label{it:case2a}
+
+\underline{Case 2(b): $r_{m'}-i+1 \le 2\rho$.} Consider now the second subcase. If $r_m \le 12 \rho$, then we are done: if $r'$ is a witness, it must belong to the compact representation of witnesses in $S$, which can be verified in $\Oh(d \log^2 n)$ time. Otherwise, $r_{m} - r_{m'} \ge 8\rho$.  By Lemma~\ref{lm:anchors_catch_partial_match}\ref{it:anchor_gen} there is $p$, $m' < p \le m$, such that $T[\ell_{p} \dd r_{p}]$ is anchored by an anchor $\A^\ast(F) \cap [i,i+4 \rho-1]$, and therefore $T[\ell_{p} \dd r_{p}]$ is stored in the compact representation of witnesses in $S$. Analogously to Case 2(a), we can show equivalence of the following conditions: $r'$ is a witness; there is a walk in $G(P)$ from the node corresponding to $(T[\ell_{p} \dd r_{p}], r_p-i+1 \pmod \rho)$ to the node corresponding to~$(T[\ell_{m} \dd r_{m}], r_m-i+1 \pmod \rho)$ of length $|T[r_{p}+1 \dd r_{m-1}]|$. We can therefore decide whether $r'$ is a witness via Corollary~\ref{cor:path_thompson} in $\Oh(nd^4 \polylog n)$ time and $\Oh(d^3\polylog n)$ space with high probability.
+
+We now explain how to modify the argument so that it can be used for regular expression pattern matching. Note that in pattern matching, if $r'$ is a witness for $P'$, then there is some position $\ell'$, $1 \le \ell' \le r'$ such that~$r' \in \occ(P',T)$ is a witness. The position $\ell'$ can be inside the streak $S$, i.e. $m'$ can be undefined, making it impossible to apply the argument above. However, we can easily check if this is the case using the integer $\mu(P')$ we computed during the preprocessing step: if $\mu(P') \cdot \rho \ge (r'-i+1)$, then $r'$ is a witness and we are done, and otherwise $\ell' \le i$ (if $r'$ is a witness), $m'$ is defined, and we can apply the argument above.
+\end{proof}
+
+\begin{thm}\label{th:memb}
+Given a streaming text $T$ of length $n$ and a regular expression $R$ of size $d$. There is a randomised algorithm that solves the membership and the pattern matching problems for $T$ and $R$ in $\Oh(d^3\polylog n)$ space and $\Oh(nd^5\polylog n)$ time per character of the text. The algorithm succeeds with high probability.
+\end{thm}
+\begin{proof}
+If $d \ge n$, we can use Claim~\ref{claim:few_atomic_strings}. Below we assume that $d < n$. Recall that we do not account for the time used during the preprocessing step (but one can note that it is polynomial in $d$ and the total length of the atomic strings of $R$). The information computed during this step, including the graphs $G(P)$ for each $P \in \Pi$, takes $\Oh(d^3 \log^5 n)$ space. 
+
+During the main step, we use Lemma~\ref{lm:restore_witnesses} to maintain the compact representations of the streaks of $\Delta(P)$ for each $P \in \Pi$, and to decide, eventually, whether $T$ matches the regular expression $R$. Whenever an instance of the pattern matching algorithm detects an occurrence of $\Delta(P)$, we decide in constant time whether this occurrence extends the latest streak of $\Delta(P)$ or starts a new one. If the number of streaks becomes equal to three, we discard the oldest streak. 
+
+When an instance of the pattern matching algorithm detects $r \in \occ(P,T)$ for some $P \in \Pi$, we must decide whether $r$ is a witness and whether we must store it in the compact representation of the streaks containing~$r$. We apply Lemma~\ref{lm:restore_witnesses} to decide whether $r$ is a witness in $\Oh(n d^4 \polylog n)$ total time and $\Oh(d^3\polylog n)$ space and then in $\Oh(d \log n)$ time whether $r$ must be added to the compact representations of the streaks containing~$r$. Note that a position $r$ can belong to $\occ(P,T)$ for $\Oh(d\log n)$ canonical prefixes $P \in \Pi$, and therefore in the worst case we spend $\Oh(n d^5 \polylog n)$ to process $r$. The compact representations of the streaks take $\Oh(d^2 \log^3 n)$ space. 
+
+Recall that $\mathcal{F}$ contains all atomic strings $A$ such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A$ to the final state of $T_C(R)$. 
+In the regular expression pattern matching problem, we report all positions $r$ such that $r$ is a witness in $ \occ(A,T)$ for some $A\in \mathcal{F}$. In the regular expression membership problem, $T \in L(R)$ if $n$ is a witness for $\occ(A,T)$ for some $A\in \mathcal{F}$.
+\end{proof}

@@ -1,0 +1,110 @@
+% !TEX root = main.tex
+In this section, we give an overview of the main technical ideas we introduced in this paper. 
+
+\paragraph{Statement of the problems and the model of computation.} Let us start by giving the precise formulation of the regular expression membership and pattern matching problems and reminding the definition of the streaming model of computation. 
+
+\defproblem{\textsc{Regular expression membership and pattern matching}}{ 
+Given a string $T$ of length $n$ over an alphabet $\Sigma  = \{1, 2, \ldots, \sigma\}$, where $\sigma = n^{\Oh(1)}$, and a regular expression $R$ over $\Sigma$ of size $d$. In the regular expression membership problem, we must decide whether $T \in L(R)$. In the regular expression pattern matching problem, we must find all positions $1\ \le r \le n$, such that there exists a position $1 \le \ell \le r$ such that $T[\ell \dd r] \in L(R)$.}\\
+
+We work in the streaming model of computation. As it is now standard in the streaming string processing algorithms, we assume to receive $n$ and $R$ first. We do not account neither for the time nor for the space we need to preprocess $R$. After having preprocessed $R$, we receive $T$ as a stream, character by character. At the moment we receive the first character of $T$, the main phase of the algorithm starts. During the main phase, we account for \emph{all} the space and time used. 
+
+\paragraph{Definitions and tools.} 
+Let $A_1, A_2, \ldots, A_d$ be the atomic strings of the regular expression $R$. We define $\Pi = \{A_i[1 \dd \min\{2^j, |A_i|\}] : 1\le  i \le d, 0 \le j \le \lceil \log |A_i|\rceil\}$. The prefixes of $A_i$'s that belong to $\Pi$ are called \emph{canonical}.
+
+We can assume that all atomic strings have length at most $n$, otherwise they never appear in the text and we can ignore them. Formally, during the preprocessing phase we delete all transitions $(u,v)$ from $T_C(R)$ that are labelled by atomic strings of lengths larger than $n$. We also assume that $d \le n$, otherwise we can use the following solution:
+
+\begin{claim}\label{claim:few_atomic_strings}
+Given a streaming text $T$ of length $n$ and a regular expression of size $d \ge n$. Assume that all atomic strings have length at most $n$ each. There is a deterministic algorithm that solves the membership and the pattern matching problems for $T$ and $R$ in $\Oh(d^2)$ space and $\Oh(d^3)$ time per character of $T$. 
+\end{claim}
+\begin{proof}
+First note that we can afford storing $T$ in full. Second, we build a compact trie on the reverses of the atomic strings of $R$. The trie occupies $\Oh(dn) = \Oh(d^2)$ space. Finally, let $\mathcal{F}$ contain all atomic strings $A$ such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A$ to the final state of $T_C(R)$.
+
+Define an array $D$ of length $n+1 = \Oh(d)$ such that $D[0]$ contains a singleton set consisting of the starting state of $T_C(R)$ and $D[r]$, $1 \le r \le n$, stores all states $u$ such that $u$ is the end of some transition labelled by an atomic string and $T[1\dd r]$ equals the concatenation of the labels of the transitions in some walk from the starting state of $T_C(R)$ to $u$. Assume that we have constructed $D[1\dd r]$. To compute $D[r+1]$, we use the trie to find the atomic strings $A_1, A_2, \ldots, A_q$ equal to $D[1\dd r+1], D[2\dd r+1], \ldots$  or $D[r+1]$ in $\Oh(r+q)$ time. Note that~$q \le d$. For each atomic string $A_i$, $1 \le i \le q$, labelling a transition $(v,w)$, we add $w$ to $D[r+1]$ if there is a state $u$ in~$D[r+1-|A_i|]$ such that there is an $\eps$-transition path from $u$ to $v$, which can be checked in $\Oh(d)$ time and space. In total, the algorithm spends $\Oh(d^3)$ time to process a character of $T$ ($q = \Oh(d)$, and for each $1 \le i \le q$ the set $D[r+1-|A_i|]$ contains $\Oh(d)$ states). The algorithm reports that $T \in L(R)$ if $D[n]$ contains a state $v$, which is an endpoint of a transition labelled by some $A\in \mathcal{F}$.
+
+In the regular expression pattern matching problem, we define an array $D$ in the following way. As before,~$D[0]$ contains a singleton set consisting of the starting state of $T_C(R)$. For every $1 \le r \le n$, $D[r]$ stores the starting state of $T_C(R)$ and all states $u$ such that $u$ is the end of some transition labelled by an atomic string and $T[\ell \dd r]$, for some $\ell \le r$, equals the concatenation of the labels of the edges in some walk from the starting state of~$T_C(R)$ to $u$. Assume that we have constructed $D[1\dd r]$. To compute $D[r+1]$, we use the trie to find the atomic strings~$A_1, A_2, \ldots, A_q$ equal to $D[1\dd r+1], D[2\dd r+1], \ldots$  or $D[r+1]$ in $\Oh(r+q) = \Oh(d)$ time. For each atomic string $A_i$, $1 \le i \le q$, labelling a transition $(v,w)$, we add $w$ to $D[r+1]$ if there is a state $u$ in $D[r+1-|A_i|]$ such that there is an $\eps$-transition path from $u$ to $v$, which can be checked in $\Oh(d)$ time and space. In total, the algorithm spends $\Oh(d^3)$ time to process a character of $T$. We report all positions $r$ such that $D[r]$ contains a state $v$, which is an endpoint of a transition labelled by some $A\in \mathcal{F}$.
+\end{proof}
+
+From now on, we assume that all atomic strings have length at most~$n$, and that $d \le n$. 
+For a string $P$ and a text $T$, denote by $\occ(P,T)$ the set of the ending positions of the occurrences of $P$ in $T$. Our solutions for streaming regular expression membership and pattern matching are very similar, the main difference is how we define a witness:
+
+\begin{definition}[Witness (Membership)]\label{def:witness-memb}
+Let $P$ be a canonical prefix of an atomic string, and $r \in \occ(P,T)$. 
+We say that $r$ is a \emph{witness} if $T[1 \dd r]$ is a partial occurrence of $R$ ending with $P$.  
+\end{definition}
+
+\begin{definition}[Witness (Pattern matching)]\label{def:witness-matching}
+Let $P$ be a canonical prefix of an atomic string, and $r \in \occ(P,T)$. 
+We say that $r$ is a \emph{witness} if there exists a position $1 \le \ell \le r$ such that $T[\ell \dd r]$ is a partial occurrence of $R$ ending with $P$.  
+\end{definition}
+
+\noindent
+We exploit the following algorithm, which we refer to as the pattern matching algorithm\footnote{One could also use one of the streaming dictionary matching algorithms (see the introduction), but this does not change the final complexity and makes the description of the algorithm more complex.}:
+
+\begin{thm}[{cf.~\cite[Theorem 2]{Porat:09}}]\label{th:pattern_matching}
+Given a pattern of length at most $n$ and a text $T$ of length $n$ over an alphabet of size $n^{\Oh(1)}$. There exists a randomised Monte Carlo streaming algorithm that uses $\Oh(\log n)$ space and~$\Oh(\log n)$ time per character of the text. When it receives $T[i]$, it says whether $i \in \occ(P,T)$. The algorithm is correct with high probability.\footnote{With high probability means with probability at least $1-1/n^c$ for any predefined constant $c>1$.}
+\end{thm}
+\noindent
+We also make use of the following well-known fact:
+\begin{fact}[Fine and Wilf's periodicity lemma~\cite{fw:65}]\label{fact:fine_wilf}
+If a string $X$ has two periods of length~$p$ and~$q$ and $p+q \le |X|$, then $X$ also has a period of length $\gcd(p,q)$.
+\end{fact}
+
+\paragraph{Intuition: non-periodic case.} 
+To give intuition behind our solutions, consider a very simple case when every canonical prefix is not periodic. We start with the following simple observation:
+
+\begin{observation}\label{obs:few_occ}
+By Fact~\ref{fact:fine_wilf}, if $P$ is not periodic, there can be at most two occurrences of $P$ in a string of length $\le 2|P|$.
+\end{observation}
+
+Therefore, if none of the strings in $\Pi$ is periodic, we can use the following approach. For each $P \in \Pi$ and $T$, we run the pattern matching algorithm and at any moment store the two most recent witnesses for $P$ discovered by the algorithm (for membership, witness are defined as in Definition~\ref{def:witness-memb}, and for pattern matching as in Definition~\ref{def:witness-matching}). When the algorithm discovers a new position $r \in \occ(P,T)$, we must decide whether it is a witness. Let $P = A[1 \dd \min\{2^k, |A|\}]$, where $A$ is an atomic string. 
+
+If $k = 0$, we consider the starting node $u$ of the transition in the compact Thompson automaton $T_C(R)$ labelled by $A$. Suppose that there is an $\eps$-transitions path from the endpoints of the transitions labelled by atomic strings $A_{i_1}, A_{i_2}, \ldots, A_{i_j}$ to $u$. We then check if $(r-1)$ is a witness for at least one of $A_{i_1}, A_{i_2}, \ldots, A_{i_j}$. If it is, then $r$ is a witness. Importantly, if $r-1$ is a witness for $A_{i_{j'}}$, $1 \le j' \le j$, it is the most recent one and is stored in the memory of the instance of the pattern matching algorithm for $A_{i_{j'}}$ and $T$. Suppose now that $k \ge 1$. We then must check whether $(r-2^{k-1})$ is a witness for $A[1\dd 2^{k-1}]$. If it is, then $r$ is a witness for $P$. Note that by Observation~\ref{obs:few_occ}, if $(r-2^{k-1})$ is a witness for $A[1\dd 2^{k-1}]$, it is one of the two most recent ones and will be stored by the pattern matching algorithm for $A[1\dd 2^{k-1}]$.
+
+Let $\mathcal{F}$ contain all atomic strings $A$ such that there is an $\eps$-transitions path from the endpoint of the transition labelled by $A$ to the final state of $T_C(R)$. In the regular expression pattern matching problem, we report all positions $r$ such that $r$ is a witness in $\occ(A,T)$ for some $A\in \mathcal{F}$. In the regular expression membership problem,~$T \in L(R)$ if $n$ is a witness for $\occ(A,T)$, for some $A\in \mathcal{F}$.
+
+We do not provide the formal analysis of the algorithm, as we only give it for intuition, but it is easy to see that it uses $\Oh(d^2 \log^2 n)$ space and $\Oh(d \log^2 n)$ time per character of the text (recall that we do not account for the time spent during the preprocessing phase). As all atomic strings have length at most $n$ and $d \le n$, the algorithm is correct with high probability by Theorem~\ref{th:pattern_matching}.
+
+\paragraph{General case: main technical contributions.}
+In general, unfortunately, some of the canonical prefixes are periodic we can no longer use Observation~\ref{obs:few_occ}. However, the following generalisation holds:
+
+\begin{observation}\label{obs:few_progressions}
+By Fact~\ref{fact:fine_wilf}, if for a string $P$ and a string $X$, $X \le 2|P|$, we have $|\occ(P,X)| > 2$, then $P$ is periodic and the set $\occ(P,X)$ can be represented as an arithmetic progression with difference $\rho$, where $\rho$ is the period of $P$. \footnote{Note that when $|\occ(P,X)| \le 2$, we can represent $\occ(P,X)$ as at most two (degenerate) arithmetic progressions of length~$1$, we will use this fact to simplify the description of the algorithms.}
+\end{observation}
+
+Observation~\ref{obs:few_progressions} gives the idea behind our approach for the general case. By this observation, we obtain that every $r \in \occ(P,T)$, where $P$ is a canonical prefix of some atomic string periodic with period $\rho$, belongs to a fragment of form $(\Delta(P))^k$, where $\Delta(P) = P[|P|-\rho+1 \dd]$ and $k$ is an integer. 
+Instead of storing the last two witnesses for each canonical prefix, we would like to store the witnesses in the last two fragments of form $(\Delta(P))^k$. However, the number of such witnesses can be large. Our main technical novelty is a compressed representation of such witnesses. We give a high-level overview of the approach we use for the membership problem, our solution to the regular expression pattern matching problem is similar. We show that for each fragment of form $(\Delta(P))^k$ it suffices to store a small, carefully selected subset of witnesses that belong to this fragment. The remaining ones can be restored in small space at request. 
+
+Consider a witness $r \in \occ(P, T)$, where $P \in \Pi$. By definition, there is a partition $T[1\dd r] = T[\ell_1\dd r_1] T[\ell_2 \dd r_2] \ldots T[\ell_m \dd r_m]$ such that each fragment in the partition, except for the last one, is an atomic string, and the last one equals $P$. Furthermore, by Observation~\ref{obs:few_progressions}, $r$ must belong to some fragment $F = T[i \dd i + k \rho -1] = (\Delta(P))^k$. Let $m'$ be the index of the first fragment such that $r_{m'} \ge i$. Consider the fragment $W = T[\ell_{m''} \dd r_{m''}]$, $m' \le m'' \le m$, containing a position $i+2\rho-1$ (we call this position an ``anchor''). Note that $W$  is a canonical prefix of some atomic string and $r_{m''} \in \occ(W, T)$ is a witness. If there are a few witnesses $t \in \occ(W, T)$ such that $T[t-|W|+1,t]$ contains the anchor $i+2\rho-1$, we can store them explicitly. Otherwise, there is a periodic fragment containing $i+2\rho-1$, and we can recurse for it by choosing a new anchor close to its starting point. We choose the definition of anchors (see Section~\ref{sec:anchors}) so that the recursion stops in a logarithmic number of steps and for some of the anchors there is a witness that we store explicitly for this anchor. 
+
+To summarize, the idea of the compact representation of witnesses that belong to a fragment of form $(\Delta(P))^k$ is to choose a logarithmic set of anchors close to the starting point of the fragment, and for each of these anchors to store a constant number of witnesses for each canonical prefix in~$\Pi$.  Suppose now that $r \in \occ(P,T)$, where~$P$ is a canonical prefix of an atomic string $A$, $r$ belongs to a fragment $F = T[i \dd i + k \rho -1] = (\Delta(P))^k$. To decide whether it is a witness we use the following approach. From above we know that $r$ is a witness iff there is a witness $r' \in \occ(A',T)$, where $A'$ is an atomic string, that we store in the compact representation of witness in $F$, and there is a path in $T_C(R)$ from the ending node of the transition labelled by $A'$ and to the starting node of the transition labelled by $A$ such that the concatenation of the strings on the edges of the path equals $T[r'+1\dd r-|A|]$ (which is a substring of $(\Delta(P))^k$). Unfortunately, it is not clear how to verify this condition in a straightforward way as we do not have random access neither to $\Delta(P)$, nor to the strings on the edges of $T_C(R)$. Instead, using anchors again, we show that verifying this condition can be reduced to the following question, where $G$ is a graph of size $\poly(d, \log n)$ (see Lemma~\ref{lm:restore_witnesses} for details):
+
+\defproblem{\textsc{Walks in a weighted graph}}{ 
+Given a directed multigraph $G$ with non-negative integer weights on edges, two nodes and a number $x$, decide if there is a walk from the first node to the second one of total weight $x$.}\\
+
+\paragraph{Walks in a weighted graph and circuits.} In Section~\ref{sec:paths-in-graph}, we show the following theorem:
+
+\begin{thm}\label{thm:detecting_walk_specific_weight}
+ There exists an algorithm which, given a directed multigraph $G$ with non-negative integer weights on edges, its two nodes $v_1$ and $v_2$ and a number $x$,  decides if there is a walk from $v_1$ to $v_2$ of total weight $x$ in~$\Oh((|E(G)|+|V(G)|^3)x\polylog x)$ time and $\Oh((|E(G)|+|V(G)|^3)\polylog x)$ space and succeeds with probability at least $1/2$.
+\end{thm}
+
+Let $N=|V(G)|$.
+For the simpler case when the graph is unweighted, we could use a folklore approach and compute the $x$-th power of the adjacency matrix in $\Oh(N^3\log x)$ time and $\Oh(N^2)$ space.
+In order to handle arbitrary weights of edges, we compute the arrays $C_k$ of bit-vectors of length $x+1$, where $C_k[u,v][d]$ stores a bit indicator of whether there exists a walk from $u$ to $v$ in $G$ of at most $2^k$ edges of total weight exactly $d$. The following formula holds:
+$$C_k[u,v][d]=\bigvee_{\substack{w\in V(G) \\  i\in \{0,\ldots,d\}}} C_{k-1}[u,w][i] \wedge C_{k-1}[w,v][d-i]$$
+Using the fast Fourier transform to compute the convolutions, we obtain an algorithm with time $\Oh(N^3x\log^2x)$ and space $\Oh(N^2x)$. 
+
+In our application, $x$ can be equal to $n$, and the approach above uses $\Omega(n)$ space, which is prohibitive. 
+In order to improve the space complexity, we represent the above computations as a circuit with binary \textsc{Or} and \textsc{Convolution}$_x$ gates operating on bit-vectors of length $x+1$.
+Every element $C_k[u,v]$ requires a separate gate and while computing its value we need to perform $N$ convolutions, for every possible intermediate node $w$, so in total there are $\Oh(N^3\log x)$ gates.
+The \textsc{Convolution}$_x$ gates store only the first $x+1$ bits of the results, as we never need paths of total weight larger than $x$.
+We are interested only in a single bit of output of the circuit, namely $C_{\lceil\log x\rceil}[v_1,v_2][x]$. If there were only \textsc{Or} gates in the circuit, we could store only the $x$-th element at each gate.
+In order to handle also \textsc{Convolution}$_x$ gates, we use the discrete Fourier transform over a suitably chosen ring.
+
+We use the technique introduced by Lokshtanov and Nederlof \cite{LokshtanovN10} and then modified
+Bringmann \cite{Bringmann17} to work with numbers modulo $p$ instead of complex numbers.
+Informally, they show that if we operate on $\mathbb{Z}_p^t$ (vectors of length $t$ with elements in $\mathbb{Z}_p$ for suitably chosen $p$ and $t$) instead of the bit-vectors, we can compute $out(C)[x]$, the $x$-th element of the output of the circuit $C$ in $\Oh(|C|t\polylog p)$ time and $\Oh(|C|\log p)$ space (see details in Theorem~\ref{thm:circuits_framework}).
+However, there are technical difficulties that we need to overcome to apply their technique to our solution. The approach of Bringmann \cite{Bringmann17} requires that $t>x$ and $\mathbb{Z}_p$ contains a $t$-th root of the unity.
+The main difficulty is to choose these numbers as small as possible as they directly affect the complexity of the algorithm.
+This question was also faced by Bringmann~\cite{Bringmann17}, who showed two variants of the framework, one using the Extended Riemann Hypothesis and the other unconditional but with polynomially higher time and space, which is not good enough for our streaming application. By using Bombieri--Vinogradov theorem (see details in Theorem~\ref{thm:bombieri}) and facts about counting primes in arithmetic progressions, we obtain an unconditional time bound comparable to that of Bringmann that assumes the Extended Riemann Hypothesis.
+
+%Secondly\todob{Aren't the two difficulties too easy to mention?}, in order to use the properties of discrete Fourier transform, we need to guarantee that convolutions do not overflow. In other words, we need to ensure that we never obtain a path of total weight exceeding $t$. We achieve that by including longer edges only in the later matrices $C_k$. More precisely, at the $k$-th step we consider all walks of weight bounded by $(1+\eps)^k$, some walks of weight bounded by $(1+\eps)^{k(1+2\log(1+\eps)}$ and no walks of larger weight, where $\eps = \frac{1}{\log x}$. Finally, we operate modulo $p$, which may result in false positive errors if the answer is congruent to 0 modulo $p$. We show that if we didn't apply modulo $p$ at every step, all the values would be bounded by $2^{\Oh(x\log x)}$. This suffices to obtain the desired bounds.
