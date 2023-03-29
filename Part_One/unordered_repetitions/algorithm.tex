@@ -1,0 +1,156 @@
+\section{Algorithm}
+\label{sec:alg}
+
+In this section we show how to implement the approach described in the previous section
+to work in $\Oh(n\log \sigma)$ time. The main
+difficulty is in efficiently implementing the sparse suffix tree construction algorithm, and
+then computing a $\Delta$-approximate factorisation. We first how to obtain an $\Oh(n\log \sigma+n\log^{*}n)$ time
+algorithm that still uses only $\Oh(n\log \sigma)$ comparisons, and then further improve its running time to $\Oh(n\log \sigma)$.
+
+\subsection[Constructing Suffix Tree and Delta-Approximate Factorisation]{Constructing Suffix Tree and \boldmath$\Delta$\unboldmath-Approximate Factorisation}
+\label{sec:suffixtree}
+
+To give an efficient algorithmic construction of the sparse suffix tree from \cref{lem:sparse}, we will use a restricted version of LCEs, where a query $\textnormal{ShortLCE}_x(i, j)$ (for any positive integer $x$) returns $\min(x, \lce(i, j))$. The following result was given by Gawrychowski et al.~\cite{Gawrychowski2016}:
+
+\begin{lemma}[Lemma 14 in~\cite{Gawrychowski2016}]
+\label{lem:LCE_undordered_original}
+For a length-$n$ string over a general unordered alphabet\footnote{Lemma 14 in~\cite{Gawrychowski2016} does not explicitly mention that it works for general unordered alphabet. However, the proof of the lemma relies solely on equality tests.}, a sequence of $q$ queries $\textnormal{ShortLCE}_{4^{k_i}}$ for $i \in \{1, \dots, q\}$ can be answered online in total time $\Oh(n \log^* n + s)$ and $\Oh(n + q)$ comparisons\footnote{Lemma 14 in~\cite{Gawrychowski2016} does not explicitly mention that it requires $\Oh(n + q)$ comparisons. However, they use a union-find approach where there can be at most $\Oh(n)$ comparisons with outcome "equal", and each LCE query performs only one comparison with outcome "not-equal", similarly to what we describe in the proof of \cref{lem:sparse}.}, where $s = \sum_{i = 1}^q(k_i + 1)$.
+\end{lemma}
+
+In the lemma, apart from the $\Oh(n \log^* n)$ time, each $\textnormal{ShortLCE}_{4^{k_i}}$ query accounts for $\Oh(k_i + 1)$ time. Note that we can answer the queries online, without prior knowledge of the number and length of the queries. Also, computing an LCE in a fragment $T[x..y]$ of length $m$ trivially reduces to a $\textnormal{ShortLCE}_{4^{\ceil{\log_4 m}}}$ query on $T$. Thus, we have:
+
+\begin{corollary}
+\label{lem:LCE_undordered}
+A sequence of $q$ longest common extension queries on a fragment $T[x..y]$ of length $m$ over a general unordered alphabet can be answered in $\Oh(q \log m)$ time plus $\Oh(n \log^* n)$ time shared by all invocations of the lemma. The number of comparisons is $\Oh(q)$, plus $\Oh(n)$ comparisons shared by all invocations of the lemma.
+\end{corollary}
+
+While constructing the sparse suffix tree, we will maintain a heavy-light decomposition using a rebuilding scheme introduced by Gabow~\cite{Gabow1990}. Let $L(u)$ denote the number of leaves in the subtree of a node $u$.
+%
+We use the following recursive construction of a heavy-light decomposition: Starting from a node $r$ (initially the root of the tree), we find the deepest descendant node $e$ such that $L(e)\geq \frac{5}{6}L(r)$ (possibly $e = r$). The path $p$ from the root $r(p)=r$ to $e(p)=e$ is a heavy path. Any edge $(u,v)$ on this path satisfies $L(v)\geq \frac{5}{6}L(u)$, and we call those edges \emph{heavy}. As a consequence, a node $u$ can have at most one child $v$ such that $(u,v)$ is heavy. For each edge $(u,v)$ where $u$ is on the heavy path and $v$ is not, we recursively build a new heavy path construction starting from~$v$.
+%
+
+
+When inserting a new suffix in our tree, we keep track of the insertion in the following way: for every root of a heavy path, we maintain $I(u)$ the number of insertions made in the subtree of $u$ since we built the heavy-light decomposition of this subtree. When $I(u) \geq \frac{1}{6} L(u)$ we recalculate the values of $L(v)$ for all nodes $v$ in the subtree of $u$ and rebuild the heavy-light decomposition for the subtree of $u$.
+%
+
+This insures that, despite insertion, for any heavy path starting at node $r$ and 
+a node $u$ on that heavy path, $L(e) \geq \frac{2}{3} L(r)$. When crossing a non-heavy edge the number of nodes in the subtree reduces by a factor at least $\frac{5}{6}$ which leads to the following property:
+
+\begin{observation}
+\label{obs:heavy}
+The path from any node to the root crosses at most $\Oh(\log m)$ heavy paths.
+\end{observation}
+
+Additionally, rebuilding a subtree of size $s$ takes $\Oh(s)$ time and adding a suffix $T[i_j .. y]$ to the tree increases $I(r)$ for each path $p$ from the root $r$ to the new leaf. Those are at most $\Oh(\log m)$ nodes, and thus maintaining the heavy path decomposition takes amortized time $\Oh(\log n)$ time per insertion.
+
+
+With these building blocks now clearly defined, we are ready to describe the construction of the sparse suffix tree.
+
+\begin{lemma}
+\label{lem:sparse-algo}
+The sparse suffix tree containing any $b$ suffixes $T[i_{1}..y], \ldots, T[i_{b}..y]$
+of $T[x..y]$ with $m=|T[x..y]|$ can be constructed using $\Oh(b\sigma\log b\log m)$ time plus $\Oh(n \log^* n)$ time shared by all invocations of the lemma.
+\end{lemma}
+
+\begin{proof}
+As in the proof of \cref{lem:sparse}, we consider the insertion of a suffix $T[i_j .. y]$ into the sparse suffix tree with suffixes $T[i_{1} .. y], T[i_{2} .. y] $ $\cdots T[i_{j-1} .. y]$.
+At all times, we maintain the heavy path decomposition. Additionally, we maintain for each heavy path a predecessor data structure, where given some length $\ell$, we can quickly identify the deepest explicit node on the heavy path that spells a string of length at least $\ell$. The data structure can, e.g., be a balanced binary search tree with insertion and search operations in $\Oh(\log b)$ time (the final sparse suffix tree and thus each heavy path contains $\Oh(b)$ nodes). 
+When rebuilding a subtree of the heavy path decomposition, we also have to rebuild the predecessor data structure for each of its heavy paths. 
+Thus, rebuilding a size-$q$ subtree takes $\Oh(q \log b)$ time (each node is on exactly one heavy path and has to be inserted into one predecessor data structure), and the amortized insertion time increases from $\Oh(\log m)$ to $\Oh(\log m \cdot \log b)$.
+Whenever we insert a suffix, we make at most one node explicit, and thus have to perform at most one insertion into a predecessor data structure. The time for this is $\Oh(\log b)$, which is dominated be the previous term.
+
+%
+When inserting $T[i_j .. y]$, we look for the node $u$ corresponding to the longest common prefix between $T[i_j .. y]$ and the inserted suffixes, make $u$ explicit if necessary and add a new leaf corresponding to $T[i_j .. y]$ attached to $u$.
+Let $v$ be the current node (initialized by the root, and always an explicit node) and $v_1, \cdots, v_d$ be its (explicit) children. If there is a heavy edge $(v, v_a)$ for $1 \leq a \leq d$, let $p$ be the corresponding heavy path.
+For each heavy path $p$, we store the label of one leaf (i.e., the starting position of one suffix) that is contained in the subtree of $e(p)$. 
+Thus, we can use \cref{lem:LCE_undordered} to
+compute the longest common extension between the string spelled by $e(p)$ and $T[i_j .. y]$.
+Now we use the predecessor data structure on the heavy path to find the deepest (either explicit or implicit) node $v'$ on the path that spells a prefix of $T[i_j .. y]$. If $v'$ is implicit, we make it explicit and add the leaf. If $v'$ is explicit and $v' \neq v$, we use $v'$ as the new current node and continue. Otherwise, we have $v' = v$, i.e., the suffix does not belong to the subtree rooted in $v_a$. In this case, we issue $d$ LCE queries between $T[i_j .. y]$ and each of the strings spelled by the nodes $v_1, \dots, v_d$. This either reveals that we can continue using one of the $v_a$ as the new current node, or that we can create a new explicit node on some $(v, v_a)$ edge and attach the leaf to it, or that we can simply attach a new leaf to $v$.
+
+Now we analyse the time spent while inserting one suffix. We spent $\Oh(b \cdot \log m \cdot \log b)$ total time for inserting $\Oh(b)$ nodes into the dynamic heavy path decomposition and the predecessor data structures. In each step of the insertion process, we either (i) move as far as possible along some heavy path or (ii) move along some non-heavy edge. For (i), we issue one LCE query and one predecessor query. For (ii) we issue $\Oh(\sigma)$ LCE queries.
+Due to \cref{obs:heavy}, both (i) and (ii) happen at most $\Oh(\log b)$ times per suffix. Thus, for all suffixes, we perform $\Oh(b \log b)$ predecessor queries and $\Oh(b\sigma \log b)$ LCE queries. The total time is $\Oh(b \log^2 b)$ for predecessor queries, and $\Oh(b\sigma \log b \log m)$ for LCE queries (apart from the $n \log^* n$ time shared by all invocations of \cref{lem:LCE_undordered}).
+\end{proof}
+
+
+\newcommand{\maxleft}{\textnormal{\textsf{src}}}
+\newcommand{\maxleftlce}{\textnormal{\textsf{len}}}
+\newcommand{\phraseend}{\textnormal{\textsf{phraseEnd}}}
+
+\begin{lemma}
+\label{lem:lz-log-star}
+For any parameter $\Delta \in [1,m]$, a $\Delta$-approximate LZ factorisation of any fragment $T[x..y]$ of length $m$ can be
+computed in $\Oh(m\sigma\log^2 m / \sqrt{\Delta})$ time plus $\Oh(n \log^* n)$ time shared by all invocations of the lemma.
+\end{lemma}
+
+\begin{proof}
+Let $T' = T[x..y]$, and let $\{i_1, i_2, \dots,i_b\}$ be a $\Delta$-cover of $\{1, \dots, m\}$, which implies $b = \Theta(m / \sqrt{\Delta})$. We obtain a sparse suffix tree of the suffixes $T'[i_{1}..m],\ldots,T'[i_{b}..m]$, which takes $\Oh(b\sigma\log b\log m) \subseteq \Oh(m\sigma\log^2 m / \sqrt{\Delta})$ time according to \cref{lem:sparse-algo}, plus $\Oh(n \log^* n)$ time shared by all invocations of the lemma. Now we compute a $\Delta$-approximate LZ factorisation of $T'$ from the spare suffix tree in $\Oh(b)$ time.  
+
+In the following proof, we use $i_1, i_2, \dots,i_b$ interchangeably to denote both the difference cover positions, as well as their corresponding leaves in the sparse suffix tree. 
+Assume that the order of difference cover positions is $i_1 < i_2 < \cdots < i_b$. 
+First, we determine for each $i_k > i_1$, the position $\maxleft(i_k) = i_h$ and the length $\maxleftlce(i_k) = \lce(i_h, i_k)$, where $i_h \in \{i_1, \dots, i_{k - 1}\}$ is a position that maximizes $\lce(i_h, i_k)$.
+This is similar to what was done in \cite{Fischer2018} for the LZ77 factorisation.
+We start by assigning labels from $\{1, \dots, b\}$ to the nodes of the sparse suffix tree. 
+A node has label $k$ if and only of $i_k$ is its smallest descendant leaf.
+We assign the labels as follows. Initially, all nodes are unlabelled. We assign label 1 to each node on the path from $i_1$ to the root.
+Then, we process the remaining leaves $i_2, \dots,i_b$ in increasing order.
+For each $i_k$, we follow the path from $i_k$ to the root. 
+We assign label $k$ to each unlabelled node that we encounter. As soon as we reach a node that has already been labelled, say, with label $h$ and string-depth $\ell$%
+%(the string-depth of a node is the length of the concatenation of all edge labels on its path to the root)
+, we are done processing leaf $i_k$. It should be easy to see that $i_h$ is also exactly the desired index that maximizes $\lce(i_h, i_k)$, and we have $\lce(i_h, i_k) = \ell$. Thus, we have found $\maxleft(i_k) = i_h$ and $\maxleftlce(i_k) = \ell$. 
+The total time needed is linear in the number of sparse suffix tree nodes, which is $\Oh(b)$.
+
+Finally, we obtain a $\Delta$-approximate LZ factorisation using $\maxleft$ and $\maxleftlce$. The previously computed values can be interpreted as follows: $i_k$ could become the starting position of a length-$\maxleftlce(i_k)$ tail (with previous occurrence at position $\maxleft(i_k)$). 
+For the $\Delta$-approximate LZ factorisation, we will create the factors greedily in a left-to-right manner. 
+Assume that we already factorised $T'[1..s - 1]$, then the next phrase starts at position $s$, and thus the next tail starts within $T'[s..s + \Delta)$ (as a reminder, the head is by definition shorter than $\Delta$). 
+Let $S = \{i_1, i_2, \dots,i_b\} \cap \{s, \dots, s + \Delta - 1\}$. 
+If there is no $i_k \in S$ with $i_k + \maxleftlce(i_k) > s + \Delta - 1$, then the next phrase is simply $T'[s..\min(|T'|,s + \Delta - 1))$ with empty tail. 
+Otherwise, the next phrase has (possibly empty) head $T'[s..i_k)$ and tail $T'[i_k..i_k + \maxleftlce(i_k))$ (with previous occurrence $\maxleft(i_k)$), where $i_k$ is chosen from $S$ such that it maximizes $i_k + \maxleftlce(i_k)$.
+Creating the phrase in this way clearly takes $\Oh(\absolute{S})$ time.
+Since the next phrase starts at least at position $s + \Delta - 1$, none of the positions from $S \setminus \{s + \Delta - 1\}$ will ever be considered as starting positions of other tails. Thus, every $i_k$ is considered during the creation of at most two phrases, and the total time needed to create all phrases is $\Oh(b)$.
+
+\newcommand{\iright}{i_k}
+\newcommand{\ileft}{i_{k'}}
+
+It remains to be shown that the computed factorisation is indeed a $\Delta$-approximate LZ factorisation, i.e., if we output a phrase $T'[s..e]$, then the unique (non-approximate) LZ phrase $T'[s..e']$ starting at position $s$ satisfies $e' - 1 \leq e$. 
+First, note that for the created approximate phrases (except possibly the last phrase of $T$) we have $s + \Delta - 2 \leq e$.
+Assume $e' < s + \Delta$, then clearly $e' - 1 \leq e$.
+Thus, we only have to consider $e' > s + \Delta - 1$.
+Since $T'[s..e']$ is an LZ phrase, there is some $s' < s$ such that $\lce(s', s) = e' - s$.
+%$T'[s'..e' - (s - s') - 1] = T'[s..e' - 1]$.
+Let $h$ be the constant-time computable function that defines the $\Delta$-cover, and let $\ileft = s' + h(s', s)$ and $\iright = s + h(s', s)$. 
+Note that $\ileft \in \{i_1, i_2, \dots,i_{k - 1}\}$ and $\iright \in \{i_1, i_2, \dots,i_b\} \cap \{s, \dots, s + \Delta - 1\}$.
+%Due to the definition of $\Delta$-covers, there is some $i_k \in \{i_1, i_2, \dots,i_b\} \cap \{s, \dots, s + \Delta - 1\}$ such that $i_k - (s - s') \in \{i_1, i_2, \dots,i_b\}$. 
+%Therefore, it holds $\maxleftlce(i_k) \geq \lce(i_k - (s - s'), i_k) = \lce(s', s) - (i_k - s) = e' - i_k$. While computing the $\Delta$-approximate phrase $T'[s..e]$, we considered $i_k$ as the starting postions of the tail, which implies $e \geq i_k + \maxleftlce(i_k) - 1 \geq e' - 1$.
+Therefore, we have $\maxleftlce(\iright) \geq \lce(\ileft, \iright) = \lce(s', s) - h(s', s) = (e' - s) - (\iright - s) = e' - \iright$. While computing the $\Delta$-approximate phrase $T'[s..e]$, we considered $\iright$ as the starting positions of the tail, which implies $e \geq i_k + \maxleftlce(i_k) - 1 \geq e' - 1$.
+\end{proof}
+
+
+\begin{lemma}
+\label{lem:compute3}
+There is an algorithm that, given any parameter $\Delta \in [1,m]$, estimate $\tilde{\sigma}$ and fragment $T[x..y]$ of length $m$, takes
+$\Oh(m\tilde{\sigma}\log^2 m/\sqrt{\Delta})$ time plus $\Oh(n \log^* n)$ time shared by all invocations of the lemma, and either computes a $\Delta$-approximate LZ factorisation of $T[x..y]$ or
+determines $\sigma>\tilde{\sigma}$.
+\begin{proof}
+We simply use \cref{lem:lz-log-star} to compute the factorisation. In the first step, we have to construct the sparse suffix tree using the algorithm from \cref{lem:sparse-algo}. While this algorithm takes $\Oh(m\sigma\log^2 m / \sqrt{\Delta})$ time, it is easy to see that a more accurate time bound is $\Oh(md\log^2 m / \sqrt{\Delta})$, where $d$ is the maximum degree of any node in the sparse suffix tree. If during construction the maximum degree of a node becomes $\tilde{\sigma} + 1$, we immediately stop and return that $\sigma>\tilde{\sigma}$. Otherwise, we finish the construction in the desired time.
+\end{proof}
+\end{lemma}
+
+Now we can describe the algorithm that detects squares in $\Oh(n \lg \sigma + n \log^* n)$ time and $\Oh(n \lg \sigma)$ comparisons. 
+We simply use the algorithm from \cref{sec:upper}, but use \cref{lem:compute3} instead of \cref{lem:compute2}. Next, we analyse the time needed apart from the $\Oh(n \log^* n)$ time shared by all invocations of \cref{lem:compute3}. Throughout the $t^{\text{th}}$ phase, we use $\Oh(n \cdot \tilde{\sigma} \cdot \log^2(\sigma_t) / \sqrt{\Delta}) = \Oh(n\cdot (\sigma_{t})^{1/4}/\log(\sigma_{t})\cdot \log^2(\sigma_{t})/\sqrt{\sigma_{t}})=\Oh(n \log (\sigma_t)/(\sigma_{t})^{1/4})$ comparisons
+to construct all the $\Delta$-approximate factorisations. As before, if at any time we discover that $\sigmaapprox > (\sigma_t)^{1/4} / \log(\sigma_t)$, then we use \cref{lem:classical} to finish the computation in $\Oh(n \lg \sigma_t) = \Oh(n \log \sigma)$ time. Until then (or until we finished all $\ceil{\log \log n}$ phases), we use $\Oh(\sum_{t=0}^{t'} n \log(\sigma_t)/(\sigma_{t})^{1/4})$ time, and by \cref{lem:polylog} this is $\Oh(n)$. 
+For detecting squares, we still use \cref{lem:long}, which as explained in \cref{sec:upper} takes $\Oh(n)$ time and comparisons in total, plus additional $\Oh(Z)$ time, where $Z$ is the number of approximate LZ factors considered during all invocations of the lemma. 
+We apply the lemma to each approximate LZ factorisation exactly once, and by construction each factor in phase $t$ has size at least $\Delta = \Omega(\sigma_t)$. Also, each text position is covered by at most two tails per phase. Hence $Z = \Oh(\sum_{t=0}^{t'} n/\sigma_t)$, which is $\Oh(n)$ by \cref{lem:polylog}.
+%since we have already shown that we can compute all the factorisations in $\Oh(n)$ time, it is clear that $Z \in \Oh(n)$.
+
+The last thing that remains to be shown is how to implement the bookkeeping of blocks, i.e., in each phase we have to efficiently deactivate block pairs as described at the end of \cref{sec:upper}. 
+We maintain the block pairs in $\ceil{\log \log n}$ bitvectors of total length $\Oh(n)$, where a set bit means that a block pair has been deactivated (recall that there are $\Oh(n)$ pairs in total). 
+Bitvector $t$ contains at position $j$ the bit corresponding to block pair $B_{j}B_{j + 1} = T[i..i+2(\sigma_t)^2)$ with $i = (\sigma_t)^2 \cdot (j - 1)$. Note that translating between $i$ and $j$ takes constant time.
+For each sufficiently long tail in phase $t$, we simply iterate over the relevant block pairs in phase $t + 2$ and deactivate them, i.e., we set the corresponding bit. This takes time linear in the number of deactivated blocks.
+Since there are $\Oh(n)$ block pairs, and each block pair gets deactivated at most a constant number of times, the total cost for this bookkeeping is $\Oh(n)$.
+
+The number of comparisons is dominated by the $\Oh(n \log \sigma)$ comparisons used when finishing the computation with \cref{lem:classical}. The only other comparisons are performed by \cref{lem:long}, which we already bounded by $\Oh(n)$, and by LCE queries via \cref{lem:LCE_undordered}. Since we ask $\Oh(n)$ such queries in total, the number of comparisons is also $\Oh(n)$.
+We have shown:
+
+\begin{lemma}
+The square detection algorithm from \cref{sec:upper} can be implemented in $\Oh(n \lg \sigma + n \log^* n)$ time and $\Oh(n \log \sigma)$ comparisons.
+\end{lemma}

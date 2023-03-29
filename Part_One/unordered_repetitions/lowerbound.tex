@@ -1,0 +1,203 @@
+
+\subsection{Testing Square-Freeness}
+\label{sec:lower}
+
+\begin{figure}
+\small
+\centering
+\newcommand{\cgedge}[3][]{%
+\path ($.5*(#2.south) + .5*(#3.south)$) ++(0, -.5) node (v) {};
+\draw[#1] (#2.south) to[bend right=90] (#3.south);
+}
+\newlength{\nodesep}
+\setlength{\nodesep}{1.8pt}
+\begin{tikzpicture}
+\node[inner sep=0] (prev) {};
+\foreach[count=\i from 1] \x in {2,3,-1,-1,1,4,6,5,0,-1,-1,-1,2,5,3,4,0,-1,-1,-1} {
+\ifnum\x<0%
+\node[draw=black, right=0 of prev, inner xsep=\nodesep] (\i) {\small\phantom{I}\phantom{I}};
+\else\ifnum\x<3%
+\node[fill=black!20!white, draw=black, right=0 of prev, inner xsep=\nodesep] (\i) {\small\phantom{I}\clap{\boldmath{$\x$}}\phantom{I}};
+\else\ifnum\x>2%
+\pgfmathtruncatemacro{\col}{(\x-3)*48}
+\definecolor{cccol}{HSB}{\col,100,240}
+\node[draw=black, pattern=north east lines, pattern color=cccol, right=0 of prev, inner xsep=\nodesep] (\i) {\small\phantom{I}%
+\clap{\contourlength{2pt}\contour{white}{$\x$}}%
+\phantom{I}};
+\fi\fi\fi
+\node[above=0 of \i] {$\scriptstyle\i$};
+\node[left=0 of \i.east] (prev) {};
+}
+
+%\node[right=0 of 20] {$\cdots$};
+
+\cgedge{2}{3}
+\cgedge{2}{6}
+\cgedge{2}{7}
+\cgedge{2}{8}
+\cgedge{2}{10}
+\cgedge{4}{6}
+\cgedge{5}{6}
+\cgedge{6}{7}
+\cgedge{7}{8}
+\cgedge{7}{10}
+\cgedge{8}{9}
+\cgedge{8}{10}
+
+
+\cgedge{11}{14}
+\cgedge{11}{15}
+\cgedge{11}{16}
+\cgedge{12}{14}
+\cgedge{13}{14}
+\cgedge{14}{15}
+
+
+
+\cgedge{15}{16}
+\cgedge{15}{20}
+\cgedge{16}{17}
+\cgedge{16}{18}
+\cgedge{16}{19}
+
+\path (11.south east) ++(-0.02, -.1) node (tr) {};
+\fill[red] (10.south west) ++(0.02, 0) rectangle (tr.center);
+
+\path (prev) ++(1,0) node (prev) {};
+\foreach \i in {1,...,13} {
+\node[draw=black, right=0 of prev, inner xsep=\nodesep] (\i) {\small\phantom{I}\phantom{I}};
+\node[above=0 of \i] {\color{white}$\scriptstyle\i$};
+\node[left=0 of \i.east] (prev) {};
+}
+
+\node[fill=black!20!white, draw=black, inner xsep=\nodesep] (12) at (12) {\small\phantom{I}\phantom{I}};
+\definecolor{cccol}{HSB}{70,140,220}
+\node[draw=black, pattern=north east lines, pattern color=cccol, inner xsep=\nodesep] (2) at (2) {\small\phantom{I}\phantom{I}};
+
+\cgedge[very thick]{6}{9}
+
+\foreach[count=\i from 1] \x in {4,5,6} {
+\pgfmathtruncatemacro{\y}{\x + 3}
+\pgfmathtruncatemacro{\z}{\y + 3}
+\pgfmathsetmacro{\v}{\i*.15}
+
+\path (\x.north) ++(0, \v) node (v) {};
+\draw[{|[width=4pt]}-, thick] (\x.west |- v) to (\y.west |- v);
+\draw[{|[width=2pt]}-{|[width=4pt]}, thick] (\y.west |- v) to (\z.west |- v);
+
+
+}
+
+
+\end{tikzpicture}
+\caption{Example conflict graph of the adversary described in \cref{sec:lower}. 
+The alphabet $\{0, \dots, 15\}$ is of size $\sigma = 16$. 
+The blocks are of length $\frac \sigma 4 = 4$. 
+The gray nodes are exactly the starting positions of the blocks and contain the symbols of the ternary Thue-Morse sequence $v = 2,1,0,2,0,1,2,\dots$, which is square-free. 
+We assume that the colored nodes were colored in the following order: $2,6,8,7,15,16,14$. 
+At the time of coloring node $8$, we had to avoid colors 
+$0,1,2$ (because they are reserved for the separator positions), 
+$3$ (because the adjacent node $2$ already has color $3$), and 
+$4$ (because node $6$ is in the same block and already has color $4$). 
+The algorithm has not eliminated all squares yet. 
+For example, nodes 10 and 11 with absent edge $(10, 11) \notin E$ are adjacent to nodes of colors $\{3,6,5\} \cup \{5,3,4\}$. 
+Thus, any of the colors $\{0,1,2\} \cup \{7, \dots, 15\}$ can be assigned to both nodes, enforcing the square $T[10..11]$. 
+As visualized on the right, an edge of length $\ell$ eliminates at most $\ell$ squares.} 
+\label{fig:lbsquarefree}
+\end{figure}
+
+In this section, we prove that testing square-freeness requires at least $n \ln \sigma - 3.6n$ comparisons (even if $\sigma$ is known). 
+The proof combines the idea behind the original $\Omega(n \lg n)$ lower bound by Main and Lorentz \cite{Main1984} with the adversary described at the beginning of \cref{sec:lowerbounds}.
+This time, we ensure that $\mathcal T$ always contains a square-free string with at most $\sigma$ distinct symbols.
+At the same time, we try to ensure that $\mathcal T$ also contains a string with at least one square.
+We will show that we can maintain this state until at least $n \ln \sigma -3n$ comparisons have been performed.
+
+The string (or rather family of strings) constructed by the adversary is organized in $\ceil{\frac {4n} \sigma}$ non-overlapping blocks of length $\frac \sigma 4$ (we assume $\frac \sigma 4 \in \mathbb N$ and $8 \leq \sigma \leq n$).
+Each block begins with a special separator symbol. 
+More precisely, the first symbol of the $k$-th block is the $k$-th symbol of a ternary square-free word over the alphabet $\{0,1,2\}$ (e.g., the distance between the $k^{\text{th}}$ and $(k+1)^{\text{th}}$ occurrence of 0 in the Prouhet-Thue-Morse sequence, also known as the ternary Thue-Morse-Sequence, see~\cite[Corollary~1]{Allouche1998}).
+Initially, the adversary colors the nodes that correspond to the separator positions in their respective colors from $\{0,1,2\}$.
+All remaining nodes will later get colors other than $\{0,1,2\}$. Any fragment crossing a block boundary can be projected on the colors $\{0,1,2\}$, and by construction the string cannot contain a square.
+Thus, the separator symbols ensure that there is no square crossed by a block boundary, which implies that the string is square-free if and only if each of its blocks is square-free. 
+
+During the algorithm execution, we use the following coloring rule. The available colors are $\{3, \dots, \sigma - 1\}$. Whenever the degree of a node becomes $\frac \sigma 4$, we assign its color. We avoid not only the at most $\frac \sigma 4$ colors of already colored neighbors in the conflict graph, but also the less than $\frac \sigma 4$ colors of nodes within the same block (due to $\sigma \geq 8$, there are at least $\sigma - 3 - \frac \sigma 2 \geq 1$ colors available). An example of the conflict graph is provided in \cref{fig:lbsquarefree}. At any moment in time, we could hypothetically complete the coloring by assigning one of the colors $\{3, \dots, \sigma - 1\}$ to each colorless node, avoiding colors of adjacent nodes and colors of nodes in the same block. Afterwards, each node holds one of the $\sigma$ colors, but no two nodes within the same block have the same color. Thus, each block is square-free, and therefore $\mathcal T$ always contains a square-free string with at most $\sigma$ distinct symbols. 
+
+Now we consider the state of the conflict graph \emph{after the algorithm has terminated}. 
+We are particularly concerned with consecutive ranges of colorless nodes.
+The following lemma states that for each such range, the algorithm either performed many comparisons, or we can enforce a square within the range.
+
+\begin{lemma}\label{lem:MLrestated}
+Let $R = \{i,\dots,j\} \subset V$ be a consecutive range of $m = j - i + 1$ colorless nodes in the conflict graph. Then either $\absolute{E \cap R^2} \geq \sum_{\ell = 1}^{\floor{m / 2}} \frac{m - 2\ell + 1}{\ell}$, or there is a string $T \in \mathcal T$ with at most $\sigma$ distinct symbols such that $T[i..j]$ contains a square.
+\end{lemma}
+\begin{proof}
+We say that an integer interval $[x,x+2\ell-1]$ with $i \leq x < (x + 2\ell - 1) \leq j$ has been \emph{eliminated}, if for some $y$ with $x \leq y < x + \ell$ there is an edge $(y, y + \ell)$ in the conflict graph.
+If such an edge exists, then (by the definition of $\mathcal T$) all strings $T \in \mathcal T$ satisfy $T[y] \neq T[y + \ell]$. Thus $T[x..x+2\ell-1]$ is not a square for any of them.
+
+Now we show that if $[x, x+2\ell-1]$ has not been eliminated, then there exists a string $T \in \mathcal T$ such that $T[x..x+2\ell-1]$ is a square.
+For this purpose, consider any position $y$ with $x \leq y < x + \ell$, i.e., a position in the first half of the potential square.
+Since $[x, x+2\ell-1]$ has not been eliminated, $(y, y + \ell)$ is not an edge in the conflict graph. It follows that we could assign the same color to $y$ and $y + \ell$. 
+We only have to avoid the at most $2 \cdot (\frac \sigma 4 - 1)$ colors of adjacent nodes of both $y$ and $y + \ell$ in the conflict graph. 
+Thus there are $\frac \sigma 2 + 2$ appropriate colors that can be assigned to both nodes. Unlike during the algorithm execution, we do not need to avoid the special separator colors or the colors in the same block; since we are trying to enforce a square, we do not have to worry about accidentally creating one.
+By applying this coloring scheme for all possible choices of $y$, we enforce that all strings $T \in \mathcal T$ have a square $T[x..x+2\ell-1]$. 
+Note that by coloring additional nodes after the algorithm terminated, we only remove elements from $\mathcal T$. Thus, the strings with square $T[x..x+2\ell-1]$ were already in $\mathcal T$ when the algorithm terminated.
+It follows that, if the algorithm actually guarantees square-freeness, then it must have eliminated all possible intervals $[x,x+2\ell-1]$ with $i \leq x < (x + 2\ell - 1) \leq j$.
+
+While each interval needs at least one edge to be eliminated, a single edge eliminates multiple intervals. 
+However, all the intervals eliminated by an edge must be of the same length.
+Now we give a lower bound on the number of edges needed to eliminate all intervals of length $2\ell$.
+Any edge $(y, y + \ell)$ eliminates $\ell$ intervals, namely the intervals $[x,x+2\ell-1]$ that satisfy $x \leq y < x + \ell$. Within $R$, we have to eliminate $m - 2\ell + 1$ intervals of length $2\ell$, namely the intervals $[x,x+2\ell-1]$ that satisfy $i \leq x \leq j - 2\ell + 1$ (see right side of \cref{fig:lbsquarefree}). Thus we need at least $\frac{m - 2\ell + 1}{\ell}$ edges to eliminate all squares of length $2\ell$.
+Finally, by summing over all possible values of $\ell$, we need at least $\sum_{\ell = 1}^{\floor{m / 2}} \frac{m - 2\ell + 1}{\ell}$ edges to eliminate all intervals in $R$.
+Note that the edges used for elimination have both endpoints in $R$, and are thus contained in $E \cap R^2$.
+Consequently, if $\absolute{E \cap R^2} < \sum_{\ell = 1}^{\floor{m / 2}} \frac{m - 2\ell + 1}{\ell}$, then not all intervals have been eliminated, and there is a string in $\mathcal T$ that contains a square.
+\end{proof}
+
+Finally, we show that the algorithm either performed at least $\Omega(n \lg \sigma)$ comparisons, or there is a string $T \in \mathcal T$ that contains a square.
+Let $c_1, c_2, \dots, c_k$ be exactly the colored nodes. Initially (before the algorithm execution), the adversary colored $\ceil{\frac {4n} \sigma}$ nodes. Thus $k \geq \ceil{\frac {4n} \sigma}$, and there are $k - \ceil{\frac {4n} \sigma}$ nodes that have been colored after their degree reached $\frac \sigma 4$. Therefore, the sum of degrees of all colored nodes is at least $(k - \ceil{\frac {4n} \sigma}) \cdot \frac \sigma 4 \geq \frac{\sigma k - 4n - \sigma}{4} \geq \frac{\sigma k - 5n}{4}$. Each comparison may increase the degree of two nodes by one. Thus, the colored nodes account for at least $\frac{\sigma k - 5n}{8}$ comparisons.
+There are $k$ non-overlapping maximal colorless ranges of nodes, namely $\{c_i + 1, \dots, c_{i + 1} - 1\}$ for $1 \leq i \leq k$ with auxiliary value $c_{k + 1} = n + 1$. According to \cref{lem:MLrestated}, each respective range accounts for $e_i = \sum_{\ell = 1}^{\floor{m_i / 2}} \frac{m_i - 2\ell + 1}{\ell}$ edges, where $m_i = c_{i + 1} - c_i - 1$. (No edge gets counted more than once because the ranges are non-overlapping, and both endpoints of the respective edges are within the range.)
+Thus, in order to verify square-freeness, the algorithm must have performed at least $\sum_{i = 1}^k e_i + \frac{\sigma k - 5n}{8}$ comparisons. 
+The remainder of the proof consists of simple algebra. First, we provide a convenient lower bound for $e_i$ (explained below):%
+%
+
+\begin{alignat*}{1}\label{eqn:MLlower}
+e_i = \sum_{\ell = 1}^{\floor{m_i / 2}} \frac{m_i - 2\ell + 1} \ell = \sum_{\ell = 1}^{\ceil{m_i / 2}} \frac{m_i - 2\ell + 1} \ell \geq\enskip &%
+(m_i + 1) \left(\left(\sum_{\ell = 1}^{\ceil{m_i / 2}} \frac 1 \ell \right) - 1\right)\\
+>\enskip &%
+%(n + 1) \cdot(\ln \frac n 2 + \frac 1 2) - 2\ceil{\frac n 2} > %
+(m_i + 1) \cdot(\ln \frac {m_i} 2 - \frac 1 2)\\
+=\enskip &%
+(m_i + 1) \cdot\ln \frac {m_i}{2\sqrt{e}}\\
+\geq\enskip &%
+(m_i + 1) \cdot\ln \frac {m_i + 1}{2.5\sqrt{e}}%
+\end{alignat*}
+
+We can replace $\floor{m_i / 2}$ with $\ceil{m_i / 2}$ because if $m_i$ is odd the additional summand equals zero.
+The first inequality uses simple arithmetic operations. 
+The second inequality uses the classical lower bound $(\ln x + \frac 1 2) < H_x$ of harmonic numbers. 
+The last inequality holds for $m_i \geq 4$. 
+For $m_i < 4$ the result becomes negative and is thus still a correct lower bound for the number of comparisons.
+We obtain:
+
+\def\numsubstr{k}%
+\begin{alignat*}{1} 
+\smash{%
+\underbrace{\sum_{i=1}^\numsubstr (m_i + 1) \cdot \ln\frac {m_i + 1}{2.5\sqrt{e}}}%
+_{\text{\begin{tabular}{c}comparisons within colorless ranges\end{tabular}}} + %
+\underbrace{\vphantom{\sum_{i=1}^\numsubstr}\frac{\sigma k - 5n} 8}%
+_{\text{\begin{tabular}{c}\vphantom{lbthi}%
+comparisons for\\[-.5em]%
+colored nodes\end{tabular}}}%
+}\quad \geq\quad & n \cdot \ln \frac{n}{2.5\sqrt{e}\numsubstr} + \frac{\sigma k - 5n} 8\\
+=\quad &n \cdot \ln \frac \sigma {2.5\sqrt{e}x} + \frac{xn - 5n} 8\\
+=\quad &n \cdot \ln \sigma + n \cdot \left(\frac{x - 5} 8 - \ln 2.5\sqrt{e}x\right)\\
+%\geq\quad &n \cdot \ln \sigma - n \cdot \ln 10 - \frac n 2\\
+>\quad &n \cdot \ln \sigma - 3.12074n
+\end{alignat*}%
+
+The first step follows from $\sum_{i=1}^\numsubstr (m_i + 1) = n$ and the log sum inequality (see \cite[Theorem 2.7.1]{Cover2006}). In the second step we replace $\numsubstr$ by using $x = \frac{\sigma \numsubstr} n$. The third step uses simple arithmetic operations. The last step is reached by substituting $x = 8$, which minimizes the equation.
+Finally, we assumed that $\sigma$ is divisible by 4. We account for this by adjusting the lower bound to $n \ln (\sigma - 3) - 3.12074n$, which is larger than $n \ln \sigma - 3.6n$ for $\sigma \geq 8$.
+
+%Note that $x = 8$ implies $k = \frac{4n} s$, which happens exactly when there are no colored nodes except for the separator nodes.
+
+\lowerbound*
+
+
+

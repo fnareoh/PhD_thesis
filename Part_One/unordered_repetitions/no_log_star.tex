@@ -1,0 +1,213 @@
+ 
+\subsection{Final Improvement}
+\label{sec:finalimprov}
+
+\inputsquare{figures/final}
+
+For our final improvement we need to replace the LCE queries implemented by \cref{lem:LCE_undordered} with our own
+mechanism.
+The goal will remain the same, that is, given a parameter $\Delta$ and estimate $\tilde{\sigma}$ of the alphabet size,
+find a $\Delta$-approximate LZ factorisation of any fragment $T[x..y]$ in $\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$ time, where $m=|T[x..y]|$ (with $m=\Theta(\Delta^2)$, as otherwise we are not required to detect anything).
+
+As in the previous section, the algorithm might detect that the size of the alphabet is larger
+than $\tilde{\sigma}$, and in such case we revert to the divide-and-conquer algorithm. Let $\tau=\lfloor\sqrt{\Delta}\rfloor$.
+
+Initially, we only consider some fragments of $T[x..y]$. We say that $T[i\cdot \tau^{2}..i\cdot \tau^{2} + \tau)$ is a dense fragment.
+We start by remapping the characters in all dense fragments that intersect $T[x..y]$ to a linearly-sortable alphabet. This can be done
+in $\Oh(\tilde{\sigma})$ time for each position by maintaining a list of the already seen distinct characters. For each position in a dense fragment,
+we iterate over the characters in the list, and possibly append a new character to the list if it is not present. As soon as the size of
+the list exceeds $\tilde{\sigma}$, we terminate the procedure and revert to the divide-and-conquer algorithm. Otherwise, we replace each character by its position in the list.
+Overall, there are $\Oh(m/\sqrt{\Delta})$ positions in the dense fragments of $T[x..y]$, and the remapping takes $\Oh(m\tilde{\sigma}/\sqrt{\Delta})$ time.
+
+Next, we construct two generalised suffix trees~\cite{Gusfield1997}, the first one of all dense fragments, and the second one of their reversals. 
+(The generalised suffix tree of a collection of strings is the compacted trie that contains all suffixes of all strings in the collection.)
+Again, because we
+now work with a linearly-sortable alphabet this takes only $\Oh(m/\sqrt{\Delta})$ time~\cite{Farach1997}. We consider fragments
+of the form $T[i\cdot \tau .. (i+1)\cdot \tau)$ having non-empty intersection with $T[x..y]$. We call such fragments chunks.
+We note that there are $\Oh(m/\sqrt{\Delta})$ chunks, and their total length is $\Oh(m)$.
+For each chunk, we find its longest prefix $T[i\cdot \tau.. i\cdot \tau+\ell_{i})$ and
+longest suffix $T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$ that occur in one of the dense fragments.
+\cref{fig:improv:1} visualizes the dense fragments, chunks, and longest prefixes and suffixes.
+This can be done efficiently by following the heavy path decomposition of the generalised suffix tree of all dense fragments
+and their reversals, respectively. On each current heavy path, we just naively match the characters as long as possible.
+In case
+of a mismatch, we spend $\Oh(\tilde{\sigma})$ time to descend to the appropriate subtree, which happens at most $\Oh(\log m)$ times due to the heavy path decomposition.
+After having found $\ell_{i}$ and $r_{i}$, we test square-freenes of $T[i\cdot \tau.. i\cdot \tau+\ell_{i})$
+and $T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$. Because they both occur in dense fragments,
+and we have remapped the alphabet of all dense fragments, we can use \cref{lem:fasterclassical} to implement
+this in $\Oh(\ell_{i}+r_{i})$ time.
+Thus, the total time per chunk is thus $\Oh(\tilde{\sigma}\log m)$ plus $\Oh(\ell_{i}+r_{i})$. The former sums up to
+$\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$, and we will later show that the latter can be amortised by deactivating blocks on the lower levels.
+
+The situation so far is that we have remapped the alphabet of all dense fragments to linearly-sortable, and for every chunk we know its longest
+prefix and suffix that occur in one of the dense fragments. We concatenate 
+all fragments of the form $T[i\cdot \tau-r_{i-1} .. i\cdot \tau+\ell_{i})$ (intersected with $T[x..y]$) while adding distinct separators
+in between to form a new string $T'$. 
+We stress that, because we have remapped the alphabet of all dense fragments, and the found
+longest prefix and suffix of each chunk also occur in some dense fragment,  $T'$ is over linearly-sortable alphabet. 
+Thus, we can build the suffix tree $ST$ of $T'$ in $\Oh(|T'|)$ time~\cite{Farach1997}. 
+A visualization of $T'$ is provided in \cref{fig:improv:2}
+
+Let $\mathcal{D}=\{D_{1},D_{2},\ldots\}$ be the set of distinct dense fragments.
+We would like to construct the set of all occurrences of the strings in $\mathcal{D}$ in $T[x..y]$.
+Using the suffix tree of $T'$ we can retrieve all occurrences
+of every $D_{j}$ in $T'$. We observe that, because of how we have defined $T[i\cdot \tau.. i\cdot \tau+\ell_{i})$ and
+$T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$, this will in fact give us all occurrences of every $D_{j}$ in the original $T[x..y]$.
+To implement this efficiently, we proceed as follows. First, for every $i$ we traverse $ST$ starting from its root to find the (explicit or implicit)
+node corresponding to the dense fragment $T[i\cdot \tau^{2}.. i\cdot \tau^{2} + \tau)$.
+This takes only $\Oh(m\tilde{\sigma}/\sqrt{\Delta})$ time.
+Then, all leaves in every subtree rooted at such a node correspond to occurrences of some $D_{j}$, and can be
+reported by traversing the subtree in time proportional to its size, so at most $\Oh(|T'|)$ in total.
+Finally, remapping the occurrences back to $T[x..y]$ can be done in constant time per occurrence by precomputing,
+for every position in $T'$, its corresponding position in $T[x..y$], which can be done in $\Oh(|T'|)$ time when
+constructing $T'$. Thus, in $\Oh(|T'|)$ time, we obtain the set $S$ of starting positions of all occurrences
+of the strings in $\mathcal{D}$. We summarize the properties of $S$ below.
+
+\begin{proposition}
+$S$ admits the following properties:
+\begin{enumerate}
+\item For every $i\in [x,y]$ such that $i = 0 \pmod {\tau^{2}}$, $i\in S$.
+\item For every $i\in [x,y-\tau]$, $i\in S$ if and only if $T[i..i+\tau) \in \mathcal{D}$.
+\item $|S| \leq |T'|$.
+\end{enumerate}
+\end{proposition}
+
+We now define a parsing of $T[x..y]\$ $ based on $S$.
+Let $i_{1}<i_{2}<\ldots i_{k}$ be all the positions in $S$, that is, $(i_{j},i_{j+1}) \cap S = \emptyset $ for every $j=1,2,\ldots,k-1$.
+For every $j=1,2,\ldots,k-1$, we create the phrase $T[i_{j}.. i_{j+1}+\tau)$. We add the last phrase $T[i_{k}.. y]\$$. We stress that
+consecutive phrases overlap by $\tau$ characters, and each phrase begins with a length-$\tau$ fragment starting at a position in $S$.
+This, together with property 2 of $S$, implies the following property.
+
+\begin{observation}
+\label{obs:prefixfree}
+The set of distinct phrases is prefix-free.
+\end{observation}
+
+We would like to construct the compacted trie $\Tphrase$ of all such phrases, so that (in particular) we identify identical
+phrases. 
+We first notice that each phrase begins with a fragment $T[i_{j}..i_{j}+\tau)$ that has its corresponding
+occurrence in $T'$. We note that, given a set of positions $P$ in $T$, we can find their corresponding
+positions in $T'$ (if they exist) by sorting and scanning in $\Oh(|P|+|T'|)$ time.
+
+
+
+Thus, we can
+assume that for each $i_{j}$ we know its corresponding position $i'_{j}$ in $T'$.
+Next, for each node of $ST$ we precompute its unique ancestor at string depth $\tau$ in $\Oh(|T'|)$ time.
+Then, for every fragment $T[i_{j}..i_{j}+\tau)$ we can access its corresponding (implicit or explicit)
+node of $ST$. This allows us to partition all phrases according to their prefixes of length $\tau$.
+In fact, this gives us the top part of $\Tphrase$ containing all such prefixes in $\Oh(m/\sqrt{\Delta})$ time,
+and for each phrase we can assume that we know the node of $\Tphrase$ corresponding to its length-$\tau$
+prefix. 
+
+To build the remaining part of $\Tphrase$, we partition the phrases into short and long.
+$T[i_{j}.. i_{j+1}+\tau)$ is short when $i_{j+1} \leq i_{j}+\tau$ (meaning that its length is at most $2\tau$), and long otherwise.
+
+We begin with constructing the compacted trie $\Tphrase'$ of all short phrases.
+This can be done similarly to constructing the top part of $\Tphrase$, except that now
+the fragments have possibly different lengths. However, every short phrase $T[i_{j}..i_{j+1}+\tau)$
+occurs in $T'$ as $T'[i'_{j}..i'_{j+1}+\tau)$. We claim that the nodes of $ST$ corresponding
+to every $T'[i'_{j}..i'_{j+1}+\tau)$ can be found in $\Oh(|T'|)$ time. This can be done
+by traversing $ST$ in the depth-first order while maintaining a stack of all explicit nodes with string depth at least $\tau$
+on the current path. Then, when visiting the leaf
+corresponding to the suffix of $T'$ starting at position $i'_{j}$, we iterate over the current
+stack to find the sought node. This takes at most $\Oh(|T'[i_{j}+\tau..i_{j+1}+\tau]|)$ time,
+which sums up to $\Oh(|T'|)$. Having found the node of $ST$ corresponding to $T[i_{j}..i_{j+1}+\tau)$,
+we extract $\Tphrase'$ from $ST$ in $\Oh(|T'|)$ time.
+
+With $\Tphrase'$ in hand, we construct the whole $\Tphrase$ as follows. We begin with taking the union of $\Tphrase'$ and
+the already obtained top part of $\Tphrase$, this can be obtained in $\Oh(|T'|)$ time. For each long
+phrase $T[i_{j}.. i_{j+1}+\tau)$, we know the node corresponding to $T[i_{j}..i_{j}+\tau)$
+and would like to insert the whole string $T[i_{j}.. i_{j+1}+\tau)$ into $\Tphrase$.
+We perform the insertions in increasing order of $i_j$ (this will be crucial for amortising the time later).
+This is implemented with a dynamic heavy path decomposition similarly as in \cref{sec:suffixtree},
+however with one important change. Namely, we fix a heavy path decomposition of the
+part of $\Tphrase$ corresponding to the union of $\Tphrase'$ and the top part of $\Tphrase$, and maintain a dynamic heavy
+path decomposition of every subtree hanging off from this part. Thanks to this change,
+the time to maintain the dynamic trie and all heavy path decompositions is $\Oh(m\log m/\sqrt{\Delta})$,
+as there are only $\Oh(m/\sqrt{\Delta})$ long phrases. Next, for each long phrase
+$T[i_{j}..i_{j + 1}+\tau)$, we begin the insertion at the already known node corresponding to $T[i_{j}..i_j+\tau)$,
+and continue the insertion by following the heavy paths, first in the static heavy path decomposition
+in the part of $\Tphrase$ corresponding to $\Tphrase'$, second in the dynamic heavy path
+decomposition in the appropriate subtree.
+On each heavy path, we naively match the characters as long as possible.
+The time to insert a single phrase $T[i_{j}.. i_{j+1}+\tau)$ is $\Oh(\log m)$ (twice)
+plus the length of the longest prefix
+of $T[i_{j}+\tau.. i_{j+1}+\tau)$ equal to a prefix of $T[i_{j'}+\tau.. i_{j'+1}+\tau)$, for some $j'<j$.
+The former sums up to another $\Oh(m\log m/\sqrt{\Delta})$, and we will
+later show that the latter can be amortised by deactivating blocks on the lower levels.
+
+$\Tphrase$ allows us to form metacharacters corresponding to the phrases, and transform $T[x..y]$ into a string $\Tparse$
+of length $\Oh(|T'|)$ consisting of these metacharacters.
+We build a suffix tree $\Sparse$ over this
+string over linearly-sortable metacharacters in $\Oh(|T'|)$ time. Next, we convert it into the sparse suffix tree
+$\Sparse'$ of all suffixes $T[i_{j}..y]$ as follows. Consider an explicit node $u\in\Sparse$ with children $v_{1},v_{2},\ldots,v_{d}$,
+$d\geq 2$. We first compute the subtree $\mathcal{T}_{u}$ of $\Tphrase$ induced by the leaves corresponding to the first metacharacters
+on the edges $(u,v_{i})$, for $i=1,2,\ldots,d$, and connect every $v_{i}$ to the appropriate leaf of $\mathcal{T}_{u}$.
+This can be implemented in $\Oh(d)$ time, assuming constant-time lowest common ancestor queries on $\Tphrase$~\cite{BenderF00}
+and processing the leaves from left to right with a stack, similarly as in the Cartesian tree construction algorithm~\cite{Vuillemin80}.
+We note that the order on the leaves is the same as the order on the metacharacters, and hence no extra sorting is necessary.
+Overall, this sums up to $\Oh(|T'|)$.
+Next, we observe that, unless $u$ is the root of $\Sparse$, all metacharacters on the edges $(u,v_{i})$ correspond
+to strings starting with the same prefix of length $\tau$. We obtain the subtree $\mathcal{T}_{u}'$ by truncating
+this prefix (or taking $\mathcal{T}_{u}$ if $u$ is the root). Finally, we identify the root of $\mathcal{T}_{u}'$
+with $u$, and every child $v_{i}$ with its corresponding leaf of $\mathcal{T}_{u}'$.
+Because we truncate the overlapping prefixes of length $\tau$, after this procedure is executed on every node
+of $\Sparse$ we obtain a tree $\Sparse'$ with the property that each leaf corresponds to a suffix
+$T[i_{j}..y]$. Also, by \cref{obs:prefixfree}, the edges outgoing from every node start with different characters
+as required.
+
+By following an argument from the proof of \cref{lem:lz-log-star},
+$\Sparse'$ allows us to determine, for every suffix $T[i_{j}..y]$, its longest prefix equal to a prefix of some $T[i'..y]$
+with $i' < i_{j}$, as long as its length is at least $\tau$. Indeed, in such case we must have $i'\in S$ by property 2,
+so in fact $i'=i_{j'}$ and it is enough to maximise the length of the common prefix
+with all earlier positions in $S$, which can be done using $\Sparse'$. Thus, we either know that the length of this longest
+prefix is less than $\tau$, or know its exact value (and the corresponding position $i'\in S$).
+
+\begin{lemma}
+\label{lem:synchro-facto}
+For any parameter $\Delta \in [1,m]$ and estimate $\tilde{\sigma}$ of the alphabet size, a $(\Delta+\tau)$-approximate LZ factorisation of any
+fragment $T[x..y]$ can be computed in $\Oh(m/\sqrt{\Delta})$ time with $m=|T[x..y]|$ (assuming the preprocessing
+described earlier in this section).
+\end{lemma}
+
+\begin{proof}
+Let $e \in [x,y]$ and suppose we have already constructed the factorisation of $T[x..e-1]$ and are now trying to construct the next phrase.
+Let $e'$ be the next multiple of $\tau^{2}$, we have that $e'-e < \tau^{2}\leq \Delta$ and $T[e'.. e'+\tau)$ is a dense fragment.
+Thus, by property 1 we have $e'\in S$.
+
+The first possibility is that the longest common prefix between $T[e'..y]$ and any suffix starting at an earlier position is shorter
+than $\tau$. In this case, we can simply set the head of the new phrase to be $T[e..e'+\tau)$ and the tail to be empty.
+Otherwise, we know the length $\ell$ of this longest prefix by the preprocessing described above.
+We set the head of the new phrase to be $T[e..e')$ and the tail to be $T[e'..e''+\ell)$. This takes constant time per phrase, and each
+phrase is of length at least $\tau$, giving the claimed overall time complexity. It remains to argue correctness of every step.
+
+Let $T[e..s]$ be the longest LZ phrase starting at position $e$, to show that we obtain a valid $(\Delta+\tau)$-approximate 
+phrase it suffices to show that $s \leq  e'+ \max(\tau,\ell)$.
+Let the previous occurrence of $T[e..s)$ be at position $p<e$. If $s-e' < \tau$ then there is nothing to prove.
+Otherwise, $T[e'..s)$ is a string of length at least $\tau$ that also occurs starting earlier at position $p+e'-e < e'$.
+Thus, we will correctly determine that $\ell \geq \tau$, and find a previous occurrence of the string maximising
+the value of $\ell$. In particular, we will have $\ell \geq s-e'$ as required.
+\end{proof}
+
+To achieve the bound of \cref{thm:upperbound2}, we now proceed as in \cref{sec:improved}, except that instead
+of \cref{lem:compute3} we use \cref{lem:synchro-facto}. For every $T[x..y]$ with $m=|T[x..y]|$
+this takes $\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$ time plus the time used for computing the longest
+prefix and suffix of each chunk (the latter also accounts for constructing the suffix tree $ST$ and other steps that have
+been estimated as taking $\Oh(|T'|)$ in the above reasoning)
+plus the time for inserting $T[i_{j}+\tau.. i_{j+1}+\tau)$ into $\Tphrase$ when $i_{j+1}\geq i_{j}+\tau$.
+
+We observe that we can deactivate any block pair fully contained in $T[i\cdot \tau.. i\cdot \tau+\ell_{i})$ and $T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$,
+as we have already checked that these fragments are square-free.
+Also, we can deactivate any block pair fully contained in 
+the longest prefix of $T[i_{j}+\tau.. i_{j+1}+\tau)$ equal to $T[i_{j'}+\tau.. i_{j'+1}+\tau)$, for some $j'<j$,
+because such fragment cannot contain the leftmost occurrence of a square. 
+
+There are $\Oh(m / \sqrt{\Delta})$ chunks and long phrases. If a chunk or a long phrase
+contributes $x = \Omega(\sqrt[4]{\Delta})$ to the total time, then we explicitly deactivate the block pairs in phase $t + 3$
+that are entirely contained in the corresponding fragment. Block pairs in phase $t + 3$ are of length $\Oh(\sqrt[4]{\Delta})$,
+and thus we deactivate $\Omega(x)$ positions.
+Therefore, the time spent on such chunks and long phrases in all phases sums to $\Oh(n)$.
+The remaining chunks and long phrases contribute $\Oh(\sqrt[4]{\Delta})$ to the total time,
+and there are $\Oh(m / \sqrt{\Delta})$ of them, which adds up to $\Oh(m / \sqrt[4]{\Delta})$.
+In every phase, this is $\Oh(n/\sqrt[4]{\Delta})$, so $\Oh(n)$ overall by \cref{lem:polylog}.

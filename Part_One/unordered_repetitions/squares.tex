@@ -1,0 +1,147 @@
+\documentclass[11pt,letterpaper]{article}
+\pdfoutput=1
+%\documentclass[twoside,leqno]{article}
+
+% Comment out the line below if using A4 paper size
+%\usepackage[letterpaper]{geometry}
+
+%\usepackage{ltexpprt}
+\usepackage[final=true,colorlinks=true,citecolor=blue]{hyperref}
+
+\usepackage[rgb]{xcolor}
+
+\usepackage{todonotes}
+\newcommand{\tocite}[2][]{\cite[#1]{#2}\todo{missing citation: #2}}
+\newcommand{\toref}[1]{\ref{#1}\todo{missing reference: #1}}
+
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage[left=1in,right=1in,top=1in,bottom=1in]{geometry}
+\usepackage{authblk}
+
+\usepackage{cite}
+\usepackage[outline]{contour}
+%\usepackage{fullpage}
+\usepackage{amssymb,amsmath}
+\usepackage{braket}
+\usepackage{algorithm}
+\usepackage{graphicx}
+\usepackage[noend]{algpseudocode}
+%\usepackage{authblk}
+%\usepackage{dsfont}
+\usepackage{mathtools}
+
+\usepackage{tikz}
+\usetikzlibrary{patterns,calc,arrows,arrows.meta,positioning,fit,shapes}
+
+\usepackage[font=small]{caption} %not a good solution for correct width... something's wrong
+\usepackage{subcaption}%subfigure subcaption
+
+\usepackage{thmtools}
+\usepackage{thm-restate}
+
+\makeatletter
+\def\input@path{{figures/}}
+\makeatother
+
+% Load package at the end in order to avoid the redefinition of the footnote command
+%hyperref without parameters at the beginning
+\usepackage[capitalize]{cleveref}
+
+\let\theorem\relax
+\let\endtheorem\relax
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}{Proposition}
+\newtheorem{observation}{Observation}[section]
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{fact}{Fact}
+\newtheorem{claim}{Claim}
+\newtheorem{question}{Question}[section]
+
+\DeclareMathOperator{\poly}{\mathrm{poly}}
+\DeclareMathOperator{\polylog}{\mathrm{polylog}}
+\newcommand{\argmax}{\mathrm{argmax}}
+
+\newcommand{\Oh}{\mathcal{O}}
+\newcommand{\tOh}{\widetilde{\tOh}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\D}{{\bf D}}
+\newcommand{\complex}{\mathbb{C}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\integer}{\mathbb{Z}}
+\renewcommand{\natural}{\mathbb{N}}
+\newcommand{\prob}{\mathrm{Pr}}
+\DeclareMathOperator{\Exp}{\mathbb{E}}
+\newcommand{\cC}{\mathcal{C}}
+\newcommand{\floor}[1]{\left\lfloor#1\right\rfloor}
+\newcommand{\ceil}[1]{\left\lceil#1\right\rceil}
+\newcommand{\head}{\textsf{head}}
+\newcommand{\tail}{\textsf{tail}}
+\newcommand{\Tphrase}{\mathcal{T}_{\mathrm{phrase}}}
+\newcommand{\Sparse}{\mathcal{S}_{\mathrm{parse}}}
+\newcommand{\Tparse}{T_{\mathrm{parse}}}
+\newcommand{\lce}{\textnormal{\textsc{lce}}}
+
+\newcommand{\quotes}[1]{``#1''}
+\newcommand{\absolute}[1]{\left\lvert#1\right\rvert}
+\newcommand{\tuple}[1]{\left\langle#1\right\rangle}
+
+\usepackage{enumitem}
+\setlist[description]{leftmargin=\parindent,labelindent=\parindent}
+
+\makeatletter
+\newcommand\thankssymb[1]{\textsuperscript{\@fnsymbol{#1}}}
+\makeatother
+
+\makeatletter
+
+\renewcommand{\floatpagefraction}{.8}
+
+\begin{document}
+
+\title{Optimal Square Detection Over General Alphabets}
+
+\author[1]{Jonas Ellert\thanks{Partially supported by the German Research Association (DFG) within the Collaborative Research Center SFB 876, project A6.}}
+\author[2]{Paweł Gawrychowski\thanks{Partially supported by the grant ANR-20-CE48-0001 from the French National Research Agency (ANR).}}
+\author[3]{Garance Gourdel\thankssymb{2}}
+
+\affil[1]{Technical University of Dortmund, Germany}
+\affil[2]{Institute of Computer Science, University of Wrocław, Poland}
+\affil[3]{DI/ENS, PSL Research University, IRISA Inria Rennes, France}
+
+\date{}
+
+\maketitle
+
+\begin{abstract}
+Squares (fragments of the form $xx$, for some string $x$) are arguably the most natural type of repetition in strings.
+The basic algorithmic question concerning squares is to check if a given string of length $n$ is square-free, that is, does not contain
+a fragment of such form. Main and Lorentz [J. Algorithms 1984] designed an $\mathcal{O}(n\log n)$ time algorithm
+for this problem, and proved a matching lower bound assuming the so-called general alphabet, meaning that the algorithm
+is only allowed to check if two characters are equal. 
+However, their lower bound also assumes that there are $\Omega(n)$ distinct symbols in the string.
+As an open question, they asked if there is a faster algorithm if one restricts
+the size of the alphabet. Crochemore [Theor. Comput. Sci. 1986] designed a linear-time algorithm for constant-size alphabets,
+and combined with more recent results his approach in fact implies such an algorithm for linearly-sortable alphabets.
+Very recently, Ellert and Fischer [ICALP 2021] significantly relaxed this assumption by designing a linear-time algorithm for
+general ordered alphabets, that is, assuming a linear order on the characters that permits constant time order comparisons. However, the open question of Main and Lorentz
+from 1984 remained unresolved for general (unordered) alphabets.  In this paper, we show that testing square-freeness of a length-$n$ string over
+general alphabet of size $\sigma$ can be done with $\mathcal{O}(n\log \sigma)$ comparisons, and cannot be done with $o(n\log \sigma)$ comparisons.
+We complement this result with an $\mathcal{O}(n\log \sigma)$ time algorithm in the Word RAM model.
+Finally, we extend the algorithm to reporting all the runs (maximal repetitions) in the same complexity.
+\end{abstract}
+
+\input{intro}
+\input{prelim}
+\input{inapprox}
+\input{lowerbound}
+\input{upperbound}
+\input{algorithm}
+\input{no_log_star}
+\input{runs}
+
+\bibliographystyle{abbrv}
+\bibliography{references}
+
+\end{document}

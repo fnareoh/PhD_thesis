@@ -1,0 +1,28 @@
+\newcommand{\deltacover}[2]{% (start_x, start_y) nb small block
+\node (p) at #1 {};
+\draw (p) rectangle ++(#2,-0.5); %draw Delta block
+% draw multiples of sqrt(Delta)
+\foreach \i in {1,...,#2} {
+	\draw ($(p)+(\i,0)$) -- ($(p)+(\i,-0.5)$);
+}
+% dense region
+\foreach \i in {1,...,8} {
+	\draw ($(p)+(\i*0.125,0)$) -- ($(p)+(\i*0.125,-0.5)$);
+}
+}
+
+
+\begin{figure}
+%\missingfigure{Under construction...}
+\centering
+\begin{tikzpicture}[scale=0.7, every node/.style={scale=1}]
+\deltacover{(0,0)}{8}
+\draw[<->] (0,0.5) -- (8,0.5) node[midway,above] (delta) {$\Delta$};
+\draw[<->] (11,0.5) -- (12,0.5) node[midway,above] (sqrt_delta) {$\sqrt{\Delta}$};
+\deltacover{(8,0)}{8}
+\deltacover{(16,0)}{3}
+\draw (19,0) rectangle ++(0.7,-0.5); %draw Delta block
+\end{tikzpicture}
+\caption{Positions in a $\Delta$-difference cover.}
+\label{fig:diff-cover}
+\end{figure}

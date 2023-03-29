@@ -1,0 +1,295 @@
+\label{sec:upper}
+
+In this section, we consider the problem of testing square-freeness of a given string.
+We introduce an algorithm that decides whether or not a string is square-free using only $\Oh(n \lg \sigma)$ comparisons, matching the lower bound from \cref{sec:lower}.
+Note that this algorithm is not yet time efficient because, apart from the performed symbol comparisons, it uses other operations that are expensive in the Word RAM model.
+A time efficient implementation of the algorithm will be presented in \cref{sec:alg}, where we first achieve $\Oh(n \lg \sigma + n \log^* n)$ time, and then improve this to $\Oh(n \lg \sigma)$ time.
+In \cref{sec:runs}, we generalize the result to compute all runs in the same time complexity.
+
+\subsection{Sparse Suffix Trees and Difference Covers}
+
+\begin{lemma}
+\label{lem:sparse}
+The sparse suffix tree containing any $b$ suffixes $T[i_{1}..n], \ldots, T[i_{b}..n]$
+of $T[1..n]$ can be constructed using $\Oh(b\sigma\log b)$ comparisons plus
+$\Oh(n)$ comparisons shared by all invocations of the lemma.
+\end{lemma}
+
+\begin{proof}
+We maintain a union-find structure over the positions of $T[1..n]$. Initially, each position is in a separate
+component. Before issuing a query $T[x]\stackrel{?}{=}T[y]$, we check if $x$ and $y$ are in the same
+component of the union-find structure, and if so immediately return that $T[x]=T[y]$
+without performing any comparisons. 
+Otherwise,
+we issue the query and if it returns that $T[x]=T[y]$ we merge the components of $x$ and $y$.
+Thus, the total number of issued queries with positive answer, over all invocations of the lemma,
+is less than $n$, and it remains to bound the number of issued queries with negative answer.
+
+We insert the suffixes $T[i_{j}..n]$ one-by-one into an initially empty sparse suffix tree.
+To insert the next suffix, we descend from the root of the tree to identify the node $u$ that corresponds to
+the longest common prefix between $T[i_{j}..n]$ and any of the already inserted suffixes. We then make $u$ explicit unless it is explicit already,
+and add an edge from $u$ to a new leaf corresponding to the whole $T[i_{j}..n]$.
+We say that the insertion procedure terminates at $u$.
+Node $u$ can be identified with only $\Oh(\sigma\log b)$ comparisons with negative answers as follows.
+Let $v$ be the current node (initially, the root of the tree), and let $v_{1},\ldots,v_{d}$ be its children,
+where $d\leq \sigma$. Here, $v$ can be either explicit or implicit, in the latter case $d=1$.
+We arrange the children of $v$ so that the number of leaves in the subtree
+rooted at $v_{1}$ is at least as large as the number of leaves in the subtree rooted at any other
+child of $v$. Then, we compare the character on the edge leading to $v_{1}$ with
+the corresponding character of the current suffix. If they are equal we continue with $v_{1}$,
+otherwise we compare the characters on the edges leading to $v_{2},\ldots,v_{d}$ with the
+corresponding character of the current suffix one-by-one. Then, we either continue
+with some $v_{j}$, $j\geq 2$, or terminate at $v$. To bound the number of comparisons with negative
+answer, observe that such comparisons only occur when we either terminate at $v$ or continue
+with $v_{j}$, $j\geq 2$. Whenever we continue with $v_{j}$, $j\geq 2$, the number of leaves
+in the current subtree rooted at $v_j$ decreases at least by a factor of 2 compared to subtree rooted at $v$ (as the subtree rooted at $v_{1}$ had the largest
+number of leaves). Thus, during the whole descent from the root performed during an insertion
+this can happen only at most $1+\log b$ times. Every time we do not continue in the subtree $v_{1}$
+we might have up to $d\leq \sigma$ comparisons with negative answer, thus the total number of such comparisons is as claimed%
+\footnote{In the descent, if all children are sorted according to their subtree size, the number of comparisons decreases to $\Oh(b(\sigma/\log \sigma)\log b)$, but this appears irrelevant for our final algorithm.}.
+\end{proof}
+
+
+Now we describe the sample positions that we will later use to compute the approximate LZ factorisation. 
+A set ${\bf S}\subseteq \mathbb N$ is called a $t$-cover of $\{1,\ldots,n\}$ if there is a constant-time computable function $h$
+such that, for any $1\leq i,j\leq n-t+1$, we have $0\leq h(i,j)<t$ and $i+h(i,j),j+h(i,j)\in {\bf S}$.
+A possible construction of $t$-covers is given by the lemma below, and visualized in \cref{fig:diff-cover}.
+
+\begin{lemma}
+\label{lem:cover}
+For any $n$ and $t\leq n$, there exists a $t$-cover $\D(t)$ of $\{1,\ldots,n\}$ with size $\Oh(n/\sqrt{t})$.
+Furthermore, its elements can be enumerated in time proportional to their number.
+\end{lemma}
+
+\begin{proof}
+We use the well-known combinatorial construction known as difference covers, see e.g.~\cite{Maekawa1985}.
+Let $r=\lfloor \sqrt{t}\rfloor$ and define $\D(t)=\{ i\in\{1,\ldots,n\} : i\bmod r = 0 \text { or } i\bmod r^{2} \in \{ 0,\ldots,r-1 \} \}$.
+By definition, $|\D(t)| \leq \lfloor n/r \rfloor + \lfloor n/r^{2} \rfloor r = \Oh(n/r) = \Oh(n/\sqrt{t})$.
+The function $h(i,j)$ is defined as $a+b\cdot r$, where $a=(r-i)\bmod r$ and $b=(r-\lfloor (j+a)/r \rfloor )\bmod r$.
+Note that $i+h(i,j) \leq n$ and $j+h(i,j) \leq n$.
+Then, $i+(a+b\cdot r) = 0 \pmod r$, while $\lfloor (j+(a+b\cdot r))/r \rfloor = \lfloor (j+a)/r + b\rfloor = 0 \bmod r$
+implies $j+h(i,j) \bmod r^{2} \in \{ 0,\ldots,r-1 \} \}$,
+thus $i+h(i,j),j+h(i,j)\in \D(t)$ as required.
+\end{proof}
+
+\inputsquare{figures/diff-cover}
+
+\subsection[Detecting Squares with a Delta-Approximate LZ Factorisation]{Detecting Squares with a \boldmath$\Delta$\unboldmath-Approximate LZ Factorisation}
+
+A crucial notion in our algorithm is the following variation on the standard Lempel-Ziv factorisation:
+
+\begin{definition}[$\Delta$-approximate LZ factorisation]
+For a positive integer parameter $\Delta$, the fragment $T[s..e]$ is a $\Delta$-approximate
+LZ phrase if it can be split into a head and a tail
+$T[s..e]=\head(T[s..e])\tail(T[s..e])$ such that $\absolute{\head(T[s..e])} < \Delta$ and additionally
+\begin{itemize}
+\item $\tail(T[s..e])$ is either empty or occurs at least twice in $T[1..e]$, and
+\item the unique (standard) LZ phrase $T[s..e']$ starting at position $s$ satisfies $e'-1\leq e$.
+\end{itemize}
+In a $\Delta$-approximate LZ factorisation $T = b_1b_2\dots b_z$, each factor $b_i$ is a $\Delta$-approximate phrase $T[s..e]$ with $s = 1+\sum_{j = 1}^{i - 1} \absolute{b_j}$ and $e = \sum_{j = 1}^{i} \absolute{b_j}$.
+\end{definition}
+Note that a standard LZ phrase is not a $\Delta$-approximate phrase. Also, while the LZ phrase starting at each position (and thus also the LZ factorisation) is uniquely defined, there may be multiple different $\Delta$-approximate phrases starting at each position. This also means that a single string can have multiple different $\Delta$-approximate factorisations. 
+The definitions of both standard and $\Delta$-approximate LZ phrases are illustrated in \cref{fig:def_phrases}.
+%
+\inputsquare{figures/Delta_phrase}
+%
+
+
+The intuition behind the above definition is that constructing the $\Delta$-approximate LZ factorisation becomes easier for larger
+values of $\Delta$. In particular, for $\Delta=n$ one phrase is enough. We formalise this in the following lemma,
+which is made more general for the purpose of obtaining the final result in this section.
+
+\begin{lemma}
+\label{lem:compute}
+For any parameter $\Delta \in [1, m]$, a $\Delta$-approximate LZ factorisation of any fragment $T[x..y]$ of length $m$ can be
+computed with $\Oh(m\sigma\log m/\sqrt{\Delta})$ comparisons plus $\Oh(n)$ comparisons shared by all invocations of the lemma.
+\end{lemma}
+
+\begin{proof}
+By \cref{lem:cover}, there exists a $\Delta$-cover $\D(\Delta)$ of $\{1,\ldots,n\}$ with size $\Oh(n/\sqrt{\Delta})$.
+Let $S=\D(\Delta)\cap\{x,x+1,\ldots,y\}$. Let $S=\{i_{1},i_{2},\ldots,i_{b}\}$.
+It is straightforward to verify that the construction additionally guarantees
+$b = \Oh(m/\sqrt{\Delta})$. We apply \cref{lem:sparse} on the suffixes $T[i_{1}..n],\ldots,T[i_{b}..n]$ to obtain
+their sparse suffix tree $T$ with $\Oh(b\sigma\log b)$ comparisons plus $\Oh(n)$ comparisons shared by all invocations of the lemma.
+$T$ allows us to obtain the longest common prefix of any two fragments $T[i..y]$ and $T[j..y]$, for
+$i,j\in S$, with no additional comparisons.
+By the properties of $\D(\Delta)$, for any $i,j\in \{x,x+1,\ldots,y-\Delta+1\}$ we have $0\leq h(i,j)<\Delta$
+and $i+h(i,j), j+h(i,j)\in S$.
+
+We compute the $\Delta$-approximate LZ factorisation of $T[x..y]$ phrase-by-phrase. Denoting the remaining suffix
+of the whole $T[x..y]$ by $T[x'..y]$, we need to find $x' \leq y'\leq y$ such that $T[x'..y']$ is a 
+$\Delta$-approximate phrase. This is done as follows.
+We iterate over every $x'\leq x'' < x'+\Delta$ such that $x''\in S$.
+For every such $x''$, we consider every $x\leq a' < x'$ such that $a'\in S$,
+and compute the length $\ell$ of the longest common prefix of $T[x''..y]$ and $T[a'..y]$.
+Among all such $x'',a'$ we choose the pair that results in the largest value of $x''-x'+\ell-1$
+and choose the next phrase to be $T[x'..(x''+\ell-1)]$, with the head being $T[x'..(x''-1)]$ and the tail $T[x''..(x''+\ell)-1]$.
+Finally, if there is no such pair, or the value of $x''-x'+\ell-1$ corresponding to the found pair is less than $\Delta-2$,
+we take the next phrase to be $T[x'..\min\{x'+\Delta-1,y\}]$ (with empty tail).
+Selecting such a pair requires no extra comparisons, as for every $x'',a'\in S$ we can
+use the sparse suffix tree to compute $\ell$.
+While it is clear that the generated $\Delta$-approximate phrase has the required form,
+we need to establish that it is sufficiently long. 
+
+Let $T[x'..y'']$ be the (unique) standard LZ phrase of $T[x..y]$ that is prefix of $T[x'..y]$. 
+If $y''<x'+\Delta-1$ then we only need to ensure that the generated $\Delta$-approximate phrase
+is of length at least $\min\{\Delta-1, y-x'+1\}$, which is indeed the case.
+Therefore, it remains to consider the situation when $y''\geq x'+\Delta-1$.
+Let $T[a..b]$ be the previous occurrence of $T[x'..(y''-1)]$ in $T[x..y]$
+(because $T[x'..y'']$ is a phrase this is well defined).
+Thus, $T[a..b]=T[x'..(y''-1)]$ and $a<x'$.
+Because $y'' \geq x'+\Delta-1$ and $y''\leq y$, as explained above $0\leq h(a,x')<\Delta$
+and $a+h(a,x'), x'+h(a,x')\in S$.
+We will consider $x''=x'+h(a,x')$ and $a'=a+h(a,x')$ in the above procedure.
+Next, $T[a'..b]=T[x''..(y''-1)]$,
+so when considering this pair we will obtain $\ell \geq |T[x''..(y''-1)]|$.
+Thus, for the found pair we will have $x''+\ell-1 \geq y''-1$ as required
+in the definition of a $\Delta$-approximate phrase.
+\end{proof}
+
+Next, we show that even though the $\Delta$-approximate LZ factorisation does not capture all distinct squares, as it is the case for the standard LZ factorisation, it is still helpful in detecting all sufficiently long squares.
+A crucial component is the following property of the $\Delta$-approximate LZ factorisation.
+
+\begin{lemma}
+\label{lem:longhelper}
+Let $b_{1}b_{2}\ldots b_{z}$ be a $\Delta$-approximate LZ factorisation of a string $T$. For every square $T[s..s+2\ell - 1]$ of length $2\ell \geq 8\Delta$, there is at least one phrase $b_i$ with $\absolute{\tail(b_i)} \geq \frac \ell 4 \geq \Delta$ such that $\tail(b_i)$ and the right-hand side $T[s + \ell..s+2\ell - 1]$ of the square intersect.
+\end{lemma}
+\begin{proof}
+Assume that all tails that intersect $T[s + \ell..s+2\ell - 1]$ are of length less than $\frac \ell 4$, then the respective phrases of these tails are of length at most $\frac \ell 4 + \Delta - 1$ (because each head is of length less than $\Delta$). 
+This means that $T[s + \ell..s+2\ell - 1]$ intersects at least $\ceil{\ell / (\frac \ell 4 + \Delta - 1)} \geq \ceil{\ell / (\frac \ell 2 - 1)} = 3$ phrases.
+Thus there is some phrase $b_i = T[x..y]$ properly contained in $T[s+\ell..s+2\ell-1]$, formally $s+\ell < x \leq y < s + 2\ell - 1$.
+However, this contradicts the definition of the $\Delta$-approximate LZ factorisation because $T[x..s+2\ell]$ is the prefix of a standard LZ phrase (due to $T[x..s+2\ell - 1] = T[x - \ell..s+\ell - 1]$), and the $\Delta$-approximate phrase $b_i = T[x..y]$ must satisfy $y \geq s + 2\ell - 1$.
+The contradiction implies that $T[s+\ell..s+2\ell - 1]$ intersects a tail of length at least $\frac \ell 4 \geq \Delta$.
+\end{proof}
+
+
+\begin{lemma}
+\label{lem:long}
+Given a $\Delta$-approximate LZ factorisation $T = b_{1}b_{2}\ldots b_{z}$,
+we can detect a square of size $\geq8\Delta$ in $\Oh\left(\sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)} + z\right)$ time and $\Oh\left(\sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)}\right)$ comparisons.
+\end{lemma}
+
+\begin{proof}
+\newcommand{\targettime}{\Sigma_{\textsf{target}}}
+We consider each phrase $b_i = T[a_1..a_3]$ with $\head(b_i) = T[a_1..a_2 - 1]$ and $\tail(b_i) = T[a_2..a_3]$ separately. Let $k = \absolute{\tail(b_i)}$. 
+If $k \geq \Delta$, we apply \cref{lem:conquer} to $x_1 = T[a_2 - 8k..a_2 - 1]$ and $y_1 = T[a_2..a_3 + 4k - 1]$, as well as $x_2 = T[a_2 - 8k..a_3 - 1]$ and $y_2 = T[a_3..a_3 + 4k - 1]$ trimmed to $T[1..n]$. This takes $\Oh(\absolute{\tail(b_i)})$ time and comparisons, or $\Oh\left(\sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)}\right)$ time and comparisons for all phrases. We need additional $\Oh(z)$ time to check if $k \geq \Delta$ for each phrase.
+
+Now we show that the described strategy detects a square of size at least $8\Delta$. Let $T[s..s+2\ell - 1]$ be any such square.
+Due to \cref{lem:longhelper}, the right-hand side $T[s+\ell..s+2\ell - 1]$ of this square intersects some tail $\tail(b_i) = T[a_2..a_3]$ of length $k = \absolute{\tail(b_i)} \geq \frac \ell 4 \geq \Delta$.
+Due to the intersection, we have $a_2 \leq s +2\ell - 1$ and $a_3 \geq s + \ell$.
+Thus, when processing $b_i$ and applying \cref{lem:conquer}, the starting position of $x_1$ and $x_2$ satisfies $a_2 - 8k \leq s +2\ell - 1 - 8\frac \ell 4 = s - 1$, while the end position of $y_1$ and $y_2$ satisfies $a_3 + 4k - 1 \geq s + \ell + 4\frac \ell 4 - 1 = s + 2\ell - 1$. 
+Therefore, the square is entirely contained in the respective fragments corresponding to $x_1y_1$ and $x_2y_2$.
+If $s < a_2 \leq s + 2\ell - 1$, we find the square with our choice of $x_1$ and $y_1$.
+If $s < a_3 \leq s + 2\ell - 1$, we find the square with our choice of $x_2$ and $y_2$.
+Otherwise, $T[s..s + 2\ell - 1]$ is entirely contained in tail $T[a_2..a_3]$, and we find another occurrence of the square further to the left.
+\end{proof}
+
+\subsection{Simple Algorithm for Detecting Squares}
+
+Now we have all the tools to introduce our simple method for testing square-freeness of $T[1..n]$ using $\Oh(n (\log \sigma + \log \log n))$ comparisons, assuming that $\sigma$ is known in advance.
+Let $\Delta = (\sigma\log n)^2$. We partition $T[1..n]$ into blocks of length $8\Delta$, and denote the $k^{\text{th}}$ block by $B_{k}$.
+A square of length at most $8\Delta$ can be found by invoking \cref{lem:classical} on $B_{1}B_{2}$, $B_{2}B_{3}$, and so on. 
+This takes $\Oh(\Delta \log \Delta) = \Oh(\Delta(\log \sigma + \log\log n))$ comparisons for each pair of adjacent blocks, or $\Oh(n(\log \sigma + \log\log n))$ comparisons in total. 
+It remains to test for squares of length exceeding $8\Delta$.
+This is done by
+first invoking \cref{lem:compute} to compute a $\Delta$-approximate LZ factorisation of $T[1..n]$ with $\Oh(n\sigma\log n/\sqrt{\Delta}) = \Oh(n)$ comparisons, and then using \cref{lem:long}, which adds another $\Oh(n)$ comparisons. 
+The total number of comparisons is dominated by the $\Oh(n(\log \sigma + \log \log n))$ comparisons needed to apply \cref{lem:classical} to the block pairs.
+
+\subsection{Improved Algorithm for Detecting Squares}
+\label{sec:improved}
+
+We are now ready to describe the algorithm that uses only $\Oh(n\log \sigma)$ comparisons without knowing the 
+value of $\sigma$. Intuitively, we will proceed in phases, trying to ``guess'' the value of $\sigma$. We first observe that
+\cref{lem:compute} can be extended to obtain the following.
+
+\begin{lemma}
+\label{lem:compute2}
+There is an algorithm that, given any parameter $\Delta \in [1,m]$, estimate $\tilde{\sigma}$ and fragment $T[x..y]$ of length $m$, uses
+$\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$ comparisons plus $\Oh(n)$ comparisons shared by all invocations of the lemma, and either computes a $\Delta$-approximate LZ factorisation of $T[x..y]$ or
+determines that $\sigma>\tilde{\sigma}$.
+\end{lemma}
+
+\begin{proof}
+We run the procedure described in the proof of \cref{lem:compute} and keep track of the number of comparisons
+with negative answer. As soon as it exceeds $\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$ (where the constant follows
+from the complexity analysis) we know that necessarily $\sigma>\tilde{\sigma}$, so we can terminate. Otherwise, the algorithm
+obtains a $\Delta$-approximate LZ factorisation with $\Oh(m\tilde{\sigma}\log m/\sqrt{\Delta})$ comparisons.
+Comparisons with positive answer are paid for globally.
+\end{proof}
+
+Now we describe how to find any square using $\Oh(n \lg \sigma)$ comparisons.
+We define the sequence $\sigma_t=2^{2^{\lceil\log\log n\rceil-t}}$, for $t=0,1,\ldots,\lceil\log\log n\rceil$.
+We observe that $\sigma_{t-1}=(\sigma_{t})^{2}$, and proceed in phases corresponding to the values of $t$.
+In the $t^{\text{th}}$ phase we are guaranteed that any square of length at least $(\sigma_{t})^{2}$ has been
+already detected, and we aim to detect square of length less than $(\sigma_{t})^{2}$, and at least $\sigma_t$. We partition
+the whole $T[1..n]$ into blocks of length $(\sigma_{t})^{2}$, and denote the $k^{\text{th}}$ block by $B_{k}$.
+A square of length less than $(\sigma_{t})^{2}$ is fully contained within some two consecutive blocks $B_{i}B_{i+1}$,
+hence we consider each such pair $B_{1}B_{2}$, $B_{2}B_{3}$, and so on.
+We first apply \cref{lem:compute2} with $\Delta=\sigma_{t}/8$ and $\tilde{\sigma}=(\sigma_{t})^{1/4}/\log(\sigma_{t})$ to find
+an $(\sigma_{t}/8)$-approximate LZ factorisation of the corresponding fragment of $T[1..n]$, and then
+use \cref{lem:long} to detect squares of length at least $\sigma_t$.
+We cannot always afford to apply \cref{lem:long} to all block pairs. Thus, we have to deactivate some of the blocks, which we explain when analysing the number of comparisons performed by the algorithm.
+If any of the calls to \cref{lem:compute2} in the current phase detects that $\sigma>\tilde{\sigma}$, we switch to
+applying \cref{lem:classical} on every pair of blocks $B_{i}B_{i+1}$ of the current phase and then terminate the whole algorithm.
+
+We now analyse the total number of comparisons, ignoring the $\Oh(n)$ comparisons shared by all invocations of
+\cref{lem:compute2}.
+Throughout the $t^{\text{th}}$ phase, we use $\Oh(n \cdot \tilde{\sigma} \log \sigma_t / \sqrt{\Delta}) = \Oh(n\cdot (\sigma_{t})^{1/4}/\log(\sigma_{t})\cdot \log(\sigma_{t})/\sqrt{\sigma_{t}})=\Oh(n/(\sigma_{t})^{1/4})$ comparisons
+to construct the $\Delta$-approximate factorisations (using \cref{lem:compute2})
+until we either process all pairs of blocks or detect that $\sigma>(\sigma_{t})^{1/4}/\log(\sigma_{t})$. 
+In the latter case, we finish off the whole computation with $\Oh(n\log(\sigma_{t}))$ comparisons (using \cref{lem:classical}), and by assumption on
+$\sigma$ this is $\Oh(n\log \sigma)$ as required.
+Until this happens (or until we reach phase $t=\ceil{\log \log n}-3$ where $\sigma_t \leq 256$), we use $\Oh(\sum_{t=0}^{t'} n/(\sigma_{t})^{1/4})$ comparisons
+to construct the $\Delta$-approximate factorisations,
+for some $0\leq t'\leq \lceil\log\log n\rceil$.
+To analyse the sum, we need the following bound (made more general for the purpose of the next section).
+
+\begin{lemma}
+\label{lem:sum}
+For any $0\leq x\leq y$ and $c \geq 0$ we have $\sum_{i=x}^{y} 2^{ic}/2^{2^{i}} = \Oh(2^{xc}/2^{2^{x}})$.
+\end{lemma}
+
+\begin{proof}
+We observe that the sequence of exponents $2^{i}$ is strictly increasing from $i=0$, hence
+\[ \sum_{i=x}^{y} \frac{2^{ic}}{2^{2^{i}}} \leq \sum_{i=2^{x}}^{2^{y}} \frac{i^c}{2^{i}} \leq \sum_{i=2^{x}}^{\infty} \frac{i^c}{2^{i}} = \sum_{i=0}^{\infty} \frac{(2^x+i)^c}{2^{(2^x+i)}} \leq \sum_{i=0}^{\infty} \frac{2^{xc} \cdot (i+1)^c}{2^{(2^x+i)}} =
+\frac{2^{xc}}{2^{2^x}} \cdot \sum_{i=0}^{\infty} \frac{(i+1)^c}{2^{i}} .\]
+$\sum_{i=0}^{\infty} \frac{(i+1)^c}{2^{i}}$ is a series of positive terms, we thus use Alembert's ratio test $ \frac{(i+2)^c}{2^{i+1}} \cdot \frac{2^{i}}{(i+1)^c} = \frac{1}{2}\frac{(i+2)^c}{(i+1)^c}$ which tends to $\frac{1}{2}$ when $i$ goes to the infinity, thus the series converges to a constant.
+\end{proof}
+
+
+\begin{corollary}
+\label{lem:polylog}
+For any $0 \leq t' \leq \ceil{\log \log n}$, it holds that $\sum_{t=0}^{t'} n \cdot \textnormal{polylog}(\sigma_t)/(\sigma_{t})^{1/4} = \Oh(n)$.
+\begin{proof}\belowdisplayskip=-10pt
+We have to show that $\sum_{t=0}^{t'} n \log^c(\sigma_t)/(\sigma_{t})^{1/4}) = \Oh(n)$ for any constant $c \geq 0$. We achieve this by splitting the sum and applying \cref{lem:sum}.
+\begin{eqnarray*}
+\sum_{t=0}^{t'} \frac{n \log^c(\sigma_t)}{(\sigma_{t})^{1/4}} &\leq& \sum_{t=0}^{\lceil \log\log n\rceil} \frac{n  \cdot (2^{\lceil \log\log n\rceil - t})^c}{(2^{2^{\lceil \log\log n\rceil - t}})^{1/4}} \enskip = \enskip \sum_{t=0}^{\lceil \log\log n\rceil} \frac{n  \cdot (2^{t})^c}{(2^{2^{t}})^{1/4}}\\
+&=& n \cdot \sum_{t=0}^{\lceil \log\log n\rceil} \frac{2^{tc}}{2^{2^{t-2}}} \enskip=\enskip
+n \cdot \left(\frac{1}{2^{2^{-2}}}+\frac{2^c}{2^{2^{-1}}} +  4 \cdot \sum_{t=0}^{\lceil \log\log n\rceil-2} \frac{2^{tc}}{2^{2^{t}}}\right) = \Oh(n)
+\end{eqnarray*}
+\null\hfill\null
+\end{proof}
+\end{corollary}
+
+
+Thus, all invocations of \cref{lem:compute2} cause $\Oh(\sum_{t=0}^{t'} n/(\sigma_{t})^{1/4}) = \Oh(n)$ comparisons.
+
+\subsubsection*{Deactivating Block Pairs}
+
+It remains to analyse the number of comparisons used by \cref{lem:long} throughout all phases. As mentioned earlier, we cannot actually afford to apply \cref{lem:long} to all block pairs. Thus, we introduce a mechanism that deactivates some of the pairs.
+
+First, note that there are $\Oh(\sum_{t=0}^{t'} n / (\sigma_t)^2) \subseteq \Oh(\sum_{t=0}^{t'} n / (\sigma_t)^{1/4}) = \Oh(n)$ block pairs in all phases. For each pair, we store whether it has been deactivated or not, where being deactivated broadly means that we do not have to investigate the pair because it does not contain a leftmost distinct square.
+For each block pair $B_iB_{i + 1}$ in the current phase $t$, we first check if it has been marked as deactivated. If not, we also check if it has been \emph{implicitly} deactivated, i.e., if any of the two pairs from the previous phase that contain $B_iB_{i + 1}$ are marked as deactivated. If $B_iB_{i + 1}$ has been implicitly deactivated, then we mark it as deactivated and do not apply \cref{lem:compute2} and \cref{lem:long} (the implicit deactivation serves the purpose of propagating the deactivation to all later phases). Note that if some position of the string is not contained in any active block pair in some phase, then it is also not contained in any active block pair in all later phases. This is because it always holds that $\sigma_{t-1}=(\sigma_{t})^{2}$ (with no rounding required), which guarantees that block boundaries of earlier phases do not intersect blocks of later phases.
+
+We only apply \cref{lem:compute2} and then \cref{lem:long} to $B_iB_{i + 1}$ if the pair has neither explicitly nor implicitly been deactivated. When applying \cref{lem:long}, a tail $T[a..a + \ell)$ contributes $\Oh(\ell)$ comparisons if $\ell \geq \Delta = \sigma_t / 8$ (and otherwise it contributes no comparisons).
+As the whole $T[a..a + \ell)$ occurs earlier,  it cannot contain the leftmost occurrence of a square in the whole $T$. Thus,
+any block pair (of any phase) contained in $T[a..a + \ell)$ also cannot contain such an occurrence, and thus such block pairs
+can be deactivated.
+
+The mechanism used for deactivation works as follows. Let $T[a..a + \ell)$ be a tail contributing $\Oh(\ell)$ comparisons with $\ell \geq \Delta = \sigma_t / 8$ in phase $t$. We mark all block pairs of phase $t + 2$ that are entirely contained in $T[a..a + \ell)$ as deactivated. Note that blocks in phase $t + 2$ are of length $\sqrt{\sigma_t}$, and consider the fragment $T[a + 2\sqrt{\sigma_t}..a + \ell - 2\sqrt{\sigma_t})$. In phase $t + 2$, and by implicit deactivation in all later phases, this fragment overlaps (either partially or fully) only block pairs that have been deactivated. Thus, after phase $t + 1$, we will never inspect any of the symbols in $T[a + 2\sqrt{\sigma_t}..a + \ell - 2\sqrt{\sigma_t})$ again. We say that tail $T[a..a + \ell)$ deactivated the fragment of length $\ell - 4\sqrt{\sigma_t} = \Omega(\ell)$, which is positive until phase $t=\ceil{\log \log n}-3$ because $\sigma_t > 256$. Since the number of deactivated positions is linear in the number of comparisons that the tail contributes to \cref{lem:long}, it suffices to show that each position gets deactivated at most a constant number of times. 
+In a single phase, any position gets deactivated at most twice. This is because the tails of each factorisation do not overlap by definition, but the tails of the two factorisations of adjacent block pairs $B_iB_{i + 1}$ and $B_{i + 1}B_{i + 2}$ can overlap. If a position gets deactivated for the first time in phase $t$, then (as explained earlier) we will not consider it in any of the phases $t' \geq t + 2$. Thus, it can only be that we deactivate the position again in phase $t + 1$, but not in any later phases. In total, each position gets deactivated at most four times. Hence \cref{lem:long} contributes $\Oh(n)$ comparisons in total.
+
+We have shown:
+
+\upperbound*
+

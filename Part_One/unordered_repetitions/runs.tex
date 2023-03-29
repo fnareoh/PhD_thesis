@@ -1,0 +1,157 @@
+\section{Computing Runs}\label{sec:runs}
+
+Now we adapt the algorithm such that it computes all runs. We start with the algorithm from \cref{sec:upper,sec:alg} without the final improvement from \cref{sec:finalimprov}. First, note that the key properties of the $\Delta$-approximate LZ factorisation, in particular \cref{lem:longhelper,lem:long}, also hold for the computation of runs. This is expressed by the lemmas below.
+
+\begin{lemma}
+\label{lem:longhelper:run}
+Let $b_{1}b_{2}\ldots b_{z}$ be a $\Delta$-approximate LZ factorisation of a string $T$. For every run $\tuple{s,e,p}$ of length $e-s+1 \geq 8\Delta$, there is at least one phrase $b_i$ with $\absolute{\tail(b_i)} \geq \frac {e-s+1} 8 \geq \Delta$ such that $\tail(b_i)$ and the right-hand side $T[s + \ceil{\frac{e - s + 1} 2}..e]$ of the run intersect.
+\end{lemma}
+\begin{proof}
+Let $\ell = \frac {e-s+1} 2$ and note that $\frac \ell 4 \geq \Delta$ and $e = s+2\ell - 1$. Assume that all tails that intersect $T[s + \ceil{\ell}..e]$ are of length less than $\frac \ell 4$, then the respective phrases of these tails are of length at most $\frac \ell 4 + \Delta - 1 \leq \frac \ell 2 - 1$ (because each head is of length less than $\Delta$). 
+This means that $T[s + \ceil{\ell}..e]$ (of length $\floor{\ell}$) intersects at least $\ceil{\floor{\ell} / (\frac \ell 2 - 1)} \geq 3$ phrases (the inequality holds for $\ell \geq 4$, which is implied by $\Delta \geq 1$).
+Thus there is some phrase $b_i = T[x..y]$ properly contained in $T[s+\ceil{\ell}..e]$, formally $s+\ceil{\ell} < x \leq y < e$.
+However, this contradicts the definition of the $\Delta$-approximate LZ factorisation because $T[x..e+1]$ is the prefix of a standard LZ phrase (due to $T[x..e] = T[x - p..e-p]$). 
+The contradiction implies that $T[s+\ceil{\ell}..e]$ intersects a tail of length at least $\frac \ell 4$.
+\end{proof}
+
+\noindent Before we show how to algorithmically apply \cref{lem:longhelper:run}, we need to explain how \cref{lem:conquer} extends
+to computing runs, and then how this implies that the approach of Main and Lorentz~\cite{Main1984} easily extends to computing all runs.
+We do not claim this to be a new result, but the original paper only talks about finding a representation of all squares, and
+we need to find runs, and hence include a description for completeness.
+
+\begin{lemma}
+\label{lem:conquerruns}
+Given two strings $x$ and $y$ over a general alphabet, we can compute all runs in $xy$ that include either the last character
+of $x$ or the first character of $y$ using $\Oh(\absolute{x}+\absolute{y})$ time and comparisons.
+\end{lemma}
+
+\begin{proof}
+Consider a run $\tuple{s,e,p}$ in $t=xy$ that includes either the last character of $x$ or the first character of $y$,
+meaning that $s\leq \absolute{x}+1$ and $e\geq \absolute{x}$.
+Let $\ell = \lfloor\frac {e-s+1} 2\rfloor \geq p$. We separately compute all runs with $s+\ell \leq \absolute{x}+1$ and $s+\ell > \absolute{x}+1$. Below we describe
+the former, and the latter is symmetric.
+
+Due to $s+\ell \leq \absolute{x}+1$, the length-$p$ substring $x[\absolute{x}-p+1..\absolute{x}]$ is fully
+within the run. This suggests the following strategy to generate all runs with $s+\ell \leq \absolute{x}+1$. We iterate over the possible values of $p=1,2,\dots, \absolute{x}$. For a
+given $p$, we calculate the length of the longest common prefix of $x[\absolute{x}-p+1..\absolute{x}]y$ and $y$, denoted $\textsf{pref}$,
+and the length of the longest common suffix of $x[1..\absolute{x}-p]$ and $x$, denoted $\textsf{suf}$. 
+It is easy to see that $t[\absolute{x}-p+1-\textsf{suf}..\absolute{x} + \textsf{pref}]$ is a lengthwise maximal $p$-periodic substring, and its length is $\ell' = p + \textsf{suf} + \textsf{pref}$.
+If $\textsf{pref}+\textsf{suf} \geq p$ and $s+\floor{{\ell'}/2} \leq \absolute{x}+1$, then we report the substring as a run. (The latter condition ensures that each run gets reported by exactly one of the two symmetric cases.)
+
+We use a prefix table to compute the longest common prefixes. For a given string, this table contains at position $i$ the length of the longest substring starting at position $i$ that is also a prefix of the string.
+For computing the values $\textsf{pref}$, we use the prefix table of $y \$ x y$ (where $\$$ is a new character that does not match any character in $x$ nor $y$).
+Similarly, for computing the values $\textsf{suf}$, we use the prefix table of the reversal of a new string $x \$ x$.
+The tables can be computed in $\Oh(\absolute{x}+ \absolute{y})$ time and comparisons (see, e.g., computation of table \textit{lppattern} in \cite{Main1984}).
+Then, each value of $p$ can be checked in constant time.
+\end{proof}
+
+\begin{lemma}
+\label{lem:divideruns}
+Computing all runs in a length-$n$ string over a general unordered alphabet can be implemented in $\Oh(n\log n)$ time and comparisons.
+\end{lemma}
+
+\begin{proof}
+Let the input string be $T[1..n]$. We apply divide-and-conquer. Let $x=T[1..\lfloor n/2\rfloor]$ and $y=T[\lfloor n/2\rfloor + 1..n]$.
+First, we recursively compute all runs in $x$ and $y$. Of the reported runs, we filter out all the ones that contain either the last character of $x$ or the first character of $y$, which takes $\Oh(\absolute{x} + \absolute{y})$ time.
+In this way, if some reported run is a run with respect to $x$ (or $y$), but not with respect to $xy$, then it will be filtered out.
+We have generated all runs except for the ones that contain the last character of $x$ or the first character of $y$ (or both). Thus we simply invoke
+\cref{lem:conquerruns} on $xy$, which will output exactly the missing runs in $\Oh(\absolute{x} + \absolute{y})$ time and comparisons.
+There are $\Oh(\log n)$ levels of recursion, and each level takes $\Oh(n)$ time and comparisons in total.
+\end{proof}
+
+\begin{lemma}
+\label{lem:long:run}
+Let $T = b_{1}b_{2}\ldots b_{z}$ be a $\Delta$-approximate LZ factorisation, and $\chi = \sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)}$.
+We can compute in $\Oh\left(\chi + z\right)$ time and $\Oh\left(\chi\right)$ comparisons
+a multiset $R$ of size $\Oh(\chi)$ of runs with the property that a run $T[s..e]$ is possibly not in $R$ only if $e-s+1 < 8\Delta$ or
+there is some tail $\tail(b_i) = T[a_2..a_3]$ with $a_2 < s$ and $e < a_3$.
+\end{lemma}
+
+\begin{proof}
+\newcommand{\targettime}{\Sigma_{\textsf{target}}}
+Let $n = \absolute{T}$. We consider each phrase $b_i = T[a_1..a_3]$ with $\head(b_i) = T[a_1..a_2 - 1]$ and $\tail(b_i) = T[a_2..a_3]$ separately. Let $k = \absolute{\tail(b_i)}$. 
+If $k \geq \Delta$, we apply \cref{lem:conquerruns} to $x_1 = T[a_2 - 8k..a_2 - 1]$ and $y_1 = T[a_2..a_3 + 4k]$, as well as $x_2 = T[a_2 - 8k..a_3 - 1]$ and $y_2 = T[a_3..a_3 + 4k]$ trimmed to $T[1..n]$. This takes $\Oh(\absolute{\tail(b_i)})$ time and comparisons and reports $\Oh(\absolute{\tail(b_i)})$ runs with respect to $x_1y_1=x_2y_2=T[a_2 - 8k..a_3 + 4k]$ (trimmed to $T[1..n]$). 
+Of these runs, we filter out the ones that contain any of the positions $a_2 - 8k$ (only if $a_2 - 8k > 1$) and $a_3 + 4k$ (only if $a_3 + 4k < n$), which takes $\Oh(\absolute{\tail(b_i)})$ time.
+This way, each reported run is not only a run with respect to $x_1y_1$, but also a run with respect to~$T$.
+In total, we report $\Oh(\chi)$ runs (including possible duplicates) and spend $\Oh\left(\chi\right)$ time and comparisons when applying \cref{lem:conquerruns}. Additional $\Oh(z)$ time is needed to check if $\absolute{\tail(b_i)} \geq \Delta$ for each phrase.
+
+Now we show that the described strategy computes all runs of length at least $8\Delta$, except for the ones that are properly contained in a tail. Let $\tuple{s,e,p}$ be a run of length $2\ell$, where $\ell \geq 4\Delta$ is a multiple of $\frac 1 2$.
+Due to \cref{lem:longhelper:run}, the right-hand side $T[s+\ceil{\ell}..e]$ of this run intersects some tail $\tail(b_i) = T[a_2..a_3]$ of length $k = \absolute{\tail(b_i)} \geq \frac \ell 4 \geq \Delta$.
+Due to the intersection, we have $a_2 \leq e$ and $a_3 \geq s + \ceil{\ell}$.
+Thus, when processing $b_i$ and applying \cref{lem:conquerruns}, the starting position of $x_1$ and $x_2$ satisfies $a_2 - 8k \leq e - 8\frac \ell 4 < s$, while the end position of $y_1$ and $y_2$ satisfies $a_3 + 4k \geq s + \ceil{\ell} + 4\frac \ell 4 > e$. 
+Therefore, the run is contained in the fragment $T[a_2 - 8k..a_3 + 4k]$ (trimmed to $T[1..n]$) corresponding to $x_1y_1$ and $x_2y_2$, and the run does not contain positions $a_2 - 8k$ and $a_3 + 4k$.
+If $s \leq a_2 \leq e$, we find the run when applying \cref{lem:conquerruns} to $x_1$ and $y_1$.
+If $s \leq a_3 \leq e$, we find the run when applying \cref{lem:conquerruns} to $x_2$ and $y_2$.
+Otherwise, $T[s..e]$ is entirely contained in $T[a_2 + 1..a_3 - 1]$ and we do not have to report the run.
+\end{proof}
+
+
+Now we describe how to compute all runs using $\Oh(n \log \sigma)$ comparisons and $\Oh(n \log \sigma + n \log^* n)$ time.
+We again use the sequence $\sigma_t=2^{2^{\lceil\log\log n\rceil-t}}$, for $t=0,1,\ldots,\lceil\log\log n\rceil$.
+We observe that $\sigma_{t-1}=(\sigma_{t})^{2}$, and proceed in phases corresponding to the values of $t$.
+In the $t^{\text{th}}$ phase we aim to compute runs of length at least $\sigma_t$ and less than $(\sigma_t)^2$.
+We stress that this condition depends on the length of the run and not on its period.
+We partition
+the whole $T[1..n]$ into blocks of length $(\sigma_{t})^{2}$, and denote the $k^{\text{th}}$ block by $B_{k}$.
+A run of length less than $(\sigma_{t})^{2}$ is fully contained within some two consecutive blocks $B_{i}B_{i+1}$, and there is always a pair of consecutive blocks such that the run contains neither the first nor the last position of the pair (unless the first position is $T[1]$ or the last position is $T[n]$ respectively).
+Hence we consider each pair $B_{1}B_{2}$, $B_{2}B_{3}$, and so on.
+We first apply \cref{lem:compute3} with $\Delta=\sigma_{t}/8$ and $\tilde{\sigma}=(\sigma_{t})^{1/4}/\log(\sigma_{t})$ to find
+an $(\sigma_{t}/8)$-approximate LZ factorisation of the corresponding fragment of $T[1..n]$, and then
+use \cref{lem:long:run} to compute all runs of length at least $\sigma_t$, apart from possibly the ones that are properly contained in a tail. Of the computed runs, we discard the ones that contain the first or last position of the block pair (unless the first position is $T[1]$ or the last position is $T[n]$ respectively).
+This way, each reported run is a run not only with respect to the block pair, but with respect to the entire $T[1..n]$. If we do not report some run of length at least $\sigma_t$ and less than $(\sigma_t)^2$ in this way, then it is properly contained in one of the tails.
+
+We cannot always afford to apply \cref{lem:long:run,lem:compute3} to all block pairs. Thus, we have to deactivate some of the blocks. During the current phase $t$, for each tail $T[s..e]$ of length at least $\Delta$, we deactivate all block pairs in phase $t + 3$ that are contained in $T[s + 1..e - 1]$. By similar logic as in \cref{sec:upper}, if a tail contributes $e - s + 1$ comparisons and time to the application of \cref{lem:long:run}, then it permanently deactivates $\Omega(e - s + 1)$ positions of the string, and thus the total time and comparisons needed for all invocations of \cref{lem:long:run,lem:compute3} are bounded by $\Oh(n)$ (apart from the additional $\Oh(n \log^* n)$ total time for \cref{lem:compute3}).
+Whenever we apply \cref{lem:compute3}, we add all the tails of length at least $\Delta$ to a list $\mathcal L$, where each tail is annotated with the position of its previous occurrence.
+After the algorithm terminates, $\mathcal L$ contains all sufficiently long tails from all phases. We have already shown that the total time needed for \cref{lem:long:run} is bounded by $\Oh(n)$, and thus the total length of the tails in $\mathcal L$ is at most $\Oh(n)$.
+
+If any of the calls to \cref{lem:compute3} in the current phase detects that $\sigma>\tilde{\sigma}$, or if $\tilde{\sigma} < 256$, we immediately switch to
+applying \cref{lem:divideruns} on every pair of blocks $B_{i}B_{i+1}$ of the current phase, which takes $\Oh(n \log \sigma)$ time (because the length of a block pair is polynomial in $\tilde{\sigma}$). Again, after applying \cref{lem:compute3} to $B_{i}B_{i+1}$, we discard all runs that contain the first or last position of $B_{i}B_{i+1}$ (unless the first position is $T[1]$ or the last position is $T[n]$, respectively).
+After this procedure terminates, we have computed all runs, except for possibly some of the runs that were properly contained in a tail in list $\mathcal L$.
+We may have reported some duplicate runs, which we filter out as follows.
+The number of runs reported so far is $r=\Oh(n\log\sigma)$\footnote{a more careful analysis would reveal that it is $\Oh(n)$, but this is not necessary for the proof}.
+We sort them in additional $\Oh(n+r)=\Oh(n\log\sigma)$ time, e.g., by using radix sort, and remove duplicates.
+The running time so far is $\Oh(n\log \sigma)$.
+
+\subsection{Copying Runs From Previous Occurrences}
+\label{sec:copyruns}
+
+Lastly, we have to compute the runs that were properly contained in a tail in $\mathcal L$. 
+Consider such a run $\tuple{r_s, r_e, p}$, and let $T[s..e]$ be a tail in $\mathcal L$ with $s < r_s$ and $r_e < e$. If multiple tails match this criterion, let $T[s..e]$ be the one that maximizes $e$.
+In $\mathcal L$, we annotated $T[s..e]$ with its previous occurrence $T[s-d..e-d]$.
+Note that $\tuple{r_s - d, r_e - d, p}$ is also a run.
+Thus, if we compute the runs in an appropriate order, we can simply copy the missing runs from their respective previous occurrences. For this sake, we annotate each position $i \in [1, n]$ with:
+
+\begin{itemize}
+\item a list of all the runs $\tuple{i, e, p}$ that we already computed, arranged in increasing order of end position $e$. We already sorted the runs for duplicate elimination, and can annotate all position in $\Oh(n)$ time.
+\item a pair $(e^*, d^*)$, where $e^* = d^* = 0$ if there is no tail $T[s..e]$ such that $s < i < e$. Otherwise, among all tails $T[s..e]$ with $s < i < e$, we choose the one that maximizes $e$. Let $T[s-d..e-d]$ be its previous occurrence, then we use $e^* = e$ and $d^* = d$. As explained earlier, the total length of all tails in $\mathcal L$ is $\Oh(n)$, and thus we can simply scan each tail and update the annotation pair of each contained position whenever necessary.
+\end{itemize}
+
+Observe that, if a position is annotated with $(0,0)$, then none of the runs starting at position $i$ is fully contained in a tail, and thus we have already annotated position $i$ with the complete list of the runs starting at~$i$. 
+Now we process the positions $i \in [1, n]$ one at a time and in increasing order.
+We inductively assume that, at the time at which we process $i$, we have already annotated each $j < i$ with the complete list of runs starting at $j$. Hence our goal is to complete the list of $i$ such that it contains all runs starting at $i$. If $i$ is annotated with $(0,0)$, then the list is already complete.
+Otherwise, $i$ is annotated with $(e, d)$, every missing run $\tuple{i, e_r, p}$ satisfies $e_r < e$, and the annotation list of $i - d$ already contains the run $\tuple{i - d, e_r - d, p}$ (due to $T[i - 1..e_r + 1] = T[i - d - 1..e_r - d + 1]$ and the inductive assumption).
+For each run $\tuple{i - d, r_e - d, p}$ in the annotation list of position $i - d$, we insert the run $\tuple{i, e_r, p}$ into the annotation list of $i$. We perform this step in a merging fashion, starting with the shortest runs of both lists and zipping them together. As soon as we are about to insert a run $\tuple{i, e_r, p}$ with $e_r \geq e$, we do not insert it and abort. Thus, the time needed for processing $i$ is linear in the number of runs starting at position~$i$. By the runs theorem~\cite{Bannai2017}, the total number of runs is less than $n$, making the total time for this step $\Oh(n)$.
+
+Apart from the new steps in \cref{sec:copyruns}, the complexity analysis works exactly like in \cref{sec:upper}. Hence we have shown:
+
+\begin{theorem}
+\label{thm:runsstar}
+Computing all runs in a length-$n$ string that contains $\sigma$ distinct symbols from a general unordered alphabet can be implemented in $\Oh(n\log \sigma)$ comparisons and $\Oh(n\log \sigma + n \log^* n)$ time.
+\end{theorem}
+
+\subsection{Final Improvement for Computing Runs}
+
+The goal is now to adapt the final algorithm to detect all runs. We can no longer stop as soon as we detect a square, and we cannot
+simply deactivate pairs of blocks that occur earlier. However, \cref{lem:fasterclassical} is actually capable of reporting all runs in
+$T[i\cdot \tau.. i\cdot \tau+\ell_{i})$ and $T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$ in $\Oh(\ell_{i}+r_{i})$ time, and we
+do not need to terminate the algorithm if these fragments are not square-free.
+Thus, we can indeed deactivate any block pair fully contained in $T[i\cdot \tau.. i\cdot \tau+\ell_{i})$ and $T[(i+1)\cdot \tau-r_{i} .. (i+1)\cdot \tau)$.
+Next, we also deactivate block pairs fully contained in the longest prefix of $T[i_{j}+\tau.. i_{j+1}+\tau)$ equal to
+$T[i_{j'}+\tau.. i_{j'+1}+\tau)$, for some $j'<j$. Denoting the length of this prefix by $\ell$,
+we treat $T[i_{j}+\tau.. i_{j}+\ell)$ as a tail and add it to the list $\mathcal{L}$ (annotated with $i_{j'}$).
+The total length of all fragments added to $\mathcal{L}$ is still $\Oh(n)$.
+
+\begin{theorem}
+\label{thm:runs}
+Computing all runs in a length-$n$ string that contains $\sigma$ distinct symbols from a general unordered alphabet can be implemented in $\Oh(n\log \sigma)$ comparisons and $\Oh(n\log \sigma)$ time.
+\end{theorem}

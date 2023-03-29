@@ -1,0 +1,93 @@
+\begin{figure}
+\subcaptionbox{\label{fig:LZ-phrase}A standard LZ phrase $T[s..e]$.}%
+{\begin{tikzpicture}[x=10, y=15, every node/.style={inner sep=0, minimum width=0, minimum height=0}]
+\node (l) at (2,0) {};
+\node (r) at (18,1) {};
+\node (s) at (10,0) {};
+\node (e) at (16.5,1) {};
+\node (shift) at (7,0) {};
+
+\node (eminus) at ($(e)-(1,0)$) {};
+\node (mid) at ($.5*(l)+.5*(r)$) {};
+
+\node[draw, fit=(l)(r)] (text) {};
+\node[left=0 of text] {$T = {}$};
+\node[above right=.1 and -.1em of s |- e] (toplabel) {$\scriptstyle s$};
+\node[above left=.1 and -.1em of e] {$\scriptstyle e$};
+
+\node[draw, fit=(s |- l)(e)] (phrase) {};
+\node[draw, fill=gray!40, fit=(s |- l)(eminus)] (phraseminus) {};
+\node at (phraseminus.center) {\small $T[s..e)$};
+
+\node[below=.2em of phrase.center |- text.south] (bottomtext) {$\underbrace{\hspace{2.3cm}}$};
+
+\draw ($(s)-(shift)$) node (s2) {};
+\draw ($(eminus)-(shift)$) node (eminus2) {};
+\node[draw, fill=gray!40, fit=(s2)(eminus2)] (phraseminus2) {};
+\node at (phraseminus2.center) {\small $T[s..e)$};
+
+\draw[-Latex] (phraseminus.north) to ++(0,0.75em) to[out=90, in=90, looseness=.8] node[midway] (toptext) {} ($(phraseminus2.north)+(0,0.75em)$) to (phraseminus2.north);
+
+\path (text) ++(0,2.25) node (ttv) {};
+\node (toptext) at (toptext |- ttv) {};
+
+\node[below=.5em of mid |- bottomtext.south] {\small $T[s..e]$ occurs exactly once in $T[1..e]$};
+\node[above=.5em of mid |- toptext.north] {\small $T[s..e)$ occurs at least twice in $T[1..e)$};
+
+\node at (0,-3) {};
+\end{tikzpicture}}%
+%
+~\hfill\rule[-1cm]{.5pt}{4.75cm}\hfill~%
+%
+\subcaptionbox{\label{fig:Delta-approx}A $\Delta$-approximate phrase $T[s..e]$. The (standard) LZ phrase at position $s$ is $T[s..e']$, and it holds $e' - 1 < e$.}%
+{\begin{tikzpicture}[x=10, y=15, every node/.style={inner sep=0, minimum width=0, minimum height=0}]
+\node (l) at (-0,0) {};
+\node (r) at (21,1) {};
+\node (s) at (10,0) {};
+\node (sd) at (13,0) {};
+\node (ep) at (16.5,-1) {};
+\node (e) at (20,1) {};
+\node (shift) at (12,0) {};
+
+\node (epminus) at ($(ep)-(1,0)$) {};
+\node (mid) at ($.5*(l)+.5*(r)$) {};
+\node (lzmid) at ($.5*(s)+.5*(ep)$) {};
+
+\node[draw, fit=(l)(r)] (text) {};
+\node[left=0 of text] {$T = {}$};
+\node[above right=.1 and -.1em of s |- e] (toplabel) {$\scriptstyle s$};
+\node[above right=.1 and -.1em of sd |- e] {$\overset{\mathclap{s{+}d\,<\,s{+}\Delta}}{\scriptstyle\downarrow}$};
+\node[above left=.1 and -.1em of e] {$\scriptstyle e$};
+\node[above left=.1 and -.1em of ep |- e] {$\scriptstyle e'$};
+
+
+\node[draw, fit=(s)(ep)] (phrase) {};
+\node[draw, fill=gray!40, fit=(s)(epminus)] (phraseminus) {};
+\node at (phraseminus.center) {\small LZ \smash{phrase}};
+
+\node[draw, fill=white, fit=(s |- r)(sd)] (head) {};
+\node[draw, fill=gray!20, fit=(sd)(e)] (tail) {};
+
+\node at (head.center) {\small head\vphantom{$[]$}};
+\node at (tail.center) {\small tail $T[s{+}d..e]$};
+
+\node[below=.2em of lzmid |- phrase.south] (bottomtext) {$\underbrace{\hspace{2.3cm}}$};
+
+\draw ($(sd)-(shift)$) node (sd2) {};
+\draw ($(e)-(shift)$) node (e2) {};
+\node[draw, fill=gray!20, fit=(sd2)(e2)] (tail2) {};
+\node at (tail2.center) {\small $T[s{+}d..e]$};
+
+\draw[-Latex] (tail.30) to ++(0,0.5) to[out=90, in=90, looseness=.5] node[midway] (toptext) {} ($(tail2.north)+(0,0.5em)$) to (tail2.north);
+
+\path (text) ++(0,2.25) node (ttv) {};
+\node (toptext) at (toptext |- ttv) {};
+
+\node[below=.5em of mid |- bottomtext.south] {\small $T[s..e']$ occurs exactly once in $T[1..e']$};
+\node[above=.5em of mid |- toptext.north] {\small $T[s{+}d..e]$ occurs at least twice in $T[1..e]$};
+
+\node at (0,-3) {};
+\end{tikzpicture}}
+
+\caption{Illustration of the definition of a LZ-phrase and a $\Delta$-approximate phrase.}\label{fig:def_phrases}
+\end{figure}

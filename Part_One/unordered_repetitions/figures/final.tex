@@ -1,0 +1,364 @@
+\definecolor{new-red-fill}{HTML}{f1a340}
+\colorlet{new-red-line}{new-red-fill!50!white}
+\colorlet{new-red-line-end}{black}
+\tikzset{redonlyhatch/.style={
+	pattern=north west lines, 
+	pattern color=new-red-line},
+}
+\tikzset{redhatch/.style={
+	preaction={fill, new-red-fill}, 
+	redonlyhatch},
+}
+
+\definecolor{new-blue-fill}{HTML}{998ec3}
+\colorlet{new-blue-line}{new-blue-fill!75!black}
+\colorlet{new-blue-line-end}{black}
+\tikzset{blueonlyhatch/.style={
+	pattern=north east lines, 
+	pattern color=new-blue-line,
+}}
+
+\tikzset{bluehatch/.style={
+	preaction={fill, new-blue-fill}, 
+	blueonlyhatch,
+}}
+
+\colorlet{new-dense-fill}{black!10!white}
+\colorlet{new-dense-line}{black!40!white}
+\colorlet{new-dense-line-end}{black}
+\tikzset{densehatch/.style={
+	preaction={fill, new-dense-fill}, 
+	%pattern=vertical lines, 
+	pattern color=new-dense-line},
+}
+
+\colorlet{new-match-fill}{white}
+\colorlet{new-match-line}{white}
+\colorlet{new-match-line-end}{black}
+\tikzset{matchhatch/.style={
+	preaction={fill, new-match-fill}, 
+	pattern=crosshatch, 
+	pattern color=new-match-line},
+}
+
+\begin{figure}
+
+\centering
+
+\subcaptionbox{\label{fig:improv:1}Sampling dense fragments and cutting the text into chunks. Dotted lines indicate chunk boundaries, and $h_x = (j + x)\cdot \tau$ for some integer $j$ and $x \in [0, 13]$ are positions of chunk boundaries. 
+The dense fragments are $D_1 = T[h_2..h_3)$, $D_2 = T[h_7..h_8)$, and $D_3 = T[h_{12}..h_{13})$. 
+The primary occurrences of dense fragments are grey, while the secondary occurrences (the ones that we aim to find) are white.
+A purple box in the text, and the matching purple line underneath the text, correspond to some substring $T[j\cdot\tau-r_{j - 1}..j\cdot\tau)$. Similarly, the orange boxes and lines correspond to substrings $T[j\cdot\tau..j\cdot\tau + \ell_j)$.
+}{
+\begin{tikzpicture}[x=.0098\textwidth, y=1.3em]
+
+\tikzset{slimfit/.style={inner sep=0, outer sep=0, minimum width=0, minimum height=0}}
+\tikzset{every node/.style={slimfit}}
+
+\foreach[count=\xplus from 5] \x in {4,...,99} {
+	\node (\x-tl) at (\x,0) {};
+	\node (\x-br) at (\xplus,1) {};
+	\node[fit=(\x-tl)(\x-br)] (\x) {};
+	\node (\x-tl2) at (\x,0) {};
+	\node (\x-br2) at (\xplus,1) {};
+	\node[fit=(\x-tl2)(\x-br2)] (\x-2) {};
+}
+
+\node[fit=(4)(9)] (prefix) {};
+\node[fit=(94)(99)] (suffix) {};
+
+\foreach \x/\y in {%
+suffix.north east/suffix.north west,%
+prefix.north east/prefix.north west,%
+suffix.south east/suffix.south west,%
+prefix.south east/prefix.south west,%
+suffix.north east/suffix.south east,%
+prefix.north west/prefix.south west%
+}
+{
+\draw[densely dotted, thick] (\x) to (\y);
+}
+
+
+
+
+
+\foreach[count=\i from 1,
+count=\xprime from 2, %
+evaluate=\xprime as \x using int(2+5*\xprime),%
+evaluate=\x as \y using int(\x-\z+1)] \z in {1,3,1,5,3,3,0,1,5,3,0,2,4,5,2,4} {
+\node[bluehatch, fit=(\x.north east)(\y.south west)] (pattern) {};
+\draw[new-blue-line-end] (pattern.north west) to (pattern.south west);
+
+\path (pattern.south west) ++(0.15,-0.3) node (\i-ptl) {};
+\path (pattern.east |- \i-ptl) node (\i-ptc) {};
+}
+
+
+\foreach[count=\i from 1,
+count=\xprime from 2, %
+evaluate=\xprime as \x using int(3+5*\xprime),%
+evaluate=\x as \y using int(\x+\z-1)] \z in {1,3,5,1,2,4,2,5,0,3,0,0,5,1,3,4} {
+\node[redhatch, fit=(\x.north west)(\y.south east)] (pattern) {};
+\draw[new-red-line-end] (pattern.north east) to (pattern.south east);
+
+\path (pattern.east |- \i-ptl) ++(-0.15,-0.2) node (\i-pbr) {};
+\ifnum\z=0
+\path (\i-pbr |- \i-ptc) node (\i-ptc) {};
+\fi
+}
+
+\foreach[count=\i from 1, evaluate=\multi as \offset using -\multi*0.35] \multi in {
+0,
+0,
+0,
+1,
+0,
+0,
+0,
+0,
+1,
+0,
+42,
+0,
+0,
+1,
+0,
+1
+} {
+\ifnum\multi<42
+\path (\i-ptl) ++(0, \offset) node (\i-ptl) {};
+\path (\i-ptc) ++(0, \offset) node (\i-ptc) {};
+\path (\i-pbr) ++(0, \offset) node (\i-pbr) {};
+\node[bluehatch, fit=(\i-ptl)(\i-ptc |- \i-pbr)] (lbox) {};
+\node[redhatch, fit=(\i-ptc)(\i-pbr)] (rbox) {};
+\draw[new-blue-fill] (lbox.north west) to (lbox.south west);
+\draw[new-blue-fill] (lbox.north west) to (lbox.north east);
+\draw[new-red-fill] (rbox.north east) to (rbox.south east);
+\draw[new-red-fill] (rbox.north west) to (rbox.north east);
+\draw[thick] (lbox.south west) to (rbox.south east);
+%\node[draw, fit=(\i-ptl)(\i-pbr)] {};
+\fi
+}
+
+
+\node[fit=(83)(84), shading=axis, left color=new-red-fill, right color=new-red-fill!50!new-blue-fill] {};
+\node[fit=(85)(87), shading=axis, left color=new-red-fill!50!new-blue-fill, right color=new-blue-fill, pattern=vertical lines] {};
+\filldraw[blueonlyhatch, draw=none] (87.north east) -- (86.north west) -- 
+%(86.west) -- (84.west) -- 
+(84.south west) -- (87.south east);
+\filldraw[redonlyhatch, draw=none] (83.north west) -- (86.north west) -- 
+%(86.west) -- (84.west) -- 
+(84.south west) -- (83.south west);
+
+%\draw[Latex-] (85.north) ++(0,0.5em) to node[pos=1, above=.5em] (l) {} ++(1,3);
+%\node[above=0 of l, align=center] {$T[k\tau..k\tau + \ell_k]$ and\\$T[(k{+}1)\tau-r_{k} .. (k{+}1)\tau)$\\possibly overlap};
+
+
+\foreach[count=\i from 1, evaluate=\x as \y using int(\x+4)] \x in {23,48,73} {
+\draw[densely dashed] (\x.north west) ++(0,0) to node[pos=1.0, below] (l\i) {} ++(0,-2.5);
+\node[fit=(\x)(\y), densehatch, draw=new-dense-line-end] (d\i) {};
+}
+
+\node at (d1.center) {\contourlength{0pt}\contour{new-dense-fill}{$D_1$}};
+\node at (d2.center) {\contourlength{0pt}\contour{new-dense-fill}{$D_2$}};
+\node at (d3.center) {\contourlength{0pt}\contour{new-dense-fill}{$\null\enskip\, D_3$}};
+
+
+
+\foreach[count=\i from 1] \x in {$i\cdot \tau^{2}$,$(i+1)\cdot \tau^{2}$,$(i+2)\cdot \tau^{2}$} {
+\node[below=0.2em of l\i] {$\strut$\x};
+}
+
+\draw[thick] (prefix.north east) to (suffix.north west);
+\draw[thick] (prefix.south east) to (suffix.south west);
+
+\node[left=0 of prefix] {$\phantom{T'}\mathllap{T} =\enskip$};
+
+\foreach[count=\i from 1] \x in {13,18,...,90} {
+\draw[densely dotted, thick] (\x.north west) ++(0,0.5) to node[pos=0, outer sep=.1em] (l\i) {} ++(0,-1.5);
+}
+
+
+\foreach[count=\i from 0] \j in {1,2,3,4,5,6,7,8,9,10,11,12,13,14} {
+\node[above=.25em of l\j] {$\scriptstyle h_{\i}$};
+}
+
+
+\node[fit=(36-2)(40-2), matchhatch, draw=new-match-line-end] (d) {};
+\node at (d.center) {$D_3$};
+\node[fit=(55-2)(59-2), matchhatch, draw=new-match-line-end] (d) {};
+\node at (d.center) {$D_3$};
+\node[fit=(70-2)(74-2), matchhatch, draw=new-match-line-end] (d) {};
+\node at (d.center) {$D_1$};
+
+\draw[densely dashed, gray] (11.south) ++(0, -1) to ++(0,3) to[out=90,in=270] ++(-5em,3em) to node[pos=1] (left) {} ++(0,3em);
+
+
+\draw[densely dashed, gray] (21.south) ++(0, -1) to ++(0,3) to[out=90,in=270,looseness=.6] ++(10em,3em) to node[pos=1] (right) {} ++(0,3em);
+
+
+\draw (right) ++(.5em,-1) node (rright) {};
+\draw (rright) ++(0,1) node (rrightup) {};
+
+\draw (left) ++(-.5em,-1) node (lleft) {};
+\draw (lleft) ++(0,1) node (lleftup) {};
+
+\node[below=.5em of lleft] (down) {};
+
+
+
+\path (left) to node[pos=.05] (b1) {} (right);
+\path (left) to node[pos=.15] (d1) {} (right);
+\path (left) to node[pos=.25] (r1) {} (right);
+\path (left) to node[pos=.35] (b2) {} (right);
+\path (left) to node[pos=.65] (d2) {} (right);
+\path (left) to node[pos=.95] (r2) {} (right);
+
+
+\node[bluehatch, fit=(b1 |- lleftup)(d1 |- lleft)] (pattern) {};
+\draw[new-blue-line-end] (pattern.north west) to (pattern.south west);
+\node[fit=(pattern), inner sep=-.1em] (pattern) {};
+\draw[<->] (pattern.west |- down) to node[midway, below=.2em] {$\strut r_{j-1}\enskip\null$} (pattern.east |- down);
+
+\node[bluehatch, fit=(b2 |- lleftup)(d2 |- lleft)] (pattern) {};
+\draw[new-blue-line-end] (pattern.north west) to (pattern.south west);
+\node[fit=(pattern), inner sep=-.1em] (pattern) {};
+\draw[<->] (pattern.west |- down) to node[midway, below=.2em] {$\strut r_{j}$} (pattern.east |- down);
+
+\node[redhatch, fit=(r1 |- lleftup)(d1 |- lleft)] (pattern) {};
+\draw[new-red-line-end] (pattern.north east) to (pattern.south east);
+\node[fit=(pattern), inner sep=-.1em] (pattern) {};
+\draw[<->] (pattern.west |- down) to node[midway, below=.2em] {$\strut \ell_{j}$} (pattern.east |- down);
+
+\node[redhatch, fit=(r2 |- lleftup)(d2 |- lleft)] (pattern) {};
+\draw[new-red-line-end] (pattern.north east) to (pattern.south east);
+\node[fit=(pattern), inner sep=-.1em] (pattern) {};
+\draw[<->] (pattern.west |- down) to node[midway, below=.2em] {$\strut \ell_{j+1}$} (pattern.east |- down);
+
+\draw[densely dotted, thick] (d1 |- lleft) to node[pos=.75, outer sep=.2em] (l1) {} ++(0,2);
+\draw[densely dotted, thick] (d2 |- lleft) to node[pos=.75, outer sep=.2em] (l2) {} ++(0,2);
+
+\draw[<->] (l1) to node[midway, above=.2em] {$\tau$} (l2);
+
+\node[above=1em of l1] {$\strut h_0 = j\cdot\tau$};
+\node[above=1em of l2] {$\strut h_1 = (j+1)\cdot\tau$};
+
+\draw[thick] (lleft) to (rright);
+\draw[thick] (lleftup) to (rrightup);
+
+\end{tikzpicture}
+
+\vspace{.5\baselineskip}
+}
+
+\vspace{2\baselineskip}
+
+\subcaptionbox{\label{fig:improv:2}The string $T'$ used to find all the occurrences of dense fragments. Each position $\hat{h}_x$ maps to position $h_x$ in \cref{fig:improv:1}. The substring indicated by the purple box preceding $h_x = (j+x)\tau$ and the orange box succeding $h_x$ is exactly $T[h_x - r_{j + x - 1}..h_x + \ell_{j + x})$. Each $\underset{\smash{\scriptstyle x}}{\smash{\texttt{\textdollar}}}%
+$ is a distinct separator symbol that is unique within $T'$.}{
+\begin{tikzpicture}[x=.0098\textwidth, y=1.3em]
+
+\tikzset{slimfit/.style={inner sep=0, outer sep=0, minimum width=0, minimum height=0}}
+\tikzset{every node/.style={slimfit}}
+
+\foreach[count=\xplus from 5] \x in {4,...,99} {
+	\node (\x-tl) at (\x,0) {};
+	\node (\x-br) at (\xplus,1) {};
+	\node[fit=(\x-tl)(\x-br)] (\x) {};
+	\node (\x-tl2) at (\x,-1) {};
+	\node (\x-br2) at (\xplus,0) {};
+	\node[fit=(\x-tl2)(\x-br2)] (\x-2) {};
+	\node (\x-tl3) at (\x,-1) {};
+	\node (\x-br3) at (\xplus,0) {};
+	\node[fit=(\x-tl3)(\x-br3)] (\x-3) {};
+}
+
+\node[fit=(4)(6)] (prefix) {};
+\node[fit=(97)(99)] (suffix) {};
+
+\foreach \x/\y in {%
+suffix.north east/suffix.north west,%
+prefix.north east/prefix.north west,%
+suffix.south east/suffix.south west,%
+prefix.south east/prefix.south west,%
+suffix.north east/suffix.south east,%
+prefix.north west/prefix.south west%
+}
+{
+\draw[densely dotted, thick] (\x) to (\y);
+}
+
+\foreach[
+remember=\nextfirst as \first (initially 8),
+evaluate=\first as \nextfirst using int(\first+\a+\b+2),
+evaluate=\first as \last using int(\first+\a+\b-1),
+evaluate=\first as \mid using int(\first+\a),
+evaluate=\first as \matchA using int(\first+\x),
+evaluate=\first as \matchAend using int(\first+\x+4),
+evaluate=\first as \matchB using int(\first+\n),
+evaluate=\first as \matchBend using int(\first+\n+4),
+count=\i from 0
+] \a/\b/\x/\y/\n/\m in {%
+1/1/0/0/0/0,
+3/3/0/0/0/0,
+1/5/1/1/0/0,
+5/1/0/1/0/0,
+3/2/0/0/0/0,
+3/4/0/0/1/3,
+0/2/0/0/0/0,
+1/5/1/2/0/0,
+5/0/0/2/0/0,
+3/3/0/0/0/3,
+0/0/0/0/0/0,
+2/0/0/0/0/0,
+4/5/4/3/1/1%,
+%5/1/0/3/0/0
+}{
+\node[bluehatch, fit=(\first.north west)(\mid.south west)] (pattern) {};
+\draw[new-blue-line-end] (pattern.north west) to (pattern.south west);
+\node[redhatch, fit=(\mid.north west)(\last.south east)] (pattern) {};
+\draw[new-red-line-end] (pattern.north east) to (pattern.south east);
+\draw[densely dotted, thick] (\mid.north west) ++(0,0.5) to node[pos=0, outer sep=.1em] (l\i) {} ++(0,-1.5);
+\node[above=.25em of l\i] {$\scriptstyle \hat{h}_{\i}$};
+
+\node[fit=(\last.north east)(\nextfirst.south west)] (dollar) {};
+\node at (dollar.center) {%
+%\scalebox{.9}[1]{%
+\raisebox{-5.5pt}{%
+$\underset{\smash{\scriptscriptstyle\i}}{\smash{\scriptstyle\texttt{\textdollar}}}%
+%_{\kern-1pt\i}
+$%
+%}
+}};
+
+\ifnum\y>0
+\node[fit=(\matchA-2)(\matchAend-2), densehatch, draw=new-dense-line-end] (dense) {};
+\ifnum\i=12
+\node at (dense.center) {\contourlength{0pt}\contour{new-dense-fill}{$\enskip\ D_\y$}};
+\else
+\node at (dense.center) {\contourlength{0pt}\contour{new-dense-fill}{$D_\y$}};
+\fi
+\fi
+
+\ifnum\m>0
+\node[fit=(\matchB-3)(\matchBend-3), matchhatch, draw=new-match-line-end] (dense) {};
+\node at (dense.center) {$D_\m$};
+\fi
+}
+
+
+
+
+\draw[thick] (prefix.north east) to (suffix.north west);
+\draw[thick] (prefix.south east) to (suffix.south west);
+
+\node[left=0 of prefix] {$\phantom{T'}\mathllap{T'} =\enskip$};
+
+\end{tikzpicture}
+
+\vspace{.5\baselineskip}
+}
+
+\caption{Supplementary drawings for \cref{sec:finalimprov}.}
+\label{fig:improv}
+\end{figure}

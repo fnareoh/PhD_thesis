@@ -1,0 +1,76 @@
+\section{Preliminaries}
+\label{sec:prelim}
+
+\paragraph{Strings.}
+A string of length $n$ is a sequence $T[1] \dots T[n]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$, whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string.
+A suffix of $T$ has the form $T[i..n]$.
+We say that a fragment $T[i'..j']$ is properly contained in another fragment $T[i..j]$ if $i < i' \leq j' < j$.
+A substring is properly contained in $T[i..j]$, if it equals a fragment that is properly contained in $T[i..j]$.
+We write $T[i..j)$ a shortcut for $T[i..j-1]$. Similarly, we write $[i, j] = [i, j + 1)$ as a shortcut for the integer interval $\{i, \dots, j\}$. Given two positions $i \leq j$, their longest common extension (LCE) is the length of the longest common prefix between suffixes $T[i..n]$ and $T[j..n]$, formally defined as $\lce(i,j) = \lce(j,i) = \max\{\ell \in \{0, \dots, n - j + 1\} \mid T[i..i+\ell) = T[j..j+\ell)\}.$
+
+\begin{definition}
+A positive integer $p$ is a period of a string $T[1 .. n]$ if $T[i] = T[i+p]$ for every $i\in \{1, \dots n-p \}$. The smallest such $p$ is called the period of $T[1..n]$, and we call a string periodic if its period $p$ is at most $\frac{n}{2}$.
+\end{definition}
+
+\paragraph{Computational model.}
+For a general unordered alphabet $\Sigma$, the only allowed operation on the characters is comparing for equality. In particular, there is no
+linear order on the alphabet. Unless explicitly stated otherwise, we will only use such comparisons. A general ordered alphabet has a total order, such that comparisons of the type less-equals are possible. 
+
+In the algorithmic part of the paper, we assume the standard unit-cost Word RAM model with words of length $\Omega(\log n)$,
+but the algorithm is only allowed to access the input string $T[1..n]$ by comparisons $T[i]\stackrel{?}{=}T[j]$, which are assumed to take constant time.
+We say that a string of length $n$ is over a linearly-sortable alphabet, if we can sort the $n$ symbols of the string in $\Oh(n)$ time. Note that whether or not an alphabet is linearly-sortable depends not only on the alphabet, but also on the string. For example, the alphabet $\Sigma=\{1,\dots,m^{\Oh(1)}\}$ is linearly-sortable for strings of length $n = \Omega(m)$ (e.g., using radix sort), but it is unknown whether it is linearly-sortable for all strings of length $n = o(m)$~\cite{HanT02}.
+Our algorithm will internally use strings over linearly-sortable alphabets. We stress that in such strings the characters are not the
+characters from the input string, but simply integers calculated by the algorithm.
+Note that every linearly-sortable alphabet is also a general ordered alphabet.
+
+\paragraph{Squares and runs.}
+A square is a length-$2\ell$ fragment of period $\ell$. 
+The following theorem is a classical result by Main and Lorentz~\cite{Main1984}.
+
+\begin{theorem}
+\label{lem:classical}
+Testing square-freenes of $T[1..n]$ over a general alphabet can be implemented in $\Oh(n\log n)$ time and comparisons.
+\end{theorem}
+
+\noindent The proof of the above theorem is based on running a divide-and-conquer procedure
+using the following lemma.
+
+\begin{lemma}
+\label{lem:conquer}
+Given two strings $x$ and $y$ over a general alphabet, we can test if there is a square in $xy$ that is not fully contained in $x$ nor $y$ in $\Oh(|x|+|y|)$
+time and comparisons.
+\end{lemma}
+
+
+A repetition is a length-$\ell$ fragment of period at most $\frac \ell 2$. 
+A run is a maximal repetition. 
+Formally, a repetition in $T[1..n]$ is a triple $\tuple{s, e, p}$ with $s,e \in [1, n]$ and $p \in [1, \frac{e - s + 1}{2}]$ such that $p$ is the smallest period of $T[s..e]$. 
+A run is a repetition $\tuple{s, e, p}$ that cannot be extended to the left nor to the right with the same period, in other words
+$s = 1$ or $T[s-1]\neq T[s-1+p]$ and $e = n$ or $T[e+1] \neq T[e+1-p]$.
+The celebrated runs conjecture, proven by Bannai et al.~\cite{Bannai2017}, states
+that the number of runs is any length-$n$ string is less than $n$.
+Ellert and Fischer~\cite{Ellert2021} showed that all runs in a string over a general ordered alphabet can be computed in $\Oh(n)$ time.
+As mentioned earlier, each run contains a square, and each square is contained in a run.
+Thus, the string contains a square if and only if it contains a run, and it follows:
+\begin{theorem}
+\label{lem:fasterclassical}
+Computing all runs (and thus testing square-freeness) of $T[1..n]$ over a general ordered alphabet can be implemented in $\Oh(n)$ time.
+\end{theorem}
+
+\paragraph{Lempel-Ziv factorisation.}
+The unique LZ phrase starting at position $s$ of $T[1..n]$ is a fragment $T[s..e]$ such that $T[s..(e-1)]$ occurs at least twice in $T[1..(e-1)]$ and either $e = n$ or $T[s..e]$ occurs only once in $T[1..e]$.
+The Lempel-Ziv factorisation of $T$ consists of $z$ phrases $f_{1},\ldots,f_{z}$ such that the concatenation $f_{1}\ldots f_{z}$ is equal to $T[1..n]$ and each $f_{i}$ is the unique LZ phrase starting at position $1 + \sum_{j=1}^{i - 1}\absolute{f_{j}}$.
+
+\paragraph{Tries.}
+Given a collection $\mathcal S = \{T_1, \dots, T_k\}$ of strings over some alphabet $\Sigma$, its trie is a rooted tree with edge labels from $\Sigma$. 
+For any node $v$, the concatenation of the edge labels from the root to the node \emph{spells} a string. 
+The string-depth of a node is the length of the string that it spells. 
+No two nodes spell the same string, i.e., for any node, the labels of the edges to its children are pairwise distinct. Each leaf spells one of the $T_i$, and each $T_i$ is spelled by either an internal node or a leaf.
+
+The compacted trie of $\mathcal S$ can be obtained from its (non-compacted) trie by contracting each path between a leaf or a branching node and its closest branching ancestor into a single edge (i.e., by contraction we eliminate all non-branching internal nodes). The label of the new edge is the concatenation of the edge labels of the contracted path in root to leaf direction. Since there are at most $k$ leaves and all internal nodes are branching, there are $O(k)$ nodes in the compacted trie. Each edge label is some substring $T_i[s..e]$ of the string collection, and we can avoid explicitly storing the label by instead storing the reference $(i,s,e)$.  Thus $O(k)$ words are sufficient for storing the compacted trie. Consider a string $T'$ that is spelled by a node of the non-compacted trie. We say that $T'$ is explicit, if and only if it is spelled by a node of the compacted trie. 
+Otherwise $T'$ is implicit.
+
+The suffix tree of a string $T[1..n]$ is the compacted trie containing exactly its suffixes, i.e., a trie over the string collection $\{T[i..n] \mid i \in \{1, \dots, n\}\}$. It is one of the most fundamental data structures in string algorithmics, and is widely used, e.g., for compression and indexing~\cite{Gusfield1997}. The suffix tree can be stored in $\Oh(n)$ words of memory, and for linearly-sortable alphabets it can be computed in $\Oh(n)$ time~\cite{Farach1997}.
+The sparse suffix tree of $T$ for some set $B \subseteq \{1, \dots, n\}$ of sample positions is the compacted trie containing exactly the suffixes $\{T[i..n] \mid i \in B\}$. It can be stored in $\Oh(\absolute{B})$ words of memory.
+
+We assume that $T$ is terminated by some special symbol $T[n] = \texttt\textdollar$ that occurs nowhere else in $T$. This ensures that each suffix is spelled by a leaf, and we label the leaves with the respective starting positions of the suffixes. Note that for any two leaves $i\neq j$, their lowest common ancestor (i.e., the deepest node that is an ancestor of both $i$ and $j$) spells a string of length $\lce(i, j)$.

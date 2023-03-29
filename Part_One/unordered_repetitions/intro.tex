@@ -1,0 +1,219 @@
+\section{Introduction}
+
+The notion of repetition is a central concept in combinatorics on words and algorithms on strings. In this context,
+a word or a string is simply a sequence of characters from some finite alphabet $\Sigma$. In the most basic version,
+a repetition consists of two (or more) consecutive occurrences of the same fragment. Repetitions are interesting not
+only from a purely theoretical point of view, but are also very relevant in bioinformatics~\cite{Kolpakov2003}.
+A repetition could be a square, defined as two consecutive occurrences of the same fragment, a higher power (for example, a cube), or a run, which is a length-wise maximal periodic substring.
+For example, both \texttt{anan} and \texttt{nana} are squares with two occurrences each in \texttt{banananas}, and they belong to the same run \texttt{ananana}.
+In this paper, we start by focusing on squares, then generalize our results for runs.
+
+The study of squares in strings goes back
+to the work of Thue published in 1906~\cite{thue1906}, who considered the question of constructing an infinite word
+with no squares. It is easy to see that any sufficiently long binary word must contain a square, and Thue proved that
+there exists an infinite ternary word with no squares. His result has been rediscovered multiple times, and in 1979
+Bean, Ehrenfeucht and McNulty~\cite{BeanEM1979} started a systematic study of the so-called avoidable repetitions,
+see for example the survey by Currie~\cite{Currie05}.
+
+\paragraph{Combinatorics on words.} The basic tool in the area of combinatorics on words is the so-called
+periodicity lemma. A period of a string $T[1..n]$ is an integer $d$ such that $T[i]=T[i+d]$ for every $i\in [1,n-d]$,
+and the periodicity lemma states that if $p$ and $q$ are both such periods and $p+q\leq n+\gcd(p,q)$ then 
+$\gcd(p,q)$ is also a period~\cite{Fine1965}. 
+This was generalised in a myriad of ways, for strings~\cite{Castelli1999,Justin2000,Tijdeman2003},
+partial words (words with don't cares)~\cite{Berstel1999,Blanchet-Sadri2008,Blanchet-Sadri2002,Shur2004,Shur2001,Idiatulina2014,Kociumaka2022},
+Abelian periods\cite{Constantinescu2006,Blanchet-Sadri2013}, parametrized periods~\cite{Apostolico2008},
+order-preserving periods~\cite{Matsuoka2016,Gourdel2020}, approximate periods~\cite{Amir2010,Amir2012,Amir2015}.
+Now, a square can be defined as a fragment of length twice its period. 
+The string $\texttt{a}^{n}$ contains $\Omega(n^{2})$ such fragments,
+thus from the combinatorial point of view it is natural to count only distinct squares.
+Fraenkel and Simpson~\cite{Fraenkel1998} showed an upper bound of $2n$ and a lower bound of $n-\Theta(\sqrt{n})$ for the maximum number of distinct squares in a length-$n$ string.
+After a sequence of improvements~\cite{Ilie2007,Deza2015,Thierry2020}, the upper bound was very recently improved to $n$~\cite{Brlek2022}.
+The last result was already generalised to higher powers~\cite{Li2022}.
+Another way to avoid the trivial examples such as $\texttt{a}^{n}$ is to count only maximal periodic fragments,
+that is, fragments with period at most half of their length and that cannot be extended to the left or to the right without
+breaking the period. Such fragments are usually called runs. Kolpakov and Kucherov~\cite{Kolpakov1999} showed
+an upper bound of $\Oh(n)$ on their number, and this started a long line of work on determining the exact
+constant~\cite{Rytter2006,Puglisi2008,Crochemore2008,Giraud2008,Giraud2009,Crochemore2011}, culminating
+in the paper of Bannai et al.~\cite{Bannai2017} showing an upper bound of $n$, and followed by even better upper bounds
+for binary strings~\cite{Fischer2015,Holub2017}. This was complemented by a sequence of 
+lower bounds~\cite{Franek2008,Matsubara2008,Matsubara2009,Simpson2010}.
+
+\paragraph{Algorithms on strings. }
+In this paper, we are interested in the algorithmic aspects of detecting repetitions in strings. The most basic question
+in this direction is checking if a given length-$n$ string contains at least one square,
+while the most general version asks for computing all the runs.
+Testing square-freeness was
+first considered by Main and Lorentz~\cite{Main1984}, who designed an $\Oh(n\log n)$ time algorithm based on
+a divide-and-conquer approach and a linear-time procedure for finding all new squares obtained when concatenating
+two strings. In fact, their algorithm can be used to find (a compact representation of) all squares in a given string
+within the same time complexity. They also proved that any algorithm based on comparisons of characters needs
+$\Omega(n\log n)$ such operations to test square-freeness in the worst case. Here, comparisons of characters means
+checking if characters at two positions of the input string are equal. However, to obtain the lower bound they
+had to consider instances consisting of even up to $n$ distinct characters, that is, over alphabet of size $n$.
+This is somewhat unsatisfactory, and motivates the following open question that was explicitly asked by Main and Lorentz~\cite{Main1984}:
+
+\begin{question}
+Is there a faster algorithm to determine if a string is square-free if we restrict the size of the alphabet?
+\end{question}
+
+Another $\Oh(n\log n)$ time algorithm for finding all repetitions was given by Crochemore~\cite{Crochemore1981},
+who also showed that for constant-size alphabets testing square-freeness can be done in  $\Oh(n)$ time~\cite{Crochemore1986}.
+In fact, the latter algorithm works in $\Oh(n\log \sigma)$ time for alphabets of size $\sigma$ with a linear order on the characters.
+That is, it needs to test if the character at some position is smaller than the character at another position.
+In the remaining part of the paper, we will refer to this model as general ordered alphabet, while the model
+in which we can only test equality of characters will be called general (unordered) alphabet.
+Later, Kosaraju~\cite{Kosaraju1994} showed that in fact, assuming constant-size alphabet, $\Oh(n)$ time is enough
+to find the shortest square starting at each position of the input string.
+Apostolico and Preparata~\cite{Apostolico1983} provide another $\Oh(n\log n)$ time algorithm assuming a general ordered alphabet,
+based more on data structure considerations than combinatorial properties of words.
+Finally, a number of alternative $\Oh(n\log n)$ and $\Oh(n\log \sigma)$ time algorithms (respectively, for general unordered
+and general ordered alphabets) can be obtained from the work on online~\cite{Hong2008,Kosolobov2014,Kosolobov2015a}
+and parallel~\cite{Apostolico1996} square detection (interestingly, this cannot be done efficiently in the related
+streaming model~\cite{Merkurev2019,Merkurev2022}).
+
+Faster algorithms for testing square-freeness of strings over general ordered alphabets  were obtained as a byproduct of
+the more general results on finding all runs. Kolpakov and Kucherov~\cite{Kolpakov1999} not only proved that any length-$n$
+string contains only $\Oh(n)$ runs, but also showed how to find them in the same time assuming
+linearly-sortable alphabet. Every square is contained in a run, and every run contains at least one square, thus this
+in particular implies a linear-time algorithm for testing square-freeness over such alphabets. For general ordered alphabets,
+Kosolobov~\cite{Kosolobov2015} showed that the decision tree complexity of this problem is only $\Oh(n)$, and later complemented this with an efficient $\Oh(n(\log n)^{2/3})$ time algorithm~\cite{Kosolobov2016}
+(still using only $\Oh(n)$ comparisons). The time complexity was then improved to $\Oh(n\log\log n)$ by providing a general
+mechanism for answering longest common extension (LCE) queries for general ordered alphabets~\cite{Gawrychowski2016},
+and next to $\Oh(n\alpha(n))$ by observing that the LCE queries have additional structure~\cite{CrochemoreIKKPR16}.
+Finally, Ellert and Fischer provided an elegant $\Oh(n)$ time algorithm, thus fully resolving the complexity of square detection
+for general ordered alphabets. However, for general (unordered) alphabets the question of Main and Lorentz remains
+unresolved, with the best upper bound being $\Oh(n\log n)$, and only known to be asymptotically tight for alphabets of
+size $\Theta(n)$.
+
+\paragraph{General alphabets.} While in many applications one can without losing generality assume some
+ordering on the characters of the alphabet, no such ordering is necessary for defining what a square is. Thus, it is natural
+from the mathematical point of view to seek algorithms that do not require such an ordering to efficiently test square-freeness.
+Similar considerations have lead to multiple beautiful results concerning the pattern matching problem, such as constant-space algorithms~\cite{Galil1983,Breslauer1992},
+or the works on the exact number of required equality comparisons ~\cite{Cole1995,Cole1997} 
+ More recent examples include the work of Duval, Lecroq, and Lefebvre~\cite{Duval2014}
+on computing the unbordered conjugate/rotation, and Kosolobov~\cite{Kosolobov2016a} on finding the leftmost critical point.
+
+\paragraph{Main results.}
+
+We consider the complexity of checking if a given string $T[1..n]$ containing $\sigma$ distinct characters is square-free. 
+The input string can be only accessed by issuing comparisons $T[i]\stackrel{?}{=} T[j]$, and the value of $\sigma$ is not
+assumed to be known. We start by analysing the decision tree complexity of the problem. That is, we only
+consider the required and necessary number of comparisons, without worrying about an efficient implementation.
+We show that, even if the value of $\sigma$ is assumed to be known, $\Omega(n\log \sigma)$ comparisons are required. 
+
+\begin{restatable}{theorem}{lowerbound}
+\label{thm:lowerbound}
+For any integers $n$ and $\sigma$ with $8 \leq \sigma \leq n$, there is no deterministic algorithm that performs at most $n \ln \sigma - 3.6n = \Oh(n \ln \sigma)$ comparisons in the worst case, and determines whether a length-$n$ string with at most $\sigma$ distinct symbols from a general unordered alphabet is square-free.
+\end{restatable}
+
+Next, we show that $\Oh(n\log \sigma)$ comparisons are sufficient. We stress that the value of $\sigma$ is not assumed to
+be known. In fact, as a warm-up for the above theorem, we first prove that finding a sublinear multiplicative approximation
+of this value requires $\Omega(n\sigma)$ comparisons. This does not contradict the claimed upper bound, as we are only saying
+that the number of comparisons used on a particular input string is at most $\Oh(n\log \sigma)$, but might actually be smaller.
+Thus, it is not possible to extract any meaningful approximation of the value of $\sigma$ from the number of used comparisons.
+
+\begin{restatable}{theorem}{upperbound}
+\label{thm:upperbound}
+Testing square-freenes of a length-$n$ string that contains $\sigma$ distinct symbols from a general unordered alphabet can be done with $\Oh(n \log \sigma)$ comparisons.
+\end{restatable}
+
+The proof of the above result is not efficient in the sense that it only restricts the overall number of comparisons, and not the time
+to actually figure out which comparisons should be used.  A direct implementation results in a quadratic time algorithm. We first
+show how to improve this to $\Oh(n\log \sigma+n\log^{*}n)$ time (while still keeping the asymptotically optimal $\Oh(n\log \sigma)$ number
+of comparisons), and finally to $\Oh(n\log \sigma)$. In this part of the paper, we assume the Word RAM model with word of length $\Omega(\log n)$.
+We stress that the input string is still assumed to consist of characters that can be only tested for equality, that is, one should
+think that we are given oracle access to a functions that, given $i$ and $j$, checks whether $T[i]=T[j]$.
+
+\begin{restatable}{theorem}{upperbound2}
+\label{thm:upperbound2}
+Testing square-freeness of a length-$n$ string that contains $\sigma$ distinct symbols from a general unordered alphabet can be implemented in $\Oh(n\log \sigma)$ comparisons
+and time.
+\end{restatable}
+
+Finally, we also generalize this result to the computation of runs.
+
+\begin{restatable}{theorem}{upperbound2runs}
+\label{thm:upperbound:runs}
+Computing all runs in a length-$n$ string that contains $\sigma$ distinct symbols from a general unordered alphabet can be implemented in $\Oh(n\log \sigma)$ comparisons
+and time.
+\end{restatable}
+
+Altogether, our results fully resolve the open question of Main and Lorentz for the case of general unordered alphabets and deterministic algorithms.
+We leave extending our lowerbound to randomised algorithms as an open question.
+
+\paragraph{Overview of the methods.}
+
+As mentioned before, Main and Lorentz~\cite{Main1984} designed an $\Oh(n\log n)$ time algorithm for testing square-freeness of
+length-$n$ strings over general alphabets. The high-level idea of their algorithm goes as follows. They first designed a procedure for checking,
+given two strings $x$ and $y$, if their concatenation contains a square that is not fully contained in $x$ nor $y$ in $\Oh(\absolute{x}+\absolute{y})$ time.
+Then, a divide-and-conquer approach can be used to detect a square in the whole input string in $\Oh(n\log n)$ total time.
+For general alphabets of unbounded size this cannot be improved, but Crochemore~\cite{Crochemore1986} showed that, for general
+ordered alphabets of size $\sigma$, a faster $\Oh(n\log \sigma)$ time algorithm exists. The gist of his approach is to first obtain the so-called
+$f$-factorisation of the input string (related to the well-known Lempel-Ziv factorisation), that in a certain sense ``discovers'' repetitive
+fragments. Then, this factorisation can be used to apply the procedure of Main and Lorentz on appropriately selected fragments of the input
+strings in such a way that the leftmost occurrence of every distinct square is detected, and the total length of the strings on which we apply the
+procedure is only $\Oh(n)$. The factorisation can be found in $\Oh(n\log \sigma)$ time for general ordered alphabets of size $\sigma$ by,
+roughly speaking, constructing some kind of suffix structure (suffix array, suffix tree or suffix automaton).
+
+For general (unordered)
+alphabets, computing the $f$-factorisation (or anything similar) seems problematic, and in fact we show (as a corollary of our lower
+bound on approximating the alphabet size) that computing the $f$-factorisation or Lempel-Ziv-factorisation (LZ-factorisation) of a given length-$n$
+string containing $\sigma$ distinct characters requires $\Omega(n\sigma)$ equality tests. Thus, we need another approach.
+Additionally, the $\Oh(n)$ time algorithm of Ellert and Fischer~\cite{Ellert2021} hinges on the notion of Lyndon words, which is simply
+not defined for strings over general alphabets. Thus, at first glance it might seem that $\Theta(n\sigma)$ is the right time complexity
+for testing square-freeness over length-$n$ strings over general alphabets of size $\sigma$. However, due to the $\Omega(n\log n)$
+lower bound of Main and Lorentz for testing square-freeness of length-$n$ string consisting of up to $n$ distinct characters,
+one might hope for an $\Oh(n\log \sigma)$ time algorithm when there are only $\sigma$ distinct characters.
+
+We begin our paper with a lower bound of $\Theta(n\log \sigma)$ for such strings. Intuitively, we show that testing square-freeness
+has the direct sum property: $\frac{n}{\sigma}$ instances over length-$\sigma$ strings can be combined into a single instance over length-$n$ string.
+As in the proof of Main and Lorentz, we use the adversarial method. While the underlying calculation is essentially the same,
+we need to appropriately combine the smaller instances, which is done using the infinite square-free Prouhet-Thue-Morse sequence, and use significantly
+more complex rules for resolving the subsequent equality tests. As a warm-up for the adversarial method, we prove that computing
+any meaningful approximation of the number of distinct characters requires $\Omega(n\sigma)$ such tests, and that this implies
+the same lower bound on computing the $f$-factorisation and the Lempel-Ziv factorisation (if the size of the alphabet is unknown in advance).
+
+We then move to designing an approach that uses $\Oh(n\log \sigma)$ equality comparisons to test square-freeness.
+As discussed earlier, one way of detecting squares uses the $f$-factorisation of the string, which is similar to its LZ factorisation.
+However, as we prove in Corollary~\ref{cor:f-facto} and \ref{cor:LZ}, we cannot compute either of these factorisations over a general unordered alphabet in $o(n\sigma)$ comparisons.
+Therefore, we will instead use a novel type of factorisation, $\Delta$-approximate LZ factorisation, that can be seen as an approximate
+version of the LZ factorisation.
+Intuitively, its goal is to ``capture'' all sufficiently long squares, while the original LZ factorisation (or $f$-factorisation)
+captures all squares. Each phrase in a $\Delta$-approximate LZ factorisation consists of a head of length at most $\Delta$ and a tail
+(possibly empty) that must occur at least once before, such that the whole phrase is at least as long as the classical LZ phrase starting
+at the same position. Contrary to the classical LZ factorisation, this factorisation is not unique. 
+The advantage of our modification is that there are fewer phrases (and there is more flexibility as to what they should be), and
+hence one can hope to compute such factorisation more efficiently.
+
+To design an efficient construction method for $\Delta$-approximate LZ factorisation, we first show how to compute a sparse
+suffix tree while trying to use only a few symbol comparisons. This is then applied on a set of positions from a so-called
+difference cover with some convenient synchronizing properties.
+Then, a $\Delta$-approximate LZ factorisation allows us to detect squares of length $\geq 8\Delta$.
+
+The first warm-up algorithm fixes $\Delta$ depending on $n$ and $\sigma$ (assuming that $\sigma$ is known), and uses
+the approximate LZ factorisation to find all squares of length at least $8\Delta$. It then finds all the shorter squares by dividing
+the string in blocks of length $8\Delta$, and applying the original algorithm by Main and Lorentz on each
+block pair. Our choice of $\Delta$ leads to $\Oh(n (\lg \sigma + \lg \lg n))$ comparisons.
+
+The improved algorithm does not need to know $\sigma$, and instead starts with a large $\Delta = \Omega(n)$, and then
+progressively decreases $\Delta$ in at most $\Oh(\lg \lg n)$ phases, where later phases detect shorter squares.
+As soon as we notice that there are many distinct characters in the alphabet, by carefully adjusting the parameters
+we can afford switching to the approach of Main and Lorentz on sufficiently short fragments of the input string. 
+Since we cannot afford $\Omega(n)$ comparisons per phase, we use a deactivation technique, where whenever we perform a large
+number of comparisons in a phase, we will discard a large part of the string in all following phases.
+More precisely, during a given phase, we avoid looking for squares in a fragment fully contained in a tail from an earlier phase.
+This leads to optimal $\Oh(n \lg \sigma)$ comparisons.
+
+The above approach uses an asymptotically optimal number of equality tests in the worst case, but does not result in an efficient
+algorithm. The main bottleneck is constructing the sparse suffix trees. However, it is not hard to provide an efficient implementation
+using the general mechanism for answering LCE queries for strings over general alphabets~\cite{Gawrychowski2016}.
+Unfortunately, the best known approach for answering such queries incurs an additional $\Oh(n\log^{*}n)$ in the time complexity,
+even if the size of the alphabet is constant. We overcome this technical hurdle by carefully deactivating fragments
+of the text to account for the performed work.
+
+Many of our techniques can easily be modified to compute all runs rather than detecting squares. We exploit that the approximate
+factorisation reveals long substrings with an earlier occurrence. Hence we compute runs only for the first occurrence of such substrings,
+while for later occurrences we simply copy the already computed runs.
+By carefully arranging the order of the computation, we ensure that the total time for copying is bounded by the number
+of runs, which is known to be $\Oh(n)$.
+This way, we achieve $\Oh(n \lg \sigma)$ time and comparisons to compute all runs.

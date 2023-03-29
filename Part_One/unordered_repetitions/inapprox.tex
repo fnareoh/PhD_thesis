@@ -1,0 +1,125 @@
+\section{Lower Bounds}
+\label{sec:lowerbounds}
+
+In this section, we show lower bounds on the number of symbol comparisons required to compute a meaningful approximation of the alphabet size (\cref{sec:loweralphaapprox}) and to test square-freeness (\cref{sec:lower}).
+For both bounds we use an adversarial method, which we briefly outline now.
+
+The present model of computation may be interpreted as follows. 
+An algorithm working on a string over a general unordered alphabet has no access to the actual string. 
+Instead, it can only ask an oracle whether or not there are identical symbols at two positions. 
+The number of questions asked is exactly the number of performed comparisons.
+In order to show a lower bound on the number of comparisons required to solve some problem, we describe an adversary that takes over the role of the oracle, forcing the algorithm to perform as many symbol comparisons as possible.
+
+
+%The adversary makes sure that, by the time the algorithm finishes, it either must have performed sufficiently many symbol comparisons (more than the target lower bound), or the answers given by the adversary are consistent with a string that contradicts the result of the algorithm.
+
+\iffalse
+Particularly, in \cref{sec:loweralphaapprox}, the adversary keeps the answers consistent with strings of vastly different alphabet sizes. As long as the algorithm performs fewer than $\frac{ns} 4$ comparisons, the adversary can guarantee that its answers are consistent with strings whose alphabet sizes vary by a factor of $\Omega(n)$. Thus, estimating the alphabet size up to a factor of $o(n)$ takes $\Omega(ns)$ comparisons.
+In \cref{sec:lower}, the adversary keeps the answers consistent with at least one string that does contain a square, and at least one string that does not. It takes $\Omega(n\lg s)$ comparisons until the adversary has to definitively decide whether the string is square-free or not. Thus testing square-freeness takes $\Omega(n \lg s)$ comparisons.
+\fi
+
+\newcommand{\yesedges}{E_\textnormal{yes}}
+\newcommand{\noedges}{E_\textnormal{no}}
+\newcommand{\nodecol}[1]{\gamma(#1)}
+
+We use a conflict graph $G = (V, E)$ with $V = \{1, \dots, n\}$ and $E \subseteq V^2$ to keep track of the answers given by the adversary.
+The nodes directly correspond to the positions of the string. Initially, we have $E = \emptyset$ and all nodes are colorless, which formally means that they have color $\nodecol{i} = \bot$.
+During the algorithm execution, the adversary may assign colors from the set $\Sigma = \{0,\dots, n - 1\}$ to the nodes, which can be seen as permanently fixing the alphabet symbol at the corresponding position (i.e., each node gets colored at most once).
+The rule used for coloring nodes depends on the lower bound that we want to show (we describe this in detail in the respective sections).
+Apart from this coloring rule, the general behaviour of the adversary is as follows.
+Whenever the algorithm asks whether $T[i]=T[j]$ holds, the adversary answers \quotes{yes} if and only if $\nodecol{i} = \nodecol{j} \neq \bot$. 
+Otherwise, it answers \quotes{no} and inserts an edge $(i, j)$ into $E$.
+Whenever the adversary assigns the color of a node, it has to choose a color that is not used by any of the adjacent nodes in the conflict graph. 
+This ensures that the coloring does not contradict the answers given in the past.
+
+Let us define a set $\mathcal T \subseteq \Sigma^n$ of strings that is consistent with the answers given by the adversary.
+A string $T \in \Sigma^n$ is a member of $\mathcal T$ if
+%
+%$$\forall i,j \in V: \quad ((i, j) \in E \implies T[i] \neq T[j]) \quad \land \quad  (\nodecol{i} \neq \bot \implies T[i] = \nodecol{i}).$$
+$$\forall i \in V : \nodecol{i} \in \{\bot, T[i]\} \quad \land \quad \forall i,j \in V: (T[i] = T[j]) \implies  (i, j) \notin E.$$
+
+Note that $\mathcal T$ changes over time. Initially (before the algorithm starts), we have $\mathcal T = \Sigma^n$. 
+With every question asked, the algorithm might eliminate some strings from $\mathcal T$.
+However, there is always at least on string in $\mathcal T$, which can be obtained by coloring each colorless node in a previously entirely unused color. 
+%The number of distinct symbols in this string is thus at least the number of colorless nodes.
+
+%However, (as follows from the more general lemma below,) there is always at least one string in $\mathcal T$.
+
+\iffalse
+\begin{lemma}
+Let $\Gamma$
+% = \absolute{\{\nodecol{i} \mid i \in V \land \nodecol{i} \neq \bot\}}$
+be the number of distinct colors in the conflict graph, let $m$
+% = \{i \mid i \in V \land \nodecol{i} = \bot\}$ 
+be the number of colorless nodes, and let $d_{\max}$ be the maximum degree of any colorless node. Then for every $s \in \{\max\{\Gamma, d_{\max} + 1\}, \dots, \max\{\Gamma + m, d_{\max} + 1\}$, some string in $\mathcal T$ contains exactly $\sigma$ distinct symbols.
+\end{lemma}
+\begin{proof}
+In order to obtain a string with $\Gamma + d_{\max} + 1$ distinct colors, we simply color the colorless nodes in $d_{\max} + 1$ previously unused colors (which is easily possible because we can always avoid the colors of the at most $d_{\max}$ adjacent nodes). It is easy to see that instead of using only $d_{\max} + 1$ new colors, we could just as well use any larger number of new colors, but at most $m$.
+\end{proof}
+\fi
+%
+%Finally, the smallest number of distinct symbols in any string in $\mathcal T$ is the chromatic number $\chi(G)$ of the conflict graph, i.e., the smallest number of distinct colors that can be used to color all nodes such that no two adjacent nodes have the same color.
+
+
+\def\sigmaapprox{\tilde{\sigma}}
+
+
+\subsection{Approximating the Alphabet Size}
+\label{sec:loweralphaapprox}
+
+
+
+Given a string $T[1..n]$ of unknown alphabet size $\sigma \geq 2$, 
+%it is easy to compute $\sigma$ using $ns$ symbol comparisons (by simply scanning the string and maintaining a list of distinct symbols). Now we show that, given only slightly fewer comparisons, we cannot compute a meaningful 
+assume that we want to compute an approximation of $\sigma$.
+We show that if an algorithm takes at most $\frac{n\sigma} 8$ comparisons in the worst-case, then it cannot distinguish strings with at most $\sigma$ distinct symbols from strings with at least $\frac n 2$ distinct symbols.
+Thus, any meaningful approximation of $\sigma$ requires $\Omega(n\sigma)$ comparisons.
+
+For the sake of the proof, consider an algorithm that performs at most $\frac{n\sigma} 8$ comparisons when given a length-$n$ string with at most $\sigma \geq 2$ distinct symbols. We use an adversary as described at the beginning of \cref{sec:lowerbounds}, and ensure that the set $\mathcal T$ of strings consistent with the adversary's answers always contains a string with at most $\sigma$ distinct symbols. Thus, the algorithm terminates after at most $\frac{n\sigma} 8$ comparisons. At the same time, we ensure that $\mathcal T$ also contains a string with at least $\frac n 2$ distinct symbols, which yields the desired result. The adversary is equipped with the following coloring rule.
+All colors are from $\{1, \dots, \sigma\}$. Whenever the degree of a node in the conflict graph becomes $\sigma - 1$, we assign its color. 
+%If available, we choose a color that has never been used before. In any way, 
+We avoid the colors of the $\sigma - 1$ adjacent nodes in the conflict graph.
+At any moment in time, we could hypothetically complete the coloring by assigning one of the colors $\{1, \dots, \sigma\}$ to each colorless node, avoiding the colors of adjacent nodes.
+This way, each node gets assigned one of the $\sigma$ colors, which means that $\mathcal T$ contains a string with at most $\sigma$ distinct symbols.
+It follows that the algorithm terminates after at most $\frac{n\sigma} 8$ comparisons.
+Each comparison may increase the degree of two nodes by one. Thus, after $\frac{n\sigma} 8$ comparisons, there are at most $\frac{n\sigma} 8 \cdot \frac 2{\sigma - 1} \leq \frac{n}{2}$ nodes with degree at least $\sigma - 1$. Therefore, at least $\frac{n}{2}$ nodes are colorless. We could hypothetically color them in $\frac{n}{2}$ distinct colors, which means that $\mathcal T$ contains a string with at least $\frac{n}{2}$ distinct symbols. This leads to the following result.
+
+\begin{theorem}
+\label{thm:inapproxalph}
+For any integers $n$ and $\sigma$ with $2 \leq \sigma < \frac{n}2$, there is no deterministic algorithm that performs at most $\frac{n \sigma}8$ equality-comparisons in the worst case, and is able to distinguish length-$n$ strings with at most $\sigma$ distinct symbols from length-$n$ strings with at least $\frac{n}2$ distinct symbols. 
+\end{theorem}
+
+The theorem implies lower bounds on the number of comparisons needed to compute the LZ factorisation (as defined in \cref{sec:prelim}) and the $f$-factorisation.
+In the unique $f$-factorisation $T = f_1f_2\dots f_z$, each factor $f_i$ is either a single symbol that does not occur in $f_1\dots f_{i - 1}$, or it is the fragment of maximal length such that $f_{i}$ occurs twice in $f_1\dots f_{i}$. 
+
+\begin{corollary}
+\label{cor:f-facto}
+For any integers $n$ and $\sigma$ with $2 \leq \sigma < \frac{n}4$, there is no deterministic algorithm that performs at most %
+%$\frac{n\sigma}{18}$ %
+$\frac{(n - 1)\sigma}{16}$ %
+equality-comparisons in the worst case, and computes the $f$-factorisation of a length-$n$ string with at most $\sigma$ distinct symbols.
+\end{corollary}
+\begin{proof}
+For some string $T = T[1]T[2]\dots T[\frac n 2]$ with $\sigma$ distinct symbols, consider the length-$n$ string $T'=T[1] T[1] T[2] T[2] \dots T[\frac n 2] T[\frac n 2]$ with $\sigma$ distinct symbols constructed by doubling each character of $T$. The alphabet size of $T$ is exactly the number of length-one phrases in the $f$-factorisation of $T'$ starting at odd positions in $T'$. Thus, by \cref{thm:inapproxalph}, we need $\frac{n \sigma}{16} = \frac{|T|\sigma}{8}$ comparisons to find the $f$-factorisation of $T'$. 
+We assumed that $n$ is even, and account for odd $n$ by adjusting the bound to $\frac{(n - 1) \sigma}{16}%
+$.
+% \geq \frac{n \sigma}{18}$ (this holds for $n > 8$).
+\end{proof}
+
+\begin{corollary}
+\label{cor:LZ}
+For any integers $n$ and $\sigma$ with $3 \leq \sigma < \frac{n}6 + 1$, there is no deterministic algorithm that performs at most %
+%$\frac{n\sigma}{43}$ %
+%$\frac{n\sigma - n - 2\sigma + 2}{24}$ %
+$\frac{(n - 2)(\sigma-1)}{24}$ %
+equality-comparisons in the worst case, and computes the Lempel-Ziv factorisation of a length-$n$ string with at most $\sigma$ distinct symbols.
+\end{corollary}
+\begin{proof}
+For some string $T = T[1]T[2]\dots T[\frac n 3]$ with $\sigma - 1$ distinct symbols, let $T'$ be the length-$n$ string with $\sigma$ distinct symbols constructed by doubling every character of $T$ with a separator in between, i.e., $T'=T[1]T[1] \# T[2]T[2] \# \dots \# T[\frac n 3]T[\frac n 3]\#$. The first occurrence of character $x$ in $T$ corresponds to the first occurrence of $xx\#$ in $T'$, thus the preceding phrase (possibly of length one) ends at the
+first $x$ in the first occurrence of $xx\#$, and the subsequent phrase must be $x\#$. Then, for the later occurrences of $xx\#$ we cannot have that $x\#$ is a phrase.
+Consequently, the alphabet size of $T$ is exactly the number of length-two phrases in the Lempel-Ziv factorisation of $T'$ starting at positions $i \equiv 2 \pmod 3$ in $T'$.
+Thus, by \cref{thm:inapproxalph}, we need $\frac{n(\sigma - 1)}{24} = \frac{|T|(\sigma-1)}{8}$ comparisons to find the LZ factorisation of $T'$.
+We assumed that $n$ is divisible by 3, and account for this by adjusting the bound to $\frac{(n - 2) (\sigma - 1)}{24}%
+$.
+% > \frac{n\sigma}{43}$ (this holds for $n > 12$ and $\sigma \geq 3$).
+\end{proof}

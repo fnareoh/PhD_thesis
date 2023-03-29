@@ -1,0 +1,39 @@
+\begin{figure}
+\newcommand{\synchrophrase}[4][]{% [option] {start} {end} {length_synchro}
+\node (start) at #2 {};
+\node (end) at #3 {};
+\draw[fill=gray] ($(start)+(0,-0.75)$) rectangle ++(#4,0.25);
+\draw ($(start)+(0,-0.75)$) to[bend right=90] ($(end)+(0,-0.75)$);
+\draw  ($(end)+(0,-0.75)$) -- ($(end)+(0,-0.5)$) ;
+}
+%\missingfigure{Under construction...}
+\centering
+\begin{tikzpicture}[scale=0.7, every node/.style={scale=1}]
+\deltacover{(0,0)}{8}
+\draw[|-|,dotted] (0,0.25) -- (3,0.25) node[midway,above] (dense) {dense fragment};
+\draw[|-|,dotted] (8,0.25) -- (11,0.25) node[midway,above] (densetau) {$3\tau$};
+\draw[|-|,dotted] (16,0.25) -- (19,0.25); %node[midway,above] (dense) {dense substring};
+\deltacover{(8,0)}{8}
+\deltacover{(16,0)}{3}
+\draw (19,0) rectangle ++(0.7,-0.5); %draw Delta block
+
+%Parse of first dense region
+\synchrophrase{(0.4,0)}{(2.2,0)}{0.1}
+\synchrophrase{(1.2,0)}{(2.7,0)}{0.1}
+\synchrophrase{(1.7,0)}{(5.3,0)}{0.1}
+
+
+\synchrophrase{(4.3,0)}{(9.2,0)}{0.1}
+\synchrophrase{(8.2,0)}{(9.7,0)}{0.1}
+\synchrophrase{(8.7,0)}{(12.5,0)}{0.1}
+\synchrophrase{(11.5,0)}{(14,0)}{0.1}
+\synchrophrase{(13,0)}{(17.6,0)}{0.1}
+
+%last pos in the sting synchronizing set
+\draw[fill=gray] ($(16.6,0)+(0,-0.75)$) rectangle ++(0.1,0.25);
+\draw[color=gray,<->] ($(16.6,0)+(0,-0.9)$) -- (17.6,-0.9) node[midway,below] (tau) {$\tau$};
+
+\end{tikzpicture}
+\caption{The position in the truncated synchronizing set are shown in gray and the resulting parsing represented by the arches.}
+\label{fig:diff-cover}
+\end{figure}
