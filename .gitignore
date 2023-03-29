@@ -9,3 +9,9 @@
 *.bcf
 *.toc
 *.pdf
+*/build/
+*.loc
+*.soc
+*.fdb_latexmk
+*.fls
+.vscode
