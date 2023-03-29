@@ -1,0 +1,75 @@
+We assume that the alphabet of the strings $X, Y$ is $\Sigma = \{1,\ldots,\sigma\}$, where $\sigma = n^{\Oh(1)}$.
+
+\subparagraph*{Karp--Rabin fingerprints. } The Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S = s_1 s_2 \dots s_\ell$ is defined as
+
+$$\varphi(S) = \left(\sum_{i = 1}^{\ell} r^{i-1} s_i\right) \bmod q,$$ 
+%
+where $q = \Omega(\max\{n^5, \sigma\})$ is a prime number, and $r \in \mathbb{F}_q$ is chosen uniformly at random.  Obviously, if $S_1 = S_2$, then $\varphi(S_1) = \varphi(S_2)$. Furthermore, for any $\ell \le n$, if the fingerprints of two $\ell$-length strings $S_1, S_2$ are equal, then $S_1, S_2$ are equal with probability at least $1-1/n^4$ (for a proof, see e.g.~\cite{Porat:09}).
+
+\subparagraph*{Dimension reduction. } We will exploit a computationally efficient variant of the Johnson--Lindenstrauss lemma~\cite{MR737400} which describes a low-distortion embedding from a high-dimensional Euclidean space into a low-dimensional one. Let $\norm{\cdot}$ be the Euclidean ($L_2$) norm of a vector. We will exploit the following claim which follows immediately from~\cite[Theorem 1.1]{ACHLIOPTAS2003671}:
+ 
+\begin{lemma}\label{lm:dim_reduction}
+Let $P$ be a set of $n$ vectors in $\mathbb{R}^{\ell}$, where $\ell \le n$. Given $\alpha = \alpha(n) > 0$ and a constant $\beta > 0$, there is $d = \Theta(\alpha^{-2}\log n)$ and a scalar $c > 0$ such that the following holds. Let $M$ be a $d \times \ell$ matrix filled with i.u.d.\ $\pm1$ random variables. For all $U \in P$, define $\sk_\alpha (U) = c \cdot M U$. Then for all $U,V \in P$ there is $\norm{U-V}^2 \leq \norm{\sk_\alpha(U)-\sk_\alpha(V)}^2 \leq (1+\alpha) \norm{U-V}^2$ with probability at least $1- n^{-\beta}$. 
+\end{lemma}
+
+Since the Hamming distance between binary strings $U, V$ is equal to $\norm{U-V}^2$, the matrix~$M$ defines a low-distortion embedding from an $\ell$-dimensional into a $d$-dimensional Hamming space as well. For non-binary strings, an extra step is required. Let the alphabet be $\Sigma = \{1, 2, \ldots, \sigma\}$ and consider a morphism $\mu : \Sigma \rightarrow \{0,1\}^\sigma$, where $\mu(a) = 0^{a-1} 1 0^{\sigma-a}$ for all $a \in \Sigma$. We extend $\mu$ to strings in a natural way. Note that for two strings $U, V$ over the alphabet $\Sigma$ the Hamming distance between $\mu(U), \mu(V)$ is exactly twice the Hamming distance between $U, V$. We therefore obtain:
+
+\begin{corollary}\label{cor:dim_reduction}
+Let $P$ be a set of $n$ strings in $\Sigma^{\ell}$, where $\ell \le n$. Given $\alpha = \alpha(n) > 0$ and a constant $\beta > 0$, there is $d = \Theta(\alpha^{-2}\log n)$ and a scalar $c > 0$ such that the following holds. Let $M$ be a $d \times (\sigma \cdot \ell)$ matrix filled with i.u.d.\ $\pm1$ random variables. For all $U \in P$, define $\sk_\alpha(U) = c\cdot M \mu(U)$. Then for all $U, V \in P$ there is $\HD(U,V) \leq \norm{\sk_\alpha(U) - \sk_\alpha(V)}^2 \leq (1+\alpha) \HD(U, V)$ with probability at least $1- n^{-\beta}$.
+\end{corollary}
+
+We will use the corollary for dimension reduction, and also to design a simple test that checks whether the Hamming distance between two strings is at most $k$. 
+
+\begin{corollary}
+Let $P$ be a set of $n$ strings in $\Sigma^{\ell}$, where $\ell \le n$. With probability at least $1- n^{-\beta}$, for all $U, V \in P$:
+\begin{enumerate}[label=\arabic*)]
+\item if $\norm{\sk_\alpha(U)-\sk_\alpha(V)}^2 \le (1+\alpha) k$, then $\HD(U, V) \le (1+\alpha) \cdot k$;
+\item if $\norm{\sk_\alpha(U)-\sk_\alpha(V)}^2 > (1+\alpha) k$, then $\HD(U, V) \ge k$.
+\end{enumerate}
+\end{corollary}
+
+\subsection{The Twenty Questions game}
+\label{sec:20questions}
+Consider the following version of the classic game ``Twenty Questions''. There are two players: Paul and Carole; Carole thinks of two numbers $A, B$ between $0$ and $N$, and Paul must return some number in $[A,B]$. He is allowed to ask questions of form ``Is $x \le A$?'', for any $x \in [0,N]$. If $x \le A$, Carole must return YES; If $A < x \le B$, she can return anything; and if $B < x$, she must return NO. Paul must return the answer after having asked at most $Q$ questions where Carole can tell at most $\ceil{ \rho Q }$ lies, and only in the case when $x \le A$.  
+
+We show that Paul has a winning strategy for $Q = \Theta (\log n)$ and any $\rho < 1/3$ by a black-box reduction to the result of Dhagat, G{\'a}cs, and Winkler~\cite{Dhagat:1992:PLQ:139404.139409} who showed a winning strategy for $A = B$.
+
+\begin{theorem}[\cite{Dhagat:1992:PLQ:139404.139409}]
+For $A = B$, Paul has a winning strategy for all $\rho < \frac{1}{3}$ asking $Q = \ceil{ \frac{8 \log N}{(1-3\rho)^2} }$ questions.
+\end{theorem}
+
+This result is obtained by maintaining a stack of trusted intervals. Once Paul knows that $A$ is between $\ell$ and $r$, where $\ell \leq r$, he checks whether $A$ is in the left or the right half of the interval $[\ell,r]$. If no inconsistencies appear (like $A < \ell$ or $r < A$), he pushes the new interval to the stack, else he removes the interval $[\ell,r]$ from the stack of trusted intervals. After $Q$ rounds, Paul returns the only number in the top interval in the stack, which is guaranteed to have length $1$ and to contain $A$. We give the pseudocode of Paul's strategy in Algorithm~\ref{alg:20Q}. By $\Carole(x)$, we denote the answer of Carole for a question ``Is $x \le A$?''.
+
+\begin{algorithm}
+\caption{The \twentyquestions game}
+\begin{algorithmic}[1]
+\State $Q \gets  \ceil{ \frac{8 \log N}{(1-3\rho)^2} }$
+\State $S \gets \{[0,N]\}$
+\For {$i = 1, 2, \ldots , Q/2$ }
+	\State $I = [\ell,r] \gets S.\ttop()$
+	\State $\mmid \gets \ceil{ \frac{\ell + r}{2} }$
+	\If {$\Carole(mid)$}
+	    \If {$\Carole(r)$}
+	         $S.\pop()$ \Comment{The answer is inconsistent with $I$; remove $I$.}
+	    \Else~$S.\push([\mmid, r])$
+        \EndIf
+    \Else
+        \If {$\Carole(\ell)$}
+	         $S.\push([\ell,\mmid-1])$
+	    \Else~$S.\pop()$ \Comment{The answer is inconsistent with $I$; remove $I$.}
+        \EndIf
+	\EndIf
+\EndFor
+\end{algorithmic}
+\label{alg:20Q}
+\end{algorithm}
+
+We now a show a winning strategy for our variant of the game. 
+
+\begin{corollary}
+\label{cor:twentyquestions}
+For $A \le B$, Paul has a winning strategy for all $\rho < \frac{1}{3}$ asking $Q = { \frac{8 \log N}{(1-3\rho)^2} }$ questions.
+\end{corollary}
+\begin{proof}
+We introduce just one change to Algorithm~\ref{alg:20Q}, namely, we return the argument of the largest YES obtained in the course of the algorithm. From the problem statement it follows that the answer is at most $B$. We shall now prove that the answer is at least $A$. If Carole ever returned YES for $A < x \le B$, then it is obviously the case. Otherwise, Carole actually behaved as if she had $A=B$ in mind: apart from the small fraction of erroneous answers, she returned YES for $x \le A$, and NO for $x > A$. Thus, the strategy of Dhagat, G{\'a}cs, and Winkler ends up with $A$ as the answer (and this must be due to a YES for $x = A$).
+\end{proof}

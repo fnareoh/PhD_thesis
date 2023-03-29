@@ -1,0 +1,116 @@
+\documentclass[a4paper,UKenglish,cleveref,autoref]{lipics-v2019}
+\usepackage{xspace,enumerate}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm,algorithmicx}
+\usepackage{amsfonts,amsmath}
+\usepackage{microtype}
+\usepackage{xspace}
+\usepackage{todonotes}
+\usepackage[draft]{fixme}
+\usetikzlibrary{decorations.pathreplacing}
+\usepackage{multirow}
+\usepackage{diagbox}
+\usepackage{array}
+
+\newcommand{\Oh}{\mathcal{O}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\lcpe}{\mathrm{LCP}_{(1+\eps)k}}
+\newcommand{\lcp}{\mathrm{LCP}_{\tilde{k}}}
+\newcommand{\lcpk}{\mathrm{LCP}_{k}}
+\newcommand{\lcsk}{\mathrm{LCS}_{k}}
+\newcommand{\lcske}{\mathrm{LCS}_{(1+\eps)k}}
+\newcommand{\lcsak}{\mathrm{LCS}_{\tilde{k}}}
+\newcommand{\sk}{\mathrm{sk}}
+\newcommand{\Prob}{\mathrm{Pr}}
+\newcommand{\LCSp}{\textsf{LCS}\xspace}
+\newcommand{\kLCS}{\textsf{LCS with $k$ Mismatches}\xspace}
+\newcommand{\kApproxLCS}{\textsf{LCS with Approximately $k$ Mismatches}\xspace}
+\newcommand{\Bichromatic}{\textsf{$(1+\gamma)$-approximate Bichromatic Closest Pair}\xspace}
+\newcommand{\NN}{\textsf{Approximate Near Neighbour}\xspace}
+\newcommand{\twentyquestions}{\textsf{Twenty Questions}\xspace}
+\newcommand{\Carole}{\mathit{Carole}}
+\newcommand{\pop}{\mathit{pop}}
+\newcommand{\push}{\mathit{push}}
+\newcommand{\ttop}{\mathit{top}}
+\newcommand{\mmid}{\mathit{mid}}
+
+\newcommand{\Hashes}{\mathcal{H}}
+\newcommand{\Collisions}{C}
+\newcommand{\Bad}{B}
+\newcommand{\Projections}{\Pi}
+\newcommand{\Pos}{\mathsf{P}}
+\newcommand{\HD}{d_H}
+\newcommand{\LCP}{\mathrm{LCP}}
+
+\newtheorem{fact}[theorem]{Fact}{\bfseries}{\itshape}
+\newtheorem{observation}[theorem]{Observation}{\bfseries}{\itshape}
+\newtheorem{problem}[theorem]{Problem}{\bfseries}{\itshape}
+\newtheorem{hypothesis}[theorem]{Hypothesis}{\bfseries}{\itshape}
+
+\newcommand{\norm}[1]{\ensuremath{\lVert#1\rVert}}
+
+\newcommand{\ceil}[1]{\ensuremath{\lceil#1\rceil}}
+
+\newcommand\restr[2]{{
+  \left.\kern-\nulldelimiterspace
+  #1 
+  \vphantom{\big|} 
+  \right|_{#2} 
+}}
+
+\bibliographystyle{plainurl}% the recommended bibstyle
+
+\nolinenumbers
+
+% Author macros::begin %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\author{Garance Gourdel}{ENS Paris Saclay, France}{garance.gourdel@ens-paris-saclay.fr}{}{}
+\author{Tomasz Kociumaka}{Bar-Ilan University, Ramat Gan, Israel}{kociumaka@mimuw.edu.pl}{https://orcid.org/0000-0002-2477-1702}{Supported by ISF grants no. 1278/16 and 1926/19, a BSF grant no. 2018364, and an ERC grant MPM (no.\ 683064) under the EU's Horizon 2020 Research and Innovation~Programme.}
+\author{Jakub Radoszewski}{Institute of Informatics, University of Warsaw, Warsaw, Poland \and Samsung R\&D Institute, Warsaw, Poland}{jrad@mimuw.edu.pl}{https://orcid.org/0000-0002-0067-6401}{Supported by the Polish National Science Center, grant number 2018/31/D/ST6/\allowbreak03991.}
+\author{Tatiana Starikovskaya}{DIENS, \'{E}cole normale sup\'{e}rieure, PSL Research University,  France}{tat.starikovskaya@gmail.com}{}{}
+
+\title{\texorpdfstring{Approximating longest common substring with $k$~mismatches: Theory and practice}{Approximating longest common substring with k mismatches: Theory and practice}}
+\titlerunning{Approximating longest common substring with $k$ mismatches}
+\authorrunning{G. Gourdel, T. Kociumaka, J. Radoszewski, and T. Starikovskaya}
+\Copyright{Garance Gourdel, Tomasz Kociumaka, Jakub Radoszewski, and Tatiana Starikovskaya}
+\ccsdesc[500]{Theory of computation~Pattern matching}
+\keywords{approximation algorithms, string similarity, LSH, conditional lower bounds}
+\acknowledgements{}
+% Author macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{Inge Li G{\o}rtz and Oren Weimann}
+\EventNoEds{2}
+\EventLongTitle{31th Annual Symposium on Combinatorial Pattern Matching (CPM 2020)}
+\EventShortTitle{CPM 2020}
+\EventAcronym{CPM}
+\EventYear{2020}
+\EventDate{June 17--19, 2020}
+\EventLocation{Copenhagen, Denmark}
+\EventLogo{}
+\SeriesVolume{161}
+\ArticleNo{18}
+% Editor-only macros::end %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In the problem of the longest common substring with $k$ mismatches we are given two strings $X, Y$ and must find the maximal length $\ell$ such that there is a length-$\ell$ substring of $X$ and a length-$\ell$ substring of $Y$ that differ in at most $k$ positions. The length $\ell$ can be used as a robust measure of similarity between $X, Y$. In this work, we develop new approximation algorithms for computing $\ell$ that are significantly more efficient that previously known solutions from the theoretical point of view. Our approach is simple and practical, which we confirm via an experimental evaluation, and is probably close to optimal as we demonstrate via a conditional lower bound.
+\end{abstract}
+
+\section{Introduction}\label{sec:intro}
+\input{intro}
+	
+\section{Preliminaries}\label{sec:prelim}
+\input{prelim}
+
+\section{\texorpdfstring{\kApproxLCS}{LCS with approximately k mismatches}}\label{sec:klcs}
+\input{klcs}
+
+
+\section{Experiments}\label{sec:implem}
+\input{implem}
+
+\bibliography{main}
+
+\end{document}

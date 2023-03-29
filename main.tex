@@ -1,5 +1,4 @@
-% Ce fichier main.tex est le fichier principal \`{a} partir duquel tout est g\'{e}n\'{e}r\'{e}
-% This file is the main file where the final document is generated
+% !TeX root = main.tex
 \documentclass{these-dbl}
 
 % Remplir les metadonnees du pdf
@@ -13,47 +12,39 @@
 
 \input{preamble}
 
-% Spécifier vos fichiers de bibliographie
-% Specify you bibliography files here
+% bibliography files
 \addbibresource{./biblio/biblio.bib}
 \addbibresource{./Part_One/streaming_regex_pattern_matching/ref.bib}
 \addbibresource{./Part_One/unordered_repetitions/references.bib}
+\addbibresource{./Part_Two/lcs-with-approx-k-mismatches-linspace/main.bib}
 
 \begin{document}
 
-
-% Sélectionner la langue du contenu suivant cette ligne
-% Select the content language following this line
 \selectlanguage{english}
 
 \input{./Abstract/abstract}
 %\input{./Abstract/resume_francais}
 
-% Inclusion du chapitre remerciement
-% Input acknowledgement chapter
-%\clearemptydoublepage
 %\input{./Acknowledgement/acknowledgement}
 
-
-% Ne pas oublier cette commande qui g\'{e}n\`{e}re la page de couverture avant
-% This command will generate the front cover
-%\frontmatter
-%\clearemptydoublepage
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents %sommaire %table of content
+\todo[inline]{sec:intro and sec:prelim multiply defined.}
 
 %\clearemptydoublepage
 \input{./Introduction/introduction}
+
+
 \input{./Preliminaries/prelim}
 
-\input{./Part_One/part_one}
+\input{./Part_One/part_one} 
 
 \input{./Part_Two/part_two}
 
 
 \clearemptydoublepage
 \backmatter
-\input{./Conclusion/conclusion}
+%\input{./Conclusion/conclusion}
 
 
 

@@ -1,0 +1,144 @@
+
+\textbf{The $k$-macs distance.} The second similarity measure that we consider in this work is called \emph{the $k$-macs distance}~\cite{kmacs,Thankachan2017}\footnote{We use the variant of the definition given in~\cite{Thankachan2017}. The difference between the two definitions is that in~\cite{kmacs} $\lcpk (X_i, Y_j)$ is defined as $\max\{\ell-\mathrm{mis}(\ell) : \HD(X[i,i+\ell-1], Y[j, j+\ell-1]) = \mathrm{mis}(\ell) \le k\}$, in other words, the mismatches are not accounted for in the length.}. For two strings $X,  Y$ of total length $n$ and an integer $k$, we define
+%
+$$d_k(X, Y) = \frac{1}{2} \left( \frac{\log |Y|}{\acs_k(X, Y)} + \frac{\log |X|}{\acs_k(Y,X)}\right) - \left(\frac{\log |X|}{\acs_k(X, X)} + \frac{\log |Y|}{\acs_k(Y, Y)}\right),$$ 
+where
+$$\acs_k(X, Y) = \frac{1}{n} \sum_{i=1}^{n} \max_{1 \le j \le n} \lcpk(X_i, Y_j)$$
+%
+Leimeister and Morgenstern~\cite{kmacs} showed a heuristic algorithm for computing $d_k(X, Y)$, with no theoretical guarantees for the precision of the approximation. However, while they confirmed experimentally that the greedy heuristic gives a reasonable measure of similarity of biological sequences, they noted that the exact value of $d_k$ for large values of $k$ (for strings of length $n=16000$, they considered $k$ up to $100 \gg \log n \approx 14$) is better: ``\ldots an exact algorithm led to better phylogenetic trees than our greedy heuristic \ldots Therefore, it may be worthwhile to develop heuristics that approximate the maximal $k$-mismatch substring lengths more accurately.''. 
+Other heuristic approaches for computing the $k$-macs distance include~\cite{Thankachan2017,DBLP:journals/jcb/ThankachanCLAA16}.
+
+One can compute the $k$-macs distance exactly either in $\Oh(n^2)$ time and $\Oh(n)$ space by a simple modification of the algorithm of Flouri et al.~\cite{DBLP:journals/ipl/FlouriGKU15} or in $\Oh(n \log^k n)$ time and $\Oh(n)$ space for any constant $k$~\cite{DBLP:journals/jcb/ThankachanAA16}. 
+
+In this work, we develop a significantly faster approximation approach:
+
+\begin{theorem}
+\label{th:kmacs}
+Let $\eps > 0$ be an arbitrary constant. Given strings $X, Y$ of length at most $n$ and an integer $k$, there is an algorithm that computes $d$ such that $d_{(1+\eps)k} (X, Y) \le d \le d_{k} (X, Y)$ in time $\Oh(k n^{1+1/(1+\eps)} \log^2 n)$ and space $\Oh(n)$ correctly with high probability.
+\end{theorem}
+
+
+
+In this section, we show the proof of Theorem~\ref{th:kmacs}. Recall that 
+$$d_k(X, Y) = \frac{1}{2} \left(\left( \frac{\log |Y|}{\acs_k(X, Y)} + \frac{\log |X|}{\acs_k(Y,X)}\right) - \left(\frac{\log |X|}{\acs_k(X, X)} + \frac{\log |Y|}{\acs_k(Y, Y)}\right)\right),$$ 
+where
+$$\acs_k(X, Y) = \frac{1}{n} \cdot \sum_{1 \le i \le n} \max_{1 \le j \le n} \lcpk(X_i, Y_j)$$
+We must compute $d$ such that $d_{(1+\eps)k} (X, Y) \le d \le d_{k} (X, Y)$. Note that for any $k$, we have $\acs_k(X, X) = |X| (|X|+1) / 2$ and $\acs_k(Y, Y) = |Y| (|Y|+1) / 2$. Therefore, to compute $d$, it suffices to compute $\acs_{\tilde{k}} (X, Y)$ such that $\acs_{k} (X, Y) \le \acs_{\tilde{k}} (X, Y) \le \acs_{(1+\eps)k} (X, Y)$ and $\acs_{\tilde{k}} (Y, X)$ such that $\acs_{k} (Y, X) \le \acs_{\tilde{k}} (Y, X) \le \acs_{(1+\eps)k} (Y, X)$.
+
+\begin{lemma}
+\label{lm:kmacs}
+The values $\acs_{\tilde{k}} (X, Y)$ and $\acs_{\tilde{k}} (Y, X)$ can be computed in $\Oh(k n^{1+1/(1+\eps)} \log^2 n)$-time and $\Oh(n)$ space correctly with high probability.
+\end{lemma}
+
+Recall that $\Projections$ is the set of all projections of strings of length $n$ onto a single position, i.e. for $1 \le i \le n$ the value $\pi_i(S)$ of the $i$-th projection on a string $S$ is simply its $i$-th character $S[i]$. We choose $p_1, p_2, \rho, m$ as in Section~\ref{sec:klcs}. Namely, $p_1 = 1 - k / n$, $p_2 = 1 - (1+\eps) \cdot k / n$, and $\rho =\log p_1 / \log p_2$. We assume that $(1+\eps)k < n$ in order to guarantee $p_1 > p_2 > 0$, if this is not the case, the problem is trivial. Further, let $m = \lceil \log_{p_2}{\tfrac{1}{n}} \rceil$. For a string $S$ of length $n$ and a function $h=(\pi_{a_1},\ldots,\pi_{a_m}) \in \Projections^m$, we define $h(S)$ as $S[a_{p_1}] S[a_{p_2}] \cdots S[a_{p_m}]$, where $p$ is a permutation such that $a_{p_1}\le \cdots \le a_{p_m}$. If $|S|<n$, we define $h(S) = h(S \cdot \$^{n-|S|})$, where $ \$\notin \Sigma$ is a special gap-filling character.
+
+\subsection{Preliminaries}
+\begin{lemma}
+\label{lm:mismatches}
+For fixed $k$ and $\eps$, consider $h = (\pi_{a_1},\ldots,\pi_{a_m}) \in \Projections^m$ and two strings $S_1, S_2$ of length $n$ such that $h(S_1)\ne h(S_2)$.
+With probability at least $1-1/n^3$, the leftmost mismatch between $h(S_1)$ and $h(S_2)$
+corresponds to one of the $\lceil 4\cdot (1+\eps) k\rceil$ leftmost mismatches between $S_1$ and $S_2$. 
+\end{lemma}
+\begin{proof}
+If the Hamming distance between $S_1$ and $S_2$ does not exceed $k' = \lceil 4 \cdot (1+\eps) k \rceil$,
+then the claim easily follows from the fact that every mismatch between $h(S_1)$ and $h(S_2)$ corresponds to a mismatch between
+$S_1$ and $S_2$.
+
+Hence, we assume otherwise and consider the first $k'$ mismatches  $q_1, q_2, \ldots, q_{k'}$ between $S_1$ and $S_2$.
+Let us also define $P = \{\pi_{a_1},\ldots,\pi_{a_m}\}$ as the set of the coordinates $h$ projects to. It suffices to show that with probability at least $1-1/n^3$, one of the positions $q_i$ belongs to~$P$, which immediately implies the lemma. Consider the probability of the complementary event:
+
+\[\Prob[q_1,q_2,...,q_{k'} \notin P] =  \left(1-\tfrac{k'}{n}\right)^m \leq e^{-\frac{k'm}{n}}\]
+%
+Since $m = \lceil\log_{p_2}\frac{1}{n}\rceil$, we have $p_2^m \le \frac{1}{n}$.
+Due to $p_2 = 1 - (1+\eps) \cdot k / n$, this yields
+\[n \le \left(\tfrac{1}{p_2}\right)^m = \left(1+\tfrac{(1+\eps)k}{n-(1+\eps)k}\right)^m \le e^{\frac{m(1+\eps)k}{{n-(1+\eps)k}}},\]
+and therefore $m \ge \frac{(n-(1+\eps)k)\ln n}{(1+\eps)k}$.
+As $(1+\eps)k \le \frac14 k' \le \frac14n$, we conclude that
+$m \ge \frac{3n\ln n}{k'}$.
+Hence,
+$\Prob[q_1,q_2,...,q_{k'} \notin P] \le e^{-\frac{k'm}{n}} \le e^{-3\ln n}= \frac{1}{n^3}$.
+\end{proof}
+
+\begin{lemma}[cf.~\cite{DBLP:journals/tcs/LandauV86,kangaroo-2}]
+\label{lm:kangaroo}
+Given a string $T$ of length $n$. After $\Oh(n)$-time and $\Oh(n)$-space preprocessing, one can find, for any $1 \le k' \le n$, the first $k'$ mismatches between any two suffixes of $T$ in $\Oh(k')$ time.
+\end{lemma}
+
+From Lemmas~\ref{lm:mismatches} and~\ref{lm:kangaroo} we immediately obtain the following claim:
+
+\begin{corollary}
+\label{cor:hash-kangaroo}
+Consider a string $T$ of length $n$ and a function $h \in \Projections^m$ constructed for some $k$ and $\eps$. After $\Oh(n)$-time and $\Oh(n)$-space preprocessing, one can find, for any suffixes $S_1, S_2$ of $T$, the first mismatch between $h(S_1)$ and $h(S_2)$ in $\Oh(k)$ time.
+\end{corollary}
+
+\begin{corollary}
+\label{cor:trie}
+Given strings $X, Y$ of length $n$ and $h \in \Projections^m$. One can build a compact trie on the set of strings $\{h(S) : S \mbox{ is a suffix of } X \mbox{ or } Y\}$ in $\Oh(k n \log n)$ time and $\Oh(n)$ space correctly with probability at least $1-\frac{\log n}{n^2}$. 
+\end{corollary}
+\begin{proof}
+We define $T = X \$ Y$ and apply Corollary~\ref{cor:hash-kangaroo} to the first mismatch between $h(S_1)$ and $h(S_2)$, where $S_1, S_2$ are suffixes of $X$ or $Y$. If we know the position of the first mismatch between $h(S_1)$ and $h(S_2)$, we can compare them in $\Oh(1)$ time. Consequently, we can sort the set $\{h(S) : S \mbox{ is a suffix of } X \mbox{ or } Y\}$ in $\Oh((1+\eps) k n \log n)$ time. We can then build the trie in $\Oh(n)$ time by computing the position of the first two mismatch between any two $h(S_1), h(S_2)$ (or, equivalently, their longest common prefix) that are next two each other in the order, and imitating the depth-first traversal of the trie.
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{lm:kmacs}}
+We start with the preprocessing of Corollary~\ref{cor:trie}. Next, we choose a set $\Hashes$ of $L = \Theta(n^{1/(1+\eps)})$ hash functions in $\Projections^m$ uniformly at random. W.l.o.g., we can focus on computing $\acs_{\tilde{k}} (X, Y)$. We start by considering the following decision problem. Given an integer $\ell$, we must return:
+\begin{enumerate}
+\item YES if $\ell < \max_{1 \le j \le n} \lcpk(X_i, Y_j)$;
+\item Anything if $\max_{1 \le j \le n} \lcpk(X_i, Y_j) \le \ell \le \max_{1 \le j \le n} \lcpe(X_i, Y_j)$; 
+\item NO if $\max_{1 \le j \le n} \lcpe(X_i, Y_j) < \ell$.
+\end{enumerate}
+
+The algorithm proceeds as follows. First,  If $n-i+1 < \ell$, the algorithms returns NO. Else, let $\Collisions^{\Hashes}_{\ell} (i)$ be the set of all collisions, i.e. the set of triples $(X[i,i+\ell-1], S_2, h)$ such that $S_2$ is a substring of $Y$ of length $\ell$ and $h(X[i,i+\ell-1]) = h(S_2)$. The algorithm chooses a subset $\Collisions'$ of the first $\min\{4L, \Collisions^{\Hashes}_{\ell}(i)\}$ collisions in $\Collisions^{\Hashes}_{\ell}(i)$, and for each collision $(X[i,i+\ell-1], S_2)$ checks if the number of mismatches between them is at most $(1+\eps) k$ using Lemma~\ref{lm:kangaroo}. If for at least one of the collisions this is the case, the algorithm returns YES. We deliberately do not discuss the question of computing $\Collisions^{\Hashes}_{\ell}(i)$, we will address this question later.
+
+
+\begin{lemma}\label{lm:bad_collisions-kmacs}
+Let $(X[i,i+\ell-1],S_2, h)$ be a uniformly random element of $\Collisions^{\Hashes}_{\ell}(i)$, and $\Collisions^{\Hashes}_{\ell}(i) > 4 L$. We have $\Prob[\HD(X[i,i+\ell-1],S_2) \ge (1+\eps) k] \le \frac12$.
+\end{lemma}
+\begin{proof}
+Consider a substring $S_2$ of $Y$ such that $\HD(X[i,i+\ell-1], S_2) \ge (1+\eps)k$, and a hash function $h$. Let us bound the probability of $(X[i,i+\ell-1],S_2, h) \in \Collisions^{\Hashes}_{\ell}(i)$. Since $\HD (X[i,i+\ell-1],S_2)>(1+\eps)k$, 
+
+$$\Prob [h (X[i,i+\ell-1]) = h_2 (S_2)] \le p_2^{m} \le \tfrac{1}{n},$$ 
+where the last inequality follows from the definition of $m$. Therefore, the probability that for some function $h \in \Hashes$ we have $h(X[i,i+\ell-1]) = h(S_2)$ is at most $\tfrac{2}{n}$. 
+
+In total, we have $n |\Hashes|$ possible triples $(S_1, S_2 ,h)$ so by linearity of expectation, we conclude that the expected number of such triples is at most $\frac{2}{n} n L =2 L$. Therefore the probability to hit a triple $(T[i,i+\ell-1]), S_2, h)$ such that $\HD(X[i,i+\ell-1]), S_2) \ge (1+\eps)k$ when drawing from $\Collisions^{\Hashes}_{\ell}(i)$ uniformly at random is at most $2L / 4L = \frac12$.
+\end{proof}
+
+\begin{corollary}
+The decision algorithm is correct with constant probability.
+\end{corollary}
+\begin{proof}
+
+Let $S_2$ be a substring of $Y$ such that $\HD(X[i,i+\ell-1], S_2) \leq k \}$.
+By Lemma~\ref{lm:hash_function_exists}, with probability at least~$\frac34$, there exists $h \in \Hashes$ such that $h(X[i,i+\ell-1]) = h(S_2)$.
+Thus if $|\Collisions^{\Hashes}_{\ell}| \le 4L$, with probability at least $\frac34$ the set contains a collision $(X[i,i+\ell-1], S_2, h)$ such that $S_2$ is a substring of $Y$ and $\HD(T[i,i+\ell-1], S_2) \leq k $ and we will find it. If $|\Collisions^{\Hashes}_{\ell}(i)| > 4L$, by the previous lemma, the uniformly random element $(X[i,i+\ell-1],S_2, h)$ of $\Collisions^{\Hashes}_{\ell}(i)$ will satisfy $\HD(X[i,i+\ell-1],S_2) \le (1+\eps)k$ with probability $\frac12$.
+\end{proof}
+
+We can now apply the \twentyquestions game to compute $\max_{1 \le j \le n} \lcpk(X_i, Y_j))$ approximately (see Section~\ref{sec:20questions}). We set 
+$$A = \max_{1 \le j \le n} \lcpk(X_i, Y_j))$$
+$$B = \max_{1 \le j \le n} \lcpe(X_i, Y_j)$$
+For Carole, we use either the decision algorithm presented above. We will return a correct answer assuming that the fraction of errors $\rho <1/3$. Recall that the algorithm is correct with constant probability $\delta$, and we can ensure $\delta < \frac13$ by repeating it a constant number of times. It means that Carole can answer an individual question erroneously with probability at most $\frac13$. Therefore, for a sufficiently large constant in the number of queries $Q = \Theta(\log n)$, the fraction of erroneous answers is $\rho < \frac13$ with high probability by Chernoff--Hoeffding bounds. Therefore, with high probability the algorithm returns an integer in the interval $[A, B]$. 
+
+Recall that our ultimate goal is to compute $\acs_{\tilde{k}} (X, Y)$, which we do by approximately computing the values $\max_{1 \le j \le n} \lcpk(X_i, Y_j))$ and summing them up. The resulting value $\acs_{\tilde{k}} (X, Y)$ will satisfy $\acs_k (X, Y) \le \acs_{\tilde{k}} (X, Y) \le \acs_{(1+\eps)k} (X, Y)$ with high probability. 
+
+We must now address the question of computing the sets $\Collisions^{\Hashes}_{\ell}(i)$.  We will do this by computing the values $\max_{1 \le j \le n} \lcpk(X_i, Y_j))$ in parallel. We run the $n$ instances of the \twentyquestions game, one for each value of $i$, in parallel. Each instance has the same number of questions. At each round, to answer the next question for each instance of the game, we do the following. We construct the tries on the sets $\{h(X[i,n])\}_{i=1}^n \cup \{h(Y[i,n])\}_{i=1}^n$, where $h \in \Hashes$, one-by-one using Corollary~\ref{cor:trie}. When a trie for the hash function $h$ is constructed, we preprocess is as below:
+
+\begin{fact}[cf.~\cite{LCA}]
+\label{fct:lca}
+A trie of size $\Oh(n)$ can be preprocessed in $\Oh(n)$ time so that given two leaves corresponding to strings $S_1, S_2$ one could find their longest common prefix in $\Oh(1)$ time.
+\end{fact}
+
+Suppose that we must find the set $\Collisions^{\Hashes}_{\ell}(i)$. We first locate the leaf corresponding to the suffix $X_i$ of $X$. We then binary search for the leftmost and rightmost leaves that correspond to positions $j'$ and $j''$ of $Y$ such that $h(X[i,i+\ell-1]) = h(X[j',j'+\ell-1])$ and $h(Y[i,i+\ell-1]) = h(Y[j'',j''+\ell-1])$. To implement the binary search efficiently, we assume to store the leaves corresponding to the positions of $Y$ in an auxiliary array of length $n$. All positions of $Y$ forming a collision in $\Collisions^{\Hashes}_{\ell}(i)$ lie between $Y_{j'}$ and $Y_{j''}$ and we can retrieve them in $\Oh(1)$ time per collision. 
+
+This concludes the description of the algorithm and we can now analyse its complexity.
+
+\begin{lemma}
+$\acs_{\tilde{k}}(X, Y)$ can be computed in $\Oh( k n^{1+1/(1+\eps)} \log^2 n)$-time and $\Oh(n)$ space.
+\end{lemma}
+\begin{proof}
+First note that we never use more than $\Oh(n)$ space, so it remains to analyse the time complexity of the algorithm. 
+
+Preprocessing of Lemma~\ref{lm:kangaroo} takes $\Oh(n)$ time. After that, for each hash function we can construct its trie and then preprocess it according to Lemma in $\Oh(k n \log n)$ time. From Corollary~\ref{cor:twentyquestions} it follows that each trie will be constructed $\Oh(\log n)$ times, which implies that this step uses $\Oh(k n^{1+1/(1+\eps)} \log^2 n)$ time in total. 
+
+For each $i$ and $\ell$, we can find the boundaries of the subset of $\Collisions^{\Hashes}_{\ell}(i)$ corresponding to $h \in \Hashes$ in $\Oh(\log n)$ time. In total, this takes $\Oh(n^{1+1/(1+\eps)} \log^2 n)$ time. The tests take $\Oh(k n^{1+1/(1+\eps)} \log^2 n)$ time in total. 
+\end{proof}
+
+Lemma~\ref{lm:kmacs} follows.

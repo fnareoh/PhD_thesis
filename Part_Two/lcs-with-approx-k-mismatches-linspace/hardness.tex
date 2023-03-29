@@ -1,0 +1,101 @@
+We now show the lower bound of Fact~\ref{lm:klcs_lower} by reduction from the \Bichromatic problem.
+
+\begin{problem}[\Bichromatic]\label{pr:bichromatic}
+Given a constant $\gamma > 0$ and two sets of binary strings $(U_i)_{i \in [1,N]}$ and $(V_j)_{j \in [1,N]}$, each of length $d = \Oh(\log N)$, if the smallest Hamming distance between a pair $(U_i,V_j)_{i,j \in [1,N]}$ is $h$, we must output (possibly another) pair of binary strings with Hamming distance in $[h, (1+\gamma)h]$.
+\end{problem}
+
+Rubinstein~\cite{DBLP:journals/corr/abs-1803-00904} proved that for every $\delta$ there exists $\gamma = \gamma (\delta)$ such that any randomised algorithm that solves \Bichromatic correctly with constant probability requires $\Oh(N^{2-\delta})$ time assuming SETH:
+
+\begin{hypothesis}[SETH]
+For every $\delta > 0$, there exists an integer $q$ such that SAT on $q$-CNF formulas with $m$ clauses and  $n$ variables cannot be solved in $m^{O(1)} 2^{(1-\delta) n}$ time even by a randomised algorithm\footnote{Impagliazzo, Paturi, and Zane~\cite{DBLP:journals/jcss/ImpagliazzoPZ01} stated the hypothesis for deterministic algorithms only, but nowadays it is common to extend SETH to allow randomisation. If we condition on the classic version of the hypothesis, we will obtain a lower bound for deterministic algorithms. See~\cite{SETH_survey} for more discussion.}.
+\end{hypothesis}
+
+We show the lower bound by reducing from \Bichromatic to a polylogarithmic number of instances of \kApproxLCS. We assume that $U_i$, $V_j$ are over the alphabet $\{0,1\}$. Let us introduce $H=(a^d b)^{d+1}$, and construct $X = H U_1 H U_2 H \ldots H U_N H$ and $Y = H V_1 H V_2 H \ldots H V_N H$.
+
+\begin{observation}\label{obs:bichro_lcs}
+If there exist $i,j \in [1,N] $ such that $\HD(U_i,V_j) \leq k$, then  $\lcsk(X,Y) \geq 2(d+1)^2 + d$.
+\end{observation}
+\begin{proof}
+If $\HD(U_i,V_j) \leq k$ for some $i, j$, then $\HD(HU_iH,HV_jH)  \leq k$ and $\lcsk(X,Y) \geq |H U_i H| = 2(d+1)^2 + d$.
+\end{proof}
+
+\begin{lemma} \label{lm:bichro_lcs}
+For a given $k \leq d/(1+\eps)$, if the algorithm for \kApproxLCS outputs a substring $S_1$ of $X$ and a substring $S_2$ of $Y$ of length $\geq 2(d+1)^2 + d$, then there exist $i,j \in [1,N] $ such that $\HD(U_i,V_j) \leq (1+\eps)k$.
+\end{lemma}
+
+\begin{proof}
+By the assumption of the lemma, $|S_1| = |S_2| \geq 2(d+1)^2 + d$. $S_2$ contains either $HV_j$ or $V_jH$ for some $j$. W.l.o.g., we can assume that $S_2$ contains a copy of $H$ followed by $V_j$ for some $j$. Let us consider the substring $S$ of $X$ the copy of $H$ is aligned with. Below we will prove that $S = H$ and since it is followed by $U_i$ for some $i$, it will imply that $\HD(HU_iH,HV_jH)  \leq (1+\eps)k$.
+
+\vspace*{-10pt}
+
+\begin{figure}[H]
+\definecolor{mygray}{gray}{0.6}
+\definecolor{lessgray}{gray}{0.85}
+
+\begin{center}
+{\footnotesize
+\begin{tikzpicture}[scale=0.6]
+  % T1
+  \filldraw[lessgray] (0,0) rectangle (4,1);
+  \filldraw[mygray] (4,0) rectangle (5,1);
+  \filldraw[lessgray] (5,0) rectangle (9,1);
+  \filldraw[mygray] (9,0) rectangle (10,1);
+  \filldraw[lessgray] (10,0) rectangle (14,1);
+  
+  \draw (-1.5,0.5) node {$X$};
+  \draw (-0.5,0.5) node {$\ldots$};
+  \draw (14.5,0.5) node {$\ldots$};
+  
+  \draw (2,0.5) node {\small{$H$}};
+  \draw (4.5,0.5) node {\small{$U_{i-1}$}};
+  \draw (7,0.5) node {\small{$H$}};
+  \draw (9.5,0.5) node {\small{$U_i$}};
+  \draw (12,0.5) node {\small{$H$}};
+  
+  % T2  
+  
+  \filldraw[lessgray, xshift = 2.5 cm, yshift= -2.5 cm] (0,0) rectangle (4,1);
+  \filldraw[mygray, xshift = 2.5 cm, yshift= -2.5 cm] (4,0) rectangle (5,1);
+  \filldraw[lessgray, xshift = 2.5 cm, yshift= -2.5 cm] (5,0) rectangle (9,1);
+  \filldraw[mygray, xshift = 2.5 cm, yshift= -2.5 cm] (9,0) rectangle (10,1);
+  \filldraw[lessgray, xshift = 2.5 cm, yshift= -2.5 cm] (10,0) rectangle (14,1);
+  
+  \draw[xshift = 2.5 cm, yshift= -2.5 cm] (-1.5,0.5) node {$Y$};
+  \draw[ xshift = 2.5 cm, yshift= -2.5 cm] (-0.5,0.5) node {$\ldots$};
+  \draw[ xshift = 2.5 cm, yshift= -2.5 cm] (14.5,0.5) node {$\ldots$};
+  
+  
+  \draw[xshift = 2.5cm, yshift= -2.5 cm] (4.5,0.5) node {\small{$V_{j-1}$}};
+  \draw[xshift = 2.5cm, yshift= -2.5 cm] (7,0.5) node {\small{$H$}};
+  \draw[xshift = 2.5cm, yshift= -2.5 cm] (9.5,0.5) node {\small{$V_j$}};
+  \draw[xshift = 2.5cm, yshift= -2.5 cm] (12,0.5) node {\small{$H$}};
+  
+  %S1 
+  \draw [decorate,decoration={brace,amplitude=0.25cm}](4.5,1) -- (13.5,1) node [black,midway, yshift=0.5cm]{$S_1$};
+  % S2
+  \draw [decorate,decoration={brace,amplitude=0.25cm, mirror}, yshift= -3.5 cm](4.5,1) -- (13.5,1) node [black,midway, yshift=-0.5cm]{$S_2$};
+  % S
+  \draw [decorate,decoration={brace,amplitude=0.3cm,mirror}](7.5,0) -- (11.5,0) node [black,midway, yshift=-0.5cm]{$S$};
+  \draw [dashed] (7.5,1) -- (7.5,-2.5);
+  \draw [dashed] (11.5,1) -- (11.5,-2.5);
+  % s
+  \draw[<->] (5,-0.25) -- (7.5,-0.25);
+  \draw[black] (6.25,-0.5) node {$s$};
+
+\end{tikzpicture}
+
+}
+\end{center}
+\caption{Substrings $S_1$ and $S_2$ of $X$ and $Y$, respectively, substring $S$ aligned with a copy of $H$ in $S_2$, and the shift $s$.}
+\end{figure}
+
+Assume $S \neq H$, and let $0 < s < (d+1)^2 + d$ be the distance between the starting positions of $S$ and the nearest copy of $H$ from the left. If $s < d+1$ or $(d+1)^2 < s$, then all occurrences of $b$ in $H$ create a mismatch. There are $d+1 > (1+\eps)k$ of them, a contradiction. If $d+1 \leq s \le (d+1)^2$, then $H$ covers $U_i$ creating $d$ mismatches. Since $|U_i| = d$ and $|H|=(d+1)^2$, we will have at least one more mismatch from the alignment of the copy of $H$ in $Y$ and the copies of $H$ in $X$ that surround $U_i$. Therefore, in total there are at least $d+1 > (1+\eps)k$ mismatches, a contradiction. To conclude, both cases are impossible and hence $s = 0$. The lemma follows as explained above.
+\end{proof}
+With this lemma, we can now proceed to prove Fact~\ref{lm:klcs_lower}.
+Define $\eps = \gamma/3$ and consider all $k = 1, (1+\eps), (1+\eps)^2, (1+\eps)^3, \ldots$ until $d/(1+\eps)$. For each $k$, we run $\log \log n$ independent instances of an algorithm for \kApproxLCS. Let $k_0$ be the smallest $k$ such that the longest common substring with approximately $k$ mismatches has length at least $2(d+1)^2 + d$.
+
+By the definition of $k_0$, Observation~\ref{obs:bichro_lcs} and Lemma~\ref{lm:bichro_lcs}, there do not exist $i,j \in [1,N]$ such that $\HD(U_i,V_j) \leq k_0/(1+\eps)$ but there exist $i,j \in [1,N]$ such that $\HD(U_i,V_j) \leq k_0(1+\eps)$.
+In the \Bichromatic problem, this translates to $ k_0/(1+\eps) < h \leq k_0(1+\eps)$, where $h$ is the minimal distance between all pairs $U_i,V_j$.
+This is equivalent to
+\[h \leq k_0(1+\eps) < h(1+\eps)^2 = h(1+\tfrac23\gamma + \tfrac19\gamma^2) \leq h(1+\gamma),\]
+which means that the pair $(U_i,V_j)$ found by the algorithm for $k_0$ is a valid solution for \Bichromatic. It follows that for some $k$, the algorithm for \kApproxLCS must spend $\Omega(N^{2-\delta} / \log_{1+\eps} \log N)$ time. We have $n = |X| = |Y| = \Oh(d^2 N) = \Oh(N \log^2 N)$, which implies $N = \Omega(n / \log^2 n)$. Fact~\ref{lm:klcs_lower} follows.

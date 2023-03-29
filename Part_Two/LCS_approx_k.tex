@@ -1,1 +1,68 @@
-\chapter{Approximating Longest Common Substring with $k$ mismatches}
+\chapter{Approximating longest common substring with $k$~mismatches: Theory and practice}
+\contextbox{The following chapter is a publication}{
+This chapter corresponds to the following publication: %\fullcite{}\\
+}
+
+\newcommand{\inputLCS}[1]{\input{Part_Two/lcs-with-approx-k-mismatches-linspace/#1}}
+\newcommand{\figLCS}[2]{\includegraphics[scale=#1]{Part_Two/lcs-with-approx-k-mismatches-linspace/#2}}
+
+\newcommand{\lcpe}{\mathrm{LCP}_{(1+\eps)k}}
+\newcommand{\lcp}{\mathrm{LCP}_{\tilde{k}}}
+\newcommand{\lcpk}{\mathrm{LCP}_{k}}
+\newcommand{\lcsk}{\mathrm{LCS}_{k}}
+\newcommand{\lcske}{\mathrm{LCS}_{(1+\eps)k}}
+\newcommand{\lcsak}{\mathrm{LCS}_{\tilde{k}}}
+\newcommand{\sk}{\mathrm{sk}}
+\newcommand{\Prob}{\mathrm{Pr}}
+\newcommand{\LCSp}{\textsf{LCS}\xspace}
+\newcommand{\kLCS}{\textsf{LCS with $k$ Mismatches}\xspace}
+\newcommand{\kApproxLCS}{\textsf{LCS with Approximately $k$ Mismatches}\xspace}
+\newcommand{\Bichromatic}{\textsf{$(1+\gamma)$-approximate Bichromatic Closest Pair}\xspace}
+\newcommand{\NN}{\textsf{Approximate Near Neighbour}\xspace}
+\newcommand{\twentyquestions}{\textsf{Twenty Questions}\xspace}
+\newcommand{\Carole}{\mathit{Carole}}
+\newcommand{\pop}{\mathit{pop}}
+\newcommand{\push}{\mathit{push}}
+\newcommand{\ttop}{\mathit{top}}
+\newcommand{\mmid}{\mathit{mid}}
+
+\newcommand{\Hashes}{\mathcal{H}}
+\newcommand{\Collisions}{C}
+\newcommand{\Bad}{B}
+\newcommand{\Projections}{\Pi}
+\newcommand{\Pos}{\mathsf{P}}
+\newcommand{\HD}{d_H}
+%\newcommand{\LCP}{\mathrm{LCP}}
+
+\newcommand{\norm}[1]{\ensuremath{\lVert#1\rVert}}
+
+\newcommand\restr[2]{{
+  \left.\kern-\nulldelimiterspace
+  #1 
+  \vphantom{\big|}
+  \right|_{#2} 
+}}
+
+\begin{small}
+    In the problem of the longest common substring with $k$ mismatches we are given two strings $X, Y$ and must find the maximal length $\ell$ such that there is a length-$\ell$ substring of $X$ and a length-$\ell$ substring of $Y$ that differ in at most $k$ positions. The length $\ell$ can be used as a robust measure of similarity between $X, Y$. In this work, we develop new approximation algorithms for computing $\ell$ that are significantly more efficient that previously known solutions from the theoretical point of view. Our approach is simple and practical, which we confirm via an experimental evaluation, and is probably close to optimal as we demonstrate via a conditional lower bound.
+\end{small}
+
+
+\section{Introduction}\label{sec:intro}
+\inputLCS{intro}
+	
+\section{Preliminaries}\label{sec:prelim}
+\inputLCS{prelim}
+
+\section{LCS with approximately $k$ mismatches}\label{sec:klcs}
+\inputLCS{klcs}
+
+
+\section{Experiments}\label{sec:implem}
+\inputLCS{implem}
+
+\BiblatexSplitbibDefernumbersWarningOff
+
+\backmatter
+\todo[inline]{Fix links to some DOI not working}
+\printbibliography[heading=subbibintoc]

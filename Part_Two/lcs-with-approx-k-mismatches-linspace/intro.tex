@@ -1,0 +1,37 @@
+For decades, the edit distance and its variants remained the most relevant measure of similarity between biological sequences. However, there is strong evidence that the edit distance cannot be computed in strongly subquadratic time~\cite{DBLP:conf/stoc/BackursI15}. 
+One possible approach to overcoming the quadratic time barrier is computing the edit distance approximately, and last year in the breakthrough paper Chakraborty et al.~\cite{DBLP:conf/focs/ChakrabortyDGKS18} showed a constant-factor approximation algorithm that computes the edit distance between two strings of length $n$ in time $\tilde{\Oh}(n^{2-2/7})$. Nevertheless, the algorithm is highly non-trivial and because of that is likely to be impractical. 
+
+A different approach is to consider alignment-free measures of similarities. Ideally, we want the measure to be robust and simple enough so that we could compute it efficiently. One candidate for such a measure is the length of the longest common substring with $k$ mismatches. Formally, given two strings $X,  Y$ of lengths at most $n$ and an integer $k$, we want to find the maximal length $\lcsk(X,Y)$ of a substring of $X$ that occurs in $Y$ with at most $k$ mismatches. Computing this value constitutes the \kLCS problem.
+
+The \kLCS problem was first considered for $k = 1$~\cite{DBLP:journals/poit/BabenkoS11,DBLP:journals/ipl/FlouriGKU15}, with current best algorithm taking $\Oh(n \log n)$ time and $\Oh(n)$ space. The first algorithm for the general value of $k$ was shown by Flouri et al.~\cite{DBLP:journals/ipl/FlouriGKU15}. Their simple approach used quadratic time and linear space. Grabowski~\cite{DBLP:journals/ipl/Grabowski15} focused on a data-dependent approach, namely, he showed two linear-space algorithms with running times $\Oh (n ((k+1) (\mathrm{LCS}+1))^k)$ and $\Oh (n^2 k/\lcsk)$, where $\mathrm{LCS}$ is the length of the longest common substring of $X$ and~$Y$ and $\lcsk$, similarly to above, is the length of the longest common substring with $k$ mismatches of $X$ and $Y$. Abboud et al.~\cite{DBLP:conf/soda/AbboudWY15} showed a $k^{1.5} n^2 / 2^{\Omega(\sqrt{(\log n)/k})}$-time randomised solution to the problem via the polynomial method. Thankachan et al.~\cite{DBLP:journals/jcb/ThankachanAA16} presented an $\Oh(n \log^k n)$-time, $\Oh(n)$-space solution for constant $k$. This approach was recently extended by Charalampopoulos et al.~\cite{DBLP:conf/cpm/Charalampopoulos18} to develop an $\Oh(n)$-time  and $\Oh(n)$-space algorithm for the case of $\lcsk = \Omega(\log^{2k+2} n)$.
+
+On the other hand, Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} showed that there is $k = \Theta(\log n)$ such that the \kLCS problem cannot be solved in strongly subquadratic time, even for the binary alphabet, unless the Strong Exponential Time Hypothesis (SETH) of Impagliazzo, Paturi, and Zane~\cite{DBLP:journals/jcss/ImpagliazzoPZ01} is false. This conditional lower bound implies that there is little hope to improve existing solutions to \kLCS. To overcome this barrier, they introduced an approximation approach to \kLCS, inspired by the work of Andoni and Indyk~\cite{substringNN}. 
+
+\begin{problem}[\kApproxLCS]\label{pr:LCS'k}
+Two strings $X, Y$ of length at most~$n$, an integer $k$, and a constant $\eps > 0$ are given. Return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches.
+\end{problem}
+
+Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} also showed that for any $\eps \in (0,2)$ the \kApproxLCS problem can be solved in $\Oh (n^{1+1/(1+\eps)} \log^2 n)$ time and $\Oh (n^{1+1/(1+\eps)})$ space. Besides for superlinear space, their solution uses a very complex class of hash functions which requires $n^{4/3+o(1)}$-time preprocessing, and that is the underlying reason for the bounds on~$\eps$. In this work, we significantly improve the complexity of the \kApproxLCS problem and show the following results.
+
+\begin{theorem}\label{th:klcs_upper}
+Let $\eps > 0$ be an arbitrary constant. The \kApproxLCS problem can be solved correctly with high probability:
+\begin{enumerate}[label=\arabic*)]
+\item In $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ space assuming a constant-size alphabet;
+\item In $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ time and $\Oh(n)$ space for alphabets of arbitrary size. 
+\end{enumerate}
+\end{theorem}
+
+Our first solution uses the Approximate Nearest Neighbour data structure~\cite{DBLP:conf/stoc/AndoniR15} as a black box. The definition of this data structure is extremely involved, and we view this result as more of a theoretical interest.
+On the other hand, our second solution is simple and practical, which we confirm by experimental evaluation (see Section~\ref{sec:implem} for details). 
+
+As a final remark, we note that a construction similar to the one used to show a lower bound for the \kLCS problem~\cite{DBLP:journals/algorithmica/KociumakaRS19} gives a lower bound for \kApproxLCS. 
+
+\begin{fact}\label{lm:klcs_lower}
+Assuming SETH, for every constant $\delta > 0$, there exists a constant $\eps = \eps(\delta)$\footnote{Here $\delta$ is a function of $\eps$ for which the explicit form is not known (a condition inherited from~\cite{DBLP:journals/corr/abs-1803-00904}).} such that any randomised algorithm that solves the \kApproxLCS problem for given $X$ and $Y$ of length at most $n$ correctly with constant probability uses $\Omega(n^{2-\delta})$ time. 
+\end{fact}
+
+For completeness, we provide the proof of the fact in the full version of this paper.
+
+\subparagraph*{Related work.}
+In 2014, Leimester and Morgenstern~\cite{kmacs} introduced a related similarity measure, \emph{the $k$-macs distance}. Let $\lcpk (X_i, Y_j) = \max\{\ell: \HD(X[i,i+\ell-1], Y[j, j+\ell-1]) \le k\}$, where $\HD$ stands for Hamming distance, i.e.\ the number of mismatches between two strings. We have $\lcsk = \max_{i,j} \lcpk(X_i, Y_j)$. The $k$-macs distance, on the other hand, is defined as a normalised average of these values.  Leimeister and Morgenstern~\cite{kmacs} showed a heuristic algorithm for computing the $k$-macs distance, with no theoretical guarantees for the precision of the approximation; other heuristic approaches for computing the $k$-macs distance include~\cite{DBLP:journals/jcb/ThankachanCLAA16,Thankachan2017}. The only algorithm with provable theoretical guarantees is~\cite{DBLP:journals/jcb/ThankachanAA16} and it computes the $k$-macs distance in $\Oh(n \log^k n)$ time and $\Oh(n)$ space.
+

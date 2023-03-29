@@ -1,0 +1,138 @@
+We now present results of experimental evaluation of the second solution presented in Theorem~\ref{th:klcs_upper}.
+
+\textit{Methodology and test environment.} The baselines and our solution are written in C++11 and compiled with optimizations using gcc 7.4.0. The experimental results were generated on an Intel Xeon E5-2630 CPU using 128 GiB RAM. To ensure the reproducibility of our results, our complete experimental setup, including data files, is available at \url{https://github.com/fnareoh/LCS\_Approx\_k\_mis}.
+
+\textit{Baseline.} The only other solution to the \kApproxLCS problem was presented in~\cite{DBLP:journals/algorithmica/KociumakaRS19}, however, it has a worse complexity and is likely to be unpractical because it uses a very complex class of hash functions. We therefore chose to compare our algorithm against algorithms for the \kLCS problem. To the best of our knowledge, none of the existing algorithms has been implemented. We implemented the solution to \kLCS by Flouri et al., which we refer to as FGKU~\cite{DBLP:journals/ipl/FlouriGKU15}. (The other algorithms seem to be too complex to be efficient in practice.) The main idea of the algorithm of Flouri et al.\ is that if we know that the longest common substring with $k$ mismatches is obtained by a substring of $X$ that starts at a position $p$ and a substring of $Y$ that starts at a position $p+i$, then we can find it by scanning $X$ and $Y[i,|Y|]$ in linear time; see Algorithm~\ref{alg:FGKU} for details.
+
+\begin{algorithm}[ht]
+\caption{FGKU algorithm}
+\begin{algorithmic}[1]
+\State $n \gets  |X|$, $m \gets  |Y|$
+\State $l \gets  0$, $r_1 \gets  0$, $r_2 \gets  0$
+\For {$d \gets-m+1$ to $n-1$} 
+	\State $i \gets  \max(-d,0)+d$, $j \gets  \max(-d,0)$
+	\State $Q \gets  \emptyset$, $s \gets  0$, $p \gets  0$ 
+	\While {$p \leq \min(n-i,m-j)-1$}
+	\If {$X[i+p] \neq Y[j+p]$}
+		\If {$|Q| = k$}
+			\State $s \gets  \min Q + 1$
+			\State {\footnotesize DEQUEUE}($Q$)
+		\EndIf
+		\State {\footnotesize ENQUEUE}($Q,p$)
+	\EndIf
+	\State $p \gets p+1$
+	\If{$p-s > l$}
+		\State $l \gets p-s$, $r_1 \gets i+s$, $r_2 \gets j+s$
+	\EndIf
+	\EndWhile
+\EndFor
+\end{algorithmic}
+\label{alg:FGKU}
+\end{algorithm}
+
+\textit{Details of implementation.}
+We made several adjustments to the theoretical algorithm we described. First, we use the fact that $A = \mathrm{LCS}(X,Y)+k \le \lcsk(X,Y) \le B = (k+1)\cdot\mathrm{LCS}(X,Y)+k$ to bound the interval in the \twentyquestions game. We also treated the number of questions in the  \twentyquestions game and $L$, the size of the set of hash functions $\Hashes$, as parameters that trade time for accuracy, and put the number of questions to $2 \log (B-A)$ in the \twentyquestions game and $L = n^{1/(1+\eps)}/16$. In Line~\ref{ln:Hamming_dist} of Algorithm~\ref{alg:LSH}, we used sketches to estimate the Hamming distance. In practice, we computed the Hamming distance via character-by-character comparison when $\ell$ is small compared to $k$ and via kangaroo jumps otherwise~\cite{10.1145/8307.8309}. Also, when the length $\ell$ in Algorithm~\ref{alg:LSH} is smaller than $2 \log n$, we compute the hash values of the $\ell$-length substrings of $S_1$ and $S_2$ naively, instead of using the FFT algorithm~\cite{FischerPaterson}. 
+
+\begin{figure}[ht!]
+\centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/random_10.png}
+        \caption{Random, $k = 10$}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/e_coli_10.png}
+        \caption{E. coli, $k = 10$}
+    \end{subfigure}
+\caption{Comparison of the FGKU algorithm versus our algorithm for $k = 10$ and different values of $\eps$. Large standard deviation for length $60000$ is caused by an outlier with very long longest common substring with $k$ mismatches.}
+\label{fig:runtime_10}
+\end{figure}
+
+\begin{figure}[ht!]
+\centering
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/random_25.png}
+        \caption{Random, $k = 25$}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/e_coli_25.png}
+        \caption{E. coli, $k = 25$}
+    \end{subfigure}     
+\caption{Comparison of the FGKU algorithm versus our algorithm for $k = 25$ and different values of $\eps$.}
+\label{fig:runtime_25}
+\end{figure}
+ 
+\begin{figure}[ht!]
+\centering   
+    \begin{subfigure}{.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/random_50.png}
+        \caption{Random, $k = 50$}
+    \end{subfigure}%
+    \begin{subfigure}{0.5\textwidth}
+        \centering
+        \captionsetup{justification=centering}
+        \figLCS{0.45}{figs/e_coli_50.png}
+        \caption{E. coli, $k = 50$}
+    \end{subfigure}        
+\caption{Comparison of the FGKU algorithm versus our algorithm for $k = 50$ and different values of $\eps$.}
+\label{fig:runtime_50}
+\end{figure}
+
+\textit{Data sets and results.}
+We considered $k \in \{10, 25, 50\}$ and $\eps \in \{1.0, 1.25, 1.5, 1.75, 2.0\}$. We tested the algorithms on pairs of random strings (each character is selected independently and uniformly from a four-character alphabet $\{A, T, G, C\}$) and on pairs of strings extracted at random from the E. coli genome. The lengths of the strings in each pair are equal and vary from $0$ to $60000$ with a step of $5000$. All timings reported are averaged over ten runs. Figures~\ref{fig:runtime_10}-~\ref{fig:runtime_50} show the results for $k = 10, 25, 50$. We note that for $\eps = 1$ and $k = 10, 25$, the standard deviation of the running time on the E. coli data set is quite large, which is probably caused by our choice of the method to compute the Hamming distance between substrings, but for all other parameter combinations it is within the standard range. We can see that the time decreases when $\eps$ grows, which is coherent with the theoretical complexity. 
+
+
+As for the accuracy, note that our algorithm cannot return a pair of strings at Hamming distance more than $(1+\eps) k$, and so the only risk is returning strings which are too short. Consequently, we measured the accuracy of our implementation by the ratio of the length $\lcsak(X, Y)$ returned by our algorithm divided by $\lcsk(X, Y)$ computed by the dynamic programming. We estimate $r_{\min}(\eps, k) = \min_{X,Y}(\lcsak(X,Y)/\lcsk(X,Y))$ and $r_{\max}(\eps, k) = \max_{X,Y}(\lcsak(X,Y)/\lcsk(X,Y))$
+by computing $\lcsak$ and $\lcsk$ for $10$ pairs of strings for each length from $5000$ to $60000$ with step of $5000$, as well as the error rate, i.e. the percentage of experiments where $\lcsak(X,Y)$ is shorter than $\lcsk(X,Y)$ (see Table~\ref{tb:eps}). Not surprisingly, $r_{\min}$ and~$r_{\max}$ grow as $k$ and $\eps$ grow, while the error rate drops. Even though there is no theoretical upper bound on $r_{\max}$, the latter is at most $2.24$ at all times. We also note that even in the cases when the error rate is non-negligible, $\lcsak \ge 0.86 \cdot \lcsk$, in other words, our algorithm returns a reasonable approximation of $\lcsk$.
+
+
+\newcolumntype{?}{!{\vrule width 1pt}}
+\newcommand{\err}{\mathrm{err}}
+\begin{center}
+\begin{table}[ht!]
+\center
+\begin{tabular}{| c ? c | c | c | c| c| c ? c | c | c | c | c | c |}
+\hline
+ & \multicolumn{6}{c?}{Random} & \multicolumn{6}{c|}{E. coli} \\ 
+\hline
+ & \multicolumn{2}{c|}{$k = 10$} & \multicolumn{2}{|c|}{$k = 25$} & \multicolumn{2}{|c?}{$k = 50$} & \multicolumn{2}{c|}{$k = 10$} & \multicolumn{2}{c|}{$k = 25$} & \multicolumn{2}{c|}{$k = 50$} \\ 
+\hline
+\hline
+
+\multirow{ 2}{*}{$\eps = 1.0$} & 0.95 & 1.41 & 1.12 & 1.46 & 1.27 & 1.54 & 0.89 & 1.34 & 0.94 & 1.48 & 0.97 & 1.59\\ 
+\cline{2-13}
+& \multicolumn{2}{c|}{$\err = 3\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}   & \multicolumn{2}{c?}{$\err = 0\%$}   & \multicolumn{2}{c|}{$\err = 33\%$}   & \multicolumn{2}{c|}{$\err = 13\%$}  & \multicolumn{2}{c|}{$\err = 3\%$}\\ 
+\hline
+\multirow{ 2}{*}{$\eps = 1.25$}  & 0.97 & 1.47 & 1.15 & 1.63 & 1.44 & 1.78 & 0.88  & 1.48 & 0.98 & 1.56 & 0.99 & 1.73\\ 
+\cline{2-13}
+& \multicolumn{2}{c|}{$\err = 1\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}   & \multicolumn{2}{c?}{$\err = 0\%$}   & \multicolumn{2}{c|}{$\err = 28\%$}   & \multicolumn{2}{c|}{$\err = 5\%$}  & \multicolumn{2}{c|}{$\err = 3\%$}\\ 
+\hline
+\multirow{ 2}{*}{$\eps = 1.5$}  & 1.05 & 1.57 & 1.37 & 1.76 & 1.55 & 1.91  & 0.88 & 1.45 & 0.96 & 1.67 & 0.99 & 1.89\\ 
+\cline{2-13}
+& \multicolumn{2}{c|}{$\err = 0\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}   & \multicolumn{2}{c?}{$\err = 0\%$}   & \multicolumn{2}{c|}{$\err = 17\%$}   & \multicolumn{2}{c|}{$\err = 3\%$}  & \multicolumn{2}{c|}{$\err = 3\%$}\\  
+\hline
+\multirow{ 2}{*}{$\eps = 1.75$} & 1.02 & 1.69 & 1.46 & 1.86 & 1.72 & 2.12 & 0.88 & 1.58 & 0.95 & 1.84 & 1.02 & 2.15\\ 
+\cline{2-13}
+& \multicolumn{2}{c|}{$\err = 0\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}   & \multicolumn{2}{c?}{$\err = 0\%$}   & \multicolumn{2}{c|}{$\err = 17\%$}   & \multicolumn{2}{c|}{$\err = 2\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}\\ 
+\hline
+\multirow{ 2}{*}{$\eps = 2.0$}  & 1.10 & 1.72 & 1.59 & 2.00 & 1.89 & 2.24 & 0.91  & 1.77 & 1.01 & 2.10 & 1.00 & 2.19\\ 
+\cline{2-13}
+& \multicolumn{2}{c|}{$\err = 0\%$}  & \multicolumn{2}{c|}{$\err = 0\%$}   & \multicolumn{2}{c?}{$\err = 0\%$}   & \multicolumn{2}{c|}{$\err = 9\%$}   & \multicolumn{2}{c|}{$\err = 0\%$}  & \multicolumn{2}{c|}{$\err = 1\%$}\\ 
+\hline
+\end{tabular} 
+\caption{Accuracy of the \kApproxLCS algorithm. For each $k$ and $\eps$, we show $r_{\min}(\eps, k)$, $r_{\max}(\eps, k)$, as well as the error rate.}
+\label{tb:eps}
+\end{table}
+\end{center}
+
+
+

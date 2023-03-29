@@ -1,0 +1,154 @@
+In this section, we prove Theorem~\ref{th:klcs_upper}. Let us first introduce a decision variant of the \kApproxLCS problem. 
+
+\begin{problem}\label{pr:LCS'k-decision}
+Two strings $X, Y$ of length at most $n$, integers $k, \ell$, and a constant $\eps > 0$ are given. We must return:
+%
+\begin{enumerate}
+\item YES if $\ell \le \lcsk(X,Y)$;
+\item Anything if $\lcsk(X,Y) < \ell \le \mathrm{LCS}_{(1+\eps)k}(X,Y)$; 
+\item NO if $\mathrm{LCS}_{(1+\eps)k}(X,Y) < \ell$.
+\end{enumerate}
+%
+If we return YES, we must also give a \emph{witness pair} of length-$\ell$ substrings $S_1$ and $S_2$ of $X$ and $Y$, respectively, such that $\HD(S_1,S_2)\le (1+\eps)k$. 
+\end{problem}
+
+The decision variant of the \kApproxLCS problem can be reduced to the following $(c,r)$-\NN problem. 
+
+\begin{problem}\label{pr:NN}
+In the $(c,r)$-\NN problem with failure probability~$f$, the aim is, given a set $P$ of $n$ points in $\mathbb{R}^d$, to construct a data structure supporting the following queries: given any point $q\in \mathbb{R}^d$, if there exists $p \in P$ such that $\norm{p-q} \leq r$, then return some point $p' \in P$ such that $\norm{p'-q} \leq cr$ with probability at least $1-f$.
+\end{problem}
+
+Using the reduction, we will show our first solution to the \kApproxLCS decision problem based on the result of Andoni and Razenshteyn~\cite{DBLP:conf/stoc/AndoniR15}, who showed that for any constant $f$, there is a data structure for the $(c,r)$-\NN problem that has $\Oh(n^{1+\rho+o(1)}+d \cdot n)$ size, $\Oh(d\cdot n^{\rho+o(1)})$ query time, and $\Oh(d \cdot n^{1+\rho+o(1)})$ preprocessing time, where $\rho = 1/(2c^2-1)$.
+
+\begin{lemma}\label{lm:opt_NN}
+Assume an alphabet of constant size $\sigma$. The decision variant of the \kApproxLCS problem can be solved in space $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ and time $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$. The answer is correct with constant probability. 
+\end{lemma}
+\begin{proof}
+Let $P$ be the set of all length-$\ell$ substrings of $X$ and $Q$ be the set of all length-$\ell$ substrings of $Y$,
+all encoded in binary using the morphism $\mu$ (see Section~\ref{sec:prelim}). We start by applying the dimension reduction procedure of Corollary~\ref{cor:dim_reduction} to $P$ and $Q$ with $\alpha = 1/(\log\log n)^{\Theta(1)}$ and $\beta = 2$ to obtain sets $P'$ and $Q'$. We can implement the procedure in $\Oh(\sigma n \log^2 n (\log\log n)^{\Theta(1)}) = \Oh(n \log^{2+o(1)} n)$ time by encoding $X, Y$ using $\mu$ and running the FFT algorithm~\cite{FischerPaterson} for each of the $\Oh(\log^{1+o(1)} n)$ rows of the matrix and $\mu(X), \mu(Y)$. 
+
+To solve the decision variant of \kApproxLCS, we build the data structure of Andoni and Razenshteyn~\cite{DBLP:conf/stoc/AndoniR15} for $(\sqrt{(1+\eps)(1-\alpha)}, \sqrt{(1+\alpha)k})$-\NN over~$Q'$. We make a query for each string in $P'$. If, queried for $\sk_{\alpha}(S_1)\in P'$, where $S_1$ is a length-$\ell$ substring of $X$, the data structure outputs $\sk_{\alpha}(S_2)\in Q'$, where $S_2$ is a length-$\ell$ substring of $Y$, then we compute $\norm{\sk_{\alpha}(S_1)- \sk_{\alpha}(S_2)}^2$. If it is at most $(1+\eps)k$, we output YES and the witness pair $(S_1,S_2)$ of substrings. As the length of vectors in $P'$, $Q'$ is $d = \Oh(\log^{1+o(1)} n)$, we obtain the desired complexity. 
+
+To show that the algorithm is correct, suppose that there are length-$\ell$ substrings $S_1$ and $S_2$ of $X$ and $Y$, respectively, with $\HD(S_1, S_2) \le k$. By Corollary~\ref{cor:dim_reduction}, $\norm{\sk_\alpha(S_1),\sk_\alpha(S_2)}\le \sqrt{(1+\alpha)k}$ holds with probability at least $1-1/n$. Then, when querying for $\sk_\alpha(S_1)$, with constant probability the data structure will output a string $\sk_\alpha(S'_2)$ such that $\norm{\sk_\alpha(S_1) - \sk_\alpha(S'_2)}^2 \le (1+\eps)(1-\alpha^2) k \le (1+\eps) k$. Then, our algorithm will return YES. 
+
+On the other hand, if we output YES with a witness pair $(S_1,S_2)$, then $\norm{\sk_\alpha(S_1) - \sk_\alpha(S_2)}^2\le (1+\eps)k$ implies $\HD(S_1,S_2)\le (1+\eps)k$ with high probability by Corollary~\ref{cor:dim_reduction}.
+\end{proof}
+
+While this solution is very fast, it uses quite a lot of space. Furthermore, the data structure of~\cite{DBLP:conf/stoc/AndoniR15} that we use as a black box applies highly non-trivial techniques. To overcome these two disadvantages, we will show a different solution based on a careful implementation of ideas first introduced in~\cite{substringNN} that showed a data structure for approximate text indexing with mismatches. In~\cite{DBLP:journals/algorithmica/KociumakaRS19}, the authors developed these ideas further to show an algorithm that solves the \kApproxLCS problem in $\Oh(n^{1+1/(1+\eps)} )$ space and $\Oh (n^{1+1/(1+\eps)} \log^2 n)$ time for $\eps\in(0,2)$ with constant error probability. In this work, we significantly improve and simplify the approach to show the following result:  
+
+\begin{theorem}\label{th:LCS'k-decision}
+Assume an alphabet of arbitrary size $\sigma = n^{\Oh(1)}$. The decision variant of \kApproxLCS can be solved in $\Oh(n^{1+1/(1+\eps)} \log^2 n)$ time and $\Oh(n)$ space. The answer is correct with constant probability. 
+\end{theorem}
+
+Let us defer the proof of the theorem until Section~\ref{sec:decision} and start by explaining how we use Lemma~\ref{lm:opt_NN} and Theorem~\ref{th:LCS'k-decision} and the \twentyquestions game to show Theorem~\ref{th:klcs_upper}.
+
+\begin{proof}[Proof of Theorem~\ref{th:klcs_upper}]
+We will rely on the modified version of the \twentyquestions game that we
+  described in Section~\ref{sec:20questions}. In our case, $A = \lcsk(X,Y)$ and
+  $B = \lcske(X,Y)$. For Carole, we use either the algorithm of
+  Lemma~\ref{lm:opt_NN}, or the algorithm of Theorem~\ref{th:LCS'k-decision}, 
+  with an additional procedure verifying the witness pair $(S_1,S_2)$ character by character to check that it indeed satisfies $\HD(S_1,S_2)\le (1+\eps)k$.
+  We output the longest pair of (honest) witness
+  substrings found across all iterations. We will return a correct answer
+  assuming that the fraction of errors is $\rho <\frac13$. Recall that the algorithm solves the decision variant of the \kApproxLCS problem incorrectly with probability not exceeding a constant $\delta$, and we can ensure $\delta < \frac13$ by repeating it a constant number of times. It means that Carole can answer an individual question erroneously with probability less than~$\frac13$. Therefore, for a sufficiently large constant in the number of queries $Q = \Theta(\log n)$, the fraction of erroneous answers is $\rho < \frac13$ with high probability by Chernoff--Hoeffding bounds. The claim of the theorem follows immediately from Lemma~\ref{lm:opt_NN} and Theorem~\ref{th:LCS'k-decision}.
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{th:LCS'k-decision}}\label{sec:decision}
+We first give an algorithm for the decision version of the \kApproxLCS problem that uses $\Oh(n \log n)$ space and $\Oh(n^{1+1/(1+\eps)} \log n + \sigma n \log^2 n)$ time, and then we improve the space and time complexity. 
+
+We assume to have fixed a Karp--Rabin fingerprinting function $\varphi$ for a prime $q = \Omega(\max\{n^5, \sigma\})$ and an integer $r \in \mathbb{Z}_q$. With error probability inverse polynomial in $n$, we can find such $q$ in $\Oh(\log^{\Oh(1)}n)$ time;
+see~\cite{DBLP:journals/moc/TaoCH12,agrawal2004primes}. 
+
+Let~$\Projections$ be the set of all projections of strings of length $\ell$ onto a single position, i.e., the value $\pi_i(S)$ of the $i$-th projection on a string $S$ of length $\ell$ is simply its $i$-th character $S[i]$. More generally, for a length-$\ell$ string $S$ and a function $h=(\pi_{a_1},\ldots,\pi_{a_m}) \in \Projections^m$, we define $h(S)$ as $S[a_{1}] S[a_{2}] \cdots S[a_{m}]$.
+
+Let $p_1 = 1 - k / \ell$ and $p_2 = 1 - (1+\eps) k / \ell$. We assume that $(1+\eps) k< \ell$ in order to guarantee $p_1>p_2>0$; the problem is trivial if $(1+\eps)k \ge \ell$. 
+Further, let $m = \ceil { \log_{p_2}{\tfrac{1}{n}} }$.
+
+We choose a set $\Hashes$ of $L = \Theta(n^{1/(1+\eps)})$ hash functions in $\Projections^m$ uniformly at random. Let $\Collisions^{\Hashes}_{\ell}$ be the mutliset of all collisions of length-$\ell$ substrings of $X$ and $Y$ under the functions from $\Hashes$, i.e. $\Collisions^{\Hashes}_{\ell} = \{(X[i,i+\ell-1], Y[j,j+\ell-1],h) : \varphi(h(X[i,i+\ell-1])) = \varphi(h(Y[j,j+\ell-1])), 1 \le i \le |X|-\ell, 1 \le j \le |Y|-\ell\}$. 
+
+We will perform two tests. The first test chooses an arbitrary subset $\Collisions'\subseteq \Collisions^{\Hashes}_{\ell}$ of size $|\Collisions'|=\min\{4nL, |\Collisions^{\Hashes}_{\ell}|\}$ and, for each collision $(S_1, S_2, h)\in \Collisions'$, computes $\norm{\sk_\eps(S_1) - \sk_\eps (S_2)}^2$. If this value is at most $(1+\eps) k$, then the algorithm returns YES and the pair $(S_1, S_2)$ as a witness. The second test chooses a collision $(S_1, S_2, h) \in \Collisions^{\Hashes}_{\ell}$ uniformly at random and computes the Hamming distance between $S_1$ and $S_2$ character by character in $\Oh(\ell) = \Oh(n)$ time. If the Hamming distance is at most $(1+\eps)k$, the algorithm returns YES and the witness pair $(S_1, S_2)$. Otherwise, the algorithm returns NO. See Algorithm~\ref{alg:LSH}.
+
+\begin{algorithm}[ht]
+\caption{\kApproxLCS (decision variant)}
+\begin{algorithmic}[1]
+\State Choose a set $\Hashes$ of $L$ functions from $\Projections^m$ uniformly at random
+\State $\Collisions^{\Hashes}_{\ell}\!=\!\{(S_1,S_2, h) : S_1, S_2\text{---length-$\ell$ substrings of $X,Y$ resp. and }\varphi(h(S_1)) = \varphi(h(S_2))\}$\label{ln:hashes}
+
+\State Choose an arbitrary subset $\Collisions' \subseteq \Collisions^{\Hashes}_{\ell}$ of size $\min\{4nL,|\Collisions^{\Hashes}_{\ell}|\}$
+\State Compute $\sk_\eps(\cdot)$ sketches for all length-$\ell$ substrings of $X, Y$  \label{ln:sketches}
+\For {$(S_1, S_2, h) \in \Collisions'$} \label{ln:test1}
+	\If {$\norm{\sk_\eps (S_1) - \sk_\eps (S_2)}^2 \le (1+\eps) k$} \label{ln:Hamming_dist}\Return $(\text{YES},(S_1,S_2))$
+	\EndIf
+\EndFor
+
+\State Draw a collision $(S_1, S_2, h) \in \Collisions^{\Hashes}_{\ell}$ uniformly at random \label{ln:test2}
+\If {$\HD (S_1, S_2) \le (1+\eps) k$} \label{ln:test3}\Return $(\text{YES},(S_1,S_2))$
+\EndIf\\
+\Return NO
+\end{algorithmic}
+\label{alg:LSH}
+\end{algorithm}
+
+We must explain how we compute $\Collisions^{\Hashes}_{\ell}$ and choose the collisions that we test. We consider each hash function $h \in \Hashes$ in turn. Let $h = (\pi_{a_1},\ldots,\pi_{a_m})$. Recall that for a string $S$ of length~$\ell$ we define $h(S)$ as $S[a_{1}] S[a_{2}] \cdots S[a_{m}]$. Consequently, $\varphi(h(S)) =  (\sum_{i=1}^m r^{i-1} S[a_{i}]) \bmod q$. We create a vector $U$ of length $\ell$ where each entry is initialised with $0$. For each $i$, we add $r^{i-1} \bmod q$ to the $a_{i}$-th entry of $U$. Finally, we run the FFT algorithm~\cite{FischerPaterson} for $U$ and $X, Y$ in the field $\mathbb{Z}_q$, and sort the resulting values. We obtain a list of sorted values that we can use to generate the collisions. Namely, consider some fixed value $z$. Assume that there are $x$ substrings of $X$ and $y$ substrings of $Y$ of length $\ell$ such that the fingerprint of their projection is equal to $z$. The value $z$ then gives $xy$ collisions, and we can generate each one of them in constant time. This explains how to choose the subset $\Collisions'$ in $\Oh(nL \log n)$ time.
+
+To draw a collision from $\Collisions^{\Hashes}_{\ell}$ uniformly at random, we could simply compute the total number of collisions across all functions $h \in \Hashes$, draw a number in $[1,  |\Collisions^{\Hashes}_{\ell}|]$, and generate the corresponding collision. However, this would require to generate the collisions twice. Instead, we use the weighted reservoir sampling algorithm~\cite{reservoir}. We divide all collisions into subsets according to the values of fingerprints. We assume that the weighted reservoir sampling algorithm receives the fingerprint values one-by-one, as well as the number of corresponding collisions. At all times, the algorithm maintains a ``reservoir'' containing one fingerprint value and a random collision corresponding to this value. When a new value $z$ with $xy$ collisions arrives, the algorithm replaces the value in the reservoir with $z$ and a random collision with some probability. Note that to select a random collision it suffices to choose a pair from $[1,x] \times [1,y]$ uniformly at random. It is guaranteed that if for a value $z$ we have $xy$ collisions, the algorithm will select $z$ with probability $xy/|\Collisions^{\Hashes}_{\ell}|$. Consequently, after processing all values, the reservoir will contain a collision chosen from $\Collisions^{\Hashes}_{\ell}$ uniformly at random.
+
+\begin{lemma}\label{lm:complexity}
+Algorithm~\ref{alg:LSH} uses $\Oh(n^{1+1/(1+\eps)} \log n + \sigma n \log^2 n)$ time and $\Oh(n \log n)$ space. 
+\end{lemma}
+\begin{proof}
+Computing the sketches (Line~\ref{ln:sketches}) takes $\Oh(\sigma n \log^2 n)$ time and $\Oh(n \log n)$ space. Computing the collisions and choosing the collisions to test takes $\Oh(n^{1+1/(1+\eps)} \log n)$ time and $\Oh(n)$ space in total. Testing $\min \{4nL, |\Collisions^{\Hashes}_{\ell}|\}$ collisions (Line~\ref{ln:test1}) takes $\Oh(n^{1+1/(1+\eps)} \log n)$ time and constant space. Computing the Hamming distance for a random collision (Line~\ref{ln:test3}) takes $\Oh(\ell) = \Oh(n)$ time and constant space.
+\end{proof}
+
+\begin{lemma}\label{lm:hash_function_exists}
+Let $S_1$ and $S_2$ be two length-$\ell$ substrings of $X$ and $Y$, respectively, with $\HD(S_1, S_2) \le k$. 
+If $L=\Theta(n^{1/(1+\eps)})$ is large enough, then, with probability at least $3/4$, there exists a function $h\in \Hashes$ such that $h(S_1)=h(S_2)$.
+\end{lemma}
+\begin{proof}
+Consider a function $h=(\pi_{a_1},\ldots,\pi_{a_m})$ drawn from $\Projections^m$ uniformly at random. The probability of $h(S_1)=h(S_2)$ is at least $p_1^m$.
+Due to $p_1 \le 1$, we have \[p_1^m = p_1^{\ceil{\log_{p_2}\frac1n}} \ge p_1^{1+\log_{p_2}\frac1n}=p_1\cdot n^{-\frac{\log p_1}{\log p_2}}.\]
+Moreover, $p_1 = 1-\frac{k}{\ell}$ and $(1+\eps)k < \ell$ yield $p_1 > 1-\frac{1}{1+\eps}=\frac{\eps}{1+\eps}$,
+whereas Bernoulli's inequality implies $p_2 = 1-(1+\eps)\frac{k}{\ell} \le (1-\frac{k}{\ell})^{1+\eps}=p_1^{1+\eps}$,
+i.e., $\log p_2  \le (1+\eps)\log p_1$.
+Therefore, \[p_1^m \ge p_1\cdot n^{-\frac{\log p_1}{\log p_2}}\ge\tfrac{\eps}{1+\eps}\cdot n^{-\frac{1}{1+\eps}}.\]
+Hence, we can choose the constant in $L=|\Hashes|$ so that the claim of the lemma holds.
+\end{proof}
+
+\begin{lemma}\label{lm:bad_collisions}
+If $|\Collisions^{\Hashes}_{\ell}| > 4 nL$ and $(S_1,S_2, h)$ is a uniformly random element of $\Collisions^{\Hashes}_{\ell}$, then $\Prob[\HD(S_1,S_2) \ge (1+\eps) k] \le \frac12$.
+\end{lemma}
+\begin{proof}
+Consider length-$\ell$ substrings $S_1, S_2$ of $X, Y$, respectively, such that $\HD(S_1, S_2) \ge (1+\eps)k$, and a hash function $h$. Let us bound the probability of $(S_1,S_2, h) \in \Collisions^{\Hashes}_{\ell}$. There two possible cases: either $h(S_1) \neq h(S_2)$ but $\varphi(h(S_1)) = \varphi(h(S_2))$, or $h(S_1) = h(S_2)$. The probability of the first event is bounded by the collision probability of Karp--Rabin fingerprints, which is at most $1/n$. Let us now bound the probability of the second event. Since $\HD (S_1,S_2)\ge (1+\eps)k$, we have $\Prob [h (S_1) = h (S_2)] \le p_2^{m} \le 1/n$,  
+where the last inequality follows from the definition of $m$. Therefore, the probability that for some function $h \in \Hashes$ we have $\varphi(h(S_1)) = \varphi(h(S_2))$ is at most $2/n$. 
+
+In total, we have $n^2 |\Hashes|$ possible triples $(S_1, S_2 ,h)$ so by linearity of expectation, we conclude that the expected number of such triples is at most $\frac{2}{n} n^2 L =2n L$. Therefore the probability to hit a triple $(S_1, S_2, h)$ such that $\HD(S_1, S_2) \ge (1+\eps)k$ when drawing from $\Collisions^{\Hashes}_{\ell}$ uniformly at random is at most $2nL / |\Collisions^{\Hashes}_{\ell}| \le 2nL / 4nL = 1/2$.
+\end{proof}
+
+Below, we combine the previous results to prove that, with constant probability, Algorithm~\ref{alg:LSH} correctly solves
+the decision variant of the \kApproxLCS problem.
+Note that we can reduce the error probability to an arbitrarily small constant $\delta>0$: it suffices to repeat the algorithm a constant number of times. 
+
+\begin{corollary}
+With non-zero constant probability, Algorithm~\ref{alg:LSH} solves the decision variant of \kApproxLCS correctly.
+\end{corollary}
+\begin{proof}
+Suppose first that $\ell \le \lcsk(X,Y)$, which means that there are two length-$\ell$ substrings $S_1, S_2$ of $X, Y$ such that $\HD(S_1, S_2) \le k$. By Lemma~\ref{lm:hash_function_exists}, with probability at least $3/4$, there exists a function $h\in \Hashes$ such that $h(S_1)=h(S_2)$.
+In other words, $(S_1, S_2, h) \in \Collisions^{\Hashes}_{\ell}$ with probability at least $\frac34$. If $|\Collisions^{\Hashes}_{\ell}| < 4nL$, we will find this triple and it will pass the test with probability at least $1-n^{-6}$.
+If $|\Collisions^{\Hashes}_{\ell}| \ge 4nL$, then by Lemma~\ref{lm:bad_collisions} the Hamming distance between $S_1, S_2$, where $(S_1, S_2, h)$ was drawn from $\Collisions^{\Hashes}_{\ell}$ uniformly at random, is at most $(1+\eps)k$ with probability $\ge 1/2$, and therefore this pair will pass the test with probability $\ge 1/2$. It follows that in this case the algorithm outputs YES with constant probability.
+
+Suppose now that $\ell > \lcske(X,Y)$. In this case, the Hamming distance between any pair of length-$\ell$ substrings of $X$ and $Y$ is at least $(1+\eps)k$, so none of them will ever pass the second test and none of them will pass the first test with constant probability.
+\end{proof}
+
+We now improve the space of the algorithm to linear. Note that the only reason why we needed $\Oh(n \log n)$ space is that we precompute and store the sketches for the Hamming distance. Below we explain how to overcome this technicality.
+
+First, we do not precompute the sketches. Second, we process the collisions in $\Collisions'$ in batches of size $n$. Consider one of the batches, $\mathcal{B}$. For each collision $(S_1,S_2, h) \in \mathcal{B}$ we must compute $\norm{\sk_\eps(S_1) - \sk_\eps(S_2)}^2$. 
+We initialize a counter for every collision, setting it to zero initially. The number of rounds in the algorithm will be equal to the length of the sketches, and, in round $i$, the counter for a collision $(S_1, S_2, h) \in \mathcal{B}$ will contain the squared $L_2$ distance between the length-$i$ prefixes of $\sk_\eps(S_1)$ and $\sk_\eps(S_2)$. In more detail, let $\mathcal{S}$ be the set of all substrings of $X, Y$ that participate in the collisions in $\mathcal{B}$. Recall that all these substrings have length $\ell$. At round $i$, we compute the $i$-th coordinate of the sketches of the substrings in $\mathcal{S}$. By definition, the $i$-th coordinate is the dot product of the $i$-th row of $c \cdot M$, where $c$ and $M$ are as in Corollary~\ref{cor:dim_reduction}, and a substring encoded using $\mu$. Hence, we can compute the coordinate using the FFT algorithm~\cite{FischerPaterson} in $\Oh(\sigma n \log n)$ time and $\Oh(n)$ space. When we have the coordinate $i$ computed, we update the counters for the collisions and repeat.
+
+At any time, the algorithm uses $\Oh(n)$ space.
+Compared to the time consumption proven in Lemma~\ref{lm:complexity}, the algorithm spends an additional $\Oh(\sigma n^{1+1/(1+\eps)} \log^2 n)$ time for computing the coordinates of the sketches.
+Therefore, in total the algorithm uses $\Oh(\sigma n^{1+1/(1+\eps)} \log^2 n) = \Oh(n^{1+1/(1+\eps)} \log^2 n)$ time and $\Oh(n)$ space. 
+For constant-size alphabets, this completes the proof of Theorem~\ref{th:LCS'k-decision}. For alphabets of arbitrary size, we replace the sketches from Section~\ref{sec:prelim} with the sketches defined in~\cite{DBLP:journals/algorithmica/KociumakaRS19} to achieve the desired complexity.
+We note that we could use the sketches~\cite{DBLP:journals/algorithmica/KociumakaRS19} for small-size alphabets as well, but their lengths hide a large constant. 
+
+
+
