@@ -3,8 +3,8 @@
 This chapter corresponds to the following publication: %\fullcite{}\\
 }
 
-\newcommand{\inputLCS}[1]{\input{Part_Two/lcs-with-approx-k-mismatches-linspace/#1}}
-\newcommand{\figLCS}[2]{\includegraphics[scale=#1]{Part_Two/lcs-with-approx-k-mismatches-linspace/#2}}
+\newcommand{\inputLCS}[1]{\input{Part_Two/lcs/#1}}
+\newcommand{\figLCS}[2]{\includegraphics[scale=#1]{Part_Two/lcs/#2}}
 
 \newcommand{\lcpe}{\mathrm{LCP}_{(1+\eps)k}}
 \newcommand{\lcp}{\mathrm{LCP}_{\tilde{k}}}
@@ -32,7 +32,11 @@ This chapter corresponds to the following publication: %\fullcite{}\\
 \newcommand{\Projections}{\Pi}
 \newcommand{\Pos}{\mathsf{P}}
 \newcommand{\HD}{d_H}
-%\newcommand{\LCP}{\mathrm{LCP}}
+
+%in case not already defined
+\providecommand{\LCP}{\mathrm{LCP}}
+\providecommand{\ceil}[1]{\ensuremath{\lceil#1\rceil}}
+\providecommand{\eps}{\varepsilon}
 
 \newcommand{\norm}[1]{\ensuremath{\lVert#1\rVert}}
 
