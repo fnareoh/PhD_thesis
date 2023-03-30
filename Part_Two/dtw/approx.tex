@@ -1,0 +1,92 @@
+In this section, we show an approximation algorithm for computing the smallest $\dtw$ distance between a pattern $P$ and a substring of a text $T$. We assume that the $\dtw$ distance is defined over a metric on the alphabet $\Sigma$. Kuszmaul~\cite{DBLP:conf/icalp/Kuszmaul19} showed that the problem of computing the smallest $\dtw$ distance over an arbitrary metric can be reduced to the problem of computing the smallest distance over a so-called well-separated tree metric: 
+
+\begin{definition}[Well-separated tree metric]
+ Consider a rooted tree $\tau$ with positive weights on the edges whose leaves form an alphabet $\Sigma$. The tree $\tau$ specifies a metric $\mu_\tau$ on $\Sigma$: The  \emph{distance} between two leaves $a,b \in \Sigma$ is defined as the maximum weight of an edge in the shortest path from $a$ to $b$. The metric $\mu_\tau$ is a \emph{well-separated tree metric} if the weights of the edges are not increasing in every root-to-leaf path.  The \emph{depth} of $\mu_\tau$ is defined to be the depth of $\tau$.
+\end{definition}
+
+Below we show that Theorem~\ref{th:block} implies the following result for well-separated tree metrics:
+
+\begin{lemma}\label{lm:approx}
+  Given run-length encodings of a pattern $P$ with $m$ runs and a text~$T$ with $n$ runs over an alphabet $\Sigma$. Assume that the $\dtw$ distance is specified by a well-separated tree metric $\mu_\tau$ on $\Sigma$ with depth $h$, and suppose that the ratio between the largest and the smallest non-zero distances between the letters of $\Sigma$ is at most exponential in $L = \max\{|P|,|T|\}$. For any $0 < \epsilon < 1$, there is an $\Oh (L^{1-\eps} \cdot hmn \log L)$-time algorithm that computes $\Oh(L^{\eps})$-approximation of the smallest $\dtw$ distance between $P$ and a substring of $T$.
+\end{lemma}
+
+By plugging the lemma into the framework of~\cite{DBLP:conf/icalp/Kuszmaul19}, we obtain:
+
+\begin{theorem}{approx}
+  \label{th:approx}
+  Given run-length encodings of a pattern~$P$ with $m$ runs and of a text $T$ with $n$ runs over an alphabet $\Sigma$. Assume that the $\dtw$ distance is specified by a metric $\mu$ on $\Sigma$, and suppose that the ratio between the largest and the smallest non-zero distances between the letters of $\Sigma$ is at most exponential in $L = \max\{|P|,|T|\}$.
+  For any $0 < \epsilon < 1$, there is a $\Oh(L^{1-\eps} \cdot mn \log^3 L)$-time algorithm that computes $\Oh(L^{\eps})$-approximation of the smallest $\dtw$ distance between $P$ and a substring of $T$ correctly with high probability\footnote{The preprocessing time $\Oh(|\Sigma|^2 \log L)$ that is required to embed $\mu$ into a well-separated metric is not accounted for in the runtime of the algorithm.}.
+\end{theorem}
+
+\begin{proof}
+  The proof follows the lines of the full version~\cite{https://doi.org/10.48550/arxiv.1904.09690} of~\cite{DBLP:conf/icalp/Kuszmaul19}.
+  Any metric $\mu$ can be embedded in $\Oh(\sigma^2)$ time into a well-separated tree metric $\mu_\tau$ of depth $\Oh(\log \sigma)$ with expected distortion $\Oh(\log \sigma)$ (see~\cite{embedding} and~\cite[Theorem 2.4]{treedepth}). Furthermore, the ratio between the smallest distance and the largest distance grows at most polynomially. Formally, for any two letters $a, b$ we have $\mu(a,b) \le \mu_\tau(a,b)$ and $\mathbb{E}(\mu_\tau(a,b)) \le \Oh(\log \sigma) \cdot d(a,b)$. 
+  Therefore, we have: 
+  %
+  \begin{align}
+  \label{eq:embedding_lb}
+  \dtw_{\mu}(X,Y) &\le \dtw_{\mu_\tau}(X,Y)
+  \end{align}
+  \begin{align}
+  \label{eq:embedding_ub}
+  \mathbb{E}(\dtw_{\mu_\tau}(X,Y)) &\le \Oh(\log \sigma) \cdot \dtw_\mu (X,Y)
+  \end{align}
+  %
+  Let $\delta = \min_{S-\text{ substr. of }T} \dtw_\mu (P,S)$ and $\delta_\tau = \min_{S-\text{ substr. of }T} \dtw_{\mu_\tau} (P,S)$. Assume that $\delta$ is realised on a substring $X$, and $\delta_\tau$ on a substring $X_\tau$. By Eq.~\ref{eq:embedding_lb}, we then obtain:
+  $$\delta = \dtw_\mu(P,X) \le \dtw_\mu (P,X_\tau) \le \delta_\tau$$
+  And Eq.~\ref{eq:embedding_ub} gives the following:
+  $$\mathbb{E}(\delta_\tau) \le \mathbb{E}(\dtw_{\mu_\tau} (P,X)) \le \Oh(\log \sigma) \cdot \dtw_\mu(P,X) = \Oh(\log \sigma) \cdot \delta$$
+  We apply the embedding $\log L$ times independently to obtain well-separated tree metrics $\mu_\tau^i$, $i = 1, 2, \ldots, \log L$. From above and by Chernoff bounds, 
+  $$\min_i \min_{S-\text{ substring of }T} \dtw_{\mu_\tau}^i(P,S)$$
+  gives an $\Oh(\log \sigma) = \Oh(\log L)$ approximation of $\delta$ with high probability and can be computed in time $\Oh (L^{1-\eps} \cdot mn \log^3 L)$ by Lemma~\ref{lm:approx}, concluding the proof of the theorem. 
+\end{proof}
+  
+
+We now show Lemma~\ref{lm:approx}. Compared to~\cite{DBLP:conf/icalp/Kuszmaul19}, the main technical challenge is that our $k$-$\dtw$ algorithm (Theorem~\ref{th:block}) assumes an integer-valued distance function on the alphabet. We overcome this by developing an intermediary $2$-approximation algorithm for real-valued distances (see the two claims below). 
+
+\paragraph{Proof of Lemma~\ref{lm:approx}.} For brevity, let $\delta$ be the smallest $\dtw_{\mu_\tau}$ distance between $P$ and a substring of $T$.
+
+\begin{claim}\label{claim:dtw_large}
+Let $0 < \eps < 1$. Assume that for all $a,b \in \Sigma$, $a \neq b$, there is $\mu_\tau(a,b) \ge \gamma$ and that the value of $\mu_\tau(a,b)$ can be evaluated in $\Oh(t)$ time. There is an $\Oh(L^{1-\eps} tmn)$-time algorithm which either computes a $2$-approximation of $\delta$ or concludes that it is larger than $\gamma \cdot L^{1-\eps}$. 
+\end{claim}
+\begin{proof}
+Define a new distance function $\mu_\tau'(a,b) = \lceil \mu_\tau(a,b)/\gamma \rceil$. For all $a,b \in \Sigma$, $a \neq b$, we have $\mu_\tau(a,b) \leq \gamma \cdot \mu_\tau'(a,b) \le \mu_\tau(a,b) + \gamma \le 2 \mu_\tau(a,b)$. 
+Consequently, for all strings $X,Y$ we have $\dtw_{\mu_\tau}(X,Y) \le \gamma \cdot \dtw_{\mu_\tau'}(X,Y) \le 2 \dtw_{\mu_\tau}(X,Y)$. 
+Let $\delta' = \min_{S-\text{ substring of } T} \min\{2k+1, \dtw_{\mu_\tau'}(P,S)\}$ for $k = L^{1 - \eps}$. By Theorem~\ref{th:block}, it can be computed in $\Oh(L^{1-\eps} tmn)$ time. If $\delta' = 2L^{1 - \eps}+1$, we conclude that $\delta \geq \gamma \cdot L^{1 - \eps}$, and otherwise, output $\gamma \delta'$.
+\end{proof}
+
+W.l.o.g., the minimum non-zero distance between two distinct letters of $\Sigma$ is~$1$ and the largest distance is some value $M$, which is at most exponential
+in $L$. We run the algorithm above for $\gamma = 1$, which either computes a $2$-approximation of $\delta$ which we can output immediately, or concludes that $\delta \ge L^{1 -\eps}$. Below we assume that $\delta \ge L^{1 -\eps}$. 
+
+\begin{definition}[$r$-simplification]
+For a string $X \in \Sigma^\ast$ and $r \ge 1$, the
+\emph{$r$-simplification} $s_r(X)$ is constructed by replacing
+each letter $a$ of $X$ with its highest ancestor $a'$ in $\tau$ that can
+be reached from $a$ using only edges of weight $\le r / 4$.
+\end{definition}
+
+\begin{fact}[{Corollary of~\cite[Lemma 4.6]{DBLP:conf/icalp/Kuszmaul19}, see also~\cite{DBLP:conf/compgeom/BravermanCKWY19}}]\label{fact:simplified}
+For all $X,Y \in \Sigma^{\le L}$, the following properties hold:
+\begin{enumerate}
+  \item $\dtw_{\mu_\tau}(s_r(X), s_r(Y)) \le \dtw_{\mu_\tau}(X,Y)$.
+  \item If $\dtw_{\mu_\tau}(X,Y) > L r$, then $\dtw_{\mu_\tau}(s_r(X), s_r(Y)) > L r/2$. 
+\end{enumerate}
+\end{fact}
+
+Fix $r \ge 1$ and $0 < \eps < 1$. In the \emph{$(L^\eps, r)$-$\dtw$ gap pattern matching problem}, we must output $0$ if the smallest $\dtw$ distance between $P$ and a substring of~$T$ is at most $L^{1 - \eps} r/4$ and $1$ if it is at least $L r$, otherwise we can output either $0$ or $1$. 
+
+\begin{claim}\label{lm:tree_metric}
+The $(L^{\eps}, r)$-$\dtw$ gap pattern matching problem can be solved in $\Oh(L^{1-\eps} \cdot hmn)$ time. 
+\end{claim}
+\begin{proof}
+Let $\delta_r$ be the smallest $\dtw_{\mu_\tau}$ distance between $s_r(P)$ and a substring of $s_r(T)$. 
+If $L^{1-\eps} > L/2$, then $L = \Oh(1)$ and we can compute $\delta$ exactly in $\Oh(1)$ time by Equation~\ref{eq:recursion}. Otherwise, we run the $2$-approximation algorithm for $\gamma = r/4$, which takes $O(L^{1 - \eps} \cdot hmn)$ time (we can evaluate the distance between two letters in $\Oh(h)$ time). If the algorithm concludes that $\delta_r > L^{1 - \eps} r /4$, then $\delta >  L^{1 - \eps} r /4$ by Fact~\ref{fact:simplified}, and we can output $1$. Otherwise, the algorithm outputs a $2$-approximation $\delta_r'$ of $\delta_r$, i.e. $\delta_r \le \delta_r' \le 2\delta_r$. If $\delta_r' \le L^{1 - \eps} r \le Lr / 2$, then we have $\delta_r \le Lr / 2$. Therefore, $\delta \le Lr$ by Fact~\ref{fact:simplified} and we can output~$0$. Otherwise, $\delta \ge \delta_r \ge \delta_r'/2 > L^{1 - \eps} r/2 > L^{1 - \eps} r/4$, and we can output~$1$.  
+\end{proof}
+
+Consider the $(L^{\eps} / 2, 2^i)$-$\dtw$ gap pattern matching problem for $0 \le i \le \lceil \log ML \rceil$. If the $(L^{\eps} / 2, 2^0)$-$\dtw$
+gap pattern matching problem returns $0$, then we know that $\delta \le L$,
+and can return $L^{1 - \eps}$ as a $L^{\eps}$-approximation for~$\delta$. Therefore, it suffices to consider the case where the $(L^{\eps} / 2, 2^0)$-$\dtw$ gap pattern matching problem returns $1$. We can assume, without computing it, that the $(L^{\eps}/2, 2^{ \lceil
+  \log ML \rceil})$-$\dtw$ gap pattern matching returns $0$ as $\delta \le M L$. Consequently, there must exist $i^\ast$ such that $(L^{\eps} /
+2, 2^{i^\ast - 1})$-$\dtw$ gap pattern matching returns $1$ and $(L^{\eps} / 2, 2^{i^\ast - 1})$-$\dtw$ returns $0$. We can find $i^\ast$ by a binary
+search which takes $\Oh(L^{1 - \eps} hmn \log \log M L) = \Oh(L^{1 - \eps} hmn \log L)$ time. We have $\delta \ge  2^{i^\ast-1} L^{1 - \eps} / 4$ and $\delta \le 2^{i^\ast} L$, and therefore can return $2^{i^\ast-1} L^{1 - \eps} / 4$ as a
+$\Oh(L^{\eps})$-approximation of $\delta$.

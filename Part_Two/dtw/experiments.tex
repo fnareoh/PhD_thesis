@@ -1,0 +1,36 @@
+This section provides evidence of the advantage of the $\dtw$ distance over the edit distance when processing the third generation sequencing (TGS) data. Our experiment compares how the two distances are affected by biological mutation as opposed to sequencing errors, including homopolymer length errors. 
+
+We first simulate two genomes, $G$ and $G'$, which can be considered as strings on the alphabet $\Sigma = \{A,C,G,T\}$. The genome $G$ is a substring of the E.coli genome (strain SQ110, NCBI Reference Sequence: NZ\_CP011322.1) of length $10000$ (positions $100000$ to $110000$, excluded). The genome $G'$ is obtained from $G$ by simulating biological mutations, where the probabilities are chosen according to~\cite{10.1093/molbev/msp063}. The algorithm initializes $G'$ as the empty string, and $\texttt{pos} = 1$. While $\texttt{pos} \le |G|$ it executes the following:
+
+\begin{enumerate}
+	\item With probability $0.01$, simulate a substitution: chose  uniformly at random  $a \in \Sigma$, $a \neq G[pos]$. Set $G' = G'a$ and $\texttt{pos} = \texttt{pos} + 1$. 
+	\item Else, with probability $0.0005$ simulate an insertion or a deletion of a substring of length $x$, where $x$ is chosen uniformly at random from an interval $[1, \texttt{max\_len\_ID}]$, where $\texttt{max\_len\_ID}$ is fixed to $10$ in the experiments:
+		\begin{enumerate}
+			\item With probability $0.5$, set $\texttt{pos} = \texttt{pos} + x + 1$ (deletion);
+			\item With probability $0.5$, choose a string $X \in \Sigma^x$ uniformly at random, set $G' = G'X$ and $\texttt{pos}= \texttt{pos}+1$ (insertion).  
+		\end{enumerate}
+	\item Else, set $G' = G'G[\texttt{pos}]$ and $\texttt{pos} = \texttt{pos} + 1$. 
+\end{enumerate}
+
+\noindent To simulate reads, we extract substrings of $G'$ and add sequencing errors: 
+
+\begin{enumerate} 
+	\item For each read, extract a substring $R$ of length $500$ at a random position of~$G'$. As $G'$ originates from $G$, we know the theoretical distance from $R$ to $G$, which we call the ``\emph{biological diversity}''. The biological diversity is computed as the sum of the number of letter substitutions, letter insertions, and letter deletions that were applied to the original substring from $G$ to obtain $R$. 
+	\item Add sequencing errors by executing the following for each position $i$ of~$R$:
+	\begin{enumerate}
+		\item With probability $0.001$, substitute $R[i]$ with a letter $a \in \Sigma$, $a \neq R[i]$. The letter $a$ is chosen uniformly at random.  
+		\item If $R[i] = R[i-1]$, insert with a  probability $p_{hom}$ a third occurrence of the same letter to simulate a homopolymer error.
+	\end{enumerate}
+\end{enumerate}
+
+Fig.~\ref{fig:experiments_N_600_max_indel_length_10} shows the difference between the biological diversity and the smallest edit and $\dtw$ distances between a generated read and a substring of~$G$ depending on $p_{hom}$. It can be seen that the $\dtw$ distance gives a good estimation of the biological diversity, whereas, as expected, the edit distance is heavily affected by homopolymer errors.  To ensure reproducibility of our results, our complete experimental setup is available at \url{https://github.com/fnareoh/DTW}.
+
+%A potential limitation of the $\dtw$ distance is that it tends to underestimate the biological diversity. For instance, when $\texttt{max\_indel\_length} = 10$, the average ratio between the $\dtw$ distance and the biological diversity (when it is strictly positive) is $0.86$(with standard deviation $0.38$) while that between the edit distance and the biological diversity is $6.5$ (with standard deviation $4.4$). This is due to the fact that the $\dtw$ distance allows aligning many letters to one at zero cost: For example, the $\dtw$ distance between $AATAGA$ and $A$ is only two, whereas the edit distance is $6$.\todo{je (pierre) ai du mal à comprendre ce dernier paragraphe. }
+
+\begin{figure}
+\centering
+\figDTW{0.5}{figures/ecoli_10kb_N_600_fixed_ID_0_05.png}
+\caption{Edit and $\dtw$ distances offset by the biological diversity as a function of $p_{hom}$. Each point is averaged over 600 reads ($\times 30$ coverage).}
+\label{fig:experiments_N_600_max_indel_length_10}
+\end{figure}
+

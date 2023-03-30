@@ -1,0 +1,72 @@
+We assume a polynomial-size alphabet $\Sigma$ with $\sigma$ \emph{letters}. A \emph{string} $X$ is a sequence of letters. If the sequence has length zero, it is called the \emph{empty string}.  Otherwise, we assume that the letters in $X$ are numbered from $1$ to $n =: |X|$ and denote the $i$-th letter by $X[i]$. We define $X[i \dd j]$ to be equal to $X[i] \dots X[j]$ which we call a \emph{substring} of $X$ if $i \le j$ and to the empty string otherwise. If $j = n$, we call a substring $X[i \dd j]$ \emph{a suffix} of $X$.
+
+\begin{definition}[Run, Run-length encoding]
+A run of a string $X$ is a maximal substring $X[i \dd j]$ such that $X[i] = X[i+1] = \ldots = X[j]$. The run-length encoding of a string $X$, $\RLE(X)$ is a sequence obtained from $X$ by replacing each run with a tuple consisting of the letter forming the run and the length of the run. For example, $\RLE(aabbbc) = (a,2) (b,3)(c,1)$.
+\end{definition}
+
+Let $d: \Sigma \times \Sigma \rightarrow \mathbb{R}^+$ be a distance function such that for any letters $a,b \in \Sigma$, $a\neq b$, we have $d(a,a) = 0$ and $d(a,b) > 0$. The dynamic time warping distance $\dtw_d(X,Y)$ between strings $X,Y \in \Sigma^\ast$ is defined as follows. If both strings are empty, $\dtw_d(X,Y) = 0$. If one of the strings is empty, and the other is not, then  $\dtw_d(X,Y) = \infty$. Otherwise, let $X = X[1] X[2] \ldots X[r]$ and $Y = Y[1] Y[2] \ldots Y[q]$.  Consider an $r \times q$ grid graph such that each vertex $(i,j)$ has (at most) three outgoing edges: one going to $(i+1,j)$ (if it exists), one to $(i+1,j+1)$ (if it exists), and one to $(i,j+1)$ (if it exists). A path $\pi$ in the graph starting at $(1,1)$ and ending at $(r,q)$ is called a \emph{warping path}, and its \emph{cost} is defined to be $\sum_{(i,j) \in \pi} d(X[i],Y[j])$. Finally, $\dtw_d(X,Y)$ is defined to be the minimum cost of a warping path for $X,Y$. Below we omit $d$ if it is clear from the context. 
+
+Let $M = |P|$, $N = |T|$, and $D$ be an $(M+1) \times (N+1)$ table where the rows are indexed from $0$ to $M$, and the columns from $0$ to $N$ such that:
+\begin{enumerate}
+\item For all $j \in [0, N]$, $D[0,j] = 0$;
+\item For all $i \in [1, M]$, $D[i,0] = +\infty$;
+\item For all $i \in [1, M]$ and $j \in [1, N]$, $D[i,j]$ equals the smallest $\dtw$ distance between $P[1\dd i]$ and a suffix of $T[1 \dd j]$. 
+\end{enumerate}
+(See Fig.~\ref{fig:decreasing}.) To solve the pattern matching problem under the $\dtw$ distance, it suffices to compute the table $D$, which can be done in $\Oh(MN)$ time via a dynamic programming algorithm, using the following recursion for all $1 \le i \le M, 1 \le j \le N$:
+\begin{equation}\label{eq:recursion}
+D[i,j] = 
+\min\{D[i-1,j-1],D[i-1,j], D[i,j-1]\}+ d(P[i], T[j])
+\end{equation}
+
+
+In the subsequent sections, we develop more efficient solutions for the low-distance regime on run-length compressible data. We will be processing the table $D$ by blocks, defined as follows: A subtable $D[i_p \dd j_p, i_t \dd j_t]$ is called a \emph{block} if $P[i_p\dd j_p]$ is a run in $P$ or $i_p=j_p=0$, and $T[i_t \dd j_t]$ is a run in $T$ or $i_t=j_t=0$. For $i_p,i_t > 0$, a block $D[i_p \dd j_p, i_t \dd j_t]$ is called \emph{homogeneous} if $P[i_p] = T[i_t]$. (For example, a block $D[3\dd 4][3\dd 6]$ in Fig.~\ref{fig:decreasing} is homogeneous.) A block such that all cells in it contain a value $q$, for some fixed integer $q$, is called a \emph{$q$-block}. (For example, a block $D[5 \dd 5][11\dd 14]$ in Fig.~\ref{fig:decreasing} is a $1$-block.) The \emph{border} of a block is the set of the cells contained in its top and bottom rows, as well as first and last columns. Consider a cell $(a,b)$ in $B$. We say that a block $B'$ is the \emph{top neighbor} of $B$ if it contains $(a-1,b)$, the \emph{left neighbor} if it contains $(a,b-1)$, and the \emph{diagonal neighbor} if it contains $(a-1,b-1)$. 
+
+\begin{lemma}
+\label{lm:non-decreasing}
+Consider a block $B = D[i_p\dd j_p, i_t \dd j_t]$ and cell $(a,b)$ in it. If $i_p \leq a < j_p$, then $D[a,b] \le D[a+1,b]$ and if $i_t \leq b < j_t$, then $D[a,b] \le D[a,b+1]$.
+\end{lemma}
+\begin{proof}
+    Let us first give an equivalent statement of the lemma: if $(a,b)$ and $(a+1,b)$ are in the same block, then $D[a,b] \le D[a+1,b]$, and if $(a,b)$ and $(a,b+1)$ are in the same block, then $D[a,b] \le D[a,b+1]$. 
+    
+    We show the lemma by induction on $a+b$. The base of the induction are the cells such that $a = 0$ or $b = 0$, and for them the statement holds by the definition of $D$. Consider now a cell $(a,b)$, where $a,b \ge 1$. Assume that the induction assumption holds for all cells $(x,y)$ such that $x+y < a+b$. By Equation~\ref{eq:recursion}, we have:
+    %
+    \begin{align*}
+    &D[a, b] = \min \{ D[a-1, b-1], D[a-1, b], D[a, b-1]\} +d\\
+    &D[a+1, b] = \min \{ D[a, b-1], D[a, b], D[a+1, b-1]\} + d\\
+    &D[a, b+1] = \min \{ D[a-1, b], D[a-1, b+1], D[a, b]\} + d\\
+    \end{align*}
+    %
+    Assume that $(a,b)$ and $(a+1,b)$ are in the same block. 
+    We have $D[a,b] \leq D[a, b-1]+d$ and trivially $D[a,b] \leq D[a,b] + d$.
+    By the induction assumption, $D[a,b-1] \leq D[a+1,b-1]$ (the cells $(a,b-1)$ and $(a+1,b-1)$ must belong to the same block).
+    Therefore, 
+    \begin{align*}
+    D[a+1,b] & = \min \{ D[a, b-1], D[a, b], D[a+1, b-1]\} + d \\
+    & = \min \{ D[a, b-1] + d, D[a, b] + d, D[a+1, b-1] + d\} \\
+    & \ge \min \{D[a,b], D[a,b], D[a,b-1]+d\} \\
+    & \ge \min\{D[a,b], D[a,b], D[a,b]\} = D[a,b]. 
+    \end{align*}
+    %
+    Assume now that $(a,b)$ and $(a,b+1)$ are in the same block.
+    We have $D[a,b] \leq D[a-1, b]+d$. Furthermore, as $(a-1,b)$ and $(a-1,b+1)$ are in the same block, we have $D[a-1,b] \leq D[a-1,b+1]$ by the induction assumption. Therefore,
+    %
+    \begin{align*}
+    D[a,b+1] & = \min \{ D[a-1, b], D[a-1, b+1], D[a, b]\} + d\\
+    & = \min \{ D[a-1, b] + d, D[a-1, b+1] + d, D[a, b] + d\}\\
+    & \ge \min \{D[a-1,b]+d, D[a-1,b]+d, D[a,b]\}\\ 
+    & \ge \min\{D[a,b], D[a,b], D[a,b]\} = D[a,b]. 
+    \end{align*}
+    This concludes the proof of the lemma.
+\end{proof}
+
+By Equation~\ref{eq:recursion}, inside a homogeneous block each value is equal to the minimum of its neighbors. Therefore, the values in a row or in a column cannot increase and we have the following corollary:
+\begin{corollary}\label{cor:homogeneous}
+Each homogeneous block is a $q$-block for some value $q$.
+\end{corollary}
+
+
+
+
+
+
+

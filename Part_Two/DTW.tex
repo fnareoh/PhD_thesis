@@ -1,1 +1,55 @@
 \chapter{Pattern Matching under Dynamic Time Warping Distance}
+\contextbox{The following chapter is a publication}{
+This chapter corresponds to the following publication: %\fullcite{}\\
+}
+
+%%%%%%%%%% Math notations %%%%%%%%%%%%
+\providecommand{\norm}[1]{\ensuremath{\lVert#1\rVert}}
+\providecommand{\ceil}[1]{\ensuremath{\lceil#1\rceil}}
+\newcommand{\dtw}{\mathrm{DTW}}
+\newcommand{\ham}{\mathrm{HAM}}
+\providecommand{\dd}{\mathinner{.\,.\allowbreak}}
+\providecommand{\RLE}{\mathrm{RLE}}
+\providecommand{\Oh}{\mathcal{O}}
+\providecommand{\eps}{\varepsilon}
+\newcommand{\invacker}{\alpha}
+
+\newcommand{\inputDTW}[1]{\input{Part_Two/dtw/#1}}
+\newcommand{\figDTW}[2]{\includegraphics[scale=#1]{Part_Two/dtw/#2}}
+
+\begin{small}
+In this work, we consider the problem of pattern matching under the dynamic time warping ($\dtw$) distance motivated by potential applications in the analysis of biological data produced by the third generation sequencing. To measure the $\dtw$ distance between two strings, one must ``warp'' them, that is, double some letters in the strings to obtain two equal-lengths strings, and then sum the distances between the letters in the corresponding positions. When the distances between letters are integers, we show that for a pattern $P$ with $m$ runs and a text~$T$ with $n$ runs:
+\begin{enumerate}
+\item There is an $\Oh(m+n)$-time algorithm that computes all locations where the $\dtw$ distance from $P$ to $T$ is at most $1$;
+\item There is an $\Oh(kmn)$-time algorithm that computes all locations where the $\dtw$ distance from $P$ to $T$ is at most $k$.
+\end{enumerate}
+As a corollary of the second result, we also derive an approximation algorithm for general metrics on the alphabet. 
+\end{small}
+
+\section{Introduction}
+\inputDTW{intro}
+
+\section{Preliminaries}\label{sec:prelim}
+\inputDTW{prelim}
+
+\section{Linear algorithm for $k=1$}
+\label{sec:lce}
+\inputDTW{lce}
+
+\section{Main result: $\Oh(kmn)$-time algorithm}
+\label{sec:block}
+\inputDTW{block_new}
+
+\section{Approximation algorithm}
+\label{sec:approx}
+\inputDTW{approx}
+
+\section{Experiments}\label{sec:experiments}
+\inputDTW{experiments}
+
+
+\BiblatexSplitbibDefernumbersWarningOff
+
+\backmatter
+\todo[inline]{Fix links to some DOI not working}
+\printbibliography[heading=subbibintoc]

@@ -1,0 +1,37 @@
+In this section, we show Lemma~\ref{lm:1-DTW} that for a pattern $P$ with $m$ runs and and text $T$ with $n$ runs gives an $\Oh(m+n)$-time algorithm.  
+
+\begin{definition}[RLE-diagonals]
+We say that a sequence of blocks forms an \emph{RLE-diagonal} if the blocks are formed by runs $i, i+1, \ldots, j$ of $P$ and $i+\delta, i+1+\delta, \ldots, j+\delta$ of $T$, for some integers $i,j,\delta$. 
+\end{definition}
+
+\begin{definition}[Streak]
+A $q$-streak is a maximal subsequence of an RLE-diagonal containing sequential homogeneous $q$-blocks. 
+\end{definition}
+
+\begin{observation}\label{obs:zero_streak}
+If $D[i,j] = 0$, then it belongs to a $0$-streak. Furthermore, each $0$-streak necessarily starts in the first row of $D$.
+\end{observation}
+\begin{proof}
+By definition, there must be a path from the first row of $D$ to $D[i,j]$ containing $0$-values only. For every $0$-value $D[i',j']$ we must have $P[i'] = T[j']$, and therefore every such value must belong to a homogeneous $0$-block. Furthermore, two homogeneous blocks can only be neighbours diagonally, else it would contradict the maximality of the runs. The claim follows. 
+\end{proof}
+
+\begin{observation}\label{obs:one_value}
+If $D[i,j] = 1$, then $D[i,j]$ belongs to a $1$-streak or neighbours a block in a $0$-streak.
+\end{observation}
+\begin{proof}
+If $P[i]=T[j]$, we are in a homogeneous block and $D[i,j]$ belongs to a $1$-streak, and we are done. Otherwise, we have $P[i] \neq T[j]$ and there is a path $(i_1,j_1), (i_2,j_2), \ldots, (i_q,j_q)$ such that $i_1 = 1$, $(i_q,j_q) = (i,j)$, and $D[i_{q},j_{q}] = \sum_{q'=1}^{q} d(P[i_{q'}], T[j_{q'}])$. It follows that for all $1 \le q' \le q-1$, $d(P[i_{q'}], T[j_{q'}]) = 0$, and therefore $D[i_{q'}, j_{q'}]$ must belong to a $0$-streak by Observation~\ref{obs:zero_streak}. 
+\end{proof}
+ 
+
+\DTWone*
+\begin{proof}
+For a string $S$, define $\overline{RLE}(S)$ to be a string such that $\overline{RLE}(S)[i]$ contains the letter forming the $i$-th run of $S$. We preprocess $P' = \overline{\RLE}(P)$ and $T' = \overline{\RLE}(T)$ in $\Oh(m+n)$ time and space to maintain longest common suffix queries in constant time~\cite{RMQ}. The input of a longest common suffix query are two positions $i,j$ of $P'$ and $T'$ respectively, and the output is the largest $\ell$ such that $P'[i-\ell \dd i] = T'[j-\ell \dd j]$.
+
+Let $B_i$, $1 \le i \le n$, be the block of $D$ formed by the $m$-th run in $P$ and the $i$-th run in $T$. Using one longest common suffix query for each block $B_i$, we find the maximal streak containing it. If this streak reaches the first row of $D$, it is a $0$-streak and we can fill the last row of $B_i$ with zeros. 
+
+We must now decide which entries in the $M$-th row of $D$ must be filled with one. Consider an entry $D[M,\ell] \neq 0$ that belongs to a block $B_i$. 
+
+If $B_i$ is contained in a streak of length at least one, then for $D[M,\ell]$ to be equal to one, it must be a $1$-streak. Consider the first block in the maximal  streak containing $B_i$, and let $c$ be the cell in its top left corner. Because $c$ can not be equal to zero, it suffices to check whether the value in $c$ equals one. Consider a path realizing the value of $c$. It goes either through the left neighbour $\ell$ of $c$, the top neighbour $t$ of $c$, or the diagonal neighbour $d$ of $c$. Furthermore, the value in $c$ equals the minimum of the values in $\ell, d, t$, and therefore, at least one of these values equals one, and neither of them can belong to a $1$-streak. By Observation~\ref{obs:one_value}, such a cell must neighbour a block in a zero-streak. For each block neighbouring the cells $\ell, d, t$, we use one longest common suffix query to decide whether they are contained in a $0$-streak. If they are, then the value in $c$, and consequently all the values in $B_i$, including the values in the last row of $B_i$, are equal to one, and we fill them in appropriately. 
+
+Suppose now that $B_i$ does not belong to a streak. For $D[M,\ell]$ to be equal to one, it must neighbour a block in a $0$-streak. Therefore, there can be only one such cell in $B_i$, the one in the left bottom corner, and we can decide whether the value in it equals to one in constant time similar to above.
+\end{proof}

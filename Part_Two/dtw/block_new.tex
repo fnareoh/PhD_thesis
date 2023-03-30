@@ -1,0 +1,107 @@
+In this section, we show Theorem~\ref{th:block} that for a pattern $P$ with $m$ runs and a text~$T$ with $n$ runs gives an $\Oh(kmn)$-time algorithm. We start with the following lemma which is a keystone to our result: 
+
+\begin{lemma}\label{lm:border}
+For a block $D[i_p \dd j_p, i_t \dd j_t]$ let $h=j_p-i_p$, $w =j_t-i_t$, and $d=d(P[i_p],T[i_t])$. We have for every $i_p < x \leq j_p$:
+\begin{equation}\label{eq:border-right}
+D[x,j_t]= \begin{cases}
+D[i_p,j_t-(x-i_p)]+(x-i_p) \cdot d \text{ if } x-i_p \leq w; \\
+D[x-w,i_t]+w \cdot d \text{ otherwise}.
+\end{cases}
+\end{equation}
+For every $i_t < y \leq j_t$:
+\begin{equation}\label{eq:border-bottom}
+D[j_p,y]= \begin{cases}
+D[j_p-(y-i_t),i_t]+(y-i_t) \cdot d \text{ if }  y-i_t \leq h; \\
+D[i_p,y-h]+h \cdot d \text{ otherwise}.
+\end{cases}
+\end{equation}
+\end{lemma}
+\begin{proof}
+For a homogeneous block, we have $d=0$, and by Corollary~\ref{cor:homogeneous} all the values in such a block are equal, hence the claim of the lemma is trivially true. 
+
+Assume now $d > 0$. Consider $x$, $i_p < x \leq j_p$, and let us show Eq.~\ref{eq:border-right}, Eq.~\ref{eq:border-bottom} can be shown analogously. Let $\pi$ be a warping path realizing $D[x,j_t]$.
+%
+Let $(a,b)$ be the first node of $\pi$ belonging to the block.
+We have $a \in [i_p,j_p]$ and $b \in [i_t,j_t]$ and either $a=i_p$ or $b=i_t$.
+%
+The number of edges of $\pi$ in the block from $(a,b)$ to $(x,j_t)$ must be minimal, else there would be a shorter path, thus it is equal to $\max\{x-a,j_t-b\}$ and $D[x,j_t]=D[a,b]+\max\{x-a,j_t-b\}\cdot d$.
+
+\inputDTW{figures/block_formula}
+
+\noindent
+\underline{Case 1: $x-i_p \leq w$.} Consider a cell $(i_p,j_t - (x-i_p))$. There is a path from $(i_p,j_t - (x-i_p))$ to $(x,j_t)$ that takes $x-i_p$ diagonal steps inside the block, and therefore $D[x,j_t] \leq D[i_p,j_t - (x-i_p)]+(x-i_p)\cdot d$. We now show that $D[x,j_t] \geq D[i_p,j_t - (x-i_p)]+(x-i_p)\cdot d$, which implies the claim of the lemma.
+\begin{enumerate}[label=(\alph*)]
+\item If \underline{$a=i_p$ and $b \geq j_t - (x-i_p)$}, then $\max\{x-i_p,j_t-b\}=x-i_p$. We have $D[x,j_t] =D[i_p,b]+(x-i_p)\cdot d  \geq D[i_p,j_t - (x-i_p)]+(x-i_p)\cdot d \text{ (Lemma~\ref{lm:non-decreasing})}$.
+
+\item If \underline{$a=i_p$ and $b < j_t - (x-i_p)$}, then $\max\{x-i_p,j_t-b\}=j_t-b$. As there is a path from $(a,b) = (i_p,b)$ to $(i_p,j_t - (x-i_p))$ of length $(j_t - (x-i_p)-b)$, we have $D[i_p,j_t - (x-i_p)] \le D[i_p,b] + (j_t - (x-i_p)-b) \cdot d$. Consequently,
+\begin{align*}
+D[x,j_t]&=D[i_p,b]+(j_t-b)\cdot d \\
+& \geq D[i_p,j_t - (x-i_p)] - (j_t - (x-i_p)-b) \cdot d +(j_t-b) \cdot d \text{ (Eq.~\ref{eq:recursion})}\\
+& = D[i_p,j_t - (x-i_p)]+(x-i_p)\cdot d
+\end{align*}
+\item If \underline{$b=i_t$}, then $i_p \leq a$ and $\max\{x-a, j_t-b\} \leq \max\{x-i_p,w\} = w$. As there is a path from $(i_p,i_t)$ to $(i_p,j_t - (x-i_p))$ of length $(j_t - (x-i_p)-i_t)$, we have $D[i_p,j_t - (x-i_p)] \le D[i_p,i_t] + (j_t - (x-i_p)-i_t) \cdot d$. Therefore, 
+\begin{align*}
+D[x,j_t]&=D[a,i_t]+w\cdot d \geq D[i_p,i_t] +w\cdot d \text{ (Lemma~\ref{lm:non-decreasing})} \\
+& \geq D[i_p,j_t - (x-i_p)] - (j_t - (x-i_p)-i_t) \cdot d +w\cdot d\\
+& = D[i_p,j_t - (x-i_p)]+(x-i_p)\cdot d
+\end{align*}
+\end{enumerate}
+
+\noindent
+\underline{Case 2: $x-i_p > w$.} Consider a cell $(x-w,i_t)$. There is a path from $(x-w,i_t)$ to $(x,j_t)$ that takes $w$ diagonal steps inside the block, and therefore $D[x,j_t] \leq D[x-w,i_t]+w \cdot d$. We now show that $D[x,j_t] \geq D[x-w,i_t]+w\cdot d$, which implies the claim of the lemma.
+\begin{enumerate}[label=(\alph*)]
+
+\item If \underline{$b=i_t$ and $a \ge x-w$},
+then $\max\{x-a,j_t-b\} = \max\{x-a,w\}=w$ and we have $D[x,j_t] =D[a,i_t]+w\cdot d \geq D[x-w,i_t] +w\cdot d \text{ (Lemma~\ref{lm:non-decreasing})}$. 
+
+\item  If \underline{$b=i_t$ and $a < x-w$}, then $\max\{x-a,j_t-b\}= \max\{x-a,w\}=x-a$. As there is a path from $(a,i_t)$ to $(x-w,i_t)$ of length $(x-w-a)$, we have $D[x-w,i_t] \leq D[a,i_t] + (x-w-a) \cdot d$ by definition. Therefore, 
+\begin{align*}
+D[x,j_t]&=D[a,i_t]+(x-a)\cdot d\\
+& \geq D[x-w,i_t] - (x-w-a) \cdot d+(x-a) \cdot d\\
+& = D[x-w,i_t] + w\cdot d
+\end{align*}
+%
+\item If \underline{$a=i_p$}, 
+$b \geq i_t$ and thus $\max\{x-a,j_t-b\} \leq \max\{x-i_p,w\} = x-i_p$. Additionally, as there is a path from $(i_p,i_t)$ to $(x-w,i_t)$ of length $(x-w - i_p)$ we have $D[x-w,i_t] \le D[i_p,i_t] + (x-w-i_p) \cdot d$. Consequently,
+\begin{align*}
+D[x,j_t]&=D[i_p,b]+(x-i_p)\cdot d \geq D[i_p,i_t] +(x-i_p)\cdot d \text{ (Lemma~\ref{lm:non-decreasing})} \\
+& \geq D[x-w,i_t] - (x-w-i_p) \cdot d +(x-i_p)\cdot d\\
+& = D[x-w,i_t] + w\cdot d
+\end{align*}
+\end{enumerate}
+\end{proof}
+
+
+
+We say that a cell in a border of a block is \emph{interesting} if its value is at most $k$. To solve the $k$-$\dtw$ problem it suffices to compute the values of all interesting cells in the last row of $D$. Consider a block $B = D[i_p\dd j_p, i_t \dd j_t]$ and recall that the values in it are non-decreasing top to down and left to right (Lemma~\ref{lm:non-decreasing}). We can consider the following compact representation of its interesting cells. For an integer $\ell$, define $q_{\text{top}}^\ell \in [i_t,j_t]$ to be the last position such that $D[i_p,q_{\text{top}}^\ell] \le \ell$, and $q_{\text{bot}}^\ell \in [i_t,j_t]$ the last position such that $D[j_p,q_{\text{bot}}^\ell] \le \ell$. If a value is not defined, we set it equal to $i_t-1$. Analogously, define $q_{\text{left}}^\ell \in [i_p,j_p]$ to be the last position such that $D[q_{\text{left}}^\ell,i_t] \le \ell$, and $q_{\text{right}}^\ell \in [i_p,j_p]$ the last position such that $D[q_{\text{right}}^\ell,j_t] \le \ell$. If a value is not defined, we set it equal to $i_p-1$.  Positions $q_{\text{top}}^0, \ldots, q_{\text{top}}^k$ uniquely describe the interesting border cells in the top row of $B$, $q_{\text{bot}}^0, \ldots, q_{\text{bot}}^k$ in the bottom row, $q_{\text{left}}^0, \ldots, q_{\text{left}}^k$ in the leftmost column,  $q_{\text{right}}^0, \ldots, q_{\text{right}}^k$ in the rightmost column. 
+
+\begin{lemma}\label{lm:top-left}
+The compact representations of the interesting border cells in the top row and the leftmost column of a block $B$ can be computed in $\Oh(k)$ time given the compact representation of the interesting border cells in its neighbors.
+\end{lemma}
+\begin{proof}
+We explain how to compute the representation for the leftmost column of $B$, the representation for the top row is computed analogously.  Let $d = d(P[i_p],T[i_t])$. If $d=0$ (the block is homogeneous), by Corollary~\ref{cor:homogeneous} the block is a $q$-block for some value $q$ which can be computed in $\Oh(1)$ time by Equation~\ref{eq:recursion} if it is interesting (and otherwise we have a certificate that the value is not interesting). We can then derive the values $q_{\text{left}}^\ell$, $\ell = 0, 1, \ldots, k$ in $\Oh(k)$ time.
+
+Assume now $d > 0$. We start by computing $D[i_p,i_t]$ using Equation~\ref{eq:recursion}. We note that if $D[i_p,i_t] \le k$, then we know the values of its neighbors realizing it and therefore can compute it, otherwise we can certify that $D[i_p,i_t] > k$. Assume $D[i_p,i_t] = v$, which implies that $q_{\text{left}}^0, \ldots, q_{\text{left}}^{\min\{k,v\}-1}$ equal $i_p-1$. We must now compute $q_{\text{left}}^{\min\{k,v\}}, \ldots, q_{\text{left}}^{k}$. Consider a cell $(q,i_t)$ of the block with $q > i_p$.  The second to the last cell in the warping path that realizes $D[q,i_t] = \ell$ is one of the cells $(q-1,i_t)$, $(q-1,i_t-1)$ or $(q,i_t-1)$, and the value of the path up to there must be $\ell-d$. Note that all the three cells belong either to the leftmost column of $B$, or the rightmost column of its left neighbor. Consequently, for all $\min\{k,v\} < \ell \le k$, we have $q_{\text{left}}^\ell = \min\{\max\{q_{\text{left}}^{\ell-d}, r_{\text{right}}^{\ell-d}\} + 1\}, j_t\}$, and the positions $q_{\text{left}}^0, \ldots, q_{\text{left}}^{k}$ can be computed in $\Oh(k)$ time.
+\end{proof}
+
+
+
+\begin{lemma}\label{lm:bottom-right}
+The compact representations of the interesting border cells in the bottom row and the rightmost column of a block $B$ can be computed in $\Oh(k)$ time given the compact representation of the interesting border cells in its leftmost column and the top row.
+\end{lemma}
+\begin{proof}
+We explain how to compute the representation for the bottom row, the representation for the rightmost column is computed analogously. 
+
+Eq.~\ref{eq:border-bottom} and the compact representations of the leftmost column and the top row of $B$ partition the bottom row of $B$ into $\Oh(k)$ intervals (some intervals can be empty), and in each interval the values are described either as a constant or as a linear function. (See Fig.~\ref{fig:borders_represent}.) Formally, let $h=j_p-i_p$. By Eq.~\ref{eq:border-bottom}, for $y \in [i_t,  j_p+i_t-q^{k}_{\text{left}}-1] \cap [i_t,j_t]$ we have $D[j_p][y] > k$. For $y \in [j_p+i_t-q^\ell_\text{left}, j_p+i_t-q^{\ell-1}_\text{left}-1]  \cap [i_t,j_t]$, $\ell = k, k-1, \ldots, 1$, we have 
+$D[j_p][y] = \ell + (y-i_t) \cdot d$. For $y \in [j_p+i_t-q^0_\text{left}, j_p+i_t-i_p] \cap [i_t,j_t]$ we have $D[j_p][y] = (y-i_t) \cdot d$. For $y \in [i_t+h, q_{\text{top}}^{0}+h-1] \cap [i_t,j_t]$ we have $D[j_p][y] = h \cdot d$. For $y \in [q_{\text{top}}^{\ell}+h,q_{\text{top}}^{\ell+1}+h-1] \cap [i_t,j_t], \ell = 0, 1, \ldots, k-1$, we have $D[j_p][y] = \ell + h \cdot d$. Finally, for $y \in [q_{\text{top}}^{k}+h, j_t]$, there is $D[j_p][y] > k$ again. 
+
+\inputDTW{figures/borders_represent}
+
+By Lemma~\ref{lm:non-decreasing}, the values in the bottom row are non-decreasing. We scan the intervals from left to right to compute the values $q_{\text{bot}}^0, \ldots, q_{\text{bot}}^k$ in $\Oh(k)$ time. In more detail, let $q_{\text{bot}}^\ell$ be the last computed value, and $[i,j]$ be the next interval. We set $q_{\text{bot}}^{\ell+1} = q_{\text{bot}}^{\ell}$. If the values in the interval are constant and larger than $\ell+1$, we continue to computing $q_{\text{bot}}^{\ell+2}$. If the values are increasing linearly, we find the position of the last value smaller or equal to $\ell+1$, set $q_{\text{bot}}^{\ell+1}$ equal to this position, and continue to computing $q_{\text{bot}}^{\ell+2}$. Finally, if the values in the interval are constant and equal to $\ell+1$, we update $q_{\text{bot}}^{\ell+1} = j$ and continue to the next interval. As soon as $q_{\text{bot}}^k$ is computed, we stop the computation. 
+\end{proof}
+
+Since there are $\Oh(mn)$ blocks in total, Lemmas~\ref{lm:top-left} and  \ref{lm:bottom-right} immediately imply Theorem~\ref{th:block}.
+
+
+
+

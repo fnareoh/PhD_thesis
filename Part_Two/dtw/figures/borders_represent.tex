@@ -1,0 +1,66 @@
+ 
+\def\height{4}
+\def\h{4.25}
+\def\width{10}
+\def\cell{0.5}
+
+\newcommand{\Block}{
+\node (bl) at (0,0) {};
+\node (br) at ($(bl)+(\width,0)$) {};
+\node (tl) at ($(bl)+(0,\height)$) {};
+\node (tr) at ($(bl)+(\width,\height)$) {};
+\draw ($(bl)$) rectangle ($(tr)$);
+\node[yshift=-5pt,xshift=-5pt] () at ($(tl)$) {\tiny{$i_p$}};
+\node[yshift=5pt,xshift=-5pt] () at ($(bl)$) {\tiny{$j_p$}};
+\node[yshift=7.5pt,xshift=5pt] () at ($(tl)$) {\tiny{$i_t$}};
+\node[yshift=8pt,xshift=-5pt] () at ($(tr)$) {\tiny{$j_t$}};
+}
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}[scale=1, every node/.style={scale=1}]
+\Block
+\node[left] (r1) at ($(tl)+(0,-.5)$) {\tiny{$q_{\text{left}}^0$}};
+\draw ($(r1)+(0.25,0)$)--($(r1)+(0.45,0)$);
+%\node[left] (r2) at ($(tl)+(0,-1.5)$) {\tiny{$q_{\text{left}}^1$}};
+%\draw ($(r2)+(0.25,0)$)--($(r2)+(0.45,0)$);
+\node[left] (r3) at ($(tl)+(0,-1.5)$) {\tiny{$\vdots$}};
+\node[left] (r4) at ($(tl)+(0,-2.5)$) {\tiny{$q_{\text{left}}^k$}};
+\draw ($(r4)+(0.25,0)$)--($(r4)+(0.45,0)$);
+
+
+\draw[dotted] ($(r1)+(0.3,0)$)--($(r1)+(\height-0.2,-\height+0.5)$);
+%\draw[dotted] ($(r2)+(0.3,0)$)--($(r2)+(\height-1.2,-\height+1.5)$);
+\draw[dotted] ($(r4)+(0.3,0)$)--($(r4)+(\height-2.2,-\height+2.5)$);
+
+
+\node[below,xshift=-2pt] (r5) at ($(r4)+(\height-2.2,-\height+2.5)$) {\tiny{$j_p+i_t-q^k_{\text{left}}-1$}};
+\draw ($(r5)+(0,0.15)$)--($(r5)+(0,0.35)$);
+%\node[below] (r6) at ($(r2)+(\height-1.2,-\height+1.5)$) {};
+%\draw ($(r6)+(0,0.15)$)--($(r6)+(0,0.35)$);
+\node[below,xshift=2pt] (r8) at ($(r1)+(\height-0.2,-\height+0.5)$) {\tiny{$j_p+i_t-q^0_{\text{left}}-1$}};
+\draw ($(r8)+(0,0.15)$)--($(r8)+(0,0.35)$);
+
+\node[above] (h1) at ($(tl)+(1,0)$) {\tiny{$q_{\text{top}}^0$}};
+\draw ($(h1)+(0,-0.2)$)--($(h1)+(0,-0.4)$);
+%\node[above] (h2) at ($(tl)+(2,0)$) {\tiny{$q_{\text{top}}^1$}};
+%\draw ($(h2)+(0,-0.2)$)--($(h2)+(0,-0.4)$);
+\node[above] (h4) at ($(tl)+(3.5,0)$) {\tiny{$q_{\text{top}}^k$}};
+\draw ($(h4)+(0,-0.2)$)--($(h4)+(0,-0.4)$);
+
+\draw[dotted] ($(h1)+(0,-0.25)$)--($(h1)+(\h,-\h)$);
+%\draw[dotted] ($(h2)+(0,-0.25)$)--($(h2)+(\h,-\h)$);
+\draw[dotted] ($(h4)+(0,-0.25)$)--($(h4)+(\h,-\h)$);
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+\node[below] (h5) at ($(h1)+(\h,-\h)$) {\tiny{$q_{\text{top}}^0+h$}};
+\draw ($(h5)+(0,0.15)$)--($(h5)+(0,0.35)$);
+%\node[below] (h6) at ($(h2)+(\h,-\h)$) {\tiny{$q_{\text{top}}^1+h$}};
+%\draw ($(h6)+(0,0.15)$)--($(h6)+(0,0.35)$);
+\node[below] (h7) at ($(bl)+(7,-0.25)$) {\tiny{$\ldots$}};
+\node[below] (h8) at ($(h4)+(\h,-\h)$) {\tiny{$q_{\text{top}}^k+h$}};
+\draw ($(h8)+(0,0.15)$)--($(h8)+(0,0.35)$);
+\end{tikzpicture}
+
+\caption{Compressed representation of interesting border cells.}\label{fig:borders_represent}
+\end{figure}

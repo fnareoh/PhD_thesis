@@ -25,6 +25,7 @@
 \newcommand{\ed}{\mathsf{ed}}
 \newcommand{\gr}{\mathsf{GR}}
 \newcommand{\ga}{\mathsf{GA}}
+\usepackage{thm-restate}
 
 \newtheorem{thm}{Theorem}[section] % reset theorem numbering for each section
 
@@ -37,6 +38,7 @@
 \newtheorem{proposition}[thm]{Proposition}
 \newtheorem{fact}[thm]{Fact}
 \newtheorem{claim}[thm]{Claim}
+
 
 \makeatletter
 \let\c@proposition\c@thm
@@ -80,7 +82,6 @@
 % Squares
 
 \usepackage{thmtools}
-\usepackage{thm-restate}
 \usepackage{mathtools}
 \usetikzlibrary{patterns,calc,arrows,arrows.meta,positioning,fit,shapes}
 \usepackage[outline]{contour}
@@ -93,3 +94,11 @@
 \usepackage{xspace}
 \usepackage[noend]{algpseudocode}
 \usepackage{algorithm,algorithmicx}
+
+% DTW
+
+\usepackage{environ}
+% Figures
+%\captionsetup{compatibility=false}
+\usetikzlibrary{calc} % + notation on coordinates
+\usetikzlibrary{decorations.pathreplacing} % curly brakets
