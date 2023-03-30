@@ -25,7 +25,7 @@ Assume an alphabet of constant size $\sigma$. The decision variant of the \kAppr
 \end{lemma}
 \begin{proof}
 Let $P$ be the set of all length-$\ell$ substrings of $X$ and $Q$ be the set of all length-$\ell$ substrings of $Y$,
-all encoded in binary using the morphism $\mu$ (see Section~\ref{sec:prelim}). We start by applying the dimension reduction procedure of Corollary~\ref{cor:dim_reduction} to $P$ and $Q$ with $\alpha = 1/(\log\log n)^{\Theta(1)}$ and $\beta = 2$ to obtain sets $P'$ and $Q'$. We can implement the procedure in $\Oh(\sigma n \log^2 n (\log\log n)^{\Theta(1)}) = \Oh(n \log^{2+o(1)} n)$ time by encoding $X, Y$ using $\mu$ and running the FFT algorithm~\cite{FischerPaterson} for each of the $\Oh(\log^{1+o(1)} n)$ rows of the matrix and $\mu(X), \mu(Y)$. 
+all encoded in binary using the morphism $\mu$ (see Section~\ref{lcs:sec:prelim}). We start by applying the dimension reduction procedure of Corollary~\ref{cor:dim_reduction} to $P$ and $Q$ with $\alpha = 1/(\log\log n)^{\Theta(1)}$ and $\beta = 2$ to obtain sets $P'$ and $Q'$. We can implement the procedure in $\Oh(\sigma n \log^2 n (\log\log n)^{\Theta(1)}) = \Oh(n \log^{2+o(1)} n)$ time by encoding $X, Y$ using $\mu$ and running the FFT algorithm~\cite{FischerPaterson} for each of the $\Oh(\log^{1+o(1)} n)$ rows of the matrix and $\mu(X), \mu(Y)$. 
 
 To solve the decision variant of \kApproxLCS, we build the data structure of Andoni and Razenshteyn~\cite{DBLP:conf/stoc/AndoniR15} for $(\sqrt{(1+\eps)(1-\alpha)}, \sqrt{(1+\alpha)k})$-\NN over~$Q'$. We make a query for each string in $P'$. If, queried for $\sk_{\alpha}(S_1)\in P'$, where $S_1$ is a length-$\ell$ substring of $X$, the data structure outputs $\sk_{\alpha}(S_2)\in Q'$, where $S_2$ is a length-$\ell$ substring of $Y$, then we compute $\norm{\sk_{\alpha}(S_1)- \sk_{\alpha}(S_2)}^2$. If it is at most $(1+\eps)k$, we output YES and the witness pair $(S_1,S_2)$ of substrings. As the length of vectors in $P'$, $Q'$ is $d = \Oh(\log^{1+o(1)} n)$, we obtain the desired complexity. 
 
@@ -40,11 +40,11 @@ While this solution is very fast, it uses quite a lot of space. Furthermore, the
 Assume an alphabet of arbitrary size $\sigma = n^{\Oh(1)}$. The decision variant of \kApproxLCS can be solved in $\Oh(n^{1+1/(1+\eps)} \log^2 n)$ time and $\Oh(n)$ space. The answer is correct with constant probability. 
 \end{theorem}
 
-Let us defer the proof of the theorem until Section~\ref{sec:decision} and start by explaining how we use Lemma~\ref{lm:opt_NN} and Theorem~\ref{th:LCS'k-decision} and the \twentyquestions game to show Theorem~\ref{th:klcs_upper}.
+Let us defer the proof of the theorem until Section~\ref{lcs:sec:decision} and start by explaining how we use Lemma~\ref{lm:opt_NN} and Theorem~\ref{th:LCS'k-decision} and the \twentyquestions game to show Theorem~\ref{th:klcs_upper}.
 
 \begin{proof}[Proof of Theorem~\ref{th:klcs_upper}]
 We will rely on the modified version of the \twentyquestions game that we
-  described in Section~\ref{sec:20questions}. In our case, $A = \lcsk(X,Y)$ and
+  described in Section~\ref{lcs:sec:20questions}. In our case, $A = \lcsk(X,Y)$ and
   $B = \lcske(X,Y)$. For Carole, we use either the algorithm of
   Lemma~\ref{lm:opt_NN}, or the algorithm of Theorem~\ref{th:LCS'k-decision}, 
   with an additional procedure verifying the witness pair $(S_1,S_2)$ character by character to check that it indeed satisfies $\HD(S_1,S_2)\le (1+\eps)k$.
@@ -53,7 +53,7 @@ We will rely on the modified version of the \twentyquestions game that we
   assuming that the fraction of errors is $\rho <\frac13$. Recall that the algorithm solves the decision variant of the \kApproxLCS problem incorrectly with probability not exceeding a constant $\delta$, and we can ensure $\delta < \frac13$ by repeating it a constant number of times. It means that Carole can answer an individual question erroneously with probability less than~$\frac13$. Therefore, for a sufficiently large constant in the number of queries $Q = \Theta(\log n)$, the fraction of erroneous answers is $\rho < \frac13$ with high probability by Chernoff--Hoeffding bounds. The claim of the theorem follows immediately from Lemma~\ref{lm:opt_NN} and Theorem~\ref{th:LCS'k-decision}.
 \end{proof}
 
-\subsection{Proof of Theorem~\ref{th:LCS'k-decision}}\label{sec:decision}
+\subsection{Proof of Theorem~\ref{th:LCS'k-decision}}\label{lcs:sec:decision}
 We first give an algorithm for the decision version of the \kApproxLCS problem that uses $\Oh(n \log n)$ space and $\Oh(n^{1+1/(1+\eps)} \log n + \sigma n \log^2 n)$ time, and then we improve the space and time complexity. 
 
 We assume to have fixed a Karp--Rabin fingerprinting function $\varphi$ for a prime $q = \Omega(\max\{n^5, \sigma\})$ and an integer $r \in \mathbb{Z}_q$. With error probability inverse polynomial in $n$, we can find such $q$ in $\Oh(\log^{\Oh(1)}n)$ time;
@@ -147,7 +147,7 @@ We initialize a counter for every collision, setting it to zero initially. The n
 At any time, the algorithm uses $\Oh(n)$ space.
 Compared to the time consumption proven in Lemma~\ref{lm:complexity}, the algorithm spends an additional $\Oh(\sigma n^{1+1/(1+\eps)} \log^2 n)$ time for computing the coordinates of the sketches.
 Therefore, in total the algorithm uses $\Oh(\sigma n^{1+1/(1+\eps)} \log^2 n) = \Oh(n^{1+1/(1+\eps)} \log^2 n)$ time and $\Oh(n)$ space. 
-For constant-size alphabets, this completes the proof of Theorem~\ref{th:LCS'k-decision}. For alphabets of arbitrary size, we replace the sketches from Section~\ref{sec:prelim} with the sketches defined in~\cite{DBLP:journals/algorithmica/KociumakaRS19} to achieve the desired complexity.
+For constant-size alphabets, this completes the proof of Theorem~\ref{th:LCS'k-decision}. For alphabets of arbitrary size, we replace the sketches from Section~\ref{lcs:sec:prelim} with the sketches defined in~\cite{DBLP:journals/algorithmica/KociumakaRS19} to achieve the desired complexity.
 We note that we could use the sketches~\cite{DBLP:journals/algorithmica/KociumakaRS19} for small-size alphabets as well, but their lengths hide a large constant. 
 
 

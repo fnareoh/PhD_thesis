@@ -1,5 +1,5 @@
 \section{Algorithm}
-\label{sec:alg}
+\label{square:sec:alg}
 
 In this section we show how to implement the approach described in the previous section
 to work in $\Oh(n\log \sigma)$ time. The main
@@ -136,13 +136,13 @@ We simply use \cref{lem:lz-log-star} to compute the factorisation. In the first 
 \end{lemma}
 
 Now we can describe the algorithm that detects squares in $\Oh(n \lg \sigma + n \log^* n)$ time and $\Oh(n \lg \sigma)$ comparisons. 
-We simply use the algorithm from \cref{sec:upper}, but use \cref{lem:compute3} instead of \cref{lem:compute2}. Next, we analyse the time needed apart from the $\Oh(n \log^* n)$ time shared by all invocations of \cref{lem:compute3}. Throughout the $t^{\text{th}}$ phase, we use $\Oh(n \cdot \tilde{\sigma} \cdot \log^2(\sigma_t) / \sqrt{\Delta}) = \Oh(n\cdot (\sigma_{t})^{1/4}/\log(\sigma_{t})\cdot \log^2(\sigma_{t})/\sqrt{\sigma_{t}})=\Oh(n \log (\sigma_t)/(\sigma_{t})^{1/4})$ comparisons
+We simply use the algorithm from \cref{square:sec:upper}, but use \cref{lem:compute3} instead of \cref{lem:compute2}. Next, we analyse the time needed apart from the $\Oh(n \log^* n)$ time shared by all invocations of \cref{lem:compute3}. Throughout the $t^{\text{th}}$ phase, we use $\Oh(n \cdot \tilde{\sigma} \cdot \log^2(\sigma_t) / \sqrt{\Delta}) = \Oh(n\cdot (\sigma_{t})^{1/4}/\log(\sigma_{t})\cdot \log^2(\sigma_{t})/\sqrt{\sigma_{t}})=\Oh(n \log (\sigma_t)/(\sigma_{t})^{1/4})$ comparisons
 to construct all the $\Delta$-approximate factorisations. As before, if at any time we discover that $\sigmaapprox > (\sigma_t)^{1/4} / \log(\sigma_t)$, then we use \cref{lem:classical} to finish the computation in $\Oh(n \lg \sigma_t) = \Oh(n \log \sigma)$ time. Until then (or until we finished all $\ceil{\log \log n}$ phases), we use $\Oh(\sum_{t=0}^{t'} n \log(\sigma_t)/(\sigma_{t})^{1/4})$ time, and by \cref{lem:polylog} this is $\Oh(n)$. 
-For detecting squares, we still use \cref{lem:long}, which as explained in \cref{sec:upper} takes $\Oh(n)$ time and comparisons in total, plus additional $\Oh(Z)$ time, where $Z$ is the number of approximate LZ factors considered during all invocations of the lemma. 
+For detecting squares, we still use \cref{lem:long}, which as explained in \cref{square:sec:upper} takes $\Oh(n)$ time and comparisons in total, plus additional $\Oh(Z)$ time, where $Z$ is the number of approximate LZ factors considered during all invocations of the lemma. 
 We apply the lemma to each approximate LZ factorisation exactly once, and by construction each factor in phase $t$ has size at least $\Delta = \Omega(\sigma_t)$. Also, each text position is covered by at most two tails per phase. Hence $Z = \Oh(\sum_{t=0}^{t'} n/\sigma_t)$, which is $\Oh(n)$ by \cref{lem:polylog}.
 %since we have already shown that we can compute all the factorisations in $\Oh(n)$ time, it is clear that $Z \in \Oh(n)$.
 
-The last thing that remains to be shown is how to implement the bookkeeping of blocks, i.e., in each phase we have to efficiently deactivate block pairs as described at the end of \cref{sec:upper}. 
+The last thing that remains to be shown is how to implement the bookkeeping of blocks, i.e., in each phase we have to efficiently deactivate block pairs as described at the end of \cref{square:sec:upper}. 
 We maintain the block pairs in $\ceil{\log \log n}$ bitvectors of total length $\Oh(n)$, where a set bit means that a block pair has been deactivated (recall that there are $\Oh(n)$ pairs in total). 
 Bitvector $t$ contains at position $j$ the bit corresponding to block pair $B_{j}B_{j + 1} = T[i..i+2(\sigma_t)^2)$ with $i = (\sigma_t)^2 \cdot (j - 1)$. Note that translating between $i$ and $j$ takes constant time.
 For each sufficiently long tail in phase $t$, we simply iterate over the relevant block pairs in phase $t + 2$ and deactivate them, i.e., we set the corresponding bit. This takes time linear in the number of deactivated blocks.
@@ -152,5 +152,5 @@ The number of comparisons is dominated by the $\Oh(n \log \sigma)$ comparisons u
 We have shown:
 
 \begin{lemma}
-The square detection algorithm from \cref{sec:upper} can be implemented in $\Oh(n \lg \sigma + n \log^* n)$ time and $\Oh(n \log \sigma)$ comparisons.
+The square detection algorithm from \cref{square:sec:upper} can be implemented in $\Oh(n \lg \sigma + n \log^* n)$ time and $\Oh(n \log \sigma)$ comparisons.
 \end{lemma}

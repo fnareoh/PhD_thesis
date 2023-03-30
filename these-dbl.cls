@@ -26,8 +26,12 @@
 
 \LoadClass[twoside,10pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
 
+\RequirePackage[immediate]{silence}
+\WarningFilter[temp]{latex}{Command \underline  has changed.}
+\WarningFilter[temp]{latex}{Command \underbar  has changed.}
+\RequirePackage{sectsty} % obligatoire, pour jouer avec l'apparence des titres
 \RequirePackage[utf8]{inputenc} 
-\RequirePackage[english,french]{babel} % Last language is the default, use \selectlanguage{english} to switch
+\RequirePackage[english]{babel} % Last language is the default, use \selectlanguage{english} to switch
 \RequirePackage{ifpdf}
 \RequirePackage[usenames,dvipsnames]{color} % pour les couleurs
 \RequirePackage{textcomp}
@@ -40,7 +44,6 @@
 \RequirePackage{fix-cm}
 \RequirePackage{abstract}
 \RequirePackage{graphicx} % Pour ins\'{e}rer des images. Utiliser le format jpg pour plus de simplicit\'{e}.
-\RequirePackage{sectsty} % obligatoire, pour jouer avec l'apparence des titres
 \RequirePackage{shorttoc} % pour le sommaire, au debut.
 \RequirePackage{fancyhdr} % Afin de r\'{e}aliser soi-même les en-têtes et pieds de page, voir chaque d\'{e}but de chapitre.
 \RequirePackage{pifont} % Pour utiliser des symboles divers.
@@ -64,8 +67,7 @@
 
 \RequirePackage{ifthen} % Entrer valeurs bool\'{e}ennes et autres options
 \RequirePackage{csquotes} % Assurer les guillemets français
-\frenchspacing
-\FrenchFootnotes
+
 
 % Define commands to set fonts throughout the document
 \newcommand*{\selectfontfrontcover}{\fontfamily{phv}\selectfont}  % Font style used in front cover 
@@ -103,11 +105,11 @@
 \def\@makechapterhead#1{%
   \vspace*{-30\p@}%
   {\parindent \z@  \reset@font
-            \scshape \Large{\@chapapp{} \thechapter :}
-        %\par\nobreak
+             \Large{\@chapapp{} \thechapter }
+        \par\nobreak
         %\interlinepenalty\@M
     %\selectfontchapheads 
-    \Huge \bfseries #1\par\nobreak
+    \huge \bfseries #1\par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
@@ -116,7 +118,7 @@
 \def\@makeschapterhead#1{%
  \vspace*{-50\p@}%
   {\parindent \z@ \raggedleft \reset@font
-            \scshape \vphantom{\@chapapp{} \thechapter}
+            \vphantom{\@chapapp{} \thechapter}
         \par\nobreak
         \interlinepenalty\@M
     %\selectfontchapheads 
@@ -147,7 +149,7 @@
 
 \parttitlefont{\jolipart}
 
-\partnumberfont{\sc\huge}
+\partnumberfont{\huge}
 
 
 

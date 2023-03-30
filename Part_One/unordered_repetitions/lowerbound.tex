@@ -1,6 +1,6 @@
 
 \subsection{Testing Square-Freeness}
-\label{sec:lower}
+\label{square:sec:lower}
 
 \begin{figure}
 \small
@@ -90,7 +90,7 @@
 
 
 \end{tikzpicture}
-\caption{Example conflict graph of the adversary described in \cref{sec:lower}. 
+\caption{Example conflict graph of the adversary described in \cref{square:sec:lower}. 
 The alphabet $\{0, \dots, 15\}$ is of size $\sigma = 16$. 
 The blocks are of length $\frac \sigma 4 = 4$. 
 The gray nodes are exactly the starting positions of the blocks and contain the symbols of the ternary Thue-Morse sequence $v = 2,1,0,2,0,1,2,\dots$, which is square-free. 
@@ -107,7 +107,7 @@ As visualized on the right, an edge of length $\ell$ eliminates at most $\ell$ s
 \end{figure}
 
 In this section, we prove that testing square-freeness requires at least $n \ln \sigma - 3.6n$ comparisons (even if $\sigma$ is known). 
-The proof combines the idea behind the original $\Omega(n \lg n)$ lower bound by Main and Lorentz \cite{Main1984} with the adversary described at the beginning of \cref{sec:lowerbounds}.
+The proof combines the idea behind the original $\Omega(n \lg n)$ lower bound by Main and Lorentz \cite{Main1984} with the adversary described at the beginning of \cref{square:sec:lowerbounds}.
 This time, we ensure that $\mathcal T$ always contains a square-free string with at most $\sigma$ distinct symbols.
 At the same time, we try to ensure that $\mathcal T$ also contains a string with at least one square.
 We will show that we can maintain this state until at least $n \ln \sigma -3n$ comparisons have been performed.

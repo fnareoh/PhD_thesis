@@ -29,7 +29,7 @@ Let $P$ be a set of $n$ strings in $\Sigma^{\ell}$, where $\ell \le n$. With pro
 \end{corollary}
 
 \subsection{The Twenty Questions game}
-\label{sec:20questions}
+\label{lcs:sec:20questions}
 Consider the following version of the classic game ``Twenty Questions''. There are two players: Paul and Carole; Carole thinks of two numbers $A, B$ between $0$ and $N$, and Paul must return some number in $[A,B]$. He is allowed to ask questions of form ``Is $x \le A$?'', for any $x \in [0,N]$. If $x \le A$, Carole must return YES; If $A < x \le B$, she can return anything; and if $B < x$, she must return NO. Paul must return the answer after having asked at most $Q$ questions where Carole can tell at most $\ceil{ \rho Q }$ lies, and only in the case when $x \le A$.  
 
 We show that Paul has a winning strategy for $Q = \Theta (\log n)$ and any $\rho < 1/3$ by a black-box reduction to the result of Dhagat, G{\'a}cs, and Winkler~\cite{Dhagat:1992:PLQ:139404.139409} who showed a winning strategy for $A = B$.

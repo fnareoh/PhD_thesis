@@ -9,9 +9,9 @@
 \newcommand{\Zp}{Z_+}
 
 \contextbox{Chapter based on publication}{
-This chapter coresponds to the following publication: \fullcite{streaming_regexp}\\
-My personal contribution to this work has been the formalization of anchors and proofs of their key properties. I also participated to the overal algorithms design.
-TODO: Detail (also in the intro) how it connects to the rest of the thesis and which preliminaries are helpfull.
+This chapter corresponds to the following publication: \fullcite{streaming_regexp}\\
+My personal contribution to this work has been the formalization of anchors and proofs of their key properties. I also participated in the overall algorithms design.
+TODO: Detail (also in the intro) how it connects to the rest of the thesis and which preliminaries are helpful.
 }
 \begin{small}
 Regular expression search is a key primitive in myriads of applications, from web scrapping to bioinformatics.
@@ -42,30 +42,30 @@ A crucial technical ingredient of our algorithms is an adaptation of the general
 \end{small}
 
 \section{Introduction}
-\label{sec:introduction}
+\label{regexp:sec:introduction}
 \input{Part_One/streaming_regex_pattern_matching/introduction}
 
 \section{Preliminaries}
-\label{sec:prelim}
+\label{regexp:sec:prelim}
 \input{Part_One/streaming_regex_pattern_matching/preliminaries}
 
 \section{Technical Overview}
-\label{sec:overview}
+\label{regexp:sec:overview}
 \input{Part_One/streaming_regex_pattern_matching/overview}
 
 \section{Regular Expression Membership and Pattern Matching}\label{sec:regexp}
-In this section, we address the problems of regular expression membership and pattern matching in the streaming model of computation. In Section~\ref{sec:anchors}, we introduce a notion of \emph{anchors} that is the key to achieving the desired space complexity. In Section~\ref{sec:algorithms}, we describe the algorithms.
+In this section, we address the problems of regular expression membership and pattern matching in the streaming model of computation. In Section~\ref{regexp:sec:anchors}, we introduce a notion of \emph{anchors} that is the key to achieving the desired space complexity. In Section~\ref{regexp:sec:algorithms}, we describe the algorithms.
 
 \subsection{Anchors}
-\label{sec:anchors}
+\label{regexp:sec:anchors}
 \input{Part_One/streaming_regex_pattern_matching/anchors}
 
 \subsection{Algorithms}
-\label{sec:algorithms}
+\label{regexp:sec:algorithms}
 \input{Part_One/streaming_regex_pattern_matching/algorithms}
 
 \section{Proof of Theorem~\ref{thm:detecting_walk_specific_weight}}
-\label{sec:paths-in-graph}
+\label{regexp:sec:paths-in-graph}
 \input{Part_One/streaming_regex_pattern_matching/paths-in-graph}
 
 \BiblatexSplitbibDefernumbersWarningOff

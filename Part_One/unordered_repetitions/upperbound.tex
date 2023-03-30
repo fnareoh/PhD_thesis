@@ -1,10 +1,10 @@
-\label{sec:upper}
+\label{square:sec:upper}
 
 In this section, we consider the problem of testing square-freeness of a given string.
-We introduce an algorithm that decides whether or not a string is square-free using only $\Oh(n \lg \sigma)$ comparisons, matching the lower bound from \cref{sec:lower}.
+We introduce an algorithm that decides whether or not a string is square-free using only $\Oh(n \lg \sigma)$ comparisons, matching the lower bound from \cref{square:sec:lower}.
 Note that this algorithm is not yet time efficient because, apart from the performed symbol comparisons, it uses other operations that are expensive in the Word RAM model.
-A time efficient implementation of the algorithm will be presented in \cref{sec:alg}, where we first achieve $\Oh(n \lg \sigma + n \log^* n)$ time, and then improve this to $\Oh(n \lg \sigma)$ time.
-In \cref{sec:runs}, we generalize the result to compute all runs in the same time complexity.
+A time efficient implementation of the algorithm will be presented in \cref{square:sec:alg}, where we first achieve $\Oh(n \lg \sigma + n \log^* n)$ time, and then improve this to $\Oh(n \lg \sigma)$ time.
+In \cref{square:sec:runs}, we generalize the result to compute all runs in the same time complexity.
 
 \subsection{Sparse Suffix Trees and Difference Covers}
 

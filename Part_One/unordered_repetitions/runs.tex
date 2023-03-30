@@ -1,6 +1,6 @@
-\section{Computing Runs}\label{sec:runs}
+\section{Computing Runs}\label{square:sec:runs}
 
-Now we adapt the algorithm such that it computes all runs. We start with the algorithm from \cref{sec:upper,sec:alg} without the final improvement from \cref{sec:finalimprov}. First, note that the key properties of the $\Delta$-approximate LZ factorisation, in particular \cref{lem:longhelper,lem:long}, also hold for the computation of runs. This is expressed by the lemmas below.
+Now we adapt the algorithm such that it computes all runs. We start with the algorithm from \cref{square:sec:upper,square:sec:alg} without the final improvement from \cref{square:sec:finalimprov}. First, note that the key properties of the $\Delta$-approximate LZ factorisation, in particular \cref{lem:longhelper,lem:long}, also hold for the computation of runs. This is expressed by the lemmas below.
 
 \begin{lemma}
 \label{lem:longhelper:run}
@@ -100,7 +100,7 @@ an $(\sigma_{t}/8)$-approximate LZ factorisation of the corresponding fragment o
 use \cref{lem:long:run} to compute all runs of length at least $\sigma_t$, apart from possibly the ones that are properly contained in a tail. Of the computed runs, we discard the ones that contain the first or last position of the block pair (unless the first position is $T[1]$ or the last position is $T[n]$ respectively).
 This way, each reported run is a run not only with respect to the block pair, but with respect to the entire $T[1..n]$. If we do not report some run of length at least $\sigma_t$ and less than $(\sigma_t)^2$ in this way, then it is properly contained in one of the tails.
 
-We cannot always afford to apply \cref{lem:long:run,lem:compute3} to all block pairs. Thus, we have to deactivate some of the blocks. During the current phase $t$, for each tail $T[s..e]$ of length at least $\Delta$, we deactivate all block pairs in phase $t + 3$ that are contained in $T[s + 1..e - 1]$. By similar logic as in \cref{sec:upper}, if a tail contributes $e - s + 1$ comparisons and time to the application of \cref{lem:long:run}, then it permanently deactivates $\Omega(e - s + 1)$ positions of the string, and thus the total time and comparisons needed for all invocations of \cref{lem:long:run,lem:compute3} are bounded by $\Oh(n)$ (apart from the additional $\Oh(n \log^* n)$ total time for \cref{lem:compute3}).
+We cannot always afford to apply \cref{lem:long:run,lem:compute3} to all block pairs. Thus, we have to deactivate some of the blocks. During the current phase $t$, for each tail $T[s..e]$ of length at least $\Delta$, we deactivate all block pairs in phase $t + 3$ that are contained in $T[s + 1..e - 1]$. By similar logic as in \cref{square:sec:upper}, if a tail contributes $e - s + 1$ comparisons and time to the application of \cref{lem:long:run}, then it permanently deactivates $\Omega(e - s + 1)$ positions of the string, and thus the total time and comparisons needed for all invocations of \cref{lem:long:run,lem:compute3} are bounded by $\Oh(n)$ (apart from the additional $\Oh(n \log^* n)$ total time for \cref{lem:compute3}).
 Whenever we apply \cref{lem:compute3}, we add all the tails of length at least $\Delta$ to a list $\mathcal L$, where each tail is annotated with the position of its previous occurrence.
 After the algorithm terminates, $\mathcal L$ contains all sufficiently long tails from all phases. We have already shown that the total time needed for \cref{lem:long:run} is bounded by $\Oh(n)$, and thus the total length of the tails in $\mathcal L$ is at most $\Oh(n)$.
 
@@ -113,7 +113,7 @@ We sort them in additional $\Oh(n+r)=\Oh(n\log\sigma)$ time, e.g., by using radi
 The running time so far is $\Oh(n\log \sigma)$.
 
 \subsection{Copying Runs From Previous Occurrences}
-\label{sec:copyruns}
+\label{square:sec:copyruns}
 
 Lastly, we have to compute the runs that were properly contained in a tail in $\mathcal L$. 
 Consider such a run $\tuple{r_s, r_e, p}$, and let $T[s..e]$ be a tail in $\mathcal L$ with $s < r_s$ and $r_e < e$. If multiple tails match this criterion, let $T[s..e]$ be the one that maximizes $e$.
@@ -132,7 +132,7 @@ We inductively assume that, at the time at which we process $i$, we have already
 Otherwise, $i$ is annotated with $(e, d)$, every missing run $\tuple{i, e_r, p}$ satisfies $e_r < e$, and the annotation list of $i - d$ already contains the run $\tuple{i - d, e_r - d, p}$ (due to $T[i - 1..e_r + 1] = T[i - d - 1..e_r - d + 1]$ and the inductive assumption).
 For each run $\tuple{i - d, r_e - d, p}$ in the annotation list of position $i - d$, we insert the run $\tuple{i, e_r, p}$ into the annotation list of $i$. We perform this step in a merging fashion, starting with the shortest runs of both lists and zipping them together. As soon as we are about to insert a run $\tuple{i, e_r, p}$ with $e_r \geq e$, we do not insert it and abort. Thus, the time needed for processing $i$ is linear in the number of runs starting at position~$i$. By the runs theorem~\cite{Bannai2017}, the total number of runs is less than $n$, making the total time for this step $\Oh(n)$.
 
-Apart from the new steps in \cref{sec:copyruns}, the complexity analysis works exactly like in \cref{sec:upper}. Hence we have shown:
+Apart from the new steps in \cref{square:sec:copyruns}, the complexity analysis works exactly like in \cref{square:sec:upper}. Hence we have shown:
 
 \begin{theorem}
 \label{thm:runsstar}

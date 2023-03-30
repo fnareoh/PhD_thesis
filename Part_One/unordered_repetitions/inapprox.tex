@@ -1,7 +1,7 @@
 \section{Lower Bounds}
-\label{sec:lowerbounds}
+\label{square:sec:lowerbounds}
 
-In this section, we show lower bounds on the number of symbol comparisons required to compute a meaningful approximation of the alphabet size (\cref{sec:loweralphaapprox}) and to test square-freeness (\cref{sec:lower}).
+In this section, we show lower bounds on the number of symbol comparisons required to compute a meaningful approximation of the alphabet size (\cref{square:sec:loweralphaapprox}) and to test square-freeness (\cref{square:sec:lower}).
 For both bounds we use an adversarial method, which we briefly outline now.
 
 The present model of computation may be interpreted as follows. 
@@ -14,8 +14,8 @@ In order to show a lower bound on the number of comparisons required to solve so
 %The adversary makes sure that, by the time the algorithm finishes, it either must have performed sufficiently many symbol comparisons (more than the target lower bound), or the answers given by the adversary are consistent with a string that contradicts the result of the algorithm.
 
 \iffalse
-Particularly, in \cref{sec:loweralphaapprox}, the adversary keeps the answers consistent with strings of vastly different alphabet sizes. As long as the algorithm performs fewer than $\frac{ns} 4$ comparisons, the adversary can guarantee that its answers are consistent with strings whose alphabet sizes vary by a factor of $\Omega(n)$. Thus, estimating the alphabet size up to a factor of $o(n)$ takes $\Omega(ns)$ comparisons.
-In \cref{sec:lower}, the adversary keeps the answers consistent with at least one string that does contain a square, and at least one string that does not. It takes $\Omega(n\lg s)$ comparisons until the adversary has to definitively decide whether the string is square-free or not. Thus testing square-freeness takes $\Omega(n \lg s)$ comparisons.
+Particularly, in \cref{square:sec:loweralphaapprox}, the adversary keeps the answers consistent with strings of vastly different alphabet sizes. As long as the algorithm performs fewer than $\frac{ns} 4$ comparisons, the adversary can guarantee that its answers are consistent with strings whose alphabet sizes vary by a factor of $\Omega(n)$. Thus, estimating the alphabet size up to a factor of $o(n)$ takes $\Omega(ns)$ comparisons.
+In \cref{square:sec:lower}, the adversary keeps the answers consistent with at least one string that does contain a square, and at least one string that does not. It takes $\Omega(n\lg s)$ comparisons until the adversary has to definitively decide whether the string is square-free or not. Thus testing square-freeness takes $\Omega(n \lg s)$ comparisons.
 \fi
 
 \newcommand{\yesedges}{E_\textnormal{yes}}
@@ -65,7 +65,7 @@ In order to obtain a string with $\Gamma + d_{\max} + 1$ distinct colors, we sim
 
 
 \subsection{Approximating the Alphabet Size}
-\label{sec:loweralphaapprox}
+\label{square:sec:loweralphaapprox}
 
 
 
@@ -75,7 +75,7 @@ assume that we want to compute an approximation of $\sigma$.
 We show that if an algorithm takes at most $\frac{n\sigma} 8$ comparisons in the worst-case, then it cannot distinguish strings with at most $\sigma$ distinct symbols from strings with at least $\frac n 2$ distinct symbols.
 Thus, any meaningful approximation of $\sigma$ requires $\Omega(n\sigma)$ comparisons.
 
-For the sake of the proof, consider an algorithm that performs at most $\frac{n\sigma} 8$ comparisons when given a length-$n$ string with at most $\sigma \geq 2$ distinct symbols. We use an adversary as described at the beginning of \cref{sec:lowerbounds}, and ensure that the set $\mathcal T$ of strings consistent with the adversary's answers always contains a string with at most $\sigma$ distinct symbols. Thus, the algorithm terminates after at most $\frac{n\sigma} 8$ comparisons. At the same time, we ensure that $\mathcal T$ also contains a string with at least $\frac n 2$ distinct symbols, which yields the desired result. The adversary is equipped with the following coloring rule.
+For the sake of the proof, consider an algorithm that performs at most $\frac{n\sigma} 8$ comparisons when given a length-$n$ string with at most $\sigma \geq 2$ distinct symbols. We use an adversary as described at the beginning of \cref{square:sec:lowerbounds}, and ensure that the set $\mathcal T$ of strings consistent with the adversary's answers always contains a string with at most $\sigma$ distinct symbols. Thus, the algorithm terminates after at most $\frac{n\sigma} 8$ comparisons. At the same time, we ensure that $\mathcal T$ also contains a string with at least $\frac n 2$ distinct symbols, which yields the desired result. The adversary is equipped with the following coloring rule.
 All colors are from $\{1, \dots, \sigma\}$. Whenever the degree of a node in the conflict graph becomes $\sigma - 1$, we assign its color. 
 %If available, we choose a color that has never been used before. In any way, 
 We avoid the colors of the $\sigma - 1$ adjacent nodes in the conflict graph.
@@ -89,7 +89,7 @@ Each comparison may increase the degree of two nodes by one. Thus, after $\frac{
 For any integers $n$ and $\sigma$ with $2 \leq \sigma < \frac{n}2$, there is no deterministic algorithm that performs at most $\frac{n \sigma}8$ equality-comparisons in the worst case, and is able to distinguish length-$n$ strings with at most $\sigma$ distinct symbols from length-$n$ strings with at least $\frac{n}2$ distinct symbols. 
 \end{theorem}
 
-The theorem implies lower bounds on the number of comparisons needed to compute the LZ factorisation (as defined in \cref{sec:prelim}) and the $f$-factorisation.
+The theorem implies lower bounds on the number of comparisons needed to compute the LZ factorisation (as defined in \cref{square:sec:prelim}) and the $f$-factorisation.
 In the unique $f$-factorisation $T = f_1f_2\dots f_z$, each factor $f_i$ is either a single symbol that does not occur in $f_1\dots f_{i - 1}$, or it is the fragment of maximal length such that $f_{i}$ occurs twice in $f_1\dots f_{i}$. 
 
 \begin{corollary}
