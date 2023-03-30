@@ -1,0 +1,197 @@
+
+
+\section{XBWT via Prefix Free Parsing}\label{xbwt:sec:pfp}
+
+The problem of building the XBWT for a set of reads as described in Section~\ref{xbwt:sec:main} is non trivial because the input typically consists in tens of gigabytes of data and we cannot make use of the available algorithms~\cite{JarnoSODA20,DBLP:conf/dcc/BaierBOW20} which are designed to work in RAM. However, the fact that reads are copies (possibly with errors), of portions of a relatively small reference suggests that the overall amount of information content is relatively small. Therefore we decided to compute the XBWT using the technique of Prefix Free Parsing (PFP) that has been successfully utilized for computing the BWT for large collections 
+of genomes from individuals of the same species. Our implementation was done in C++ and is available on \href{https://github.com/fnareoh/Big_XBWT}{ github.com/fnareoh/Big\_XBWT}. {Note that our algorithm does not take as input a labelled tree, but rather a reference genome and a set of reads aligned to that genome (in the format of a {\tt .bam} file); the alignment implicitly defines a labeled tree as described in Section~\ref{xbwt:sec:main}.}
+
+
+{In the PFP construction of the BWT the input is parsed into overlapping phrases using context-triggered piecewise hashing~\cite{boucher2019prefix}. If the input contains many repetitions, the use of context-triggered hashing ensures that the parsing will contain a relatively small number of distinct phrases. The actual construction of the BWT is done using only the dictionary of distinct phrase and the parse (which describes how the dictionary phrases can be used to reconstruct the input). For repetitive datasets the dictionary and the parse fit in RAM even when the original input does not.} Unmodified, however, PFP does not work well on readsets since the phrases generated at the beginning and end of each read will likely be unique. As a result, the dictionary will be quite large and the algorithm inefficient. To prevent this, we extend the reads forward and backward so they begin and end with complete phrases. The extension is done using the symbols in the reference immediately before and after the position where the read aligns, so that the phrases are likely to be not unique (if the read has no errors the phrases will be exactly the same generated when parsing the reference). Although this technique maintains the dictionary small, the tricky part is to exclude these extensions when computing the actual XBWT.
+
+Summing up, our implementation is divided in three main phases. In the first phase we partition the reference and the reads into phrases; the set of distinct phrases is called the {\em dictionary} and the way phrases form the reference and the reads is called the {\em parse}. We use the extension trick mentioned before, and ,if the reference and the reads are similar, the dictionary will be relatively small.   
+In the second phase we compute the XBWT of the parse. Since phrases are relatively large, the number of symbols in the parse is much smaller than in the original input, so the parse fits in RAM and the computation can be done using a doubling algorithm~\cite{doubling_algorithm}. Finally, in the third phase we recover the XBWT of the input from the XBWT of the parse.  {The details of the three phases are given below.} 
+
+
+
+\subsection{Construction of the Dictionary and the Parse}
+
+We start by scanning the reference as in the PFP BWT construction algorithm. The algorithm takes as input parameters a window size $w$, and a modulo $m$. We slide a window of length $w$ over the text, at each step computing the Karp-Rabin fingerprint~\cite{KRfingerprint} of the window. We define a terminating windows as a window with Karp-Rabin fingerprint equal to zero modulo~$m$. Terminating windows decompose the text into overlapping phrases: each phrase is a minimal substring that begins and ends with a terminating window. Note that each terminating window is a suffix of the current phrase and the prefix of the next phrase so consecutive phrases have a size-$w$ overlap. Note that defining phrases using terminating windows ensures that no phrase is a prefix (or a suffix) of another phrase, hence the name ``prefix free parsing''.
+
+In addition to keeping track of window fingerprints, we also maintain a different hash $h(p_i)$ of the current phrase $p_i$. For simplicity in the following we assume distinct phrases always have distinct hashes, if not we detect it and crash. At the end of this scanning phase, the reference has been parsed into the (overlapping) phrases $p_1,p_2,\dots,p_z$. We build a vector $S[1,z]$ storing for each phrase $p_i$ its starting position $s_i$ in the reference and its hash $h(p_i)$.  {We also build as we go the dictionary that associate to each hash value $h(p_i)$ the corresponding phrase $p_i$  (stored as a simple string) and $occ(p_i)$ the number of occurrences of that phrase. We will later also need the length of each phrase but we don't store it explicitly, just deduce it from the string stored in the dictionary.}
+
+%In the dictionary, when terminating a phrase we first check if the hash is already present, if not we add it and set the frequency to $1$, else we check that the phrase to save matches the phrase stored in the dictionary, if they don't we crash the program, else we just increase the frequency.
+
+
+%For reasons that will become clear later on, we add $w$ NULL to the first phrase.
+
+
+%{In the parse file, we separate the parse of the reference and of each read by writing $p+1$ as a separator. $p+1$ is a clear separator because the character of this temporary parse are the Karp-Rabin fingerprints of the phrases modulo $p$, thus strictly less than $p$.}
+%
+
+
+After parsing the reference, we process the reads one by one. 
+From the file of aligned reads, we obtain both the read $r$ as a string and the position $l$ where the read aligns to the reference. 
+We binary search in $S$ for the rightmost phrase $p_s$ that starts before position $l$ and for the leftmost phrase $p_e$ that ends after position $l+|r|-1$. Let $p'_s$ (resp. $p'_e$) denote the prefix (resp. suffix) of $p_s$ (resp. $p_e$) ending (resp. starting) immediately before (resp. after) position $l$ (resp. $l+|r|-1$). We define the extended read $r_{ext} = p'_s \cdot r \cdot p'_e$ where $\cdot$ here denotes string concatenation. We slide a window onto $r_{ext}$, decomposing it into phrases, as we did for the reference. Since $r_{ext}$ starts and ends with a terminating window the phrases we add while parsing $r_{ext}$ still form a prefix-free parsing.
+%
+However, as we do not want to index the whole $r_{ext}$ in the final XBWT, for each read we keep track and store to disk the starting and ending position of $r$ in $r_{ext}$. 
+
+
+%We then deduce for each phrase the limits of the phrase: the starting and ending positions of the characters that belong to $r$. Because we will later need this information for every phrase, we set it to the entire phrase for the phrases of the reference. Those limits are written directly to disk.
+
+When processing the reads we continue adding the hashes of the phrases to the end parse, using a special value as separator between reads. If we parse a new phrase, we add it to the dictionary. However, as previously pointed out, the phrases coming from the extended reads are likely to be equal to phrases in the reference so we expect the dictionary not to grow significantly (the dictionary would not grow at all if all the reads were substrings of the reference). From the starting and ending position of the original read in the extended read we deduce for each phrase what characters are part of the original read (the reads without extensions) and we store a starting and ending position for each phrase.
+
+Once all the reads have been processed, we sort the phrases in the dictionary in reverse lexicographic order and we output a new parse where each hash of phrase is replaced by its reverse lexicographic rank, the separator symbol is replaced by the number of phrases plus one. To summarize, at the end of this phase we have produced the following output files:
+\begin{enumerate}
+    \item \texttt{file.dict}: the dictionary in co-lexicographic order;
+    \item \texttt{file.occ}: the frequency of each phrases;
+    \item \texttt{file.parse}: the parse with each phrase represented by its co-lexicographic rank;
+    \item \texttt{file.limits}: the starting and ending position of the original input (reads without extension) in each phrase.
+\end{enumerate}
+
+
+
+% reverse the strings in the dictionary and sort them lexicographically, thus the strings are in sorted in co-lexicographic order. Their new id is their order in the sorted dictionary and we read the temporary parse with hashes from disk to map it to the new ids. The separator $p+1$ is mapped to the total number of phrases in the dictionary plus one. We then write the dictionary and the frequency to disk.
+
+
+
+\subsection{XBWT of the Parse}
+
+The main goal of this phase is to construct the XBWT of the parse, using the co-lexicographic rank as meta-characters. To this end we load the parse on RAM, reconstruct its tree structure, and compute the XBWT of this tree via a doubling algorithm~\cite{doubling_algorithm}. Then, rather than storing the XBWT as is, we construct an inverted list as this structure will be more appropriate for the next phase. For each phrase $p_i$ we store the list of XBWT positions where $p_i$ appears. The size of the inverted list for $p_i$ is equal to its frequency; since frequencies were computed in the first phase, we can output the inverted list as a plain concatenation of positions.  
+
+% So it is enough to write to disk 4 bytes per entry for a total of $4|P|$ bytes. 
+
+In this phase we also permute the limits (the starting and ending position in the original input) of each phrase according to their order in the XBWT. This way, in the next phase, with the inverted list, we can easily access the limit of any given phrase in the parse. In this phase, we also compute and write to disk for every phrase, the list of phrases (with multiplicities) that immediately follow in the parse. This list will be used to index the characters that precede a full word. However because we only want to index the characters that are in the original input, we only add it after checking the limits. Finally, because we are not storing special characters to mark the end of a read or of the reference (as they would break runs), we construct a bit vector marking such positions and we permute it according to the XBWT order. To summarize, at the end of this phase we have produced the following output files:
+\begin{enumerate}
+    \item \texttt{file.dict}: the dictionary of the reversed phrases (from the first phase).
+    \item \texttt{file.occ}: the frequency of each phrases (from the first phase).
+    \item \texttt{file.ilist}: the inverted list of the parse.
+    \item \texttt{file.xbwt\_limits}: the limits of the phrases in XBWT order.
+    \item \texttt{file.xbwt\_end}: markers of the phrases where a read or reference ends in XBWT order.
+    \item \texttt{file.full\_children}: for every word, the list of words that follows it.
+\end{enumerate}
+
+
+\subsection{Building the final XBWT}
+
+This is the final phase where we compute the XBWT of the reference and of the readset. We start by sorting lexicographically the suffixes of the strings in the dictionary $D$. At this stage the dictionary $D$ contains the phrases reversed, so this is equivalent to sort in reverse lexicographic order the prefixes of all phrases. We ignore the suffixes of length $\leq w$ as they correspond to the terminating window which also belongs to the previous phrase.  The sorting is done by the gSACAK algorithm~\cite{LOUZA201722} which computes the SA and LCP array for the set of dictionary phrases. We scan the sorted elements of $D$, for $s$ a proper suffix, there are two cases, all the elements in $D$ which have $s$ as a proper suffix have the same preceding character, in this case we add it the correct number of times using the frequency of each phrase. In the other case, we use a heap to merge the inverted list writing the appropriate characters accordingly. Here when writing a character we first check that the suffix length is between the limits and only write it to file if it does. We also check if the character to be added is the last of its sequence (read or reference), if so output a 1 to signal the end of a sequence, else 0. When finding a suffix $s'$ that corresponds to an entire phrase, we use the children file to output the character at the start of the following phrase. At the end of this phase we have written to disk a file with the XBWT of the reference and readset as well as a bit vector marking which positions are the last character of a read or a genome. To summarize, in this phase we use \texttt{file.dict}, \texttt{file.occ}, \texttt{file.ilist}, \texttt{file.full\_children} and \texttt{file.xbwt\_limits}; all other files can be discarded. We output the XBWT in plain text as \texttt{file.bwt} and \texttt{file.is\_end} is the compressed bit vector marking the end of reads.
+
+
+% Considering that we added $w$ NULL characters at the beginning of the reference, we do not forget any characters.
+
+\section{Experiments} \label{xbwt:sec:practice}
+
+In this section we present a first experimental evaluation of our XBWT-based approach for compressing a set of aligned reads and we compare it with the known methods based on the EBWT. We compare ourselves to the EBWT and not other compression tools for aligned readset as our long-term goal is to create an index and not just compression. Recall that our implementation and experimental pipeline is available on \href{https://github.com/fnareoh/Big_XBWT}{ github.com/fnareoh/Big\_XBWT}. For simplicity we compare the numbers of runs produced by the different algorithms. The actual compression depends on the algorithm used for encoding the run lengths: preliminary experiments with the $\gamma$ encoder show that the number of runs is a good proxy for measuring the actual compression. An accurate comparison of the time efficiency is left as a future work: we only compared the number of runs produced by our XBWT with the number of runs produced by the EBWT and some of its variants. Note that our implementation computes the XBWT of the reference genome and the readset (as described in the previous section), while the EBWT and its variants were applied only to the readset. We computed all EBWT variants using \href{https://github.com/lh3/ropebwt2}{{ropeBWT2}}~\cite{ropebwt2}; in addition to plain EBWT we also tested 2 heuristics that reorder the reads to reduce the number of runs in the EBWT: \href{https://github.com/shubhamchandak94/Spring/tree/reorder-only}{{Spring}}~\cite{spring} and reverse lexicographic order (RLO)~\cite{RLO}, the latter obtained using the option \texttt{-s} in ropeBWT2. Since our XBWT implementation does not use the \texttt{\$} symbol, for a fair comparison we measured the number of runs with and without the \texttt{\$} for EBWT, Spring+EBWT and RLO+EBWT (therefore ignoring for all algorithms the extra cost of implicitly encoding the ending position of each string). 
+In our tests, we used the following readsets:
+\begin{itemize}
+    \item \textbf{E.coli} and \textbf{S.aureus} from the \href{http://bix.ucsd.edu/projects/singlecell/nbt_data.html}{{single-cell dataset}}~\cite{single-cell}, the references used are those linked on the single-cell website\footnote{\url{https://www.ncbi.nlm.nih.gov/nuccore/NC_000913}},\footnote{\url{https://www.ncbi.nlm.nih.gov/nuccore/87125858}}.
+    \item \textbf{R.sphaeroides} We have HiSeq and MiSeq sequencing, raw and trimmed versions of the reads from the \href{https://ccb.jhu.edu/gage_b/}{GAGE-B dataset}~\cite{Gage-b}. The reference used is the longest contig assembled by MSRCA~v1.8.3~\cite{MSRCA} as it was the most accurate assembler according to the Gage-b companion paper~\cite{Gage-b}. We only considered the longest contig because our implementation doesn't handle forests of trees yet.
+    \item \textbf{Human Chromosome 19}  We used
+    as a reference Chromosome 19 from the CHM1 human assembly~\cite{chr19_chm1} and one of the HiSeq 2000 readsets\footnote{\url{https://www.ncbi.nlm.nih.gov/sra/SRX966833[accn]}} used to compute that assembly, considering only the reads that aligned with the reference.
+\end{itemize}
+
+None of those readsets are aligned, so we used \href{https://github.com/lh3/bwa}{{bwa mem}}~\cite{bwa} to align them to the chosen reference. In this preliminary experiments we discarded the reads that bwa aligned with the reverse-complement of the reference genome. As mentioned in Section~\ref{xbwt:sec:main} our final prototype will build an XBWT of the tree with the reference and of the tree of the reversed-complemented reference. In Table~\ref{tab:stats_datasets}, we present statistics on the readsets we used: those statistics where computed only on the reads that aligned forward to the reference.
+
+
+% Please add the following required packages to your document preamble:
+% \usepackage{graphicx}
+\begin{table}[t]
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{ccccLLc}
+Dataset                                                            & Number of reads & Read length & Coverage & Avg. dist. from the first sequencing err. to the end & Prop. of reads without seq. error & Error rate \\ \hline
+E.coli~\cite{single-cell}                                                             & 14139182        & 100         & 304$\times$   & 13             & 57.30\%               & 0.01\%     \\
+S.aureus~\cite{single-cell}                                                           & 26654420        & 100         & 927$\times$   & 7             & 88.79\%              & 0.01\%     \\
+Human Chr19~\cite{chr19_chm1}                                                      & 34167479        & 100         & 57$\times$    & 15             & 71.62\%              & 0.01\%     \\ \\
+R.sphaeroides~\cite{Gage-b} &&&&&\\ \hline
+HiSeq raw                                                          & 166820          & 101         & 46$\times$    & 27             & 31.34\%              & 0.04\%     \\
+HiSeq\ trimmed                                                     & 134207          & up to 101         & 37$\times$    & 6                 & 83.26\%              & 0.01\%     \\
+MiSeq raw                                                          & 23102           & 251         & 24$\times$    & 122            & 0.25\%               & 0.15\%     \\
+Miseq trimmed                                                      & 20046           & up to 251         & 20$\times$    & 29                 & 63.55\%              & 0.03\%    \\ \hspace{0.5cm}
+\end{tabular}%
+}
+\caption{Statistics on each dataset used in the experiments. Those statistics where computed only on the reads that aligned forward to the reference. We call sequencing error (or simply error) any difference between the genome and the reads. The coverage is simply defined as the total number of base-pairs in the reads compared to the number of base-pairs in the reference. The average distance between the first sequencing error and the end of the read and the end is computed considering that for error less read this distance is 0. Note that this parameter is exactly $\delta$ in Theorem~\ref{thm:XBWTerr}.}
+\label{tab:stats_datasets}
+\end{table}
+
+Preliminary experiments, not reported here, show that removing the \texttt{\$} in the EBWT (all variants) reduces the number of runs between 2.7\% and 29.2\%. Consequently, we focus our analysis on the comparison of Plain (no read reordering) EBWT (without dollars), SPRING+EBWT (without dollars),  RLO+EBWT, with and without \texttt{\$} and XBWT.
+
+
+%To have an experimental confirmation of Theorem~\ref{thm:XBWTerr} we first compared the different compression on Synthetic data generated by \href{https://github.com/lh3/wgsim}{{wgsim}}. This gives us a controllable amount of sequencing error and a 15\% of the polymorphisms being insertions or deletions. We generated the synthetic data from an E.coli assembly from the \href{http://bix.ucsd.edu/projects/singlecell/nbt_data.html}{{single-cell dataset}}~\cite{single-cell} and from the \href{https://hgdownload.soe.ucsc.edu/goldenPath/hg38/chromosomes/}{{Human chromosome 19}} that was sequenced by the \href{https://www.ncbi.nlm.nih.gov/grc}{{Genome Reference Consortium}}~\cite{Genome_ref_consortium}. For both of those genomes we generated 20 Millions reads of length 100 bp and different error rates. The results are presented in Figure~\ref{fig:synthetic}, RLO+EBWT without \$ gives better compression than with \$ but our approach still outperforms both of them, even for an error rate of 2\% which is much higher than the usual error rate for short reads that is considered to be around 0.1\%\cite{schirmer2016illumina}.
+
+
+% removed since includes quality scores and reads which are discarded 
+%The original reads, not aligned, in fastq format occupy 6.1G.
+
+%We run experiments on real world datasets such as E.coli and S.aureus from the \href{http://bix.ucsd.edu/projects/singlecell/nbt_data.html}{{single-cell dataset}}~\cite{single-cell}, and Aeromonas Hydrophilia from the \href{https://ccb.jhu.edu/gage_b/}{{Gage-B dataset}}~\cite{Gage-b}.
+
+The results of this comparison are reported in Figures~\ref{fig:realworld} and~\ref{fig:sphaeroides}. They show that in general the plain EBWT performs worse followed by the SPRING reordering, RLO ordering with dollars then RLO ordering without dollars and finally XBWT performs best.  XBWT yields a smaller number of runs than RLO+EBWT (with or without \texttt{\$}) on all datasets, although the number is comparable on some datasets this is still a significant improvement considering that RLO+EBWT already has far less run than the EBWT baseline. On the Chr19 dataset, using RLO+EBWT-no-\texttt{\$} over plain BWT-no-\texttt{\$} (not reported in Figure~\ref{fig:realworld}) reduced the number of runs by 49\%; using the XBWT reduced the number of runs by an additional 16\%. On S.aureus and E.coli the reduction between RLO+EBWT-no-\texttt{\$} and XBWT is of only 3\% and 8\% respectively. 
+
+The R.sphaeroides datasets are especially interesting as they involve two NGS technologies that generate reads of different lengths, different coverages, and with different error profiles. We can first notice that our method brings greater benefits on the HiSeq sequencing which has smaller reads with less errors that are located towards the end of the string. This is an experimental validation of the statement of Theorem~\ref{thm:XBWTerr}. We can also observe the effect of trimming the reads on the number of runs. On the HiSeq sequencing, trimming reduces the coverage only from 46x to 37x but yields a reduction in the number of XBWT runs by 86\%. Note that, as a result, on HiSeq trimmed, the number of XBWT runs is less than half the number of runs in plain RLO+EBWT. 
+
+
+%Finally, we report that the encoding of the sparse bit vector XBWT uses to mark the ending positions of substrings is relatively small as expected. For the E.coli dataset it takes 16MB while the  gamma encoding~\cite{Elias1975} of the run-lengths takes 62MB.
+
+%However, on Hydrophylia where the reads are assembled to the reference genome we perform similarly but slightly worse, and on Hydrophilia aligned to the genome assembled by \href{https://www.bcgsc.ca/resources/software/abyss}{ABySS}~\cite{Simpson2009}, we perform significantly worse. This result is really surprising and we do not have an explanation for it yet. 
+
+%In the future, we plan to extend this comparison to more datasets and to study the evolution of the number of runs in each method depending on the error rate and the average position of the first error.
+
+%that does not come from a bacterial organism as genome diversity is much bigger in microbial organism~\cite{kuhnle2020efficient}.
+
+
+
+
+% Synthetic reads
+
+\begin{figure}
+    \captionsetup[subfigure]{justification=centering}
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \figXBWT{1}{fig_res_real_world_dataset_path.png}
+        \caption{E.coli, S.aureus, Human Chr19}
+        \label{fig:realworld}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \figXBWT{1}{fig_res_r_sphaeroides_dataset_path.png}
+        \caption{R.sphaeroides}
+        \label{fig:sphaeroides}
+    \end{subfigure}
+    \caption{Comparison of run-lengths compression by RLO+EBWT with and without \$ and XBWT on various species~(\ref{fig:realworld}) and on two sequencing of R.sphaeroides (HiSeq and MiSeq) and for reads both raw and trimmed~(\ref{fig:sphaeroides}).}
+    \label{fig:experiments}
+\end{figure}
+
+%All reads ?
+
+% No reverse 
+
+
+\section{Application to the JST}
+\label{xbwt:sec:JST}
+
+From a certain angle, Figure~\ref{fig:XBWT} is reminiscent of Figure~\ref{fig:JST}, from Rahn, Weese and Reinert's~\cite{DBLP:journals/bioinformatics/RahnWR14} paper on their Journaled String Tree (JST).  This raises the question of whether the XBWT and JST can be used to improve the space usage of the hybrid index~\cite{ferrada2014hybrid,gagie2015searching,ferrada2018hybrid} and eventually the PanVC~\cite{valenzuela2018towards} pan-genomic read aligner, which is based on the hybrid index.
+
+\begin{figure}[t]
+\begin{center}
+\figXBWT{1}{JST.png}
+\caption{An illustration of a JST~\cite{DBLP:journals/bioinformatics/RahnWR14}}
+\label{fig:JST}
+\end{center}
+\end{figure}
+
+Figure~\ref{fig:JST} shows a JST supporting search for patterns of length up to 4 in four aligned sequences: the reference
+\[r = \mathtt{TAGCGTAGCAGCTATGAGGAGGACCGAGTT}\]
+and three others,
+\begin{eqnarray*}
+s^1 & = & \mathtt{TAGCGTAGCAGCGAGGAGCGACCGAGTT}\,,\\
+s^2 & = &  \mathtt{TAGCGTGGCAGCGAGGAGCACCGAGTT}\,,\\
+s^3 & = & \mathtt{TAGCGTGGCAGCTATGAGGAGCACCGAGTT}\,.
+\end{eqnarray*}
+The straight branch of the tree running along the bottom of the figure is labelled with $r$, and the other branches indicate places where the other sequences differ from $r$.  The other branches end just before a window of size 4 sliding over their sequences matches an aligned window of size 4 sliding over $r$.  For example, the first branch ends at position 9 because a sliding window of length 4 over positions 7 to 10 of sequences $s^2$ and $s^3$ (that is, containing the characters in columns 7 to 10 and the rows for $s^2$ and $s^3$ in the alignment shown at the top right in the figure), matches a sliding window of length 4 over positions 7 to 10 in $r$ (that is, containing the characters in columns 7 to 10 and the row for $r$ in the alignment).
+
+Suppose we are looking for the pattern $p = \mathtt{AGCG}$: considering the circle at the left as the root, $p$ occurs 3 times as a substring (marked in orange) of root-to-leaf paths, and we can find those occurrences using a depth-first traversal of the tree.  Since the sequences are similar, such a traversal is faster than running a sliding window over each sequence separately.  If we find an occurrence of $p$ in the tree that ends at a node not in the branch for $r$, then we have found occurrences in each of the sequences labelling the leaves in that node's subtree.  If we find an occurrence of $p$ in the branch for $r$, then we have found occurrences in $r$ and possibly other sequences.  Unfortunately this case is not illustrated in the figure, but if we were looking for {\tt GTAG} then the occurrence at position 4 in $r$ would have a corresponding occurrence in $s^1$ but not in $s^2$ or $s^3$; this is shown by the dashed line between 3 and 7, with $\{1\}$ at the left end indicating that $s^1$ matches $r$ between 3 and 7 and $\{1, 2, 3\}$ indicating that $s^1$, $s^2$ and $s^3$ all match $r$ from 7 onward (until the next such interval starts at 9).
+
+The hybrid index is conceptually similar to the JST, but the former is an index and the latter performs pattern matching by scanning the tree sequentially.  To build the hybrid index supporting search for patterns of length up to 4 in $r, s^1, s^2, s^3$, we first build a string kernel consisting of $r$ and substrings from $s^1, s^2, s^3$ that contain all the characters within distance 3 of variations from $r$, all separated by copies of a special symbol {\tt \$}:
+\[\mathtt{TAGCGTAGCAGCTATGAGGAGGACCGAGTT\$CGTGGCA\$AGCGAG\$GAGCGACC\$GAGCACC}\,.\]
+Any substring of length at most 4 of the the four sequences $r, s^1, s^2, s^3$ is a substring of the string kernel, and any substring of length at most 4 of the string kernel that does not include a copy of {\tt \$} is a substring of at least one of those sequences.  We then build an FM-index for the string kernel, with auxiliary data structure that allow us to quickly map occurrences of a pattern in the string kernel to occurrences in the sequences. 
+
+It seems interesting that the string kernel for the four sequences in Figure~\ref{fig:JST} has more characters than the JST: on top of $r$, the string kernel has a substring {\tt \$CGTGGCA} and the JST has a branch labelled {\tt GGCA}; the string kernel has {\tt \$AGCGAG} and the JST has {\tt GAG}; the string kernel has {\tt \$GAGCGACC} and the JST has {\tt CGAC} and {\tt GACCG} (a tie in this one case); the string kernel has {\tt \$GAGCACC} and the JST has {\tt CACC} (with the first {\tt C} shared with the branch ending {\tt CGAC}).  This difference is because the string kernel stores copies of the characters both before and after variation sites, whereas the JST stores copies only of the characters after them.  If we build an index using the XBWT of the JST, therefore, it may be smaller than the hybrid index while having the same basic functionality.  We leave exploring this possiblity as future work.

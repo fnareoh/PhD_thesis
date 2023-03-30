@@ -1,0 +1,46 @@
+\section{Our contribution} \label{xbwt:sec:main}
+
+{Figure~\ref{fig:XBWT} can be seen as a representation of a ``genome''  {\tt GATTAGATACAT} and of five ``reads'' {\tt GATTA}, {\tt TTAGA}, {\tt TAGATA}, {\tt GATAC} and {\tt ATACAT} extracted, without errors, from it. Starting with the vertex with rank 28, corresponding to the last symbol of the ``genome'', and navigating the tree we are able to recover all the individual strings.  Notice however, that the XBWT has only 7 runs while the BWT of the ``genome'' and the EBWT of the ``reads'' in Figure~\ref{fig:dollars} have 8 and 19 runs, respectively. The EBWT without {\tt \$} of the reads alone in Figure~\ref{fig:dollarless} has 10 runs. We refer the reader to Giuliani et al.'s~\cite{10.1007/978-3-030-67731-2_18,giuliani2019dollar} recent papers for a discussion of the impact of the {\tt \$} and of the direction of the string on the number of runs in the BWT. The following theorem shows that the example in  Figure~\ref{fig:XBWT} is not a coincidence: if the ``reads'' have no errors and they are appended to the reference in the proper positions, then the XBWT has the same number of runs as the BWT of the {\it reverse} of the ``genome''.} 
+
+
+
+
+\begin{theorem}\label{thm:XBWT}
+Suppose we sample substrings from a string and we form a labelled tree by grafting (appending) the substrings in the same position they were sampled so that all edge labels at the same depth are equal. Then the XBWT of the tree has the same number of runs as the BWT of the reverse of the string.
+\end{theorem}
+
+\begin{proof} 
+Consider the tree shown in Figure~\ref{fig:XBWT}.  The tree satisfies the hypothesis of Theorem~\ref{thm:XBWT} since it was obtained by sampling some substrings from {\tt GATTAGATACAT} and then grafting them onto it such that all the edge labels at the same depth are equal  (so a horizontal line always hits edges with only the same label). Clearly, all the labels at the same depth not only are equal, but they have the same upward-path label, which is the prefix preceding the corresponding character in the string. {Since the XBWT is built by sorting labels according to the string spelled by their upward path, we see that each symbol of the original string will be adjacent to all reads symbols at the same horizontal level, and that all such symbols are identical. Finally, observe that also in the BWT of the reverse of the string symbols are sorted according to the prefix preceding them; hence the XBWT can be obtained by replacing each symbol in the BWT, except the {\tt \$}, by a run of the same symbol and the thesis follows.}
+\end{proof}
+
+
+Figure~\ref{fig:XBWT} and Theorem~\ref{thm:XBWT} suggest a new way to compress and index readsets: graft the reads onto a fully or partially assembled genome, or a reference genome if need be, and store the XBWT of the resulting tree.  We note that, although assembly-free indexing is a more general problem, indexing assembled reads is still of practical interest~\cite{dolle2017using}.  Many readsets have coverage of 30x or even 50x, which makes them extremely large but should also make run-length compression practical on the XBWTs.
+If we want to index readsets from several individuals, we can simply graft the reads onto the appropriate assembled genomes and compute the XBWT of the forest, which is also a Wheeler graph.
+
+{Theorem~\ref{thm:XBWT}, provides an extremely good estimate of the number of runs of the XBWT, but it holds under the unrealistic assumption that the reads have no errors. However, we can take advantage of the fact that sequencing by synthesis has an asymmetric error profile: errors are much more likely at the end of a read than at the beginning. The following result shows that errors at the end of the reads have a limited impact to the overall number of runs in the XBWT.}
+
+\begin{theorem}\label{thm:XBWTerr}
+{In the hypothesis of Theorem~\ref{thm:XBWT} suppose that the sampled substrings may differ from the reference string and that the average distance from {\em first} difference (insertion, deletion, or substitution) to the {\em end} of the substring is $\delta$. Then, with respect to Theorem~\ref{thm:XBWT} the XBWT of the tree will have at most $2\delta$ additional runs per substring.}
+\end{theorem}
+
+\begin{proof}
+{Consider a single substring of length $\ell$ in which the distance between the first difference and the end of the substring is $d$ (we assume $d=0$ if there are no differences). Reasoning as in the proof of Theorem~\ref{thm:XBWT}, we see that the first $\ell-d$ symbols of the substring will end up in the same run as the corresponding symbol of the reference string (the one at the same depth in the tree). Each of the other $d$ symbols will, in the worst case, end in the middle of a run of a different symbol thus creating two additional runs. Summing this additional runs over all substrings we get a total number of additional runs upper bounded by $2\delta$ runs per substring.}
+\end{proof}
+
+To guarantee that most of the errors are at the end of the reads, we propose to build two trees: one for the assembled genome and one for its reverse complement. Having two trees means we do not have to reverse and complement half the reads before grafting them onto a single tree: the reversal of the string would be problematic in view of Theorem~\ref{thm:XBWTerr} since it would move an error from the end of the read to its front. We can build two trees with a small additional cost since the alignment algorithm will tell us whether each read aligns to the reference or to its reverse complement.
+
+Assuming our scheme guarantees an improvement in compression we want to be sure the resulting index is also efficient. Prezza~\cite{prezza2021locating} recently showed how to generalize Gagie, Navarro and Prezza's~\cite{gagie2020fully} results about fast locating from run-length compressed BWTs to run-length compressed XBWTs, at the cost of storing the trees' shapes, which takes a linear number of bits.  For trees with far more internal vertices than leaves, however, it is relatively easy to support fast locating in small space, as a corollary of the following theorem.
+
+\begin{theorem}
+\label{thm:locating}
+Let $G$ be a Wheeler graph and $r$ be the number of runs in a Burrows-Wheeler Transform of $G$, and suppose $G$ can be decomposed into $\upsilon$ edge-disjoint directed paths whose internal vertices each have in- and out-degree exactly 1.  We can store $G$ in $O (r + \upsilon)$ space such that later, given a pattern $P$, in $O (|P| \log \log |G|)$ time we can count the vertices of $G$ reachable by directed paths labelled $P$, and then report those vertices in $O (\log \log |G|)$ time per vertex.
+\end{theorem}
+
+\begin{corollary}
+\label{cor:locating}
+Let $T$ be a labelled tree on $n$ vertices obtained by grafting reads onto their assembled genome as described.  Let $r$ be the number of runs in the XBWT and let $t$ be the number of reads.  We can store $T$ in $O (r + t)$ words of space such that later, given a pattern $P$, in $O ((|P| + k) \log \log n)$ time we can report all the $k$ vertices reachable by paths labelled~$P$.
+\end{corollary}
+
+We sketch a proof of Theorem~\ref{thm:locating} in~\ref{app:locating}, although we omit the details because, at least when dealing with short reads, it may be more practical just to descend until we reach a branching node (in which case the pattern is in the assembled genome, not in a read) or a leaf. We have not yet considered carefully whether Nishimoto and Tabei's~\cite{nishimoto2020faster} faster locating can be applied to improve Theorem~\ref{thm:locating} or Corollary~\ref{cor:locating}.
+
+Before we concentrate on optimizations we should consider two basic questions: are our XBWTs for readsets significantly smaller than their EBWTs in practice and, if so, how can we build them efficiently? Theorem~\ref{thm:XBWTerr} offers some guarantees of compression, but to test how our idea works in practice in Section~\ref{xbwt:sec:practice} we build the XBWT and EBWT for a real, high-coverage readset and see how the numbers of runs in them compare. In Section~\ref{xbwt:sec:pfp} instead we face the problem of the efficient construction of XBWTs for large datasets.  

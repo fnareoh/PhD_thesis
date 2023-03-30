@@ -1,0 +1,118 @@
+\section{Concepts} \label{xbwt:sec:concepts}
+
+{For a better understanding of the problem context, we give a succinct description of the second generation sequencing technique.} Most publicly available readsets are from Illumina sequencers~\cite{kodama2012sequence} which rely on sequencing by synthesis.  For this process, millions or billions of single-stranded snippets of DNA called templates are deposited onto a slide and amplified into clusters of clones.  In each sequencing cycle we learn one base of each template: we add DNA polymerase and specially terminated bases; the polymerase attaches a terminated base to each strand, complementary to the next base in the strand; we shine a light on the slide and the terminated bases glow various colours; we take a photo and note the colour of each cluster; and finally, we treat the slide to remove the terminators.  Sometimes, however, one of the added bases is not correctly terminated, so the polymerase attaches first it and then another base to a strand in some cluster; that strand is then out of step with the rest of the cluster, and the cluster will have a mix of colours in the photos for subsequent sequencing cycles.  As we go through more and more sequencing cycles, more strands tend to fall out of step, resulting in less reliable results.  (For futher discussion we refer the reader to, e.g., Langmead's lecture on this topic~\cite{LangmeadVideo}.)  This tendency means sequencing by synthesis has an asymmetric error profile, with errors more likely towards the ends of the reads.  It follows that sequencing errors tend to be near the end of the reads: our index is designed to take advantage of this feature (see Theorem~\ref{thm:XBWTerr}).
+
+
+
+\subsection{BWT and FM-index}
+\label{subsec:BWT}
+
+The Burrows-Wheeler Transform (BWT)~\cite{burrows1994block} of a string $S$ is a permutation of the characters in $S$ into the lexicographic order of the suffixes that immediately follow them, considering $S$ to be cyclic.  For example, as shown on the left in Figure~\ref{fig:dollars}, the BWT of {\tt GATTAGATACAT\$} is {\tt TTTCGGAA\$AATA}, assuming {\tt \$} is a special end-of-string symbol lexicographically smaller than all other characters.  Because the BWT groups together characters that precede similar suffixes, it tends to convert global repetitiveness into local homogeneity: e.g., for any string $\alpha$, the BWT of $\alpha^t$ consists of $|\alpha|$ unary substrings of length $t$ each; even the BWT in our example has length 13 but consists of only 8 maximal unary substrings (called runs).  This property led Burrows and Wheeler to propose the BWT as a pre-processing step for data compression and Seward~\cite{seward1996bzip2} used it as the basis for the popular {\tt bzip2} compression program.
+
+The BWT is also the basis for the FM-index~\cite{ferragina2005indexing}, one of the first and most popular compressed indexes, which is essentially a rank data structure over the BWT combined with a suffix-array sample.  The FM-index is an important data structure in combinatorial pattern matching and bioinformatics, and is itself the basis for popular tools such as Bowtie~\cite{langmead2009ultrafast,langmead2012fast} and BWA~\cite{li2009fast} that align DNA reads to reference genomes.  We refer the reader to Navarro's~\cite{navarro2016compact} and M\"akinen et al.'s~\cite{makinen2015genome} textbooks for detailed discussions of how FM-indexes are implemented and used for read alignment.
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}{c@{\hspace{20ex}}c}
+\begin{tabular}{rc}
+   & $F$ \hspace{11ex} $L$\\
+\hline
+ 0 & \tt \$GATTAGATACAT\\
+ 1 & \tt ACAT\$GATTAGAT\\
+ 2 & \tt AGATACAT\$GATT\\
+ 3 & \tt AT\$GATTAGATAC\\
+ 4 & \tt ATACAT\$GATTAG\\
+ 5 & \tt ATTAGATACAT\$G\\
+ 6 & \tt CAT\$GATTAGATA\\
+ 7 & \tt GATACAT\$GATTA\\
+ 8 & \tt GATTAGATACAT\$\\
+ 9 & \tt T\$GATTAGATACA\\
+10 & \tt TACAT\$GATTAGA\\
+11 & \tt TAGATACAT\$GAT\\
+12 & \tt TTAGATACAT\$GA
+\end{tabular} &
+\begin{tabular}{rl@{\hspace{6ex}}rl}
+   & $F$ \hspace{3.8ex} $L$ && $F$ \hspace{3.8ex} $L$\\
+\hline
+ 0 & \tt \$ATACAT   & 16 & \tt ATTA\$\ G\\
+ 1 & \tt \$GATA\ C  & 17 & \tt C\$GAT\ A\\
+ 2 & \tt \$GATT\ A  & 18 & \tt CAT\$ATA\\
+ 3 & \tt \$TAGATA   & 19 & \tt GA\$TT\ A\\
+ 4 & \tt \$TTAG\ A  & 20 & \tt GATA\$TA\\
+ 5 & \tt A\$GAT\ T  & 21 & \tt GATAC\ \$\\
+ 6 & \tt A\$TAGAT   & 22 & \tt GATTA\ \$\\
+ 7 & \tt A\$TTA\ G  & 23 & \tt T\$ATACA\\
+ 8 & \tt AC\$GA\ T  & 24 & \tt TA\$GA\ T\\
+ 9 & \tt ACAT\$AT   & 25 & \tt TA\$TAGA\\
+10 & \tt AGA\$T\ T  & 26 & \tt TAC\$G\ A\\
+11 & \tt AGATA\$T   & 27 & \tt TACAT\$A\\
+12 & \tt AT\$ATAC   & 28 & \tt TAGA\$\ T\\
+13 & \tt ATA\$TAG   & 29 & \tt TAGATA\$\\
+14 & \tt ATAC\$\ G  & 30 & \tt TTA\$G\ A\\
+15 & \tt ATACAT\$   & 31 & \tt TTAGA\ \$
+\end{tabular}
+\end{tabular}
+\caption{The matrices whose rows are the lexicographically sorted rotations of {\tt GATTAGATACAT\$} {\bf (left)} and of {\tt GATTA\$}, {\tt TTAGA\$}, {\tt TAGATA\$}, {\tt GATAC\$} and {\tt ATACAT\$} {\bf (right)}.  The BWT and EBWT are {\tt TTTCGGAA\$AATA} and {\tt TCAAATTGTTTTCGG\$GAAAA\$\$ATAAAT\$A\$} with 8 and 19 runs, respectively.}
+\label{fig:dollars}
+\end{center}
+\end{figure}
+
+\subsection{EBWT}
+\label{subsec:EBWT}
+
+Although alignment against one or more reference genomes remains a key task in bioinformatics, there is growing interest in compressed indexing of sets of reads~\cite{dolle2017using,kayegenome}.  The FM-index plays a central role here too: Mantaci et al.~\cite{mantaci2007extension} generalized the BWT to the Extended BWT (EBWT), which applies to collections of strings, and then Cox et al.~\cite{bauer2013lightweight,cox2012large,janin2014beetl} used an FM-index built on the EBWT in their index BEETL for readsets.  The same construction was also used in subsequent indexes for readsets, such as RopeBWT~\cite{ropebwt2} and Spring~\cite{spring}.
+
+The EBWT of a collection of strings is a permutation of the characters in those strings into the lexicographic order of the suffixes that immediately follow them, considering each string to be cyclic.  For example, as shown on the right in Figure~\ref{fig:dollars}, the EBWT of {\tt GATTA\$}, {\tt TTAGA\$}, {\tt TAGATA\$}, {\tt GATAC\$} and {\tt ATACAT\$} is {\tt TCAAATTGTTTTCGG\$GAAAA\$\$ATAAAT\$A\$}.  When we see the BWT and EBWT as permutations of characters, the BWT of a single string has a single cycle, whereas the EBWT of a collection of strings has a cycle for each string.  This means it is easier to build the EBWT and update it when a string is added or deleted, than to build and update the BWT of the concatenation of the collection with the strings separated by copies of a special character.  We refer the reader to Egidi et al.'s~\cite{egidi2019external,tcs/EgidiM20} and D\'iaz-Dom\'inguez and Navarro's~\cite{DNdcc21.3} recent papers for descriptions of efficient construction and updating algorithms.
+
+Despite its benefits, the EBWT sometimes does not take full advantage of its input's compressibility.  In our example, as Figure~\ref{fig:dollars} shows, even though all the strings in the collection are substrings of {\tt GATTAGATACAT\$} with copies of {\tt \$} appended to them, their EBWT has more than twice as many runs as its BWT.  As a heuristic for reducing the number of runs, and thus reducing BEETL's space usage, Cox et al.\ suggested considering the lexicographic order of the copies of {\tt \$} to be the strings' co-lexicographic order.  This does not help in cases such as our example, however, for which the EBWT still has 19 runs even with that ordering.  Bentley et al.~\cite{bentley2020complexity} recently gave a linear-time algorithm to find the ordering of the copies of {\tt \$} that minimizes the number of runs, but it has not been implemented and it is unclear whether it is practical for large readsets.
+
+Another way to potentially reduce the number of runs is to remove the copies of {\tt \$} entirely, and store an auxiliary ternary vector marking which characters in the EBWT are the first and last characters in the strings.  If there are $t$ strings in the collection with total length $n$, then storing this vector takes $O (t \log (n / t) + t)$ bits (even if some of the strings are empty or consist of only one character).  As shown in Figure~\ref{fig:dollarless}, the EBWT becomes {\tt TTTTTTGTCGGGAACAAAAAATTAAAA}, with only 10 runs. The idea of replacing {\tt \$}'s with an auxiliary vector is relatively new since it originates from seeing the EBWT as a special case of Wheeler graphs~\cite{gagie2017wheeler} which are described in the next section. 
+
+\begin{figure}[t]
+\begin{center}
+\begin{tabular}{rcl@{\hspace{6ex}}rcl}
+&& $F$ \hspace{2.7ex} $L$ &&& $F$ \hspace{2.7ex} $L$\\
+\hline
+ 0 & 0 & \tt ACATAT  & 14 & + & \tt GATA\ C\\
+ 1 & 0 & \tt ACGA\ T & 15 & 0 & \tt GATATA\\
+ 2 & 0 & \tt AGATAT  & 16 & 0 & \tt GATT\ A\\
+ 3 & $-$& \tt AGAT\ T &  17 & + & \tt GATT\ A\\
+ 4 & 0 & \tt AGAT\ T & 18 & 0 & \tt TACATA\\
+ 5 & + & \tt ATACAT  & 19 & 0 & \tt TACG\ A\\
+ 6 & 0 & \tt ATAC\ G & 20 & + & \tt TAGATA\\
+ 7 &$-$& \tt ATAGAT  & 21 & 0 & \tt TAGA\ T\\
+ 8 & 0 & \tt ATATAC  & 22 & 0 & \tt TAGA\ T\\
+ 9 & 0 & \tt ATATAG  & 23 &$-$& \tt TATACA\\
+10 & 0 & \tt ATTA\ G & 24 & 0 & \tt TATAGA\\
+11 &$-$& \tt ATTA\ G & 25 & 0 & \tt TTAG\ A\\
+12 & 0 & \tt CATATA  & 26 & + & \tt TTAG\ A\\
+13 &$-$& \tt CGAT\ A &    &\\
+\end{tabular}
+\caption{The matrix whose rows are the lexicographically sorted rotations of {\tt GATTA}, {\tt TTAGA}, {\tt TAGATA}, {\tt GATAC} and {\tt ATACAT}.  The EBWT is {\tt TTTTTTGTCGGGAACAAAAAATTAAAA} with 10 runs.}
+\label{fig:dollarless}
+\end{center}
+\end{figure}
+
+
+\subsection{Wheeler Graphs and XBWT}
+\label{subsec:WG}
+
+Wheeler graphs were introduced by Gagie, Manzini and Sir\'en~\cite{gagie2017wheeler} as a unifying framework for several extensions of the BWT, including the EBWT, Ferragina et al.'s~\cite{ferragina2009compressing} eXtended BWT (XBWT) for labelled trees, Bowe, et al's.~\cite{bowe2012succinct} index (BOSS) for de Bruijn graphs, and Sir\'en et al.'s~\cite{siren2014indexing} Generalized Compressed Suffix Array (GCSA) for variation graphs.  A directed edge-labelled graph is a Wheeler graph if there exists a total order on the vertices such that
+\begin{itemize}
+\item vertices with in-degree 0 are earliest in the order;
+\item if $(u, v)$ is labelled $a$ and $(u', v')$ is labelled $b$ with $a \prec b$, then $v < v'$;
+\item if $(u, v)$ and $(u', v')$ are both labelled $a$ and $u < u'$ then $v \leq v'$.
+\end{itemize}
+Figure~\ref{fig:XBWT} shows an example of a Wheeler graph with a valid order on the vertices.  {The ordering is obtained by lexicographically sorting the strings spelling the labels in the upward path from each vertex to the root where the ties are broken deterministically (following an arbitrary order on the branches). For example, vertex 0 has upward path $\varepsilon$, vertex 3 has upward path {\tt AG}, vertex 30 has upward path {\tt TAG} and so on.} Notice that for directed acyclic graphs such as trees, such order on the vertices can be computed quickly with an adaptation of the doubling algorithm~\cite{doubling_algorithm}.
+
+{Once we have a valid order, the standard representation of a Wheeler graph is defined considering the vertices in that order and listing the labels on the outgoing edges of each vertex. In addition, for each vertex we represent its out-degree and in-degree in unary thus obtaining two additional binary arrays. For example, for the graph in Figure~\ref{fig:XBWT} the first five vertices have outgoing edges labelled \texttt{GG T T T TT}, so the label array starts with {\tt GGTTTTT}$\cdots$ and the out-degree bit-array starts with {\tt 001010101001}$\cdots$. This simple representation, combined with {\sf rank} and {\sf select} primitives, supports efficient search and navigation operations on Wheeler graphs.} We refer the reader to Prezza's~\cite{prezza2021subpath} recent survey for a discussion of Wheeler graphs and related results.
+
+\begin{figure}[t]
+\begin{center}
+\figXBWT{0.6}{Wheeler.pdf}
+\caption{A directed, edge-labelled tree whose vertices are labelled to show it is a Wheeler graph.  The XBWT is {\tt GGTTTTTTTTTCCCGGGGAAAAAAAAATTTTAAAAAAAA} with 7 runs.}
+\label{fig:XBWT}
+\end{center}
+\end{figure}
+
+Note that the graph in Figure~\ref{fig:XBWT} is a labelled tree: indeed its Wheeler Graph representation is equivalent to the output of the XBWT~\cite{ferragina2009compressing} applied to the same tree (details in the full paper). For clarity of presentation in the following we will still refer to the EBWT and XBWT even if they are both special cases of Wheeler graphs. 
