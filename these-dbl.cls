@@ -165,7 +165,8 @@
   % Exemples de styles: alphabetic, ieee, nature, numeric, verbose-trad1 (en utilisant \footcite{}).
   % https://www.overleaf.com/learn/latex/Biblatex_bibliography_styles
   style=numeric-comp,
-  refsection=chapter,
+  refsegment=chapter,
+  defernumbers=true,
   maxcitenames=99,
   ]{biblatex}
   
