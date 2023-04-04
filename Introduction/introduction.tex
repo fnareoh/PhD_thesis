@@ -2,10 +2,13 @@
 \addcontentsline{toc}{chapter}{Introduction}
 \chaptermark{Introduction}
 
-General string vocabulary.
-
 \section{Problematic}
-General intro on exact pattern matching in strings and its application
+
+When answering the classical question "What is your PhD about?" to family and friends, I always start form the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the application of the exact pattern matching problem. If I am feeling ambitious in my explanations I will try to give the intuition of how the naive $\Oh(nm)$ algorithm works by having them picture a young child, aligning the word against every position of the text and comparing character by character because he has not learned how to read yet. To give a glimpse at more complex solution I proceed to comment on how, depending on the word, the child may try to skip portions of the text.
+
+However, they also immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
+
+
 \begin{itemize}
 \item The need for more versatile queries
 \item The need for faster and space efficient algorithm
@@ -24,7 +27,7 @@ General intro on exact pattern matching in strings and its application
 \subsection{Approaches to handle massive string data}
 
 \begin{itemize}
-\item Datastructures and Indexing
+\item Data structures and Indexing
 \item Streaming algorithm
 \item Compressed input
 \item Approximation algorithms

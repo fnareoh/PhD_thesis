@@ -1,7 +1,7 @@
 \chapter*{Abstract}
 
 % Overall context on strings
-The simplicity of strings puts their processing at the heart of many applications in bioinformatics, information retrieval, or cybersecurity. Exact pattern matching has been extensively studied \cite{} as the most natural problem, however, more general queries are also needed for many applications\cite{}. Additionally, in all of those fields, the quantity of data to process has been increasing at a staggering rate~\cite{muir2016real} and exact queries are sometimes too time or space expensive. Approximate queries are often considered in order to speed up the computations.
+The simplicity of strings puts their processing at the heart of many applications in bioinformatics, information retrieval, and cybersecurity. Exact pattern matching has been extensively studied~\cite{charras2004handbook} as the most natural problem, however, more general queries are also needed for many applications. Additionally, in all of those fields, the quantity of data to process has been increasing at a staggering rate~\cite{muir2016real} and exact queries can be too time and space expensive.
 
 % First part 
 In the first part of this Ph.D. thesis, we study complex queries such as regular expressions, gapped consecutive matching, and square detection. 
@@ -10,10 +10,11 @@ For regular expression, we provide a space-efficient algorithm in the streaming 
 % Gapped
 Gapped consecutive matching is a simpler type of query where given two patterns $P_1$, $P_2$ and a range $[a,b]$, one must report all consecutive occurrences of $P_1$ followed by $P_2$ separated by a distance in $[a,b]$. We study this problem in various models: streaming, pattern matching on a compressed text, and compressed indexing.
 % Squares
-We then study squares for their inherent meaning \cite{} as well as the key role periodicity has in string algorithms and data structures. More precisely, we investigate square detection and reporting for general alphabets (the most abstract setting where squares can be defined). We provide an optimal algorithm and therefore answer an open question asked by Main and Lorentz in 1984 \cite{}.
+We then study squares for their inherent meaning~\cite{Kolpakov2003} as well as the key role periodicity has in string algorithms and data structures. More precisely, we investigate square detection and reporting for general alphabets (the most abstract setting where squares can be defined). We provide an optimal algorithm and therefore answer an open question asked in 1984 by Main and Lorentz~\cite{Main1984}.
 
 % Second part
-In the second part of this work, we focus on approximate matching with applications in bioinformatics.
+A possible way to deal with huge amount of data is to allow for some approximation in the queries in order to speed up the computations.
+We take this approach in the second part of this thesis, dedicated to approximate matching with applications in bioinformatics.
 % LCS and DTW
 Motivated by the lower bounds on the computation of several similarity measures we provide efficient parametrized algorithms for two other similarity measures: the length of the Longest Common Substring with approximately k mismatches (LCS approx k) and the Dynamic Time warping distance (DTW).
 % XBWT
