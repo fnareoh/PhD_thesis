@@ -35,6 +35,9 @@
 
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents %sommaire %table of content
+\contextbox{Structure of the thesis}{
+We start by a general introduction of the context and contributions of this manuscript. Then present the preliminaries necessary to understand the following chapters. After that, each chapter is an independent contribution corresponding to a publication.
+}
 
 
 \todo[inline]{
@@ -46,9 +49,7 @@ Decide how to organize abstract-intro-prelim-conclusion biblio
 %\clearemptydoublepage
 \input{./Introduction/introduction}
 
-\input{./Preliminaries/prelim}
-
-\cite{DBLP:journals/algorithmica/GolanKP19}
+\input{./Introduction/prelim}
 
 \printbibliography
 
@@ -57,7 +58,7 @@ Decide how to organize abstract-intro-prelim-conclusion biblio
 
 %\input{./Part_One/part_one}
 
-%\input{./Part_Two/part_two}
+\input{./Part_Two/part_two}
 
 
 %\clearemptydoublepage

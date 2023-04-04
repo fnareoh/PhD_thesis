@@ -1,17 +1,32 @@
-\chapter*{Introduction}
+\chapter*{Introduction}\label{chap:intro}
 \addcontentsline{toc}{chapter}{Introduction}
 \chaptermark{Introduction}
 
-\section{Problematic}
+When answering the classic question "What is your PhD about?" to family and friends, I always start form the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern matching problem. If I am feeling ambitious in my explanations I will try to give the intuition of the naive $\Oh(nm)$ algorithm by having them picture a young child, aligning the word against every position of the text and comparing character by character because he has yet to learned how to read. To give a glimpse at more complex solution, I proceed to comment on how, depending on the word, the child may try to skip portions of the text.
 
-When answering the classical question "What is your PhD about?" to family and friends, I always start form the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the application of the exact pattern matching problem. If I am feeling ambitious in my explanations I will try to give the intuition of how the naive $\Oh(nm)$ algorithm works by having them picture a young child, aligning the word against every position of the text and comparing character by character because he has not learned how to read yet. To give a glimpse at more complex solution I proceed to comment on how, depending on the word, the child may try to skip portions of the text.
+At the same time, they immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
-However, they also immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
+However, the need for text processing goes far beyond exact pattern matching.
+% Similarity measures
+Bioinformatics\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer} need relevant and efficient similarity measures such as the Levenshtein distance~\cite{levenshtein1966binary} or Dynamic Time warping distance~\cite{sakoe1978dynamic}. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at distance at most a threshold $\tau$.
+We contribute to this line of research in Chapter~\ref{chap:LCS} and~\ref{chap:DTW}.
+% Don't care
+As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced "don't care" matching where a don't care symbol denoted * can occur in both the pattern and the text which match to any other character of the alphabet (but only one).
 
 
 \begin{itemize}
-\item The need for more versatile queries
-\item The need for faster and space efficient algorithm
+    \item abelian (also called jumbled)
+    \item parametrized matching
+    \item op matching
+\end{itemize}
+
+Many fields like internet traffic analysis~\cite{4221791,4579527}, databases and data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, protein search~\cite{10.1145/369133.369220} chose the regular expression formalism introduced by Kleene in 1951~\cite{RM-704}.
+
+\todo[inline]{Have a figure that illustrate the different model of matching}
+
+
+\begin{itemize}
+\item The need for faster and space efficient algorithm to scale up to the amount of data
 \end{itemize}
 
 \section{State of the art}
