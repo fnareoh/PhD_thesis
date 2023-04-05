@@ -6,18 +6,25 @@ When answering the classic question "What is your PhD about?" to family and frie
 
 At the same time, they immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
+
 However, the need for text processing goes far beyond exact pattern matching.
 % Similarity measures
 Bioinformatics\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer} need relevant and efficient similarity measures such as the Levenshtein distance~\cite{levenshtein1966binary} or Dynamic Time warping distance~\cite{sakoe1978dynamic}. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at distance at most a threshold $\tau$.
 We contribute to this line of research in Chapter~\ref{chap:LCS} and~\ref{chap:DTW}.
 % Don't care
-As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced "don't care" matching where a don't care symbol denoted * can occur in both the pattern and the text which match to any other character of the alphabet (but only one).
+As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced "don't care" matching (sometimes referred to as gapped matching) where a don't care symbol denoted * can occur in both the pattern and the text which match to any other character of the alphabet (but only one). 
+% (Elastic) Degenerate strings
+
+%parametrized matching
+Baker~\cite{baker1993theory} introduced the model of parametrized strings or "p-string", where two string match if they can be transformed into the other by applying a one-to-tone function that renames the parameter, in order to detect code duplication.
+
+% Abelian/jumbled/many other name 
+The automatic discovery of clusters of genes in genomes (where they can occur in a different order but still be linked to the same function) motivated~\cite{eres2004permutation} the model of Abelian matching (also known as jumbled, permutation, compomers matching and many other names). In this model a string (or a substring) is entirely identified by the letter it contains (with multiplicities), disregarding their order. The thesis~\cite{ejaz2010abelian} of Tahir Ejaz was dedicated to this model.
 
 
 \begin{itemize}
-    \item abelian (also called jumbled)
-    \item parametrized matching
     \item op matching
+    \item Elastic degenerate strings 
 \end{itemize}
 
 Many fields like internet traffic analysis~\cite{4221791,4579527}, databases and data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, protein search~\cite{10.1145/369133.369220} chose the regular expression formalism introduced by Kleene in 1951~\cite{RM-704}.
