@@ -4,32 +4,39 @@
 
 When answering the classic question "What is your PhD about?" to family and friends, I always start form the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern matching problem. If I am feeling ambitious in my explanations I will try to give the intuition of the naive $\Oh(nm)$ algorithm by having them picture a young child, aligning the word against every position of the text and comparing character by character because he has yet to learned how to read. To give a glimpse at more complex solution, I proceed to comment on how, depending on the word, the child may try to skip portions of the text.
 
-At the same time, they immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
+At the same time, they immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
 
-However, the need for text processing goes far beyond exact pattern matching.
+However, the need for text processing goes far beyond exact pattern matching. Here after I give an overview of various text processing problems and models of matching along with their motivations.
+% Regular expression
+One of the oldest and most classic model for more complex queries are regular expression introduced by Kleene in 1951~\cite{RM-704}.
+% Briefly explain the formalism
+This formalism compactly describes recursively a set of strings starting from three operators, concatenation union and Kleene star.
+% Application and Limitations
+It has deep connection with automatons~\cite{Thompson_automaton} and its versatile nature makes it a key tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases and data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, protein search~\cite{10.1145/369133.369220}. Chapter~\ref{chap:regexp} provides a new algorithm for Regular expression and pattern matching.
+
 % Similarity measures
-Bioinformatics\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer} need relevant and efficient similarity measures such as the Levenshtein distance~\cite{levenshtein1966binary} or Dynamic Time warping distance~\cite{sakoe1978dynamic}. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at distance at most a threshold $\tau$.
+Although regular expression is a powerful framework, Bioinformatics\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer} also need relevant and efficient similarity measures such as the Levenshtein distance~\cite{levenshtein1966binary} or Dynamic Time warping distance~\cite{sakoe1978dynamic}. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at distance at most a threshold $\tau$.
 We contribute to this line of research in Chapter~\ref{chap:LCS} and~\ref{chap:DTW}.
 % Don't care
-As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced "don't care" matching (sometimes referred to as gapped matching) where a don't care symbol denoted * can occur in both the pattern and the text which match to any other character of the alphabet (but only one). 
+As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced "don't care" matching where a don't care symbol denoted * can occur in both the pattern and the text which match to any other character of the alphabet (but only one).
+% Gapped matching
+This "don't care" matching model is sometimes referred to as "gapped" matching, however it is not to be confused with gapped consecutive matching~\cite{bille2022gapped} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all occurrences of $P_1$ and $P_2$ with the distance in $[a,b]$ and no occurrences in between. This model also has connections to spaced seeds~\cite{burkhardt2003better}, and we study it in Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
+
 % (Elastic) Degenerate strings
-
-%parametrized matching
-Baker~\cite{baker1993theory} introduced the model of parametrized strings or "p-string", where two string match if they can be transformed into the other by applying a one-to-tone function that renames the parameter, in order to detect code duplication.
-
+The modelization of flexible and diverse DNA sequences (such as the IUPAC encoding~\cite{comm1970iupac}) lead to the model of degenerate string~\cite{abrahamson1987generalized} and more recently elastic degenerate strings~\cite{iliopoulos2021efficient}.
 % Abelian/jumbled/many other name 
 The automatic discovery of clusters of genes in genomes (where they can occur in a different order but still be linked to the same function) motivated~\cite{eres2004permutation} the model of Abelian matching (also known as jumbled, permutation, compomers matching and many other names). In this model a string (or a substring) is entirely identified by the letter it contains (with multiplicities), disregarding their order. The thesis~\cite{ejaz2010abelian} of Tahir Ejaz was dedicated to this model.
 
 
-\begin{itemize}
-    \item op matching
-    \item Elastic degenerate strings 
-\end{itemize}
+% Order preserving
+The order preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat opposite approach and considers that two strings match if they have the same relative shape: $\forall i,j \in [0,n-1], X[i] < X[j] \leftrightarrow Y[i] < Y[j]$. This matching model naturally captures the trend detection in stock market and music melody matching problems.
+%
+% Parametrized matching
+Another application driven model is the one of parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two string match if they can be transformed into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.
 
-Many fields like internet traffic analysis~\cite{4221791,4579527}, databases and data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, protein search~\cite{10.1145/369133.369220} chose the regular expression formalism introduced by Kleene in 1951~\cite{RM-704}.
 
-\todo[inline]{Have a figure that illustrate the different model of matching}
+\todo[inline]{Have a figure that illustrate the different model of matching ?}
 
 
 \begin{itemize}
