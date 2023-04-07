@@ -166,7 +166,7 @@
   % https://www.overleaf.com/learn/latex/Biblatex_bibliography_styles
   style=numeric-comp,
   refsegment=chapter,
-  defernumbers=true,
+  %defernumbers=true,
   maxcitenames=99,
   ]{biblatex}
   

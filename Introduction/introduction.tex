@@ -6,8 +6,9 @@ When answering the classic question "What is your PhD about?" to family and frie
 
 At the same time, they immediately know searching in text quickly has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since, this has become one of the classic text book algorithm and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
+\input{Introduction/fig-matching-models.tex}
 
-However, the need for text processing goes far beyond exact pattern matching. Here after I give an overview of various text processing problems and models of matching along with their motivations.
+However, the need for text processing goes far beyond exact pattern matching. Here after I give an overview of various text processing problems and models of matching along with their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
 % Regular expression
 One of the oldest and most classic model for more complex queries are regular expression introduced by Kleene in 1951~\cite{RM-704}.
 % Briefly explain the formalism
@@ -35,24 +36,20 @@ The order preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat
 % Parametrized matching
 Another application driven model is the one of parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two string match if they can be transformed into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.
 
-\input{Introduction/fig-matching-models.tex}
 
+I hope that this incomplete list matching model on string can illustrate their flexibility and the versatility their applications. However, a major issue in many of those applications is scalability. In particular in Bioinformatics, due to the cost of next generation sequencing (NGS) dropping faster than it would be expected by Moore's law~\cite{muir2016real}, efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}. A good indicator of this phenomenon is the size of the Sequence Read Archive shown in Figure~\ref{fig:intro:sra} since this database tries to capture the major part of the sequencing data produced.
 
-\begin{itemize}
-\item The need for faster and space efficient algorithm to scale up to the amount of data
-\end{itemize}
+\begin{figure}
+    \begin{center}
+        \includegraphics[width=0.8\textwidth]{Introduction/sra_database_growth.png}
+        \caption{Evolution of the number of DNA bases in the Sequence Read Archive (SRA), captured from \href{https://www.ncbi.nlm.nih.gov/sra/docs/sragrowth/}{[the dynamic version on the SRA website]}.}
+        \label{fig:intro:sra}
+    \end{center}
+\end{figure}
 
-\section{State of the art}
+\todo[inline]{Try to give other example of scalibility issues in other domains}
 
-\subsection{Diversity of queries}
-\begin{itemize}
-\item Regular expression
-\item Simpler alternatives [Biblio to do !]
-\item Gapped consecutive matching
-\item Periodicity
-\end{itemize}
-
-\subsection{Approaches to handle massive string data}
+\subsection*{Approaches to handle massive string data}
 
 \begin{itemize}
 \item Data structures and Indexing
@@ -61,6 +58,11 @@ Another application driven model is the one of parametrized strings or "p-string
 \item Approximation algorithms
 \end{itemize}
 
-\section{Contributions}
+\begin{itemize}
+    \item Detail how we can combine the need for complex queries and scalability
+    \item Periodicity
+\end{itemize}
+
+\section*{Contributions}
 
 Extend the abstract description of how the different project relate to each other.
