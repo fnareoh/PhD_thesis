@@ -2,9 +2,11 @@
 \addcontentsline{toc}{chapter}{Introduction}
 \chaptermark{Introduction}
 
-When answering the classic question "What is your Ph.D. about?" to family and friends, I always start with the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern-matching problem. If I feel especially ambitious in my explanations, I will attempt to give the intuition of the naive $\Oh(nm)$ algorithm. Picture a young child, aligning the word against every position of the text and comparing character by character because he has yet to learn how to read. To give a glimpse at a more complex solution, I comment on how, depending on the word, the child may try to skip portions of the text.
+When answering the classic question "What is your Ph.D. about?" to family and friends, I always start with the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern-matching problem. If I feel especially ambitious in my explanations, I will attempt to give the intuition of the naive $\Oh(nm)$ algorithm. Picture a young child, aligning the word against every position of the text and comparing character by character because he has yet to learn how to read. To give a glimpse at a more complex solution, I comment on how, depending on the word, the child may try to skip portions of the text. But even my grandparents immediately know that searching in a text has been possible for decades and that it cannot be my real research subject.
 
-At the same time, even my grandparents immediately know that searching in a text has been possible for decades and that it cannot be my real research subject. Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
+\section{Context} 
+
+Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
 \input{Introduction/fig-matching-models.tex}
 
@@ -70,6 +72,6 @@ efficient algorithms and data structures that can leverage the redundant nature 
     \item Periodicity
 \end{itemize}
 
-\section*{Contributions}
+\section{Contributions}
 
 Extend the abstract description of how the different project relate to each other.
