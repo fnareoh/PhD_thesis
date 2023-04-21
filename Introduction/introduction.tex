@@ -4,7 +4,8 @@
 
 When answering the classic question "What is your Ph.D. about?" to family and friends, I always start with the "Ctrl + F" function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern-matching problem. If I feel especially ambitious in my explanations, I will attempt to give the intuition of the naive $\Oh(nm)$ algorithm. Picture a young child, aligning the word against every position of the text and comparing character by character because he has yet to learn how to read. To give a glimpse at a more complex solution, I comment on how, depending on the word, the child may try to skip portions of the text. But even my grandparents immediately know that searching in a text has been possible for decades and that it cannot be my real research subject.
 
-\section{Context} 
+\section{Context}
+\subsection{The need for complex queries} 
 
 Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching.
 
@@ -36,7 +37,7 @@ The order-preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat
 % Parametrized matching
 Another application-driven model is parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.\\
 
-
+\subsection{Issues of scalability}
 % But it is not just about the specific model also about scalibility
 We detailed how specific applications can motivate particular string processing tasks, but the scalability in those applications also orient the choice of matching model.
 
@@ -56,22 +57,24 @@ efficient algorithms and data structures that can leverage the redundant nature 
     \end{center}
 \end{figure}
 
-\todo[inline]{Try to give other example of scalibility issues in other domains}
+\todo[inline]{Try to give other example of scalability issues in other domains}
 
-\subsection*{Approaches to handle massive string data}
-
+Several (overlapping) approaches can be used to cope with large amount of data:
 \begin{itemize}
-\item Data structures and Indexing
-\item Streaming algorithm
-\item Compressed input
+\item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfer can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
+\item Compressed input:  highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
+\item Data structures: there is first a processing of the input and build of the data structures in a given \emph{construction} time and space. Then the data structures can be queried on various query input. This preprocessing can generally allow for a small \emph{query} time and space of the data structure. One of the use case is to construct on a powerful server and then send the small data structure to users that can loaded it in main memory and query it repeatedly. Chapter~\ref{chap:gapped_index} and ~\ref{chap:XBWT} are examples of that.
+\item Efficient second-memory algorithms: random read from disk is very inefficient however contiguous read can be reasonably efficient, being only 100 time slower than reading from main memory~\cite{Gonzalo compact}. Note that even when working in main memory, algorithms that minimize random access to the data are preferable for cache efficiency, but not all problems are well suited to cache efficiency.
+\item Streaming algorithms
 \item Approximation algorithms
 \end{itemize}
 
-\begin{itemize}
-    \item Detail how we can combine the need for complex queries and scalability
-    \item Periodicity
-\end{itemize}
+\todo[inline]{Detail how we can combine the need for complex queries and scalability.
+Periodicity.}
 
-\section{Contributions}
+\section{Contributions}\label{intro:sec:contrib}
+
+This thesis makes theoretical and practical contributions to address both the need for efficient complex queries and scalability issues in bioinformatic applications. 
+Each contribution is presented as independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. However, this section is meant to give an overview of the main contributions of the thesis and how they relate.
 
 Extend the abstract description of how the different project relate to each other.
