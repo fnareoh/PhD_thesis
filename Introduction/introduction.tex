@@ -38,16 +38,17 @@ The order-preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat
 Another application-driven model is parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.\\
 
 \subsection{Issues of scalability}
-% But it is not just about the specific model also about scalibility
-We detailed how specific applications can motivate particular string processing tasks, but the scalability in those applications also orient the choice of matching model.
 
-\todo{Example of relevant massive dataset in other area than bioinformatics}
+%%%%%%%%%%%%%%%%%%%%%% Intro scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% But it is not just about the specific model also about scalibility
+We detailed how specific applications can motivate particular string processing tasks, but another major challenge in most applications is the scalability to large datasets.
+
+\todo[inline]{wikipedia example: 2021: 33Tb citer page wikipedia}
+\todo[inline]{Software heritage example: 1Pb citer thèse Antoine Pietri}
 
 In Bioinformatics, due the cost of next generation sequencing (NGS) has dropped faster than expected by Moore's law~\cite{muir2016real} which led to enormous volume of sequencing data. A quantifiable example of that is the size of the Sequence Read Archive shown in Figure~\ref{fig:intro:sra} since this database tries to capture the major part of the sequencing data produced.
-
-% Why would we need to query the whole archive ?
-
-Efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}
+% Maybe not the best example, why would we need to query the whole archive ?
 
 \begin{figure}
     \begin{center}
@@ -57,9 +58,13 @@ Efficient algorithms and data structures that can leverage the redundant nature 
     \end{center}
 \end{figure}
 
-\todo[inline]{Try to give other example of scalability issues in other domains}
+Efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}
 
-Several (overlapping) approaches can be used to cope with large amount of data:
+It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes of inputs. Consequently, the choice of query is oriented by the specific needs of the application and the typical scale of the input.
+%
+%%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+Several (overlapping) approaches are generally used to cope with large amounts of data:
 \begin{itemize}
 \item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfer can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
 \item Compressed input: highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
