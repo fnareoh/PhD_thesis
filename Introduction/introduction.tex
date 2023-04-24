@@ -47,7 +47,7 @@ In Bioinformatics, due the cost of next generation sequencing (NGS) has dropped 
 
 % Why would we need to query the whole archive ?
 
-efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}
+Efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}
 
 \begin{figure}
     \begin{center}
@@ -62,11 +62,11 @@ efficient algorithms and data structures that can leverage the redundant nature 
 Several (overlapping) approaches can be used to cope with large amount of data:
 \begin{itemize}
 \item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfer can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
-\item Compressed input:  highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
+\item Compressed input: highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
 \item Data structures: there is first a processing of the input and build of the data structures in a given \emph{construction} time and space. Then the data structures can be queried on various query input. This preprocessing can generally allow for a small \emph{query} time and space of the data structure. One of the use case is to construct on a powerful server and then send the small data structure to users that can loaded it in main memory and query it repeatedly. Chapter~\ref{chap:gapped_index} and ~\ref{chap:XBWT} are examples of that.
-\item Efficient second-memory algorithms: random read from disk is very inefficient however contiguous read can be reasonably efficient, being only 100 time slower than reading from main memory~\cite{Gonzalo compact}. Note that even when working in main memory, algorithms that minimize random access to the data are preferable for cache efficiency, but not all problems are well suited to cache efficiency.
-\item Streaming algorithms
-\item Approximation algorithms
+\item Efficient second-memory algorithms: It is  common knowledge that random access to disk are very inefficient, however contiguous reads are only 100 time slower than reading from main memory~\cite{navarro2016compact}. Therefore, an algorithm that uses few random reads can be executed directly on disk and scale much more easily. The main issue with this approach is that not all problems can avoid random access. We partially use this approach to limit main memory usage in chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
+\item Streaming algorithms: Here the reasoning is that the data is so large it can only be handled as a stream that must be processed on the fly without the possibility to go back. Generally the pattern and the length of the text are known in advance and can be preprocessed, then the characters arrive one by one and can only be accessed later if they have been explicitly stored. This model optimizes for both the time per character during the streaming phase and the space complexity which accounts for storing the result of the preprocessing and any space necessary to process the characters. Chapter~\ref{chap:regexp} and~\ref{chap:gapped_stream} are set in this model.
+\item Approximation algorithms: On very large dataset it is not always relevant to answer queries exactly. Allowing some approximation in the result can allow to cut-corner and circumvent lower bounds. The entire second section of this thesis is related to this approach but Chapter~\ref{chap:LCS} is perhaps most characteristic. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability ($\geq 1 - \frac{1}{n}$ for an input of size $n$).
 \end{itemize}
 
 \todo[inline]{Detail how we can combine the need for complex queries and scalability.
