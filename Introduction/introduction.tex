@@ -37,10 +37,12 @@ The order-preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat
 % Parametrized matching
 Another application-driven model is parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.\\
 
-\subsection{Issues of scalability}
+\todo[inline]{Periodicity.}
+
+\subsection{Scalability Issues}
 
 %%%%%%%%%%%%%%%%%%%%%% Intro scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+ 
 % But it is not just about the specific model also about scalibility
 We detailed how specific applications can motivate particular string processing tasks, but another major challenge in most applications is the scalability to large datasets.
 % Wikipedia
@@ -50,25 +52,24 @@ It is sometimes possible to limit the redundancy in the archive data, for exampl
 % Internet archive
 The internet archive is a non-profit which started saving web pages in 1996 and now holds the history of more than 800 billion web pages through their program: the wayback machine\footnote{https://web.archive.org/}. This archive takes up more than 70~petabytes, however, one of the limitations are the search options limited to the metadata of the websites and not content of the webpages themselves.
 
-The bioinformatics field alone contains numerous examples of scalability issues.
-\todo[inline]{Rédiger bioinfo scalibility}
-, due the cost of next generation sequencing (NGS) has dropped faster than expected by Moore's law~\cite{muir2016real} which led to enormous volume of sequencing data. A quantifiable example of that is the size of the Sequence Read Archive shown in Figure~since this database tries to capture the major part of the sequencing data produced.
-% Maybe not the best example, why would we need to query the whole archive ?
-
-\begin{figure}
-    \begin{center}
-        \caption{Figure recapping the scale of major datasets ?}
-        \label{fig:intro:scalability}
-    \end{center}
-\end{figure}
-
-Efficient algorithms and data structures that can leverage the redundant nature of DNA sequences are badly needed. We explore this specific subject in Chapter~\ref{chap:XBWT}
+%%%%%%%%%% Bioinformatics
+%Intro DNA representation
+In bioinformatics, DNA is most commonly seen as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage does not provide fast queries. At the opposite of the spectrum, a suffix tree allows efficient sequence analysis but requires 10 bytes per base~\cite{navarro2016compact}, which adds up to 30 gigabytes for a human genome containing 3.3 billion bases. A trade-off between those two extreme has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows to represent the sequence and its suffix tree using just 4 gigabytes.\todo{Find a more specific reference/example.} 
+% Reads
+However, for DNA, another classic data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. The length of those fragments and error rate vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each base is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for Illumina reads and propose a data structure specifically tailored to sequencing technique's specificities. 
+% Cheaper = more sequencing
+Additionally, drastic decrease in sequencing cost since 2008 (faster than expected by Moore's law~\cite{muir2016real}) lead higher volumes of DNA being sequenced. 
+% ENA
+So far, the European Nucleotide Archive has accumulated more than 47 petabytes\footnote{https://www.ebi.ac.uk/ena/browser/about/statistics} of read data.
+% SRA
+While the NCBI Sequence Read Archive has more than 73 petabases\footnote{https://www.ncbi.nlm.nih.gov/sra/docs/sragrowth/} of archive including 38 petabases in open access. Again, in those datasets the data is indexed by its metadata only.
+\todo[inline]{Look for more reasonable size example ? It's unclear if anybody would want to index the entire SRA}
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes of inputs. Consequently, the choice of query is oriented by the specific needs of the application and the typical scale of the input.
+It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of query is oriented by the specific needs of the application and the typical scale of the input.
 Several (overlapping) approaches are generally used to cope with large amounts of data:
 \begin{itemize}
-\item Compressed input: highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. This is possibly the most common and natural approach as the data is almost always shared in a compressed format. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
+\item Compressed input: as we mentioned several times already, highly redundant data can sometimes be compressed to a manageable size. Then the goal is to design algorithms and data structures that can directly work on the compressed data. This is possibly the most natural approach as the data is almost always shared in a compressed format. Chapter~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} take this approach by working on a grammar compressed text.
 \item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfer can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
 \item Data structures: there is first a processing of the input and build of the data structures in a given \emph{construction} time and space. Then the data structures can be queried on various query input. This preprocessing can generally allow for a small \emph{query} time and space of the data structure. One of the use case is to construct on a powerful server and then send the small data structure to users that can loaded it in main memory and query it repeatedly. Chapter~\ref{chap:gapped_index} and ~\ref{chap:XBWT} are examples of that.
 \item Efficient second-memory algorithms: It is  common knowledge that random access to disk are very inefficient, however contiguous reads are only 100 time slower than reading from main memory~\cite{navarro2016compact}. Therefore, an algorithm that uses few random reads can be executed directly on disk and scale much more easily. The main issue with this approach is that not all problems can avoid random access. We partially use this approach to limit main memory usage in chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
@@ -76,12 +77,11 @@ Several (overlapping) approaches are generally used to cope with large amounts o
 \item Approximation algorithms: On very large dataset it is not always relevant to answer queries exactly. Allowing some approximation in the result can allow to cut-corner and circumvent lower bounds. The entire second section of this thesis is related to this approach but Chapter~\ref{chap:LCS} is perhaps most characteristic. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability ($\geq 1 - \frac{1}{n}$ for an input of size $n$).
 \end{itemize}
 
-\todo[inline]{Detail how we can combine the need for complex queries and scalability.
-Periodicity.}
-
 \section{Contributions}\label{intro:sec:contrib}
 
-This thesis makes theoretical and practical contributions to address both the need for efficient complex queries and scalability issues in bioinformatic applications. 
+So far we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and with performances that can scale to the ever-growing volumes of input data.
+%
+This thesis makes theoretical and practical contributions to address both needs. 
 Each contribution is presented as independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. However, this section is meant to give an overview of the main contributions of the thesis and how they relate.
 
 Extend the abstract description of how the different project relate to each other.
