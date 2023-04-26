@@ -1,31 +1,32 @@
 % Define center type column
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
-\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}m{#1}}
+\renewcommand\tabularxcolumn[1]{m{#1}}
 
 %spacing
 \renewcommand{\arraystretch}{2}
 \begin{figure}[h]
-    \begin{tabularx}{\textwidth}{l P{4.5cm}  Y }
+    \begin{tabularx}{\textwidth}{P{3cm} P{4.5cm}  Y }
         Matching model & Pattern & Text with occurences underlined \\
         \hline
-        Error bound (for ED) & $P=$ GATTACAT & $T=$ AT\underline{GATTAACAT}ATA, $\mathrm{ED}(P,T[2..10])=1$ \\
-        Don't care & $P=$ GAT**CAT & \underline{GATTACAT}A\underline{GATOACAT}AC\\
+        Regular Expression~\cite{RM-704} & $P=$ GAT$(\mathrm{TA}\mid \mathrm{O})(\mathrm{CAT})^*$ & $T=$ \underline{GATTA}AT\underline{GATOCATCATCATCAT}A \\
+        Error bound~\cite{landau1986efficient} (for ED~\cite{levenshtein1966binary}) & $P=$ GATTACAT & $T=$ AT\underline{GATTAACAT}ATA, $\mathrm{ED}(P,T[2..10])=1$ \\
+        Don't care~\cite{fischer1974string} & $P=$ GAT**CAT & \underline{GATTACAT}A\underline{GATOACAT}AC\\
         %
-        Elastic Degenerate  & $P=$ GATTACAT &  $T=$ {\renewcommand{\arraystretch}{1} AT\underline{GAT}$\left\{
+        Gapped consecutive~\cite{bille2022gapped} & $P_1=$ GATTA $P_2=$ TAC  $a=2$, $b=6$ & $T=$ AGG\underline{GATTAC}TAC, $d=3 \in [a,b]$\\
+        %
+        Elastic Degenerate~\cite{iliopoulos2021efficient}  & $P=$ GATTACAT &  $T=$ {\renewcommand{\arraystretch}{1} AT\underline{GAT}$\left\{
             \begin{array}{l}
                 \mathrm{\underline{TA}}  \\
                 \mathrm{O}
             \end{array}\right\} \mathrm{\underline{CAT}A}$} \\
         %
-        Abelian/Jumbled & $P=$ GATTACAT & $T=$ AGAG\underline{TATGATC}AGT\\
+        Abelian/Jumbled~\cite{eres2004permutation} & $P=$ GATTACAT & $T=$ AGAG\underline{TATGATC}AGT\\
         %
-        Parametrized & $P=$ GATTACAT & $T=$ OPO\underline{POGGODOG}O, {\footnotesize A:O, C:D, G:P, T:G} \\
+        Order preserving & $P =$ 1 5 3 4 6 2 \includegraphics[width=3.5cm]{Introduction/op_P.png} & $T=$ \underline{2 7 4 5 8 3} \underline{1 20 15 16 25 6}  \includegraphics[width=5cm]{Introduction/op_T.png} \\
         %
-        Regular Expression & $P=$ GAT$(\mathrm{TA}\mid \mathrm{O})(\mathrm{CAT})^*$ & $T=$ \underline{GATTA}AT\underline{GATOCATCATCATCAT}A \\
-        Gapped consecutive & $P_1=$ GATTA $P_2=$ TAC  $a=2$, $b=6$ & $T=$ AGG\underline{GATTAC}TAC, $d=3 \in [a,b]$\\
-        Order preserving & $P = 1 5 3 4 6 2$ & $T= 2 7 4 5 8 3 1 20 15 16 25 6 $  \\
+        Parametrized~\cite{baker1993theory} & $P=$ GATTACAT & $T=$ OPO\underline{POGGODOG}O, {\footnotesize A:O, C:D, G:P, T:G} \\
     \end{tabularx}
-    \todo[inline]{For order preserving have a drawing of the shapes. Add citations for each model.}
     \caption{Example of various model of matching on strings.}
     \label{fig:intro:match_model}
 \end{figure}
