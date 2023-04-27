@@ -11,7 +11,7 @@ Indeed, exact pattern matching has been long studied, with in particular the fam
 
 \input{Introduction/fig-matching-models.tex}
 
-However, the need for text processing goes far beyond exact pattern matching. To illustrate my point, I give an overview of various text-processing problems and their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
+However, the need for text processing goes far beyond exact pattern matching. To illustrate this claim, here is an overview of various text-processing problems and their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
 % Regular expression
 One of the oldest and most classic models for more complex queries is regular expressions introduced by Kleene in 1951~\cite{RM-704}.
 % Briefly explain the formalism
@@ -35,9 +35,10 @@ In the model of Abelian matching, a string (or a substring) is entirely identifi
 The order-preserving model~\cite{kim2014order,kubica2013linear} takes a somewhat opposite approach and considers that two strings match if they have the same relative shape: $\forall i,j \in [0,n-1], X[i] < X[j] \leftrightarrow Y[i] < Y[j]$. This matching model naturally captures the trend detection in the stock market and music melody matching problems.
 %
 % Parametrized matching
-Another application-driven model is parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.\\
+Another application-driven model is parametrized strings or "p-string" introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a one-to-tone function renaming the parameters, meant to detect code duplication.
 
-\todo[inline]{Periodicity.}
+So far we focussed on matching models where we are given a pattern and text as well as conditions that define a match of the pattern in the text. But another central task in text processing is repetitions detection. By repetitions, we refer to consecutive occurrences of the same fragment. They can be repeated twice (a square), three times (a cube) or more, then represented as a run: a maximal periodic substring. They are needed as a theoretical tool to avoid needless repetitive computations, but they also naturally occur in DNA with an important role in genomic fingerprinting~\cite{Kolpakov2003}.
+The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word, in Chapter~\ref{chap:squares} we provide an optimal algorithm for square detection.\todo{add ref to preliminaries ?}
 
 \subsection{Scalability Issues}
 
@@ -62,7 +63,7 @@ Additionally, drastic decrease in sequencing cost since 2008 (faster than expect
 % ENA
 So far, the European Nucleotide Archive has accumulated more than 47 petabytes\footnote{https://www.ebi.ac.uk/ena/browser/about/statistics} of read data.
 % SRA
-While the NCBI Sequence Read Archive has more than 73 petabases\footnote{https://www.ncbi.nlm.nih.gov/sra/docs/sragrowth/} of archive including 38 petabases in open access. Again, in those datasets the data is indexed by its metadata only.
+While the NCBI Sequence Read Archive has more than 73 petabases\footnote{https://www.ncbi.nlm.nih.gov/sra/docs/sragrowth/} of archive including 38 petabases in open access. Again, in those datasets the data is indexed by its metadata only.\\
 \todo[inline]{Look for more reasonable size example ? It's unclear if anybody would want to index the entire SRA}
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -79,7 +80,7 @@ Several (overlapping) approaches are generally used to cope with large amounts o
 
 \section{Contributions}\label{intro:sec:contrib}
 
-So far we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and with performances that can scale to the ever-growing volumes of input data.
+So far we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and with performances that can scale to the large volumes of input data.
 %
 This thesis makes theoretical and practical contributions to address both needs. 
 Each contribution is presented as independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. However, this section is meant to give an overview of the main contributions of the thesis and how they relate.
