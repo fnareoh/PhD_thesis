@@ -1,0 +1,36 @@
+
+\begin{forest}
+    for tree={circle,draw, l sep=25pt, inner sep=1pt, minimum size=1.5em, edge={->}}
+    % Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
+    [
+        [,edge label={node[midway,fill=white] {C}} 
+            [,edge label={node[midway,fill=white] {A}} 
+                [\$, edge label={node[midway,fill=white] {T}}]
+            ]
+            [, edge label={node[midway,fill=white] {O}}
+                [, edge label={node[midway,fill=white] {D}}
+                    [\$, edge label={node[midway,fill=white] {E}}
+                        [\$, edge label={node[midway,fill=white] {D}}]
+                    ]
+                ]
+                [, edge label={node[midway,fill=white] {T}}
+                    [, edge label={node[midway,fill=white] {T}}
+                        [, edge label={node[midway,fill=white] {A}}
+                            [, edge label={node[midway,fill=white] {G}}
+                                [\$, edge label={node[midway,fill=white] {E}}]
+                            ]
+                        ]
+                        [, edge label={node[midway,fill=white] {O}}
+                            [\$, edge label={node[midway,fill=white] {N}}]
+                        ]
+                    ]
+                ]
+            ]
+        ]
+        [, edge label={node[midway,fill=white] {T}}
+            [, edge label={node[midway,fill=white] {O}}
+                [\$, edge label={node[midway,fill=white] {N}}]
+            ]
+        ] 
+    ]
+\end{forest}
