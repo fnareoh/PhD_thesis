@@ -1,36 +1,126 @@
-
+\begin{figure}
+\centering
+\begin{subfigure}[t]{0.25\textwidth}
+\centering
+\caption{Trie}
+\label{subfig:trie}
+\footnotesize
+\tikzset{centerlabel/.style={midway,fill=white}}
 \begin{forest}
-    for tree={circle,draw, l sep=25pt, inner sep=1pt, minimum size=1.5em, edge={->}}
+    for tree={
+            circle,
+            draw,
+            l sep=18pt,
+            minimum width=1.5em,
+            minimum height=1.5em,
+            inner sep=0pt,
+            edge={->},
+            font=\strut\footnotesize\sffamily,
+        },
     % Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
     [
-        [,edge label={node[midway,fill=white] {C}} 
-            [,edge label={node[midway,fill=white] {A}} 
-                [\$, edge label={node[midway,fill=white] {T}}]
+        [,edge label={node[centerlabel] {C}} 
+            [,edge label={node[centerlabel] {A}} 
+                [\$, edge label={node[centerlabel] {T}}]
             ]
-            [, edge label={node[midway,fill=white] {O}}
-                [, edge label={node[midway,fill=white] {D}}
-                    [\$, edge label={node[midway,fill=white] {E}}
-                        [\$, edge label={node[midway,fill=white] {D}}]
+            [, edge label={node[centerlabel] {O}}
+                [, edge label={node[centerlabel] {D}}
+                    [\$, edge label={node[centerlabel] {E}}
+                        [\$, edge label={node[centerlabel] {D}}]
                     ]
                 ]
-                [, edge label={node[midway,fill=white] {T}}
-                    [, edge label={node[midway,fill=white] {T}}
-                        [, edge label={node[midway,fill=white] {A}}
-                            [, edge label={node[midway,fill=white] {G}}
-                                [\$, edge label={node[midway,fill=white] {E}}]
+                [, edge label={node[centerlabel] {T}}
+                    [, edge label={node[centerlabel] {T}}
+                        [, edge label={node[centerlabel] {A}}
+                            [, edge label={node[centerlabel] {G}}
+                                [\$, edge label={node[centerlabel] {E}}]
                             ]
                         ]
-                        [, edge label={node[midway,fill=white] {O}}
-                            [\$, edge label={node[midway,fill=white] {N}}]
+                        [, edge label={node[centerlabel] {O}}
+                            [\$, edge label={node[centerlabel] {N}}]
                         ]
                     ]
                 ]
             ]
         ]
-        [, edge label={node[midway,fill=white] {T}}
-            [, edge label={node[midway,fill=white] {O}}
-                [\$, edge label={node[midway,fill=white] {N}}]
+        [, edge label={node[centerlabel] {T}}
+            [, edge label={node[centerlabel] {O}}
+                [\$, edge label={node[centerlabel] {N}}]
             ]
         ] 
     ]
 \end{forest}
+\end{subfigure}
+%
+\begin{subfigure}[t]{0.25\textwidth}
+\centering
+\caption{Compacted trie}
+\footnotesize
+\tikzset{centerlabel/.style={midway,fill=white}}
+\begin{forest}
+    for tree={circle,draw, l sep=20pt, s sep=20pt, inner sep=2pt, minimum size=1.5em, edge={->}}
+    % compacted Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
+    [, s sep=30pt,
+        [,edge label={node[centerlabel] {C}} 
+            [\$, edge label={node[centerlabel] {AT}}]
+            [, edge label={node[centerlabel] {O}}
+                [\$, edge label={node[centerlabel] {DE}}
+                    [\$, edge label={node[centerlabel] {D}}]
+                ]
+                [, edge label={node[centerlabel] {TT}}, s sep=35pt,
+                    [\$, edge label={node[centerlabel] {AGE}}]
+                    [\$, edge label={node[centerlabel] {ON}}]
+                ]
+            ]
+        ]
+        [\$, edge label={node[centerlabel] {TON}}] 
+    ]
+\end{forest}
+\end{subfigure}
+%
+\tikzset{mylabel/.style={midway,font=\footnotesize,fill=white,sloped}}
+\begin{subfigure}[t]{0.4\textwidth}
+    \centering
+    \caption{Suffix tree}
+    \footnotesize
+    \begin{forest}
+        for tree={
+            circle,
+            draw,
+            l sep=22mm,
+            s sep=5mm,
+            minimum width=1em,
+            minimum height=1em,
+            inner sep=0pt,
+            edge={->},
+            font=\strut\footnotesize\sffamily,
+        },
+        % suffix tree for 
+    [,l sep=18mm,s sep=5mm,
+            [,edge label={node[mylabel] {\$}}]
+            [,edge label={node[mylabel] {A}}
+                [, edge label={node[mylabel,rotate=-180] {C\$}}]
+                [, edge label={node[mylabel]{GATAC\$}}]
+                [, edge label={node[mylabel] {T}}
+                    [, edge label={node[mylabel,rotate=-180]{AC\$}}]
+                    [, edge label={node[mylabel]{TAGATAC\$}}]
+                ]
+            ]
+            [,before computing xy={s/.average={s}{siblings}},edge label={node[mylabel,rotate=-180] {C\$}}]
+            [,edge label={node[mylabel] {GAT}}
+                [,edge label={node[mylabel,rotate=-180] {AC\$}}]
+                [,edge label={node[mylabel] {TAGATAC\$}}]
+            ]
+            [,edge label={node[mylabel] {T}}
+                [,edge label={node[mylabel,rotate=-180] {A}}
+                    [,edge label={node[mylabel,rotate=-180] {C\$}}]
+                    [,edge label={node[mylabel] {GATAC\$}}]
+                ]
+                [,edge label={node[mylabel] {TAGATAC\$}}]
+            ]
+        ]
+    \end{forest}
+    \end{subfigure}
+\caption{The trie (a) of the set of strings \{CAT, CODE, CODED, COTTAGE, COTTON, TON\}, its compacted form (b) and (c) the suffix tree of the string GATTAGATACAT.}
+\label{fig:intro:tries_suffix_trree}
+\end{figure}
