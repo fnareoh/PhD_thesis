@@ -55,25 +55,36 @@
 \begin{subfigure}[t]{0.25\textwidth}
 \centering
 \caption{Compacted trie}
+\label{subfig:compacttrie}
 \footnotesize
-\tikzset{centerlabel/.style={midway,fill=white}}
+\tikzset{centerlabel/.style={midway,font=\footnotesize}}
 \begin{forest}
-    for tree={circle,draw, l sep=20pt, s sep=20pt, inner sep=2pt, minimum size=1.5em, edge={->}}
-    % compacted Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
-    [, s sep=30pt,
-        [,edge label={node[centerlabel] {C}} 
-            [\$, edge label={node[centerlabel] {AT}}]
-            [, edge label={node[centerlabel] {O}}
-                [\$, edge label={node[centerlabel] {DE}}
-                    [\$, edge label={node[centerlabel] {D}}]
+    for tree={
+            circle,
+            draw,
+            l sep=25pt,
+            s sep=20pt,
+            minimum width=1.5em,
+            minimum height=1.5em,
+            inner sep=0pt,
+            edge={->},
+            font=\strut\footnotesize\sffamily,
+        },
+    % Compacted Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
+    [,
+        [,edge label={node[centerlabel,left] {$(1,0,0)$}} 
+            [\$, edge label={node[centerlabel,left] {$(1,1,2)$}}]
+            [, edge label={node[centerlabel,right] {$(2,1,1)$}}, 
+                [\$, edge label={node[centerlabel,left] {$(2,2,3)$}}
+                    [\$, edge label={node[centerlabel,left] {$(3,4,4)$}}]
                 ]
-                [, edge label={node[centerlabel] {TT}}, s sep=35pt,
-                    [\$, edge label={node[centerlabel] {AGE}}]
-                    [\$, edge label={node[centerlabel] {ON}}]
+                [, edge label={node[centerlabel,right] {$(4,2,3)$}}, 
+                    [\$, edge label={node[centerlabel,left] {$(4,4,6)$}}]
+                    [\$, edge label={node[centerlabel,right] {$(5,4,5)$}}]
                 ]
             ]
         ]
-        [\$, edge label={node[centerlabel] {TON}}] 
+        [\$, edge label={node[centerlabel,right] {$(6,0,2)$}}] 
     ]
 \end{forest}
 \end{subfigure}
@@ -82,6 +93,7 @@
 \begin{subfigure}[t]{0.4\textwidth}
     \centering
     \caption{Suffix tree}
+    \label{subfig:suffixtree}
     \footnotesize
     \begin{forest}
         for tree={
@@ -121,6 +133,6 @@
         ]
     \end{forest}
     \end{subfigure}
-\caption{The trie (a) of the set of strings \{CAT, CODE, CODED, COTTAGE, COTTON, TON\}, its compacted form (b) and (c) the suffix tree of the string GATTAGATACAT.}
+\caption{The trie (a) of the set of strings $\mathcal{S}=$\{CAT, CODE, CODED, COTTAGE, COTTON, TON\}, its compacted form (b) and (c) the suffix tree of the string GATTAGATACAT. In (a) and (b) the nodes labeled with a \$ spell a string from $\mathcal{S}$. Note that the string COT is implicitly spelled by the trie of $\mathcal{S}$.}
 \label{fig:intro:tries_suffix_trree}
 \end{figure}

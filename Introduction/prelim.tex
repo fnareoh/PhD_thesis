@@ -3,9 +3,24 @@
 This section aims at presenting the basic concepts that are needed to understand the following chapters, as well as presenting the different form of compression used in this work and how they relate to each other.
 
 A string of length $n$ is a sequence $T[1] \dots T[n]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$, whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string.
+\todo[inline]{Add definitions and notations for suffix prefix.}
 
 \subsection{Tries and Suffix trees}
 
+\todo[inline]{Add citations.}
+Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over the alphabet $\Sigma$. Its trie is rooted tree with edge labels in $\Sigma$.
+For any path from the root to the node we can consider the string \emph{spelled} from concatenating the label of the edges. The trie is such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node, in both cases we mark the node with a $\$ $.
+
+The more efficient compacted trie is obtained by contracting  into a single edge any path from a node labeled by a \$ or branching (with at least two children) to its lowest ancestor that is either branching or labeled by a \$.
+This edge is then labeled with the string spelled by the path it replaced.
+Since all nodes are either branching or a leaf and that all leaf spell a different string of $\mathcal{S}$, there are at most $\Oh(k)$ nodes in the compacted trie.
+For each edge there exist $(i,s,e)$ such that its label is equal to $T_i[s .. e]$, thus we can avoid storing the label explicitly and just store the reference $(i,s,e)$.
+%
+Thus $\Oh(k)$ words are sufficient to store the compacted trie.
+With the addition of failure links to each node (which requires a preprocessing time in $\Oh(|T_1| + ... +|T_k|$)), the compacted trie can be used to detect the occurrence of all strings in $\mathcal{S}$ in a text $T$ in time $\Oh(|T|+occ)$ where $occ$ is the total number of occurrences. For a detailed explanation see Chapter 3.4 of~\cite{Gusfield1997}. Let $S$ be a string spelled by a node of the non-compacted trie, if it is also spelled by a node of the compacted trie we say it is \emph{explicit} else it is \emph{implicit}. Those definitions are illustrated in Figure~\ref{subfig:trie} and~\ref{subfig:compacttrie}.
+
+
+\todo[inline]{Define the suffix tree.}
 \input{Introduction/fig_tries_suffix.tex}
 
 \subsection{Karp Rabin fingerprint} 
