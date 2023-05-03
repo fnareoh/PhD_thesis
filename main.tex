@@ -27,7 +27,6 @@
 \selectlanguage{english}
 
 
-\begin{refsection}
 \frontmatter
 \input{./Abstract/abstract}
 %\input{./Abstract/resume_francais}
@@ -47,20 +46,20 @@ Fix biblio links.\\
 Decide how to organize abstract-intro-prelim-conclusion biblio
 }
 
-\mainmatter
+\frontmatter
 %\clearemptydoublepage
 \input{./Introduction/introduction}
 
 \input{./Introduction/prelim}
 
-\printbibliography[title=Introduction's bibliography]
+\backmatter
+\printbibliography[segment=\therefsegment,heading=subbibintoc]
 
-\end{refsection}
+\mainmatter
 
+\input{./Part_One/part_one}
 
-%\input{./Part_One/part_one}
-
-%\input{./Part_Two/part_two}
+\input{./Part_Two/part_two}
 
 
 %\clearemptydoublepage
