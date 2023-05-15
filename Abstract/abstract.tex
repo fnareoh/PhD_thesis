@@ -6,16 +6,17 @@ The simplicity of strings puts their processing at the heart of many application
 % First part 
 In the first part of this thesis, we study complex queries such as regular expressions, gapped consecutive matching, and square detection. 
 % Regexp
-For regular expression, we provide a space-efficient algorithm in the streaming model: characters of the text arrive one at a time, and we can only access past characters if we explicitly store them. 
+For regular expressions, we provide a space-efficient algorithm in the streaming model: characters of the text arrive one at a time, and we can only access past characters if we explicitly store them. 
 % Gapped
 Next, gapped consecutive matching is a simpler type of query where given two patterns $P_1$, $P_2$ and a range $[a,b]$, one must report all consecutive occurrences of $P_1$ followed by $P_2$ separated by a distance in $[a,b]$. We study this problem in various models: streaming, pattern matching on a compressed text, and compressed indexing.
 % Squares
-In both of those first studies, periodicity detection avoids redundant computation. This central use of periodicity makes squares interesting to study beyond their inherent meaning~\cite{Kolpakov2003}. Thus, we investigate square detection and reporting for general alphabets (the most abstract setting where squares can be defined). We provide an optimal algorithm and answer an open question asked in 1984 by Main and Lorentz~\cite{Main1984}.
+For both types of queries, periodicity detection helps to avoid redundant computation. This central use of periodicity makes squares interesting to study beyond their inherent meaning~\cite{Kolpakov2003}. Thus, we investigate square detection and reporting for general alphabets (the most abstract setting where squares can be defined). We provide an optimal algorithm and answer an open question asked in 1984 by Main and Lorentz~\cite{Main1984}.
 
 % Second part
-The second part of this thesis proposes to use approximate queries to speed up the computations toward scaling up to large amounts of data in bioinformatics applications.
+The second part of this thesis proposes to use non-exact queries to speed up the computations toward scaling up to large amounts of data in diverse applications including bioinformatics.
 % LCS and DTW
-Motivated by the lower bounds on the computation of several similarity measures, we provide efficient parametrized algorithms for two similarity measures: the length of the Longest Common Substring with approximately k mismatches (LCS approx k) and the Dynamic Time warping distance (DTW).
+We first study approximate matching, where we must report all occurrences at distance at most a threshold $k$ for a given similarity measure. Motivated by the lower bounds on the computation of the most popular similarity measures, we provide efficient parametrized algorithms for the length of the longest common substring with approximately k mismatches and the dynamic time warping distance.
+Due to their robustness to noise in the input, both of those measures can be applied to data deduplication, plagiarism detection~\cite{zou2010cluster}, and alignment of biological sequences~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
 % XBWT
-Finally, we propose a compressed index for redundant collections of next-generation sequencing (NGS) reads, which takes advantage of alignments to an assembled genome to improve the overall compression but can incur false positive occurrences.
+Finally, we propose a compressed index for redundant collections of next-generation sequencing reads, which takes advantage of alignments to an assembled genome to improve the overall compression but can incur false positive occurrences.
 
