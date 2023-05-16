@@ -23,10 +23,9 @@ The regular expression formalism provides a concise representation for defining 
 % Application and Limitations
 It has deep connections with automatons~\cite{Thompson_automaton}, and its versatile nature makes it a crucial tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases, data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, and protein search~\cite{10.1145/369133.369220}. Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular expression membership and pattern matching.
 
- \todo[inline]{Detail and have a better transition for don't care}
-
 % Don't care
-As an alternative, Fischer and Paterson~\cite{fischer1974string} introduced \underline{``don't care''} matching where a don't care symbol denoted * can occur in both the pattern and the text, matches to any other character of the alphabet (but only one).
+Although the versatility of regular expression make them widely used across fields, they are notoriously difficult to write for users.
+As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced \underline{``don't care''} matching where a don't care symbol denoted * can occur in both the pattern and the text, matches to any other character of the alphabet (but only one).
 % Gapped matching
 \todo[inline]{Add a more general review of models where one or two patterns are search spaced at a certain distance}
 The ``don't care'' matching model is sometimes referred to as ``gapped'' matching; however, it is not to be confused with \underline{gapped consecutive matching}~\cite{bille2022gapped} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all occurrences of $P_1$ and $P_2$ with the distance in $[a,b]$ and no occurrences in between. This model also has connections to spaced seeds~\cite{burkhardt2003better}, and we study it in various settings in Chapter~\ref{chap:gapped_stream}, ~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
