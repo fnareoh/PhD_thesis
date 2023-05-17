@@ -2,7 +2,7 @@
 \addcontentsline{toc}{chapter}{Introduction}
 \chaptermark{Introduction}
 
-When answering the classic question ``What is your Ph.D. about?'' to family and friends, I always start with the ``Ctrl + F'' function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern-matching problem. If I feel especially ambitious in my explanations, I will attempt to give the intuition of the naive $\Oh(nm)$ algorithm. Picture a young child, aligning the string against every position of the text and comparing character by character because the child has yet to learn how to read. To give a glimpse at a more complex solution, I comment on how, depending on the word, the child may try to skip portions of the text. But even my grandparents immediately know that searching in a text has been possible for decades and that it cannot be my real research subject.
+When answering the classic question ``What is your Ph.D. about?'' to family and friends, I always start with the ``Ctrl + F'' function in their favorite text editor or web browser. This quickly highlights one of the applications of the exact pattern-matching problem. If I feel especially ambitious in my explanations, I will attempt to give the intuition of the naive $\Oh(nm)$ algorithm. Picture a young child, aligning the string against every position of the text and comparing character by character because the child has yet to learn how to read. To show a glimpse of a more complex solution, I comment on how, depending on the word, the child may try to skip portions of the text. But even my grandparents immediately know that searching in a text has been possible for decades and that it cannot be my real research subject.
 
 \section{Context}
 
@@ -12,7 +12,7 @@ Indeed, exact pattern matching has been long studied, with in particular the fam
 
 \input{Introduction/fig-matching-models.tex}
 
-However, the need for text processing goes far beyond exact matching of patterns. To illustrate this claim, we present the models of matching considered in this manuscript and their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
+However, the need for text processing goes far beyond exact matching of patterns. To illustrate this claim, we present the models of matching (underlined) considered in this manuscript and their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
 
 
 \todo[inline]{Detail Regular expression much more}
@@ -80,17 +80,20 @@ Another example of a large archival project is the internet archive, a non-profi
 %%%%%%%%%% Bioinformatics
 %Intro DNA representation
 Large archival also exist in bioinformatics, but the structure of biological sequences is very different from the one of code or webpages.
-DNA is most commonly seen as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage does not provide fast queries. 
-At the opposite of the spectrum, a suffix tree allows efficient sequence analysis but requires 10 bytes per base~\cite{navarro2016compact}, which adds up to 30 gigabytes for a human genome containing 3.3 billion bases.
-A trade-off between those two extremes has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows to represent the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}. 
+DNA is most commonly seen as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage requires to scan the whole string to search for a pattern. 
+At the opposite of the spectrum, a suffix tree allows more efficient sequence analysis but requires 10 bytes per base~\cite{navarro2016compact}, which adds up to 30 gigabytes for a human genome containing 3.3 billion bases. 
+And thousands of genomes have been sequences through projects like the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} which reach its milestone in 2018. 
+A trade-off between those two extremes has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows to represent the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
+% Redundancy intra genome and intergenome
+The redundancy that compact data structures can exploit in genomes can come either from repeated regions in the genome (intra-genome redundancy) or through considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).  
 % Reads
-However, for DNA, another classic data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. Reads can contain sequencing errors such as insertions, deletion and substitution of a nucleotide and their length and error rate vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each base is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for Illumina reads and propose a data structure specifically tailored to sequencing technique's specificities. 
+However, for DNA, another classic data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. Reads can contain sequencing errors such as insertions, deletion and substitution of a nucleotide and their length and error rate vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each position of the original genome is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for short reads and propose a data structure specifically tailored to the specificities of a sequencing technique's. 
 % Cheaper = more sequencing
-Additionally, drastic decrease in sequencing cost since 2008 (faster than expected by Moore's law~\cite{muir2016real}) lead higher volumes of DNA being sequenced. 
+Additionally, drastic decrease in sequencing cost and increase in throughput since 2008 (faster than expected by Moore's law~\cite{muir2016real}) lead higher volumes of DNA being sequenced. 
 % ENA
-So far, the European Nucleotide Archive has accumulated more than 47 petabytes\cite{ena} of read data.
+So far, the European Nucleotide Archive has accumulated more than 47 petabytes~\cite{ena} of read data.
 % SRA
-While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of archive including 38 petabases in open access. Again, in those datasets the data is indexed by its metadata only.\\
+While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of archive including 38 petabases in open access. However, like for the software heritage project and internet archive, in the ENA and the NCBI, the data is indexed by its metadata only.\\
 %\todo[inline]{Look for more reasonable size example ? It's unclear if anybody would want to index the entire SRA}
 
 %%%% Astronomical data 
@@ -99,21 +102,25 @@ While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of ar
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \todo[inline]{Introduce the concept of sketches and then add to each approach to scalability how it interacts with sketches (for the title of the PhD).}
-It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of query is dictated by the specific needs of the application and the typical scale of the input.
+It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of matching model is dictated both by the specific needs of the application and the typical scale of the input.
 Several (overlapping) approaches are generally used to cope with large amounts of data:
 \begin{itemize}
 
 \item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfers can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
-\item Compressed input: as mentioned several times already, highly redundant data can sometimes be compressed to a manageable size. 
+\item Compressed input: as mentioned already, highly redundant data can sometimes be compressed to a manageable size. 
 Consequently, algorithms and data structures that can directly operate on the compressed data become much more efficient. This is very natural approach as the data is almost always shared in a compressed format, however not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that for computing the longest common subsequence of two strings of uncompressed size $N$, given in a compressed format of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the strong exponential time hypothesis. In other words, even if the input is given compressed form, we cannot avoid a high dependency in the uncompressed size. In this thesis, 
-chapters~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} both work on a grammar compressed text.
-\item Data structures: here the complexity analysis is split in two parts, the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query. The size of the data structure refers to the space of the information kept at the end of the construction to perform the query.   
+chapters~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} both take as input a grammar compressed text and their complexities are given as a function of the size of the compressed input.
+\item Data structures: here the complexity analysis is split in two parts, the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query.
+%The size of the data structure refers to the space of the information kept at the end of the construction to perform the query.   
 %One of the use case is to construct on a powerful server and then send the small data structure to users that can loaded it in main memory and query it repeatedly. 
 Chapters~\ref{chap:gapped_index} and ~\ref{chap:XBWT} are examples of that.
 \item Efficient second-memory algorithms: One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
-It is  common knowledge that random access to disk is very inefficient, however contiguous reads are only 100 time slower than reading from main memory~\cite{navarro2016compact}. Therefore, an algorithm that uses few random reads can be executed directly on disk which allows it to scale to large inputs much more easily. The main issue with this approach is that not all problems can avoid random access. We partially use this approach to limit main memory usage in chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
-\item Streaming algorithms: if the data is so large that it can only be handled as a stream, then it must be processed on the fly without the possibility to go back. Generally the pattern and the length of the text are known in advance and can be preprocessed, then the characters arrive one by one and can only be accessed later if they have been explicitly stored. This model optimizes for both the time per character during the streaming phase and the space complexity which accounts for storing the result of the preprocessing and any space necessary to process the characters. Chapter~\ref{chap:regexp} and~\ref{chap:gapped_stream} are set in this model.
-\item Approximation algorithms: On a very large dataset it is not always needed to answer queries exactly and allowing some approximation in the result can allow to cut corners and circumvent lower bounds. The entire second section of this thesis is related to this approach but Chapter~\ref{chap:LCS} is perhaps most characteristic. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability. %($\geq 1 - \frac{1}{n}$ for an input of size $n$).
+It is  common knowledge that random access to disk is very inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
+Therefore, an algorithm that uses few random accesses can be executed directly on disk which allows it to scale to large inputs much more easily. The main issue with this approach is that not all problems admit efficient solutions avoiding random access. For example, given a list and a permutation, returning the permuted list requires to access the elements in the order of the permutation, possibly random. We partially use this approach of relying on secondary memory to limit main memory usage in chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
+%\todo[inline]{If possible I should find a good reference for the speed of RAM vs SSD access, and an example of problem where avoiding random access is difficult.}
+\item Streaming algorithms: if the data is so large that it can only be handled as a stream, then it must be processed on the fly without the possibility to go back. Generally the pattern and the length of the text are known in advance and can be preprocessed, then the characters arrive one by one and can only be accessed later if they have been explicitly stored. This model optimizes both the time per character during the streaming phase and the space complexity which accounts for storing the result of the preprocessing and any space necessary to process the characters. Chapter~\ref{chap:regexp} and~\ref{chap:gapped_stream} are set in this model.
+\item Approximation algorithms: On a very large dataset it is not always needed to answer queries exactly and allowing some approximations in the result can allow to cut corners and circumvent lower bounds. 
+The entire second section of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability. %($\geq 1 - \frac{1}{n}$ for an input of size $n$).
 \end{itemize}
 
 \section{Contributions}\label{intro:sec:contrib}

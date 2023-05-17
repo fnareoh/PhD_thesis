@@ -1,7 +1,7 @@
 \chapter*{Abstract}
 
 % Overall context on strings
-The simplicity of strings puts their processing at the heart of many applications, including bioinformatics, information retrieval, and cybersecurity. Exact pattern matching has been extensively studied~\cite{charras2004handbook} as the most natural problem. However, many applications also need more general queries. Additionally, in all those fields, the quantity of information to process has been increasing at a staggering rate~\cite{muir2016real}, and exact queries do not always scale.
+The simplicity of strings and their impactful usage puts their processing at the heart of many applications, including bioinformatics, information retrieval, and cybersecurity. Exact pattern matching has been extensively studied~\cite{charras2004handbook} as the most natural problem. However, many applications also need more general queries. Additionally, in all those fields, the quantity of information to process has been increasing at a staggering rate~\cite{muir2016real}, and exact queries do not always scale.
 
 % First part 
 In the first part of this thesis, we study complex queries such as regular expressions, gapped consecutive matching, and square detection. 
@@ -15,8 +15,8 @@ For both types of queries, periodicity detection helps to avoid redundant comput
 % Second part
 The second part of this thesis proposes to use non-exact queries to speed up the computations toward scaling up to large amounts of data in diverse applications including bioinformatics.
 % LCS and DTW
-We first study approximate matching, where we must report all occurrences at distance at most a threshold $k$ for a given similarity measure. Motivated by the lower bounds on the computation of the most popular similarity measures, we provide efficient parametrized algorithms for the length of the longest common substring with approximately k mismatches and the dynamic time warping distance.
-Due to their robustness to noise in the input, both of those measures can be applied to data deduplication, plagiarism detection~\cite{zou2010cluster}, and alignment of biological sequences~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
+We first study approximate matching, where we must report all occurrences at distance at most a threshold $k$ for a given similarity measure. Motivated by the lower bounds on the computation of the most popular similarity measures, we provide efficient parametrized algorithms for the length of the longest common substring with approximately $k$ mismatches and the dynamic time warping distance.
+Due to their robustness to noise in the input, both of those measures can be applied detecting duplicated sections in text for application such as plagiarism detection~\cite{zou2010cluster}, and alignment of biological sequences~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
 % XBWT
 Finally, we propose a compressed index for redundant collections of next-generation sequencing reads, which takes advantage of alignments to an assembled genome to improve the overall compression but can incur false positive occurrences.
 
