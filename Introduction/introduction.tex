@@ -14,14 +14,25 @@ Indeed, exact pattern matching has been long studied, with in particular the fam
 
 However, the need for text processing goes far beyond exact matching of patterns. To illustrate this claim, we present the models of matching (underlined) considered in this manuscript and their motivations. Figure~\ref{fig:intro:match_model} also provides an example for each matching model.
 
-
-\todo[inline]{Detail Regular expression much more}
 % Regular expression
-One of the oldest and most classic models for more complex queries is \underline{regular expressions} introduced by Kleene in 1951~\cite{RM-704}.
-% Briefly explain the formalism
-The regular expression formalism provides a concise representation for defining sets of strings by recursively employing three fundamental operators: concatenation, union, and Kleene star.
+One of the oldest and most classic models for more complex queries is \underline{regular expressions}, introduced by Kleene in 1951~\cite{RM-704}.
+% Explain the formalism
+The regular expression formalism provides a concise representation for defining sets of strings by recursively from character of an alphabet $\Sigma$ and three fundamental operators: concatenation ($\cdot$), union ($|$), and Kleene star ($\ast$).
+We denote the set of string represented by a regular expression $R$ by $L(R)$. Let $\eps$ denote the empty string.
+% characters
+For any character $c \in \Sigma \cup \{\eps\}$, $L(c) = \{c\}$.
+% concatenation
+The concatenation of two regular expressions $R_1$ and $R_2$ is defined by $L(R_1 \cdot R_2) = \{s_1s_2$~for~$s_1 \in L(R_1), s_2 \in L(R_2)\}$. Note that the concatenation symbol $\cdot$ is often omitted by just writing $R_1R_2$.
+% union
+The union is defined by $L(R_1 | R_2) = L(R_1) \cup L(R_2)$.
+% Kleene star
+Finally, the Kleene star applied to a regular expression $R$ is defined as $L(R^\ast)=\{s^n$~for~$s \in L(R), n \in \mathbb{N} \}$.
+% automaton
+Another way to describe them is through automatons with the Thompson automaton construction~\cite{Thompson_automaton}. This automaton can then be simulated efficiently to test whether a string is recognized by the regular expression.
 % Application and Limitations
-It has deep connections with automatons~\cite{Thompson_automaton}, and its versatile nature makes it a crucial tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases, data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, and protein search~\cite{10.1145/369133.369220}. Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular expression membership and pattern matching.
+The use of regular expression gained popularity in the 1970s through their efficient implementation in Unix tools such as awk, grep or sed.
+They have become a crucial tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases, data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, and protein search~\cite{10.1145/369133.369220}.
+Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular expression membership and pattern matching.
 
 % Don't care
 Although the versatility of regular expression make them widely used across fields, they are notoriously difficult to write for users.

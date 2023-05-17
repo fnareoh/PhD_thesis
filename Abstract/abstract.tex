@@ -16,7 +16,7 @@ For both types of queries, periodicity detection helps to avoid redundant comput
 The second part of this thesis proposes to use non-exact queries to speed up the computations toward scaling up to large amounts of data in diverse applications including bioinformatics.
 % LCS and DTW
 We first study approximate matching, where we must report all occurrences at distance at most a threshold $k$ for a given similarity measure. Motivated by the lower bounds on the computation of the most popular similarity measures, we provide efficient parametrized algorithms for the length of the longest common substring with approximately $k$ mismatches and the dynamic time warping distance.
-Due to their robustness to noise in the input, both of those measures can be applied detecting duplicated sections in text for application such as plagiarism detection~\cite{zou2010cluster}, and alignment of biological sequences~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
+Due to their robustness to noise in the input, both of those measures can be applied to detecting duplicated sections in text for application such as plagiarism detection~\cite{zou2010cluster}, and alignment of biological sequences~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
 % XBWT
 Finally, we propose a compressed index for redundant collections of next-generation sequencing reads, which takes advantage of alignments to an assembled genome to improve the overall compression but can incur false positive occurrences.
 
