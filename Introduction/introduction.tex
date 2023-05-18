@@ -34,12 +34,30 @@ The use of regular expression gained popularity in the 1970s through their effic
 They have become a crucial tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases, data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, and protein search~\cite{10.1145/369133.369220}.
 Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular expression membership and pattern matching.
 
+
 % Don't care
 Although the versatility of regular expression make them widely used across fields, they are notoriously difficult to write for users.
-As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced \underline{``don't care''} matching where a don't care symbol denoted * can occur in both the pattern and the text, matches to any other character of the alphabet (but only one).
+As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced \underline{``don't care''} matching where a don't care (also called wildcard or gap) symbol denoted * can occur in both the pattern and the text, matches to any other character of the alphabet (but only one).
+% Space seed
+The ``don't care'' matching model has found a direct application in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported but also more generally through space seeds~\cite{li2004patternhunter} which have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
 % Gapped matching
-\todo[inline]{Add a more general review of models where one or two patterns are search spaced at a certain distance}
-The ``don't care'' matching model is sometimes referred to as ``gapped'' matching; however, it is not to be confused with \underline{gapped consecutive matching}~\cite{bille2022gapped} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all occurrences of $P_1$ and $P_2$ with the distance in $[a,b]$ and no occurrences in between. This model also has connections to spaced seeds~\cite{burkhardt2003better}, and we study it in various settings in Chapter~\ref{chap:gapped_stream}, ~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
+\todo[inline]{WIP Do not review: Add the gapped model and then seperate the consecutive part and then join them}
+\todo[inline]{Find practical motivations for Consecutive ?}
+The ``don't care'' matching model is sometimes referred to as ``gapped'' matching; however, it is not to be confused with the connected approach of searching for two patterns $P_1$ and $P_2$ that occur closly together. 
+%
+This problem originates from the field of document retrieval. After preprocessing a collection of strings, the \emph{two patterns document retrieval problem}~\cite{muthukrishnan2002efficient} must return all strings of the collection that contain both an occurrence of $P_1$ and $P_2$.
+%Gapped matching
+TODO Gapped PM
+% snippet 
+Kopelowitz and Krauthgamer~\cite{kopelowitz2016color} introduced the \underline{snippet} problem where we must report the occurrences of $P_1$ and $P_2$ that are closest to each other.
+% consecutive
+Navarro and Thankatchan~\cite{NAVARRO2016108} considered a single pattern $P$ and an interval $[\alpha,\beta]$  and searched to report all consecutive occurrences of $P$ starting at positions $(i,j)$ such that $j-i$ belongs to $[\alpha,\beta]$. Since, consecutive occurrences have been considered in many publications~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887,DBLP:journals/corr/abs-2211-16860}.
+% Gapped consecutive matching
+Recently Bille et al.~\cite{bille2022gapped} proposed the natural combination of the two lines of research: \underline{gapped consecutive matching} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all occurrences of $P_1$ and $P_2$ with the distance in $[a,b]$ and no occurrences in between.
+% Motivations ?
+This model can be linked to gapped q-grams~\cite{burkhardt2003better} which is an alternative to spaced seeds which were mentioned earlier.
+% This thesis
+We study Gapped consecutive pattern matching in various settings in Chapters~\ref{chap:gapped_stream}, ~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
 
 
 Although an in depth non-standard matching listing is out of the scope of this manuscript, for completeness, we detail other models of the literature.
