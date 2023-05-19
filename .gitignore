@@ -15,4 +15,4 @@
 *.fdb_latexmk
 *.fls
 .vscode
-*.synctex
+*.synctex*
