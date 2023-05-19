@@ -23,7 +23,7 @@ With the definitions at hand, we are ready to state the technique introduced by 
 For Bringmann's framework to be efficient, one must provide a method to choose $p$ and $\omega$. Bringmann~\cite{Bringmann17} showed two different methods, one requiring the Extended Riemann Hypothesis and the other one resulting in an 
 additional $t^\eps$ factor in both time and space~\cite[Lemma 4.4]{Bringmann17}. Below we show that one can achieve the bounds of the former method unconditionally.
 
-\subsection{Finding primes}\label{se:finding_primes}
+\subsection{Finding Primes}\label{se:finding_primes}
 
 The goal of this section is to prove the following theorem:
 
@@ -177,7 +177,7 @@ This concludes the proof of Theorem~\ref{thm:good_p_and_omega}.
 % \end{thm}
 
 
-\subsection{Walks in a weighted graph.} 
+\subsection{Walks in a Weighted Graph} 
 We can finally prove Theorem~\ref{thm:detecting_walk_specific_weight}. We first describe an algorithm that uses significantly much more time and space than desired, and then improve it.
  We compute arrays $C_k$ for~$k\in \{0,\ldots, \lceil \log x \rceil\}$ indexed by nodes $u,v\in V(G)$, where $C_k[u,v]$ is a bit-vector of length $x+1$ such that:
  \begin{enumerate}
