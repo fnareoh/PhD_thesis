@@ -39,23 +39,22 @@ Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular express
 Although the versatility of regular expression make them widely used across fields, they are notoriously difficult to write for users.
 As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced \underline{``don't care''} matching where a don't care (also called wildcard or gap) symbol denoted * can occur in both the pattern and the text, matches to any other character of the alphabet (but only one).
 % Space seed
-The ``don't care'' matching model has found a direct application in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported but also more generally through space seeds~\cite{li2004patternhunter} which have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
+This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
 % Gapped matching
-\todo[inline]{WIP Do not review: Add the gapped model and then seperate the consecutive part and then join them}
-\todo[inline]{Find practical motivations for Consecutive ?}
-The ``don't care'' matching model is sometimes referred to as ``gapped'' matching; however, it is not to be confused with the connected approach of searching for two patterns $P_1$ and $P_2$ that occur closly together. 
-%
-This problem originates from the field of document retrieval. After preprocessing a collection of strings, the \emph{two patterns document retrieval problem}~\cite{muthukrishnan2002efficient} must return all strings of the collection that contain both an occurrence of $P_1$ and $P_2$.
-%Gapped matching
-TODO Gapped PM
-% snippet 
-Kopelowitz and Krauthgamer~\cite{kopelowitz2016color} introduced the \underline{snippet} problem where we must report the occurrences of $P_1$ and $P_2$ that are closest to each other.
+Patterns with ``don't care'' are sometimes~\cite{lewenstein2011indexing} described as $P= P_1g_1P_2g_2 \dots g_\ell P_{\ell+1}$ where $P_1$,$P_2$,\dots,$P_{\ell+1}$ are patterns over the alphabet $\Sigma$ and $g_1,g_2,\dots,g_{\ell}$ are integers describing the length of the gaps. 
+% variable length gap
+Naturally this question was later extended to the problem of string matching with \underline{variable length gap}~\cite{bille2012string,bille2014string} where the length gaps can vary in intervals $[a_i,b_i]$ for $i\in[1,\ell]$.
+% Applications
+Note that variable length gapped are also supported to query the PROSITE database.
+% variants
+Lots of variation of the problem were studied~\cite{kopelowitz2016color,cohen2009range,brodal1999finding}, including simpler version with just two patterns $P_1$ and $P_2$ and a single gap~\cite{peterlongo2006gapped,iliopoulos2009indexing} and sometimes the special case $P_1=P_2$~\cite{muthukrishnan2002efficient,keller2007range}.
+
 % consecutive
-Navarro and Thankatchan~\cite{NAVARRO2016108} considered a single pattern $P$ and an interval $[\alpha,\beta]$  and searched to report all consecutive occurrences of $P$ starting at positions $(i,j)$ such that $j-i$ belongs to $[\alpha,\beta]$. Since, consecutive occurrences have been considered in many publications~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887,DBLP:journals/corr/abs-2211-16860}.
+In 2016, Navarro and Thankatchan~\cite{NAVARRO2016108} proposed an interesting variant, where given a single pattern $P$ and an interval $[\alpha,\beta]$, one must report all consecutive occurrences of $P$ starting at positions $(i,j)$ (consecutive meaning no other occurrence in between $i$ and $j$) such that $j-i$ belongs to $[\alpha,\beta]$. Since, consecutive occurrences have become a growing interest~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887,DBLP:journals/corr/abs-2211-16860}.
 % Gapped consecutive matching
 Recently Bille et al.~\cite{bille2022gapped} proposed the natural combination of the two lines of research: \underline{gapped consecutive matching} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all occurrences of $P_1$ and $P_2$ with the distance in $[a,b]$ and no occurrences in between.
-% Motivations ?
-This model can be linked to gapped q-grams~\cite{burkhardt2003better} which is an alternative to spaced seeds which were mentioned earlier.
+% Motivations
+%This model can be linked to gapped q-grams~\cite{burkhardt2003better} which is an alternative to spaced seeds which were mentioned earlier.
 % This thesis
 We study Gapped consecutive pattern matching in various settings in Chapters~\ref{chap:gapped_stream}, ~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
 
