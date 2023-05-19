@@ -126,7 +126,24 @@ While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of ar
 
 %%%% Astronomical data 
 \todo[inline]{Add applications to astronomical data and pulsar detection.}
-\todo[inline]{Add one or several graphs illustrating the growth in data in each field.}
+%\todo[inline]{Add one or several graphs illustrating the growth in data in each field.}
+
+\begin{figure}
+    \centering
+    \begin{subfigure}[b]{0.4\textwidth}
+        \begin{tikzpicture}
+            \node (img) {\includegraphics[width=\textwidth]{0_sheets/wayback_machine.png}};
+            \node [below right,text width=2.9cm,align=center, fill=white] at (0.25,-0.5){\footnotesize{Pages removed due to security concerns.}};
+            \draw[->] (1,-0.5) -- (1.3,0.3);
+        \end{tikzpicture}
+        \caption{The Wayback Machine Archive}
+    \end{subfigure}
+    \begin{subfigure}[b]{0.49\textwidth}
+    \includegraphics[width=\textwidth]{0_sheets/sra_growth.png}
+    \caption{The Sequence Read Archive}
+    \end{subfigure}
+    \caption{Plots of the database growth for the Wayback Machine~\cite{web-archive-growth} and the Sequence Read Archive~\cite{sra}.}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \todo[inline]{Introduce the concept of sketches and then add to each approach to scalability how it interacts with sketches (for the title of the PhD).}
