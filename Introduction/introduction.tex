@@ -108,21 +108,21 @@ Another example of a large archival project is the internet archive, a non-profi
 
 %%%%%%%%%% Bioinformatics
 %Intro DNA representation
-Large archival also exist in bioinformatics, but the structure of biological sequences is very different from the one of code or webpages.
-DNA is most commonly seen as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage requires to scan the whole string to search for a pattern. 
-At the opposite of the spectrum, a suffix tree allows more efficient sequence analysis but requires 10 bytes per base~\cite{navarro2016compact}, which adds up to 30 gigabytes for a human genome containing 3.3 billion bases. 
-And thousands of genomes have been sequences through projects like the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} which reach its milestone in 2018. 
-A trade-off between those two extremes has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows to represent the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
+Large archives also exist in bioinformatics, but the structure of biological sequences is very different from that of code or webpages.
+DNA is typically represented as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage requires scanning the whole string to search for a pattern. 
+At the opposite of the spectrum, a suffix tree enables more efficient sequence analysis but necessitates 10 bytes per base~\cite{navarro2016compact}, which amounting to 30 gigabytes for a human genome containing 3.3 billion bases. 
+And thousands of genomes have been sequences through projects such as the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} which reached its milestone in 2018. 
+A trade-off between those two extremes has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows representing the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
 % Redundancy intra genome and intergenome
-The redundancy that compact data structures can exploit in genomes can come either from repeated regions in the genome (intra-genome redundancy) or through considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).  
+The redundancy that compact data structures can exploit in genomes can come either from repeated regions in the genome (intra-genome redundancy) or by considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).  
 % Reads
-However, for DNA, another classic data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. Reads can contain sequencing errors such as insertions, deletion and substitution of a nucleotide and their length and error rate vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each position of the original genome is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for short reads and propose a data structure specifically tailored to the specificities of a sequencing technique's. 
+However, for DNA, another common data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. Reads can contain sequencing errors, including nucleotide insertions, deletions, and substitutions. The typical length and error rate of the reads vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each position of the original genome is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for short reads and propose a data structure specifically tailored to the specificities of a sequencing technique. 
 % Cheaper = more sequencing
-Additionally, drastic decrease in sequencing cost and increase in throughput since 2008 (faster than expected by Moore's law~\cite{muir2016real}) lead higher volumes of DNA being sequenced. 
+Additionally, the drastic decrease in sequencing cost and increase in throughput since 2008 (faster than expected by Moore's law~\cite{muir2016real}) have lead to higher volumes of DNA being sequenced. 
 % ENA
-So far, the European Nucleotide Archive has accumulated more than 47 petabytes~\cite{ena} of read data.
+So far, the European Nucleotide Archive has accumulated more than 47 petabytes~\cite{ena} of sequencing data.
 % SRA
-While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of archive including 38 petabases in open access. However, like for the software heritage project and internet archive, in the ENA and the NCBI, the data is indexed by its metadata only.\\
+While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of archive including 38 petabases in open access. However, like for the software heritage project and internet archive, in the ENA and the NCBI, the data is indexed solely based on its metadata.\\
 %\todo[inline]{Look for more reasonable size example ? It's unclear if anybody would want to index the entire SRA}
 
 %%%% Astronomical data 
