@@ -1,13 +1,12 @@
 % !TeX root = main.tex
 \documentclass{these-dbl}
-
 % Remplir les metadonnees du pdf
 % Fill the pdf metadata
 \hypersetup{
-%    pdfauthor   = {XYZ},
-%    pdftitle    = {Th\`{e}se de doctorat de XYZ},
-%    pdfsubject  = {Th\`{e}se de doctorat de XYZ},
-%    pdfkeywords = {mots-cl\'{e}s},
+    pdfauthor   = {Garance Gourdel},
+    pdftitle    = {PhD thesis of Garance Gourdel},
+    pdfsubject  = {Sketch-based approaches to processing massive string data},
+    pdfkeywords = {string, algorithm, sketches, compression},
 }
 
 \input{preamble}
@@ -24,12 +23,13 @@
 
 \begin{document}
 
-\selectlanguage{english}
-
+\input{./Couverture-these/pagedegarde}
 
 \frontmatter
+\input{./Abstract/resume_francais}
+
+\selectlanguage{english}
 \input{./Abstract/abstract}
-%\input{./Abstract/resume_francais}
 
 %\input{./Acknowledgement/acknowledgement}
 
@@ -55,6 +55,13 @@
 
 \input{./Part_Two/part_two}
 
-%\input{./Conclusion/conclusion}
+\input{./Conclusion/conclusion}
+
+
+\clearemptydoublepage
+% Pour avoir la quatrième de couverture sur une page paire
+% To have the back cover on an even page
+\cleartoevenpage[\thispagestyle{empty}]
+\input{./Couverture-these/resume}
 
 \end{document}

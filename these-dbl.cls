@@ -17,21 +17,17 @@
 % Ajouts de boites et encarts grises
 % revision de l'enchainement des chapitres
 % Mise aux normes typographiques suivant les Regles Typographiques
-% en usage \`{a} l'Imprimerie Nationale
+% en usage a l'Imprimerie Nationale
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{these-dbl}[11/07/2021 v5.1]
+\ProvidesClass{these-dbl}[19/03/2023 v6]
 
 \LoadClass[twoside,10pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
 
-\RequirePackage[immediate]{silence}
-\WarningFilter[temp]{latex}{Command \underline  has changed.}
-\WarningFilter[temp]{latex}{Command \underbar  has changed.}
-\RequirePackage{sectsty} % obligatoire, pour jouer avec l'apparence des titres
 \RequirePackage[utf8]{inputenc} 
-\RequirePackage[english]{babel} % Last language is the default, use \selectlanguage{english} to switch
+\RequirePackage[french,english]{babel} % Last language is the default, use \selectlanguage{english} to switch
 \RequirePackage{ifpdf}
 \RequirePackage[usenames,dvipsnames]{color} % pour les couleurs
 \RequirePackage{textcomp}
@@ -41,9 +37,11 @@
 \RequirePackage[T1]{fontenc} % permet de sp\'{e}cifier \`{a} LaTeX l'utilisation du codage de caract\`{e}res T1, nouvelle norme LaTeX non utilis\'{e}e par d\'{e}faut pour des raisons de compatibilit\'{e} avec les anciens documents LaTeX.
 \RequirePackage{lmodern} % Assurer une bonne impression!
 \RequirePackage{tikz} % tikz est utilise pour tracer des boites, par exemple
+\usetikzlibrary{fadings}
 \RequirePackage{fix-cm}
 \RequirePackage{abstract}
 \RequirePackage{graphicx} % Pour ins\'{e}rer des images. Utiliser le format jpg pour plus de simplicit\'{e}.
+\RequirePackage{sectsty} % obligatoire, pour jouer avec l'apparence des titres
 \RequirePackage{shorttoc} % pour le sommaire, au debut.
 \RequirePackage{fancyhdr} % Afin de r\'{e}aliser soi-même les en-têtes et pieds de page, voir chaque d\'{e}but de chapitre.
 \RequirePackage{pifont} % Pour utiliser des symboles divers.
@@ -67,7 +65,8 @@
 
 \RequirePackage{ifthen} % Entrer valeurs bool\'{e}ennes et autres options
 \RequirePackage{csquotes} % Assurer les guillemets français
-
+%\frenchspacing
+%\FrenchFootnotes
 
 % Define commands to set fonts throughout the document
 \newcommand*{\selectfontfrontcover}{\fontfamily{phv}\selectfont}  % Font style used in front cover 
@@ -77,6 +76,8 @@
 % Override default font here if you want
 %\renewcommand{\rmdefault}{qpl}
 %\renewcommand{\sfdefault}{qpl} 
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% CONDITIONAL COMPILATION %%%%%%%%%%%%%%%
@@ -96,7 +97,6 @@
 %\def\thesubsection{\arabic{subsection}}
 %\def\thesubsubsection{\arabic{subsubsection}}
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%% En-tete chap %%%%%%%%%%%%%%%%
 
@@ -105,7 +105,7 @@
 \def\@makechapterhead#1{%
   \vspace*{-30\p@}%
   {\parindent \z@  \reset@font
-             \Large{\@chapapp{} \thechapter }
+             \Large{\@chapapp{} \thechapter}
         \par\nobreak
         %\interlinepenalty\@M
     %\selectfontchapheads 
@@ -122,7 +122,7 @@
         \par\nobreak
         \interlinepenalty\@M
     %\selectfontchapheads 
-    \Huge \bfseries #1 \par\nobreak
+    \huge \bfseries #1 \par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
@@ -143,6 +143,9 @@
 		\end{center}
 		\vspace{1cm}		
 	\begin{center}
+  %\begin{Huge}
+		%\ding{167}
+	%\end{Huge}	
 	\hrulefill
 	\end{center}		
 	}
@@ -169,8 +172,8 @@
   %defernumbers=true,
   maxcitenames=99,
   ]{biblatex}
-  
-% font small
+
+% small biblio font 
 \renewcommand*{\bibfont}{\small}
 
 % Style biblatex avec gestion des mots cl\'{e}s des entr\'{e}es bibliographiques
@@ -189,7 +192,7 @@
 %\DeclareFieldFormat{pages}{page(s): #1} % page(s) en toutes lettres, si on veut...
 
 % Locutions latines en italique (comme ibid, loc.cit. , etc.) Merci \`{a} Josquin Debaz
-\newcommand{\mkibid}[1]{\emph{#1}}
+\providecommand{\mkibid}[1]{\emph{#1}}
 
 % Et pour mettre le in en italique dans la ref\'{e}rence biblio (merci encore \`{a} Josquin Debaz)
 \DefineBibliographyStrings{english}{%
@@ -262,11 +265,11 @@
 
 %%%% Hauteur des logos, variable selon les (double) affiliations
 \newcommand*{\hauteurlogoecole}[1]{\gdef\vhauteurlogoecole{#1}}
-\hauteurlogoecole{2.4cm}
+\hauteurlogoecole{2cm}
 \newcommand*{\hauteurlogoetablissementA}[1]{\gdef\vhauteurlogoetablissementA{#1}}
 \hauteurlogoetablissementA{}
 \newcommand*{\hauteurlogoetablissementB}[1]{\gdef\vhauteurlogoetablissementB{#1}}
-\hauteurlogoetablissementB{2.4cm}
+\hauteurlogoetablissementB{2cm}
 
 %%%% Eventuel sous-titre
 \newcommand{\lesoustitre}[1]{\gdef\@lesoustitre{#1}}
@@ -296,6 +299,9 @@
 \newcommand{\numthese}[1]{\gdef\@numthese{#1}}
 \numthese{}
 
+%%% Couleur de la police de la page de garde
+\newcommand{\couleurpolice}[1]{\gdef\@couleurpolice{#1}}
+\couleurpolice{black}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -305,9 +311,9 @@
 \newcommand{\HugeTwelve}{\fontsize{26}{31}\selectfont} % 12pt \Huge
 \newcommand{\LARGETwelve}{\fontsize{20.74}{25}\selectfont} % 12pt \LARGE
 \newcommand{\LargeTwelve}{\fontsize{16}{19}\selectfont} % 12pt \Large
-\newcommand{\largeTwelve}{\fontsize{14.4}{17}\selectfont} % 12pt \large
+\newcommand{\largeTwelve}{\fontsize{15}{17}\selectfont} % 12pt \large
 \newcommand{\normalTwelve}{\fontsize{12}{13.2}\selectfont} % 12pt \normalsize
-\newcommand{\smallTwelve}{\fontsize{11}{13.5}\selectfont} % 12pt \small
+\newcommand{\smallTwelve}{\fontsize{12}{13.5}\selectfont} % 12pt \small
 \newcommand{\footnotesizeTwelve}{\fontsize{9.5}{11}\selectfont} % 12pt \footnotesize
 
 % Affiche les logos sur les pages de couverture
@@ -351,51 +357,55 @@
 \def\maketitle{%
   \thispagestyle{empty}
   \clearpage
-  %background image of the front cover
+  % Background image of the front cover
   \AddToShipoutPicture*{%
     \put(0,0){%
     \parbox[b][42.6cm]{\paperwidth}{%
-        \vfill
-        \includegraphics[width=\paperwidth,keepaspectratio,trim={0 5pt 0 0}]{\vdirecole/image-fond-garde} % Must trim white border off of bottom
-        \begin{tikzpicture}
-            \fill[color-ecole] (0,0) rectangle (\paperwidth,4.4);
-        \end{tikzpicture}
-        \vfill
+        
+%        \includegraphics[width=\paperwidth,keepaspectratio,trim={0 5pt 0 0}]{\vdirecole/image-fond-garde.png} % Must trim white border off of bottom
+%        \begin{tikzpicture}
+%            \fill[couleur-ecole-recto] (0,0) rectangle (\paperwidth,4.4);
+%        \end{tikzpicture}
+		\input{./Couverture-these/cover_tikz}
+    \vspace{10cm}
   }}}
   \displayLogos
   %
   \begin{tikzpicture}[remember picture,overlay,line width=0mm]
    \node at (current page.center)
 {\parbox{17.6cm}{
-\vspace{3.6cm}
+\vspace{3cm}
 
 \selectfontfrontcover % Set font style for front cover page
 
 {\HugeTwelve \textsc{Th\`{e}se de doctorat de} \\}
 
-% \vspace{5mm}
+\color{\@couleurpolice} % Some schools use white font
+
+\vspace{1.25cm}
 {\normalTwelve \if\@nomecoleB\empty ~\\ \else \fi} % To compensate the 2 lines of MathSTIC
 {\setlength{\baselineskip}{0.9\baselineskip}
-{\largeTwelve \if\vnometablissementA\empty ~ \else \vnometablissementA \fi} \\
-{\largeTwelve \if\vnometablissementB\empty ~ \else \vnometablissementB \fi} \\
-{\largeTwelve \if\vnometablissementC\empty ~ \else \vnometablissementC \fi} \\
-{\largeTwelve \if\vnometablissementD\empty ~ \else \vnometablissementD \fi} \\
-{\largeTwelve \vnometablissementE} \\
+{\largeTwelve \if\vnometablissementA\empty ~ \else \textsc{\vnometablissementA} \fi} \\
+{\largeTwelve \if\vnometablissementB\empty ~ \else \textsc{\vnometablissementB} \fi} \\
+{\largeTwelve \if\vnometablissementC\empty ~ \else \textsc{\vnometablissementC} \fi} \\
+{\largeTwelve \if\vnometablissementD\empty ~ \else \textsc{\vnometablissementD} \fi} \\
+{\largeTwelve \textsc{\vnometablissementE}} \\
 \par}
-\vspace{0.01cm}
-{\setlength{\baselineskip}{0.7\baselineskip}
-{\smallTwelve \textsc{\'{E}cole Doctorale \No \@numeroecole}} \\
+\vspace{0.1cm}
+{%\setlength{\baselineskip}{0.7\baselineskip}
+{\smallTwelve \textsc{\'{E}cole Doctorale \No \@numeroecole}\\} \\
 {\normalTwelve \textit{\@nomecoleA}} \\
-{\normalTwelve \if\@nomecoleB\empty \else \textit{\@nomecoleB} \\ \fi}
+{\normalTwelve \if\@nomecoleB\empty \else \textit{\@nomecoleB} \\ \fi}\\
+%\vspace{0.1cm}
 {\normalTwelve Sp\'{e}cialit\'{e} : \textit{\@spec}}
 
 %\fontsize{12}{10}\selectfont
-\vspace{0.5cm}
+\vspace{1cm}
 \hspace{0.6cm}{\normalTwelve Par \vspace{0.15cm}}
 \par}
-\hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{0.5cm}
+\hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{1.25cm}
 
-{\LargeTwelve \textbf{\@title}} \vspace{0.5cm}
+{\LargeTwelve \textbf{\@title}} \vspace{0.75cm}
 	
 {\largeTwelve \@lesoustitre} \vspace{0.5cm}
 \begin{spacing}{1}
@@ -404,12 +414,13 @@
 	 \textbf{Unit\'{e} de recherche : \@uniterecherche} \\
 	 \textbf{\if\@numthese\empty \else Th\`{e}se \No : \@numthese \fi} % Hide line if no number provided
 \end{spacing}
-\vspace{1.3cm}
-	\begin{small}
+\color{black}
+\vspace{0.5cm}
+	%\begin{small}
 	\begin{spacing}{1}
 		 \@jury
 	\end{spacing}
-	\end{small}
+	%\end{small}
 }
 };
 \end{tikzpicture}
@@ -425,16 +436,21 @@
 \newcommand{\backcoverheader}{%
 \thispagestyle{empty}
 \AddToShipoutPicture*{%
-    \put(0,0){%
-    \parbox[t][\paperheight]{\paperwidth}{%
-        \vspace{-29.6cm}
-        \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{\vdirecole/image-fond-dos}%
-    }}
-    \put(0,0){%
-    \parbox[t][\paperheight]{\paperwidth}{%
-        \vspace{-14.5cm}
-        \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{\vdirecole/image-fond-dos2}%
-    }}
+%    \put(0,0){%
+%    \parbox[t][\paperheight]{\paperwidth}{%
+%        \vspace{-29.6cm}
+%        \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{\vdirecole/image-fond-dos}%
+%    }}
+%    \put(0,0){%
+%    \parbox[t][\paperheight]{\paperwidth}{%
+%        \vspace{-16.55cm}
+%        \includegraphics[width=\paperwidth,height=\paperheight,keepaspectratio]{\vdirecole/image-fond-dos2}%
+%    }}
+	\put(0,0){%
+	\parbox[t][\paperheight]{\paperwidth}{%
+        \vspace{-33.1cm}
+		\input{./Couverture-these/backcover_tikz}
+	}}
 }
 \hspace{9mm}
 \displayLogos
@@ -442,10 +458,10 @@
 
 \newcommand{\titleFR}[1]{%
 \vspace{1cm}
-{\centering \noindent \textcolor{color-ecole}{\rule{\textwidth}{0.2cm}}}
+{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.2cm}}}
 \vspace{-1cm}
 \selectlanguage{french}
-\section*{\selectfontbackcover\smallTwelve \textcolor{color-ecole}{Titre : }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
+\section*{\selectfontbackcover\smallTwelve \textcolor{couleur-ecole-verso}{Titre : }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
 }
 
 \newcommand{\keywordsFR}[1]{%
@@ -464,10 +480,10 @@
 
 \newcommand{\titleEN}[1]{%
 \vspace{0.5cm}
-{\centering \noindent \textcolor{color-ecole}{\rule{\textwidth}{0.2cm}}}
+{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.2cm}}}
 \vspace{-1cm}
 \selectlanguage{english}
-\section*{\selectfontbackcover\smallTwelve \textcolor{color-ecole}{Title: }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
+\section*{\selectfontbackcover\smallTwelve \textcolor{couleur-ecole-verso}{Title: }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
 }
 
 \newcommand{\keywordsEN}[1]{%
@@ -541,24 +557,6 @@
 
 \ProcessOptions
 
-%%%%%%%%%% Chapter context box %%%%%%%%%%%%
-
-\newcommand*{\contextbox}[2]{
-\begin{center}
-\begin{tikzpicture}
-\node[rectangle,draw=fondtitre!100,fill=fonddeboite!100,inner sep=10pt, inner ysep=20pt] (mabox)
-{
-\begin{minipage}{0.95\textwidth}
-#2
-\end{minipage}
-};
-% le titre de la boite
-\node[fill=fondtitre!100, text=white, rectangle] at (mabox.north) {\sffamily\textbf{#1}};
-\end{tikzpicture}
-\end{center}
-}
-
-
 %%%%%%%%%% Boitemagique  %%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand*{\boitemagique}[2]{
 \begin{center}
@@ -584,5 +582,22 @@
 	#1
 \end{shaded}
 \end{minipage}
+\end{center}
+}
+
+%%%%%%%%%% Chapter context box %%%%%%%%%%%%
+
+\newcommand*{\contextbox}[2]{
+\begin{center}
+\begin{tikzpicture}
+\node[rectangle,draw=fondtitre!100,fill=fonddeboite!100,inner sep=10pt, inner ysep=20pt] (mabox)
+{
+\begin{minipage}{0.95\textwidth}
+#2
+\end{minipage}
+};
+% le titre de la boite
+\node[fill=fondtitre!100, text=white, rectangle] at (mabox.north) {\sffamily\textbf{#1}};
+\end{tikzpicture}
 \end{center}
 }

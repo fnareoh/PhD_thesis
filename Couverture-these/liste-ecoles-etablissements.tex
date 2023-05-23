@@ -1,0 +1,95 @@
+
+%%% Switch case in latex
+%%% https://tex.stackexchange.com/a/343306
+\makeatletter
+\providecommand\addcase[3]{\expandafter\def\csname\string#1@case@#2\endcsname{#3}}
+\providecommand\makeswitch[2][]{%
+    \providecommand#2[1]{%
+        \ifcsname\string#2@case@##1\endcsname\csname\string#2@case@##1\endcsname\else#1\fi%
+  }%
+}
+\makeatother
+
+%%%% Il faut adapter la taille des logos dans certains cas (e.g., EGAAL, 2 etablissements)
+\providecommand\hauteurlogos[3]{
+    \hauteurlogoecole{#1}
+    \hauteurlogoetablissementA{#2}
+    \hauteurlogoetablissementB{#3}
+}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% ECOLES DOCTORALES %%%%%%%%%%%%%%%%
+
+%%%% #1: dossier des images, #2: numero ED, #3: couleur ED recto, #4: couleur ED verso, #5-#6: nom complet sur plusieurs lignes
+\providecommand\addecoledoctorale[6]{
+    \direcole{#1}
+    \numeroecole{#2}
+    \definecolor{couleur-ecole-recto}{RGB}{#3}
+    \definecolor{couleur-ecole-verso}{RGB}{#4}
+    \nomecoleA{#5}
+    \nomecoleB{#6}
+}
+
+\makeswitch[default]\ecoledoctorale{}
+
+\addcase\ecoledoctorale{MATISSE}{\addecoledoctorale
+    {MATISSE}
+    {601}
+    {0,112,237}
+    {0,84,160}
+    {Math\'{e}matiques, T\'{e}l\'{e}communications, Informatique,}
+    {Signal, Syst\`{e}mes, \'{E}lectronique.}
+    \hauteurlogos{1.8cm}{1.8cm}{1.8cm}
+    \couleurpolice{white}
+}
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% ETABLISSEMENTS %%%%%%%%%%%%%%%%
+
+%%%% #1 nom du logo, #2-#4: nom complet sur plusieurs lignes
+\providecommand\addetablissement[4]{
+    \logoetablissementB{#1}
+    \nometablissementC{#2}
+    \nometablissementD{#3}
+    \nometablissementE{#4}
+}
+
+\makeswitch[default]\etablissement{}
+
+\addcase\etablissement{UR}{\addetablissement
+    {UR}
+    {}
+    {}
+    {l'Universit\'{e} de Rennes}
+}
+
+%%%% #1-#2: nom des deux logos, #3-#7: nom complet de la double affiliation sur plusieurs lignes
+\providecommand\addpairetablissements[7]{
+    \logoetablissementA{#1}
+    \logoetablissementB{#2}
+    \nometablissementA{#3}
+    \nometablissementB{#4}
+    \nometablissementC{#5}
+    \nometablissementD{#6}
+    \nometablissementE{#7}
+}
+
+% ALL, ESC: ENSAB-UR2
+\addcase\etablissement{ENSAB-UR2}{\addpairetablissements
+    {ENSAB}
+    {UR2}
+    {}
+    {l'\'{E}cole Nationale Sup\'{e}rieure}
+    {d'Architecture de Bretagne}
+    {d\'{e}livr\'{e}e conjointement avec}
+    {l'Universit\'{e} Rennes 2}
+    \hauteurlogos{2cm}{1.2cm}{2cm}
+}

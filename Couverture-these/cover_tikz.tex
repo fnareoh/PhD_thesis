@@ -1,0 +1,31 @@
+%à placer dans le dossier Couverture-these
+
+%Figure Tikz pour tracer les figures de la couverture
+% tikzpicture to draw the cover
+
+
+%Il faut rajouter le package \usetikzlibrary{fadings}
+
+
+ \begin{tikzpicture}
+ 	        % right triangle 
+            \foreach \x in {1,...,35}{
+              \draw[very thick, color = couleur-ecole-recto] (14.015,6.4+\x*4.128/35-0.025) -- (\paperwidth,4.428+\x*4.128/35-0.025);
+            }
+            \fill[white] (14,6.4) -- (14,8.556) -- (14, 10.8) -- (\paperwidth, 10.8) -- (\paperwidth, 8.556) -- cycle; 
+
+	        % middle triangle
+            \foreach \x in {1,...,35}{
+              \draw[very thick, color = couleur-ecole-recto] (7.02,10.528 +\x*4.128/35-0.025) -- (14,8.556+\x*4.128/35-0.025);
+            }
+            \fill[white] (7,10.528) rectangle (14.02, 17);
+            \fill[white] (13.995,8.56) rectangle (14.1, 13);
+            \shade[shading=axis, top color = white, path fading = south] (7,8.556) rectangle (14,10.54);
+            
+          % filled hexagon
+            \fill[couleur-ecole-recto, fill opacity = 1] (-1,0) -- (-1,12.7817142857) -- (14,8.556) -- (14,6.4) -- (\paperwidth,4.4281) -- (\paperwidth,0) -- cycle;
+  		
+		      %points
+            \input{./Couverture-these/cover_points}
+            \shade[shading=axis, top color = white, path fading = south] (14,8.556) rectangle (\paperwidth,10);
+\end{tikzpicture}
