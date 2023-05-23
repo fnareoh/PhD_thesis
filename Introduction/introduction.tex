@@ -147,26 +147,29 @@ While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of ar
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\todo[inline]{Introduce the concept of sketches and then add to each approach to scalability how it interacts with sketches (for the title of the PhD).}
+%
 It goes without saying that algorithms with quadratic time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of matching model is dictated both by the specific needs of the application and the typical scale of the input.
-Several (overlapping) approaches are generally used to cope with large amounts of data:
-\begin{itemize}
+%
+Several approaches can be used to cope with large amounts of data, including distributed algorithms that are designed to work on several computers sharing a network (with limited transfer). However, this approach is out of the scope of this thesis, instead we focused on sketching. It is a general approach rather than a precise method: a \textbf{sketch} keeps only the essential characteristic of the input needed to answer a given query. 
+Sketches aim to be more compact than the original input, offering promising scalability potential. This approach includes lossy and lossless compression. We will detail in Section~\ref{intro:sec:contrib} how each contribution relates to this concept. 
+While sketches are a common thread throughout the chapters, we can categorize and summarize their respective scalability approaches as follows (with some approaches that can be combined): 
 
-\item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfers can be 10 times slower compared to disk transfer). This direction is a research field of its own which is out of the scope of this thesis.
+\begin{itemize}
+%\item Distributed algorithms: those are designed to work on several computers sharing a network. The data is processed in parallel with limited transfer over the network (those transfers can be 10 times slower compared to disk transfer). This direction is a research field of its own which
 \item Compressed input: as mentioned already, highly redundant data can sometimes be compressed to a manageable size. 
 Consequently, algorithms and data structures that can directly operate on the compressed data become much more efficient. This is very natural approach as the data is almost always shared in a compressed format, however not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that for computing the longest common subsequence of two strings of uncompressed size $N$, given in a compressed format of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the strong exponential time hypothesis. In other words, even if the input is given compressed form, we cannot avoid a high dependency in the uncompressed size. In this thesis, 
 chapters~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} both take as input a grammar compressed text and their complexities are given as a function of the size of the compressed input.
 \item Data structures: here the complexity analysis is split in two parts, the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query.
 %The size of the data structure refers to the space of the information kept at the end of the construction to perform the query.   
 %One of the use case is to construct on a powerful server and then send the small data structure to users that can loaded it in main memory and query it repeatedly. 
-Chapters~\ref{chap:gapped_index} and ~\ref{chap:XBWT} are examples of that.
+Chapters~\ref{chap:gapped_index} and~\ref{chap:XBWT} are examples of that.
 \item Efficient second-memory algorithms: One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
 It is  common knowledge that random access to disk is very inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
 Therefore, an algorithm that uses few random accesses can be executed directly on disk which allows it to scale to large inputs much more easily. The main issue with this approach is that not all problems admit efficient solutions avoiding random access. For example, given a list and a permutation, returning the permuted list requires to access the elements in the order of the permutation, possibly random. We partially use this approach of relying on secondary memory to limit main memory usage in chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
 %\todo[inline]{If possible I should find a good reference for the speed of RAM vs SSD access, and an example of problem where avoiding random access is difficult.}
 \item Streaming algorithms: if the data is so large that it can only be handled as a stream, then it must be processed on the fly without the possibility to go back. Generally the pattern and the length of the text are known in advance and can be preprocessed, then the characters arrive one by one and can only be accessed later if they have been explicitly stored. This model optimizes both the time per character during the streaming phase and the space complexity which accounts for storing the result of the preprocessing and any space necessary to process the characters. Chapter~\ref{chap:regexp} and~\ref{chap:gapped_stream} are set in this model.
-\item Approximation algorithms: On a very large dataset it is not always needed to answer queries exactly and allowing some approximations in the result can allow to cut corners and circumvent lower bounds. 
-The entire second section of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability. %($\geq 1 - \frac{1}{n}$ for an input of size $n$).
+\item Approximation algorithms: When dealing with very large datasets, it is not always needed to provide precise answers to queries. Allowing for some approximations in the results can enable shortcuts and help bypass lower bounds.
+The entire second part of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability. %($\geq 1 - \frac{1}{n}$ for an input of size $n$).
 \end{itemize}
 
 \section{Contributions}\label{intro:sec:contrib}
