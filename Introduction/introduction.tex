@@ -1,4 +1,4 @@
-\chapter*{Introduction}\label{chap:intro}
+\chapter*{Introduction}\label{chap:intro}\setcounter{page}{1}
 \addcontentsline{toc}{chapter}{Introduction}
 \chaptermark{Introduction}
 
@@ -171,12 +171,3 @@ Therefore, an algorithm that uses few random accesses can be executed directly o
 \item Approximation algorithms: When dealing with very large datasets, it is not always needed to provide precise answers to queries. Allowing for some approximations in the results can enable shortcuts and help bypass lower bounds.
 The entire second part of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answer correctly with high probability. %($\geq 1 - \frac{1}{n}$ for an input of size $n$).
 \end{itemize}
-
-\section{Contributions}\label{intro:sec:contrib}
-
-So far, we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and while maintaining performances that can scale to the large volumes of input data.
-%
-This thesis makes theoretical and practical contributions to address both needs. 
-Each contribution is presented as an independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. This section is meant to give an overview of the main contributions of the thesis and how they relate.
-
-\todo[inline]{Extend the abstract description of how the different project relate to each other.}

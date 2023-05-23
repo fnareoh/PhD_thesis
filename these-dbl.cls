@@ -61,6 +61,8 @@
 \RequirePackage{eso-pic} % For \AddToShipoutPicture used for cover backgrounds
 \RequirePackage{framed} % utilise pour coloriser les encarts
 
+% Si on veut retourner au format classique du template c'est 12pt
+% outer=30mm et décommenter la ligne suivante
 %\onehalfspacing %Interligne 1,5
 
 \RequirePackage{ifthen} % Entrer valeurs bool\'{e}ennes et autres options

@@ -1,0 +1,29 @@
+ \section{Contributions}\label{intro:sec:contrib}
+
+ \todo[inline]{Work In Progress, do not review}
+
+So far, we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and while maintaining performances that can scale to the large volumes of input data.
+%
+This thesis makes theoretical and practical contributions to address both needs. 
+Each contribution is presented as an independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. This section is meant to give an overview of the main contributions of the thesis and how they relate to the concept of sketches.
+
+Part~ \ref{part:complex_queries} focuses on a theoretical study of complex queries. 
+%
+% Regular expressions
+We start with regular expression search in the streaming setting.
+%
+As mentioned previously, the streaming model considers that the regular expression $R$ we search for and the length of the stream $n$ are given in advance and can be preprocessed, then the text $T$ arrives one character at a time.
+% Talk about the lowerbounds ?
+In Chapter~\ref{chap:regexp}, our main contribution is to identify $d$ the number of union symbol and Kleene star in $R$ as the key parameter that allows for a space efficient streaming algorithm. We design randomized Monte Carlo algorithm (meaning the execution time is deterministic, but the algorithm can err with small probability) that solves regular expression membership and pattern matching in $\Oh(d^3\polylog n)$ space and $\Oh(nd^5\polylog n)$ time per character of $T$ (Theorem~\ref{th:memb}).
+% Previous uses of the parameter
+% Link to the number of words in the regular expression
+%
+Our approach relates to sketches in how we carefully chose to store only some subset of the occurrences of the string appearing in $R$.  
+
+% Part two
+
+% LCS
+
+% DTW
+
+% XBWT
