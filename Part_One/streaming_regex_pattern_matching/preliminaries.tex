@@ -188,6 +188,6 @@ We say that a fragment $S[i \dd j]$ of a string~$S$, where $1\le i\le j \le |S|$
 
 We will also need a notion of a partial occurrence of $R$. Intuitively, $S[i \dd j]$ is a partial occurrence of $R$ if it is a prefix of a string in $L(R)$, but we will need a more precise definition.
 
-\begin{definition}[Partial occurrence of a regular expression]
+\begin{definition}[Partial occurrence of a regular expression]\label{def:partial_occ_regexp}
 We say that a fragment $S[i \dd j]$ of a string $S$, where $1\le i\le j \le |S|$, is a \emph{partial occurrence} of a regular expression $R$ ending with a prefix $P$ of an atomic string $A$, if there is a walk from the initial state of $T_C(R)$ to the endpoint of the transition corresponding to $A$ such that the concatenation of the labels of the transitions in this walk equals $S[i \dd j] A[|P|+1\dd]$. 
 \end{definition}

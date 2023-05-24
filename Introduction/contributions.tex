@@ -24,9 +24,11 @@ This parameter had already been used by Bille and Thorup~\cite{doi:10.1137/1.978
 In the streaming model, this parameter was already known for the two special cases of streaming dictionary matching and don't care matching. To match a dictionary of patterns $\{P_1, P_2, ... P_d \}$, which corresponds to pattern matching for the regular expression $(P_1| P_2| ... | P_d)$, a series of results~\cite{Porat:09,DBLP:journals/talg/BreslauerG14,DBLP:conf/esa/CliffordFPSS15,DBLP:conf/esa/GolanP17,DBLP:conf/icalp/GolanKP18} lead to a randomized Monte Carlo algorithm in $\Oh(d\log m)$ space and $\Oh(\log \log |\Sigma|)$ time per character.
 While don't care matching for a pattern $P_1 ? P_2 ... ? P_d$ where $P_i$, $i \in [1,d]$, are strings (possibly empty) over $\Sigma$, can be written as matching $R = P_1 (1|2|\ldots|\sigma) P_2 (1|2|\ldots|\sigma) \ldots (1|2|\ldots|\sigma) P_{d}$, and Golan, Kopelowitz, and Porat~\cite{DBLP:journals/algorithmica/GolanKP19} showed that this problem can be solved by a randomized Monte Carlo algorithm in $\Oh(d \log m)$ space and $\Oh(d+\log m)$ time per character.
 
-
 % Intuitions of the ideas and how it links to sketches.
-Our approach relates to sketches in how we carefully chose to store only some subset of the occurrences of the string appearing in $R$.  
+We start by defining \emph{atomic strings} which are intuitively the strings over $\Sigma$ obtained by just keeping the concatenation and splitting at union, Klenee star and parenthesis. There are $\Theta(d)$ of them. \todo{give example ?}
+
+The basis of our approach is to essentially to store efficiently specific occurrences of prefixes of the atomic strings. We then link those occurrences we stored to test if there is a “partial” match of $R$ (Definition\ref*{def:partial_occ_regexp}). Because we store few occurrences over periodic regions of the text and their may be many ways of recomposing the partial match to consider, we formulate the problem of finding whether there is a partial match, as a graph problem then solve this problem efficiently using a circuit machinery.
+% Link to sketches
 
 % Gapped
 
