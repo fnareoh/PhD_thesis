@@ -25,13 +25,14 @@ In the streaming model, this parameter was already known for the two special cas
 While don't care matching for a pattern $P_1 ? P_2 ... ? P_d$ where $P_i$, $i \in [1,d]$, are strings (possibly empty) over $\Sigma$, can be written as matching $R = P_1 (1|2|\ldots|\sigma) P_2 (1|2|\ldots|\sigma) \ldots (1|2|\ldots|\sigma) P_{d}$, and Golan, Kopelowitz, and Porat~\cite{DBLP:journals/algorithmica/GolanKP19} showed that this problem can be solved by a randomized Monte Carlo algorithm in $\Oh(d \log m)$ space and $\Oh(d+\log m)$ time per character.
 
 % Intuitions of the ideas and how it links to sketches.
-We start by defining \emph{atomic strings} which are intuitively the strings over $\Sigma$ obtained by just keeping the concatenation and splitting at union, Klenee star and parenthesis. There are $\Theta(d)$ of them. \todo{give example ?}
+We start by defining \emph{atomic strings} which are the strings obtained by just keeping the concatenation and splitting at union, Klenee star and parenthesis. They only contain characters of $\Sigma$ and there are $\Theta(d)$ of them. The set of atomic string for $R= \mathrm{GAT}(\mathrm{TA}\mid \mathrm{O})(\mathrm{CAT})^*$  is $\{$GAT,TA,O,CAT$\}$.
+%
+The basis of our approach is to store efficiently some specific occurrences of prefixes of the atomic strings. Those stored occurrences are then linked to test if there is a “partial” match of $R$ (Definition\ref*{def:partial_occ_regexp}). Because we only store few occurrences over periodic regions of the text, they can be very far apart with just a long periodic substring in between. To recompose a partial match, we must check if that long periodic substring corresponds to a run of the Thompson automaton, which we formulate as finding a path of specific weight in a multigraph. We then solve this graph problem efficiently by translating it into a circuit with addition and convolution gates that can be evaluated in a space-efficient manner using a general framework~\cite{LokshtanovN10,Bringmann17}. Additionally, we improve that framework by removing its dependency on the Extended Riemann Hypothesis (Theorem~\ref{thm:bombieri}). 
+%Sketches
+Here the main novel idea relating to sketches is how the specific occurrences we store are chosen. It is common in streaming algorithm to handle the aperiodic and periodic strings as two separate cases. Here we choose to apply this reasoning recursively on $\Oh(\log n)$ levels through the notion of ``anchor'' position (Definition~\ref{def:anchors}). For each atomic string (or one of its prefixes) and a given anchor, either there are just a few occurrences crossing the anchor we can afford to store them, or the region is periodic, and we can instead look at an earlier position. This is key to achieve the desired space complexity and storing just the occurrences strictly needed.
 
-The basis of our approach is to essentially to store efficiently specific occurrences of prefixes of the atomic strings. We then link those occurrences we stored to test if there is a “partial” match of $R$ (Definition\ref*{def:partial_occ_regexp}). Because we store few occurrences over periodic regions of the text and their may be many ways of recomposing the partial match to consider, we formulate the problem of finding whether there is a partial match, as a graph problem then solve this problem efficiently using a circuit machinery.
-% Link to sketches
 
 % Gapped
-
 % Indexing
 
 % PM
