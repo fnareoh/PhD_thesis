@@ -459,7 +459,7 @@
 }
 
 \newcommand{\titleFR}[1]{%
-\vspace{1cm}
+\vspace{-0.5cm}
 {\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.2cm}}}
 \vspace{-1cm}
 \selectlanguage{french}
@@ -468,14 +468,14 @@
 
 \newcommand{\keywordsFR}[1]{%
 \vspace{-0.2cm}
-\noindent{\smallTwelve \textbf{Mot cl\'{e}s : }#1}
+\noindent{\small \textbf{Mot cl\'{e}s : }#1}
 }
 
 \newcommand{\abstractFR}[1]{%
 \vspace{-0.2cm}
 \begin{multicols}{2}
 \begin{spacing}{1}
-	\noindent\smallTwelve \textbf{R\'{e}sum\'{e} : }#1
+	\noindent\small \textbf{R\'{e}sum\'{e} : }#1
 \end{spacing}
 \end{multicols}
 }
@@ -490,14 +490,14 @@
 
 \newcommand{\keywordsEN}[1]{%
 \vspace{-0.2cm}
-\noindent{\smallTwelve \textbf{Keywords: }#1}
+\noindent{\small \textbf{Keywords: }#1}
 }
 
 \newcommand{\abstractEN}[1]{%
 \vspace{-0.2cm}
 \begin{multicols}{2}
 \begin{spacing}{1}
-	\noindent\smallTwelve \textbf{Abstract: }#1
+	\noindent\small \textbf{Abstract: }#1
 \end{spacing}
 \end{multicols}
 }

@@ -1,0 +1,22 @@
+%Context
+La simplicité des chaînes de caractères et leur versatilité placent leur traitement au cœur de nombreuses applications, tels que la bio-informatique, la recherche d'informations et la cybersécurité. 
+ Le problème naturel de La recherche exact de motifs a été largement étudié~\cite{charras2004handbook}, cependant, de nombreuses applications nécessitent également des requêtes plus complèxes. Par ailleurs, dans les domaines applicatifs, la quantité d'informations à traiter augmente à une vitesse stupéfiante~\cite{muir2016real}, et les requêtes exactes ne sont pas toujours assez rapides.
+
+ %First part
+Dans la première partie de cette thèse, nous étudions des requêtes complexes telles que la recherche par expressions régulières, la recherche de motifs consécutif  avec espacement et la détection de carrés.
+%Regexp
+Pour la recherche d'expressions régulières, nous donnons un algorithme efficace en espace dans le modèle de flot de données : les caractères du texte arrivent un par un, et nous ne pouvons accéder aux anciens que si nous les stockons explicitement.
+%Gapped
+Ensuite, la recherche de motifs consécutifs avec espacement est un type de requête plus simple où, étant donné deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut signaler toutes les occurrences consécutives de $P_1$ suivies de $P_2$ esppacés  d'une distance dans $[a, b]$. Nous étudions ce problème dans plusieurs modèles : algorithme de flot, la recherche de motifs sur un texte compressé, et l'indexation compressée.
+%Square
+Nos solutions, pour les deux problèmes précedant, utilisent la détection périodicité pour s'epargner des calculs redondants. Cette utilisation de la périodicité rend les carrés intéressants à étudier au-delà de leur signification inhérente~\cite{Kolpakov2003}. Nous étudions la détection et le calcul des carrés pour alphabets généraux (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée en 1984 par Main et Lorentz~\cite{Main1984}.
+
+% Second part
+La seconde partie de cette thèse propose quelques utilisations d'approximations afin de passer à l'échelle sur des grandes quantités de données dans diverses applications dont la bio-informatique.
+%
+Nous étudions tout d'abord la recherche approximatve de motifs, où nous devons rapporter toutes les occurrences à une distance au plus égale à $k$ pour une mesure de similarité donnée.
+% LCS DTW
+%Motivés par les bornes inférieures pour le calcul des mesures de similarité les plus populaires, 
+Nous fournissons des algorithmes paramétrés efficaces pour calculer la longueur de la plus longue sous-chaîne commune avec environ $k$ différences, puis pour la recherche de motifs avec deformation temporelle dynamique. En raison de leur robustesse au bruit dans l'entrée, ces deux mesures peuvent être appliquées à la détection sections repétés dans un texte, nécessaire pour des applications telles que la détection de plagiat~\cite{zou2010cluster} et l'alignement de séquences biologiques~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
+% XBWT
+Enfin, nous proposons un index compressé pour des collections de lectures de séquençage redondantes, qui tire parti d'alignements sur un génome assemblé pour améliorer la compression, mais qui peut néanmoins donner lieu à des faux positifs dans les recherches.
