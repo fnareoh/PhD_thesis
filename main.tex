@@ -43,8 +43,6 @@
 \input{./Introduction/contributions}
 \input{./Introduction/prelim}
 
-\backmatter
-\printbibliography[segment=\therefsegment,heading=subbibintoc]
 
 \mainmatter
 
@@ -52,9 +50,12 @@
 
 \input{./Part_Two/part_two}
 
-%\input{./Conclusion/conclusion}
+\input{./Conclusion/conclusion}
 
+\backmatter
+\printbibliography[heading=bibintoc]
 
+% Mandatory PhD school back cover.
 \clearemptydoublepage
 % Pour avoir la quatrième de couverture sur une page paire
 % To have the back cover on an even page
