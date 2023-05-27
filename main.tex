@@ -28,13 +28,20 @@
 \frontmatter
 
 \selectlanguage{english}
-\chapter*{Abstract en Français}\thispagestyle{empty}
-\input{./Abstract/resume_francais}
 \chapter*{Abstract}\thispagestyle{empty}
-\input{./Abstract/abstract}
+\small{\input{./Abstract/abstract}}
+\vspace{0.4cm}
+\noindent\hrulefill
+\vspace{0.4cm}
+
+
+\selectlanguage{french}
+\small{\input{./Abstract/resume_francais}}
+\input{./Abstract/resume_long}
 
 %\input{./Acknowledgement/acknowledgement}
 
+\selectlanguage{english}
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents 
 
