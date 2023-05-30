@@ -1,0 +1,33 @@
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.9}]
+%rectangle
+\node (a) at (0,0) {};
+\node (b) at (15,1) {};
+\draw (a) rectangle (b);
+\node at ($(a)+(0.9,0.5)$) {$\rev{l(u)}$};
+\node at ($(b)+(-0.4,-.5)$) {$l(v)$};
+%boundary
+\node (mid) at (8,-0.5) {};
+\draw (mid) -- ($(mid)+(0,2.3)$);
+%\node at ($(mid)+(0,2.5)$) {boundary};
+\draw[dotted] ($(mid) +(6,0)$) -- ($(mid) +(6,2)$);
+\draw[gray,->] ($(mid) +(0,2.3)$) -- ($(mid) +(1.5,2.3)$) node [midway, above] {$2^{j-1}$};
+\draw[gray,->] ($(mid) +(0,2.3)$) -- ($(mid) +(-1.5,2.3)$) node [midway, above] {$2^{j-1}$};
+\draw[->] ($(mid) +(0,2)$) -- ($(mid) +(6,2)$) node [midway, above] {$2^{j+1}$};
+\node at ($(mid) +(3,1)$) {$S^{right}(u,v,j)$};
+\draw[dotted] ($(mid) +(-6,0)$) -- ($(mid) +(-6,2)$);
+\draw[->] ($(mid) +(0,2)$) -- ($(mid) +(-6,2)$) node [midway, above] {$2^{j+1}$};
+\node at ($(mid) +(-3,1)$) {$S^{left}(u,v,j)$};
+%anchors
+\draw[fill=gray!40] ($(mid)+(0,0.5)$) rectangle ($(mid)+(1.5,1.5)$);
+\node at ($(mid)+(0.75,1)$) {$a^{right}$};
+\draw[fill=gray!40] ($(mid)+(0,0.5)$) rectangle ($(mid)+(-1.5,1.5)$);
+\node at ($(mid)+(-0.75,1)$) {$a^{left}$};
+
+\draw [decorate,decoration={brace,amplitude=10pt,mirror}] ($(mid) +(-6,0)$) -- ($(mid) +(6,0)$) node[midway,yshift=-0.7cm]{$S(u,v,j)$};
+
+\end{tikzpicture}
+\caption{Illustration of the definitions of anchors of a string $S(u,v,j)$.}
+\label{fig:anchors}
+\end{figure}

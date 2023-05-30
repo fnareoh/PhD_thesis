@@ -1,0 +1,75 @@
+\centering
+\begin{tikzpicture}[scale=1, every node/.style={scale=0.8}]
+%------------------------------------------------------------ COMMANDS
+\newcommand{\rheight}{0.35}
+\newcommand{\Sone}[1]{
+\draw (#1) node[left,shift={(0,{0.3*\rheight})}]  {\footnotesize{$S_1$}} rectangle ($(#1)+(\Sonelength,0.6*\rheight)$);
+\draw[fill=gray!50] ($(#1)+(0.25*\Sonelength,0)$) rectangle ++ (\Ponelength,0.6*\rheight) node[midway]  {\tiny{$P_1$}};
+}
+
+\newcommand{\Sonelength}{1}
+\newcommand{\Ponelength}{0.5}
+\newcommand{\Stwolength}{9}
+\newcommand{\Ptwolength}{4}
+\newcommand{\Ptwostart}{3.5}
+\newcommand{\Aboundary}{5}
+
+%----------------------------------------------------------------------
+
+
+%Non terminal A
+\begin{scope}[shift={(0,{-4.5*\rheight})}]
+	\node (ha) at (-2,0) {};
+	\draw (ha) node[right, shift={(0,{.55*\rheight})}] {$\str{\head(A)}$} rectangle ++ (12,\rheight) node[left, shift={(0,{-.65*\rheight})}] (ta) {$\str{\tail(A)}$};
+
+	% boundary	
+	\draw (\Aboundary,-0.5*\rheight) -- (\Aboundary,2.5*\rheight);
+	
+	% annotation
+	\node[above] (p2) at (0,\rheight) {};
+	\draw (p2) -- ($(p2) - (0,1.6*\rheight)$) node[below] {$p_2$};
+	\draw[dotted] ($(p2) - (0,0.2*\rheight)$) -- ($(p2) + (0,3*\rheight)$);
+	
+	\node[above] (q2) at (\Ptwostart,\rheight) {};
+	\draw (q2) -- ($(q2) - (0,1.6*\rheight)$) node[below] {$q_2$};
+	\draw[dotted] ($(q2) - (0,0.2*\rheight)$) -- ($(q2) + (0,3*\rheight)$);
+	\draw[<->] ($(p2)+(0,0.2*\rheight)$) -- ($(q2)+(0,0.2*\rheight)$) node[midway,above] {$\Delta_2$};
+	\draw[<->] (\Ptwostart,1.5*\rheight) -- (\Aboundary,1.5*\rheight) node[midway,above] {\small{$s_2$}};
+	
+	%2^k
+	 \node (twok) at (3.1,0) {};
+	 \draw[<->] ($(twok)+(0,2.5*\rheight)$) -- (\Aboundary,2.5*\rheight) node[midway,above] {$2^k$};
+	 \draw[dotted] ($(twok) - (0,0)$) -- ($(twok) + (0,5.5*\rheight)$); 
+\end{scope}
+
+%S2
+\node[left] (s2) at (0,0.5*\rheight) {};
+%\node[left] () at (0,2*\rheight) {$S_1$};
+\draw (0,0) node[left,,shift={(0,{0.5*\rheight})}] {$S_2$} rectangle ++ (\Stwolength,\rheight) ;
+\draw[fill=gray!50] (\Ptwostart,0) rectangle ++ (\Ptwolength,\rheight) node (endp2) {} node[midway]  {$P_2$};
+
+% extract and search for P_1
+\draw ($(twok) + (0,5.5*\rheight)$) -- ($(twok)+(0,6*\rheight)$) -- ($(endp2)+(0,0.5*\rheight)$) node[midway, above] {\small{extract and search for $P_1$}} -- ($(endp2)-(0,0)$) ;
+
+
+%p''1
+\node (p1) at (0.32*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.25*\rheight)$) node[below] {\small{$p''_1$}};
+\draw[dotted] ($(p1)+(0,0)$) -- ($(p1)+(0,4*\rheight)$);
+\Sone{0.32*\Stwolength,4*\rheight};
+
+\Sone{0.28*\Stwolength,3*\rheight};
+
+%p'1
+\node (p1) at (0.24*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.25*\rheight)$) node[below] {\small{$p'_1$}};
+\draw[dotted] ($(p1)+(0,0)$) -- ($(p1)+(0,2*\rheight)$);
+\Sone{0.24*\Stwolength,2*\rheight};
+
+%p1
+\node (p1) at (0.05*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.25*\rheight)$) node[below] {\small{$p_1$}};
+\draw[dotted] ($(p1)+(0,0)$) -- ($(p1)+(0,2*\rheight)$);
+\Sone{0.05*\Stwolength,2*\rheight};
+
+\end{tikzpicture}

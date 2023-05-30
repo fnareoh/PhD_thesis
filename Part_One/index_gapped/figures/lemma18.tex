@@ -1,0 +1,135 @@
+ 
+\begin{figure}[!ht]
+\centering
+
+%------------------------------------------------------------ COMMANDS
+\newcommand{\rheight}{0.5}
+\newcommand{\Alength}{14}
+\newcommand{\Aboundary}{12.4}
+\newcommand{\nbB}{6}
+\newcommand{\Blength}{1.3}
+
+\newcommand{\nontermA}{
+%Non terminal A
+\node (ha) at (0,0) {};
+\draw (ha) node[right,shift={(0,{0.55*\rheight})}] {$\str{\head(A)}$} rectangle ++ (\Alength,\rheight) node[left, shift={(0,{-0.55*\rheight})}] (ta) {$\str{\tail(A)}$};
+
+% boundary	
+\draw (\Aboundary,-0.5*\rheight) -- (\Aboundary,1.5*\rheight);
+
+% B'
+\node (l) at (2.1,0) {};
+\node[below,text height=0.25cm]  at ($(l)$) {$\ell$};
+\foreach \x in {0,...,\nbB}
+	\draw ($(l)+ (\x*\Blength,0)$) rectangle ++ (\Blength,\rheight) node[midway] {$\str{B'}$};
+\node (r) at ($(l)+(\nbB * \Blength + \Blength,0)$) {};
+\node[below,,text height=0.25cm]  at ($(r)$) {$r$};
+\draw [decorate,
+    decoration = {calligraphic brace,mirror}] ($(l)+(0,-\rheight)$) --  ($(r)+(0,-\rheight)$) node[midway,shift={(0,{-0.7*\rheight})}] {$\str{A'}$};
+
+
+% spacing
+\draw[white] (0,5*\rheight) -- (\Alength,5*\rheight);
+}
+
+\newcommand{\Ponelength}{3.7}
+\newcommand{\Ptwolength}{7.4}
+
+\newcommand{\Pone}[2][$q_1$]{
+\node (q1) at (#2) {};
+\draw[fill=gray!25] ($(q1)$) rectangle ++ (\Ponelength,\rheight) node[midway]  {{$P_1$}};
+%labels
+\path let \p1= (q1) in node (q1label) at (\x1,0) {};
+\draw[dotted] ($(q1)$) -- ($(q1label)$) node[below,text height=0.25cm] {\small{#1}};
+}
+
+\newcommand{\Sonelength}{6.7}
+\newcommand{\Soneheight}{0.2}
+\newcommand{\qoneoffset}{0.15*\Sonelength}
+
+\newcommand{\Sone}[2][$p_1$]{
+\node (p1) at (#2) {};
+\draw[fill=white] ($(p1)$) node[left,shift={(0,{0.5*\Soneheight})}] {$S_1$} rectangle ++ (\Sonelength,\Soneheight);
+\draw[fill=gray!25] ($(p1)+(\qoneoffset,0)$) rectangle ++ (\Ponelength,\Soneheight) ;
+}
+
+\newcommand{\Ptwo}[1]{
+\node (q2) at (#1) {};
+\draw[fill=white] (q2) rectangle ++ (\Ptwolength,\rheight) node[midway]  {{$P_2$}};
+%labels
+\path let \p1= (q2) in node (q2label) at (\x1,0) {};
+\draw[dotted] ($(q2)$) -- ($(q2label)$) node[below,text height=0.25cm] {\small{$q_2$}};
+}
+
+\newcommand{\pione}{0.15}
+\newcommand{\periods}[2]{
+\node (s1) at (#1) {};% start of the run
+\foreach \x in {1,...,#2} \draw ($(s1)+(\x*\pione*2,0)$) arc(0:180:0.15 and \pione);
+\draw ($(s1)+((#2*\pione*2+\pione*2,0.1)$) arc(40:180:0.15 and \pione);
+\node at($(s1)+ (\pione, 2*\pione)$) {$\pi_{1}$};
+\node at ($(s1)+((#2*\pione*2+\pione*4,0.075)$) {$\dots$};
+}
+
+
+%----------------------------------------------------------------------
+
+
+\captionsetup[subfigure]{justification=centering}
+\begin{subfigure}{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+\Ptwo{0.5*\Aboundary,4.5*\rheight}
+\Pone[$q_1+|\str{B'}|$]{{0.305*\Aboundary+\Blength},3*\rheight}
+\path let \p1= (q1) in node (q1end) at ({\x1},0) {};
+\draw[dotted] ($(q1)+(\Ponelength,0)$) -- ($(q1end)+(\Ponelength,0)$) node[below,text height=0.25cm] {\small{$q_1+|\str{B'}|+|P_1|-1$}};
+\Pone{0.305*\Aboundary,1.5*\rheight}
+
+
+\end{tikzpicture}
+\caption{If neither (1) nor (2), then $(q_1,q_2)$ is not consecutive.}
+\label{subfig:neither1nor2}
+\end{subfigure}
+%
+\begin{subfigure}{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+\Ptwo{0.5*\Aboundary,3*\rheight}
+\renewcommand{\Ponelength}{6.3}
+\Pone{0.305*\Aboundary,1.5*\rheight}
+\path let \p1= (q1) in node (q1end) at ({\x1},0) {};
+\draw[dotted] ($(q1)+(\Ponelength,0)$) -- ($(q1end)+(\Ponelength,0)$) node[below,text height=0.25cm] {\small{$q_1+|P_1|-1$}};
+\end{tikzpicture}
+\caption{(1) holds and (2) does not.}
+\label{subfig:only1holds}
+\end{subfigure}
+%
+\begin{subfigure}{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+% spacing
+\draw[white] (0,5*\rheight) -- (\Alength,6*\rheight);
+
+\Ptwo{0.5*\Aboundary,4.5*\rheight}
+
+\periods{0.29*\Aboundary,{3.6*\rheight+\Soneheight}}{11};
+\Sone{0.29*\Aboundary,3.6*\rheight}
+\path let \p1= (p1) in node (p1end) at ({\x1},0) {};
+\draw[dotted] ($(p1)$) -- ($(p1end)$) node[below,text height=0.25cm] {\small{$q_1-\Delta_1-|\str{B'}|$}};
+
+\Sone{0.29*\Aboundary-\Blength,2.8*\rheight}
+\path let \p1= (p1) in node (p1end) at ({\x1},{2*\rheight}) {};
+\draw[dotted] ($(p1)$) -- ($(p1end)$) node[below,text height=0.25cm] {\small{$q_1-\Delta_1-2|\str{B'}|$}};
+\Pone{0.465*\Aboundary,1.5*\rheight}
+\end{tikzpicture}
+\caption{(2) holds, (1) does not, and $|P_1|-s  \geq \str{(B')^2}$.}
+\label{subfig:only2holds}
+\end{subfigure}
+
+
+%-----------------------
+\caption{Subcases of Lemma~\ref{lm:q1}.}
+\label{fig:lemq1}
+\end{figure}

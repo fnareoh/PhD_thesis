@@ -1,0 +1,42 @@
+\begin{figure}
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.9}]
+%rectangle D
+\node (a) at (0,0) {};
+\node (b) at (15,1) {};
+\draw (a) rectangle (b);
+\node at ($(a)+(-0.5,0.5)$) {$D$};
+\draw[gray,dashed] ($(a) +(3.2,0)$) -- ($(a) +(3.2,1)$);
+\node[gray] at ($(a)+(0.5,0.5)$) {$E$};
+\node[gray] at ($(b)+(-0.5,-0.5)$) {$F$};
+%S1
+\draw ($(a)+(3,1.5)$) rectangle ++(8,1);
+\node at ($(a)+(2.5,2)$) {$S$};
+
+%anchor
+\node (anchor) at (7,0) {};
+\draw (anchor) rectangle ++(1.5,1);
+\draw ($(anchor)+(0,1.5)$) rectangle ++(1.5,1);
+\node at ($(anchor) +(0.75,0.5)$) {$a$};
+\node at ($(anchor) +(0.75,2)$) {$a$};
+\draw[dotted] (anchor) -- ($(anchor) +(0,-0.5)$);
+\node at ($(anchor) +(0,-1)$) {$anchor(\rho)$};
+
+%left ext
+\node (lext) at ($(anchor)+(-3,0)$) {};
+\node at ($(lext)+(-0.2,0.5)$) {$\times$};
+\draw [->] ($(anchor)+(0,0.5)$) -- ($(lext)+(0,0.5)$) node [midway, below] {\small{$\extleft(\rho)$}};
+\draw [->] ($(anchor)+(0,2)$) -- ($(lext)+(0,2)$);
+\draw[dotted] ($(lext)+(0,0.5)$) -- ($(lext) +(0,-0.5)$);
+\node at ($(lext) +(0,-1)$) {$start(\rho)$};
+%right ext
+\node (rext) at ($(anchor)+(3.5,0)$) {};
+\node at ($(rext)+(0.2,0.5)$) {$\times$};
+\draw [->] ($(anchor)+(1.5,0.5)$) -- ($(rext)+(0,0.5)$) node [midway, below] {\small{$\extright(\rho)$}};
+\draw [->] ($(anchor)+(1.5,2)$) -- ($(rext)+(0,2)$);
+
+\draw [decorate,decoration={brace,amplitude=10pt,}] ($(lext) +(0,2.5)$) -- ($(rext) +(0,2.5)$) node[midway,yshift=0.7cm]{$string(\rho)$};
+
+\end{tikzpicture}
+\caption{Illustration of the different values defined for $\rho$ an occurrence of the anchor $a$ in a non-terminal $D \rightarrow EF$.}
+\label{fig:constestant}
+\end{figure}

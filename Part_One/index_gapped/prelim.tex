@@ -1,0 +1,93 @@
+\section{Preliminaries}
+\label{indexgapped:sec:prelim}
+A \emph{string} $S$ of length $|S| = N$ is a sequence $S[0]S[1]\dots S[N-1]$ of characters from an alphabet~$\Sigma$. We denote the \emph{reverse} $S[N-1] S[N-2] \ldots S[0]$ of $S$ by $\rev{S}$. We define $S[i \dots j]$ to be equal to $S[i] \dots S[j]$ which we call a \emph{substring} of $S$ if $i \le j$ and to the empty string otherwise. We also use notations $S[i \dots j)$ and $S(i\dots j]$ which naturally stand for $S[i] \dots S[j-1]$ and $S[i+1] \dots S[j]$, respectively. 
+We call a substring $S[0 \dots i]$ \emph{a prefix} of $S$ and use a simplified notation $S[\dots i]$, and a substring $S[i \dots N-1]$ \emph{a suffix} of $S$ denoted by $S[i \dots]$. We say that $X$ is a \emph{substring} of $S$ if $X = S[i \dots j]$ for some $0 \le i \le j \le N-1$. The index $i$ is called an \emph{occurrence} of $X$ in $S$. 
+
+An occurrence $q_1$ of $P_1$ and an occurrence $q_2$ of $P_2$ form a  \emph{consecutive occurrence (co-occurrence)} of strings $P_1,P_2$ in a string $S$ if there are no occurrences of $P_1,P_2$ between $q_1$ and $q_2$, formally, there should be no occurrences of $P_1$ in $(q_1,q_2]$ and no occurrences of $P_2$ in $[q_1,q_2)$. For brevity, we say that a co-occurrence is \emph{$b$-close} if $q_2-q_1 \le b$.  
+ 
+An integer $\pi$ is a \emph{period} of a string $S$ of length $N$, if $S[i]=S[i+\pi]$ for all $i=0,\dots, N-1-\pi$. The smallest period of a string $S$ is called \emph{the period} of $S$. We say that $S$ is \emph{periodic} if  the period of $S$ is at most $N/2$. We exploit the well-known corollary of the Fine and Wilf's periodicity lemma~\cite{fine1965uniqueness}:
+
+
+\begin{corollary}\label{cor:arithmetic_progression}
+If there are at least three occurrences of a string $Y$ in a string $X$, where $|X| \le 2|Y|$, then the occurrences of $Y$ in $X$ form an arithmetic progression with a difference equal to the period of $Y$. 
+\end{corollary}
+
+
+\subsection{Grammars}
+\begin{definition}[Straight-line program~\cite{tit/KiefferY00}]
+A \emph{straight-line program} (SLP) $G$ is a context-free grammar (CFG) consisting of a set of non-terminals, a set of terminals, an initial symbol, and a set of productions, satisfying the following properties:
+\begin{itemize}
+\item A production consists of a left-hand side and a right-hand side, where the left-hand side is a non-terminal $A$ and the right-hand side is either a sequence $BC$, where $B,C$ are non-terminals, or a terminal;
+\item Every non-terminal is on the left-hand side of exactly one production;
+\item There exists a linear order $<$ on the non-terminals such that $A < B$ whenever $B$ occurs on the right-hand side of the production associated with $A$.
+\end{itemize}
+\end{definition}
+
+A \emph{run-length straight-line program} (RLSLP) \cite{mfcs/NishimotoIIBT16} additionally allows productions of form $A\rightarrow B^k$ for positive integers $k$, which correspond to concatenating $k$ copies of $B$. If $A$ is associated with a production $A \rightarrow a$, where $a$ is a terminal, we denote $\head(A) = a$, $\tail(A) = \varepsilon$ (the empty string); if $A$ is associated with a production $A \rightarrow BC$, we denote $\head(A) = B$, $\tail(A) = C$; and finally if $A$ is associated with a production $A \rightarrow B^k$, then $\head(A) = B$, $\tail(A) = B^{k-1}$.
+
+The \emph{expansion} $\str{S}$ of a sequence of terminals and non-terminals $S$ is the string that is obtained by iteratively replacing non-terminals by the right-hand sides in the respective productions, until only terminals remain. We say that $G$ \emph{represents} the expansion of its initial symbol.
+
+\begin{definition}[Parse tree]
+ The \emph{parse tree} of a SLP (RLSLP) is a rooted tree defined as follows: 
+\begin{itemize}
+\item The root is labeled by the initial symbol;
+\item Each internal node is labeled by a non-terminal;
+\item If $S$ is the expansion of the initial symbol, then the $i$th leaf of the parse tree is labeled by a terminal $S[i]$;
+\item A node labeled with a non-terminal $A$ that is associated with a production $A\rightarrow BC$, where $B,C$ are non-terminals, has $2$ children labeled by $B$ and $C$, respectively. If $A$ is associated with a production $A\rightarrow a$, where $a$ is a terminal, then the node has one child labeled by $a$.
+\item (RLSLP only) A node labeled with non-terminal $A$ that is associated with a  production $A\rightarrow B^k$, where $B$ is a non-terminal, has $k$ children, each labeled by $B$. 
+\end{itemize}
+\end{definition}
+
+The \emph{size} of a grammar is its number of productions. The \emph{height} of a grammar is the height of the parse tree. We say that a non-terminal $A$ is an \emph{ancestor} of a non-terminal $B$ if there are nodes $u,v$ of the parse tree labeled with $A, B$ respectively, and $u$ is an ancestor of $v$. For a node $u$ of the parse tree, denote by $\off(u)$ the number of leaves to the left of the subtree rooted at $u$. 
+
+\begin{definition}[Relevant occurrences]
+Let $A$ be a non-terminal associated with a production $A\rightarrow \head(A)\tail(A)$. We say that an occurrence $q$ of a string $P$ in $\str{A}$ is \emph{relevant with a split~$s$} if $q = |\str{\head(A)}|-s \le |\str{\head(A)}| \le q+|P|-1$.
+\end{definition}
+
+For example, in Fig.~\ref{fig:occurrences} the occurrence $q = 3$ of $P=cab$ is a relevant occurrence in $\str{C}$ with a split~$s=1$ but $\str{A}$ contains no relevant occurrences of $P$.
+
+\begin{restatable}{claim}{primaryocc}
+\label{claim:primary_occurrence}
+Let $q$ be an occurrence of a string $P$ in a string $S$. Consider the parse tree of an RLSLP representing $S$, and let $w$ be the lowest node containing leaves $S[q], S[q+1], \dots, S[q+|P|-1]$ in its subtree, then either
+\begin{enumerate}
+\item The label $A$ of $w$ is associated with a production $A \rightarrow BC$, and $q-\off(w)$ is a relevant occurrence in $\str{A}$; or
+\item The label $A$ of $w$ is associated with a production $A \rightarrow B^r$ and $q-\off(w)=q'+r' |\str{B}|$ for some $0 \le r' \le r$, where $q'$ is a relevant occurrence of $P$ in $\str{A}$.
+\end{enumerate}
+\end{restatable}
+\begin{proof}
+Assume first that $A$ is associated with a production $A \rightarrow BC$. We then have that the subtree rooted at the left child of $w$ (that corresponds to $\str{B}$) does not contain $S[q+|P|-1]$ and the subtree rooted at the right child of $w$ (that corresponds to $\str{C}$) does not contain $S[q]$. As a consequence, $q-\off(w)$ is a relevant occurrence in $\str{A}$. 
+
+Consider now the case where $A$ is associated with a production $A \rightarrow B^r$. The leaves labeled by $S[q]$ and $S[q+|P|-1]$ belong to the subtrees rooted at different children of $A$. If $S[q]$ belongs to the subtree rooted at the $(r'+1)$-th child of $A$, then $q'=q-\off(w)-|\str{B}| \cdot r'$ is a relevant occurrence of $P$ in $\str{A}$. 
+\end{proof}
+
+\begin{definition}[Splits]
+Consider a non-terminal $A$ of an RLSLP $G$. If it is associated with a production $A \rightarrow BC$, define 
+$$\lsplits(A,P) = \rsplits(A,P) = \{s : q \text{ is a relevant occurrence of } P \text{ in } \str{A} \text{ with a split } s\}.$$ 
+If $A$ is associated with a rule $A \rightarrow B^k$, define 
+\begin{align*}
+\lsplits(A,P) &=  \{s : q \text{ is a relevant occurrence of } P \text{ in } \str{A} \text{ with a split } s\};\\
+\rsplits(A,P) &=  \{|P|-s : q \text{ is a relevant occurrence of } \rev{P} \text{ in } \rev{\str{A}} \text{ with split } s\}.
+\end{align*}
+Define $\lsplits(G,P)$ $(\rsplits(G,P))$ to be the union of $\lsplits(A,P)$ $(\rsplits(A,P))$ over all non-terminals $A$ in~$G$, and $\splits(G,P) = \lsplits(G,P) \cup \rsplits(G,P)$. 
+\end{definition}
+
+We need the following lemma, which can be derived from Gawrychowski~et~al.~\cite{soda/GawrychowskiKKL18}:
+
+\begin{restatable}{lemma}{locallyconsistent}\label{lm:locally_consistent}
+Let $G$ be an SLP of size $g$ representing a string $S$ of length $N$, where $g \le N$. There exists a Las Vegas algorithm that builds a RLSLP $G'$ of size $g' = O(g \log N)$ of height $h = O(\log N)$ representing $S$ in time $O(g \log N)$ with high probability. This RLSLP has the following additional property: For a pattern $P$ of length $m$, we can in $O(m\log N)$ time provide a certificate that $P$ does not occur in $S$, or compute the set $\splits(G',P)$. In the latter case, $|\splits(G',P)| = O(\log N)$. 
+\end{restatable}
+
+\subsection{Compact Tries}
+\label{indexgapped:sec:compact_tries}
+We assume the reader to be familiar with the definition of a compact trie (see e.g.~\cite{Gusfield1997}). Informally, a trie is a tree that represents a lexicographically ordered set of strings. The edges of a trie are labeled with strings. We define the label $\lab(u)$ of a node $u$ to be the concatenation of labels on the path from the root to $u$ and an interval $I(u)$ to be the interval of the set of strings starting with $\lab(u)$. From the implementation point of view, we assume that a node $u$ is specified by the interval $I(u)$. The \emph{locus} of a string $P$ is the minimum depth node $u$ such that $P$ is a prefix of $\lab(u)$. 
+
+The standard tree-based implementation of a trie for a generic set of strings $\mathcal{S}= \{S_1, \ldots, S_k\}$ takes $\Theta\left(\sum_{i=1}^k |S_i|\right)$ space. Given a pattern $P$ of length $m$ and $\tau > 0$
+suffixes $Q_1,\dots,Q_{\tau}$ of $P$, the trie allows retrieving the ranges of strings in (the lexicographically-sorted) $\mathcal{S}$ prefixed by
+$Q_1,\dots,Q_{\tau}$ in $O(m^2)$ time. However, in this work, we build the tries for very special sets of strings only, which allows for a much more efficient implementation based on the techniques of Christiansen et al.~\cite{talg/ChristiansenEKN21}, the proof is given in Appendix~\ref{app:proofs}:
+
+\begin{restatable}{lemma}{tries}\label{lm:tries}
+Given an RLSLP $G$ of size $g$ and height $h$. Assume that every string in a set~$\mathcal{S}$ is either a prefix or a suffix of the expansion of a non-terminal of $G$ or its reverse. The trie for $\mathcal{S}$ 
+can be implemented in space $O(|\mathcal{S}|)$ to maintain the following queries in $O(m + \tau \cdot (h + \log m))$ time: Given a pattern $P$ of length $m$ and suffixes $Q_i$ of $P$, $1 \le i \le \tau$, find, for each $i$, the interval of strings in the (lexicographically sorted) $\mathcal{S}$ prefixed by $Q_i$. 
+\end{restatable}
+
+

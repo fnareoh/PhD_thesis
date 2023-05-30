@@ -1,0 +1,84 @@
+% A command to draw a rival to avoid code duplication
+\newcommand{\Rival}[6]{% x, y, lext, rext, length anchor, color
+\node (s1) at (#1,#2) {};% bottom left corner of the box containing the rival
+\draw ($(s1)+(0,0.5)$) -- ($(s1)+(#3,0.5)$);
+\draw[fill=#6] ($(s1)+(#3,0.25)$) rectangle ++((#5,0.5) ;
+\draw ($(s1)+(#3,0.5)+(#5,0)$) -- ($(s1)+(#3,0.5)+(#4,0)+(#5,0)$);
+}
+
+\newcommand{\Init}{
+%rectangle
+\node (a) at (0,0) {};
+\node (b) at (13,0) {};
+\draw[gray] (a) -- (b);
+\draw[gray] (6,-0.2) -- (6,0.2);
+
+%C1
+\node(c1) at (1,0) {};
+\node at ($(c1)+(0,1)$) {$C_1$};
+\draw (c1) rectangle ($(c1)+(3,0.5)$);
+\node (a1) at ($(c1)+(1,0)$) {};
+\draw[fill=color1] ($(a1)$) rectangle ++(1,0.5) node [midway] {$a_1$};
+
+%C2
+\node (c2) at (8,0) {};
+\node at ($(c2)+(4,1)$) {$C_2$};
+\draw (c2) rectangle ($(c2)+(4,0.5)$);
+\node (a2) at ($(c2)+(2,0)$) {};
+\draw[fill=color2] ($(a2)$) rectangle ($(a2)+(1,0.5)$) node [midway] {$a_2$};
+}
+
+\begin{figure}
+\centering
+\captionsetup[subfigure]{justification=centering}
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.5, every node/.style={scale=0.7}] % ignore
+\Init
+
+%left side
+\Rival{0.8}{-1}{0.7}{0.3}{1}{color1}
+\Rival{0}{-1.7}{0.4}{0.5}{1}{color2}
+
+%rightside
+\Rival{10.2}{-1}{0.3}{0.7}{1}{color1}
+\Rival{9.6}{-1.7}{1.2}{0.5}{1}{color2}
+\end{tikzpicture}
+\caption{ignore}
+\label{fig:rivals:ignore}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.5, every node/.style={scale=0.7}] % included
+\Init
+\Rival{8.2}{-1}{0.7}{0.3}{1}{color1}
+\Rival{1.2}{-1}{0.4}{0.3}{1}{color2}
+\node at (0,-1.7) {}; %hack so the graph align
+\end{tikzpicture}
+\subcaption[fig:rivals:ignore]{included}
+\end{subfigure}
+
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.5, every node/.style={scale=0.7}] % simple
+\Init
+\Rival{6.2}{-1}{0.7}{0.3}{1}{color1}
+\Rival{3.2}{-1}{0.4}{0.3}{1}{color2}
+\end{tikzpicture}
+\subcaption[fig:rivals:simple]{simple}
+\end{subfigure}
+\hfill
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.5, every node/.style={scale=0.7}] % annoying
+\Init
+\Rival{7.5}{-1}{0.7}{0.3}{1}{color1}
+\Rival{1.6}{-1}{0.8}{0.8}{1}{color2}
+\end{tikzpicture}
+\subcaption[fig:rivals:annoying]{annoying}
+\end{subfigure}
+
+\caption{Different types of rivals illustrated. For simplicity, we illustrate the case where $C_1$ and $C_2$ are on each side of the boundary of $A$ and they do not overlap,but the definition is not limited to this case.}
+\label{fig:rivals}
+\end{figure}

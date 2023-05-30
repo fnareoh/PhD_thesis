@@ -1,0 +1,186 @@
+
+
+\begin{figure}[h!]
+\centering
+
+%------------------------------------------------------------ COMMANDS
+\newcommand{\rheight}{0.5}
+\newcommand{\Alength}{5.3}
+\newcommand{\Aboundary}{2.4}
+
+\newcommand{\nontermA}{
+%Non terminal A
+\node (ha) at (0,0) {};
+\draw (ha) node[right,shift={(0,{0.55*\rheight})}] {$\str{\head(A)}$} rectangle ++ (\Alength,\rheight) node[left, shift={(0,{-0.55*\rheight})}] (ta) {$\str{\tail(A)}$};
+
+% boundary	
+\draw (\Aboundary,-0.25*\rheight) -- (\Aboundary,1.25*\rheight);
+
+% spacing
+\draw[white] (0,4*\rheight) -- (\Alength,4*\rheight);
+}
+
+\newcommand{\Sonelength}{1.2}
+\newcommand{\Ponelength}{0.5}
+\newcommand{\Stwolength}{1.8}
+\newcommand{\Ptwolength}{0.8}
+\newcommand{\qoneoffset}{0.4*\Sonelength}
+\newcommand{\qtwooffset}{0.3*\Stwolength}
+
+\newcommand{\Sone}[1]{
+\node (p1) at (#1) {};
+\node (q1) at ($(p1)+(\qoneoffset,0)$) {};
+\draw[fill=white] (p1) node[left,shift={(0,{0.5*\rheight})}]  {{$S_1$}} rectangle ($(p1)+(\Sonelength,\rheight)$);
+\draw[fill=gray!50] ($(q1)$) rectangle ++ (\Ponelength,\rheight) node[midway]  {{$P_1$}};
+%labels
+\path let \p1= (q1) in node (q1label) at (\x1,0) {};
+\draw[dotted] ($(q1)$) -- ($(q1label)$) node[below] {{$q_1$}};
+\path let \p1= (p1) in node (p1label) at (\x1,0) {};
+\draw[dotted] ($(p1)$) -- ($(p1label)$) node[below] {{$p_1$}};
+}
+
+\newcommand{\Stwo}[1]{
+\node (p2) at (#1) {};
+\draw (p2) node[left,shift={(0,{0.5*\rheight})}]  {{$S_2$}} rectangle ($(#1)+(\Stwolength,\rheight)$);
+\node (q2) at ($(p2)+(\qtwooffset,0)$) {};
+\draw[fill=gray!50] (q2) rectangle ++ (\Ptwolength,\rheight) node[midway]  {{$P_2$}};
+%labels
+\path let \p1= (q2) in node (q2label) at (\x1,0) {};
+\draw[dotted] ($(q2)$) -- ($(q2label)$) node[below] {{$q_2$}};
+\path let \p1= (p2) in node (p2label) at (\x1,0) {};
+\draw[dotted] ($(p2)$) -- ($(p2label)$) node[below] {{$p_2$}};
+}
+
+
+%----------------------------------------------------------------------
+
+
+\renewcommand\thesubfigure{1.\arabic{subfigure}}
+\captionsetup[subfigure]{justification=centering}
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\renewcommand{\Aboundary}{3}
+\nontermA
+\Stwo{1.1*\Aboundary,1.5*\rheight}
+\Sone{0.5*\Aboundary,1.5*\rheight}
+\node at (2.1,3*\rheight) {\small{rightmost}};
+\node at (4.2,3*\rheight) {\small{leftmost}};
+
+\end{tikzpicture}
+\caption{}
+\label{subfig:both_irrelevant}
+\end{subfigure}
+%
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+\Stwo{1.45*\Aboundary,1.5*\rheight}
+\Sone{0.6*\Aboundary,1.5*\rheight}
+\node at (4.4,3*\rheight) {\small{leftmost}};
+
+\end{tikzpicture}
+\caption{}
+\label{subfig:q1_relevant}
+\end{subfigure}
+%
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+\Stwo{0.9*\Aboundary,3*\rheight}
+\Sone{0.52*\Aboundary,1.5*\rheight}
+
+\end{tikzpicture}
+\caption{}
+\label{subfig:both_relevant}
+\end{subfigure}
+
+%-----------------------
+\vspace{0.5cm}
+
+%
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\renewcommand{\Aboundary}{3.5}
+\nontermA
+\Stwo{0.95*\Aboundary,1.5*\rheight}
+\Sone{0.4*\Aboundary,1.5*\rheight}
+\node at (2,3*\rheight) {\small{rightmost}};
+\end{tikzpicture}
+\caption{}
+\label{subfig:q2_relevant}
+\end{subfigure}
+%
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\renewcommand{\Aboundary}{3.5}
+\nontermA
+\renewcommand{\Stwolength}{3.5}
+\renewcommand{\Ptwolength}{1}
+\renewcommand{\qoneoffset}{0.3*\Sonelength}
+\renewcommand{\qtwooffset}{0.53*\Stwolength}
+\Stwo{0.4*\Aboundary,3*\rheight}
+\Sone{0.55*\Aboundary,1.5*\rheight}
+\end{tikzpicture}
+\caption{}
+\label{subfig:q1_included}
+\end{subfigure}
+%
+\begin{subfigure}{0.32\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\nontermA
+
+\Stwo{0.66*\Aboundary,3*\rheight}
+\Sone{0.3*\Aboundary,1.5*\rheight}
+\end{tikzpicture}
+\caption{}
+\label{subfig:q1_overlap}
+\end{subfigure}
+
+%-----------------------
+\vspace{0.5cm}
+
+\setcounter{subfigure}{0}
+\renewcommand\thesubfigure{2.\arabic{subfigure}}
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\renewcommand{\Aboundary}{3.5}
+\nontermA
+\renewcommand{\Sonelength}{1.5}
+\renewcommand{\Stwolength}{3.5}
+\renewcommand{\Ptwolength}{1.5}
+\renewcommand{\qoneoffset}{0.3*\Sonelength}
+\renewcommand{\qtwooffset}{0.4*\Stwolength}
+\Stwo{0.4*\Aboundary,3*\rheight}
+\Sone{0.55*\Aboundary,1.5*\rheight}
+\end{tikzpicture}
+\caption{}
+\label{subfig:q1_included_per}
+\end{subfigure}
+%
+\begin{subfigure}{0.45\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.7}]
+\renewcommand{\Aboundary}{3.5}
+\nontermA
+\renewcommand{\Stwolength}{2}
+\renewcommand{\Ptwolength}{1}
+\renewcommand{\qoneoffset}{0.3*\Sonelength}
+\renewcommand{\qtwooffset}{0.35*\Stwolength}
+\Stwo{0.75*\Aboundary,3*\rheight}
+\Sone{0.55*\Aboundary,1.5*\rheight}
+\end{tikzpicture}
+\caption{}
+\label{subfig:q1_overlap_per}
+\end{subfigure}
+
+%-----------------------
+\caption{Assume that $S_1$ does not contain~$S_2$. The figure shows all possible locations of occurrences $p_1, p_2$ of $S_1,S_2$ in $\str{A}$. \textbf{In Case~\ref{it:aperiodic} of Corollary~\ref{cor:q1_and_q2}}, there are six subcases: \psubref{subfig:both_irrelevant} $p_1+|S_1|-1 \le |\str{\head(A)}|$, $p_2 > |\str{\head(A)}|$; \psubref{subfig:q1_relevant} $p_1$ is a relevant occurrence of $S_1$, $p_2 > |\str{\head(A)}|$; \psubref{subfig:both_relevant} $p_1,p_2$ are relevant; \psubref{subfig:q2_relevant} $p_2$ is relevant, $p_1+|S_1|-1 \le p_2$; \psubref{subfig:q1_included} $p_2$ is relevant, $p_2 < p_1 \le p_1+|S_1|-1 \le p_2 + |S_2|-1$; \psubref{subfig:q1_overlap} $p_2$ is relevant, $p_1 < p_2 < p_1+|S_1|-1 \le p_2+|S_2|-1$. By the definition of a co-occurrence and by Observation~\ref{obs:rev_q1_and_q2}, in Subcases~\psubref{subfig:both_irrelevant} and~\psubref{subfig:q2_relevant} $p_1$ must be as far to the right as possible, and in Subcases~\psubref{subfig:both_irrelevant} and~\psubref{subfig:q1_relevant} $p_2$ must be as far to the left as possible. \textbf{In Case~\ref{it:periodic}}, there are two subcases: \psubref{subfig:q1_included_per} $p_2$ is relevant and $p_2 \le p_1 \le p_1+|S_1|-1 \le p_2+|S_2|-1$; \psubref{subfig:q1_overlap_per} $p_2$ is relevant and $p_1 < p_2 < p_2+\pi_1-1 \le p_1+|S_1|-1$, where $\pi_1$ is the period of $S_1$. In all subcases, $q_2=p_2+\Delta_2$. In Subcases~\psubref{subfig:both_irrelevant}-\psubref{subfig:q1_overlap} $q_1=p_1+\Delta_1$ and in Subcases~\psubref{subfig:q1_included_per} and \psubref{subfig:q1_overlap_per} $q_1=p_1+\Delta_1+k\cdot \pi_1$ for some integer $k$.}
+\label{fig:q1_and_q2}
+\end{figure}

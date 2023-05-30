@@ -1,0 +1,82 @@
+
+\newcommand{\drawSoneStwoPone}{
+%P_1
+\draw[fill=gray!20] (2.5,0) rectangle ++(3,1) node[midway]{$P_1$};
+%S1
+\draw (0,0) rectangle ++(6,1);
+\node at (-0.5,0.5) {$S_1$};
+\node (b1) at (3,0-0.15) {};
+\draw[dashed] (b1) -- ($(b1)+(0,1.15)$);
+}
+
+\newcommand{\drawSoneStwoPtwo}{
+% P_2
+\draw[fill=gray!40] (1.5,-0.5) rectangle ++(3,-1) node[midway]{$P_2$};
+% S_2
+\draw (1,-0.5) rectangle ++(5.5,-1);
+\node at (0.5,-1) {$S_2$};
+\node (b2) at (4,0-1.65) {};
+\draw[dashed] (b2) -- ($(b2)+(0,1.15)$);
+}
+
+\newcommand{\drawStwoSonePone}{
+%P_1
+\draw[fill=gray!20] (0.5,0) rectangle ++(3,1) node[midway]{$P_1$};
+%S1
+\draw (0,0) rectangle ++(5.5,1);
+\node at (6,0.5) {$S_1$};
+\node (b1) at (3,0-0.15) {};
+\draw[dashed] (b1) -- ($(b1)+(0,1.15)$);
+}
+
+\newcommand{\drawStwoSonePtwo}{
+% P_2
+\draw[fill=gray!40] (1,-0.5) rectangle ++(3,-1) node[midway]{$P_2$};
+% S_2
+\draw (-0.5,-0.5) rectangle ++(5,-1);
+\node at (5,-1) {$S_2$};
+\node (b2) at (2,0-1.65) {};
+\draw[dashed] (b2) -- ($(b2)+(0,1.15)$);
+}
+
+\begin{figure}
+    \centering
+\captionsetup[subfigure]{justification=centering}
+
+\begin{subfigure}{0.4\textwidth}
+\centering
+%S1 and S1 co occ but not P1 and P2 
+\begin{tikzpicture}[scale=0.62, every node/.style={scale=1}]
+\drawStwoSonePone
+\drawStwoSonePtwo
+\begin{scope}[yshift=-3.5cm]
+    \drawSoneStwoPone
+    \begin{scope}[xshift=3cm]
+        \drawSoneStwoPtwo
+    \end{scope}
+\end{scope}
+\end{tikzpicture}
+\caption{Co-occurrence of $P_1$ and $P_2$}
+\label{fig:overlap:P1_P2co-occ}
+\end{subfigure}
+%
+\hfill
+\begin{subfigure}{0.4\textwidth}
+\centering
+%S1 and S1 co occ but not P1 and P2 
+\begin{tikzpicture}[scale=0.62, every node/.style={scale=1}]
+\drawStwoSonePone
+\begin{scope}[xshift=-1.2cm]
+\drawStwoSonePtwo
+\end{scope}
+\begin{scope}[yshift=-3.5cm]
+    \drawSoneStwoPone
+    \drawSoneStwoPtwo
+\end{scope}
+\end{tikzpicture}
+\caption{No co-occurrence of $P_1$ and $P_2$}
+\label{fig:overlap:No_P1_P2co-occ}
+\end{subfigure}
+
+\caption{Examples of different overlaps of $S_1$ and $S_2$, where $S_1$ is either to the right or to the left of $S_2$, giving a consecutive occurrence of $P_1$ and $P_2$ or not.}\label{fig:overlaps}
+\end{figure}

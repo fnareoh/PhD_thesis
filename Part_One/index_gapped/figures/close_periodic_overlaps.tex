@@ -1,0 +1,70 @@
+
+\newcommand{\Runfig}[5]{% start_x, start_y, width_period, heigth_period, nb_rep
+%command to draw a run of full periods
+\node (s1) at (#1,#2) {};% start of the run
+\foreach \y in {1,...,#5} \draw ($(s1)+(\y*#3*2,0.5)$) arc(0:180:#3 and #4);
+}
+
+\newcommand{\drawSone}{
+%P_1
+\draw[fill=gray!20] (6.5,0) rectangle ++(2.7,1) node[midway]{$P_1$};
+%S1
+\draw (0,0) rectangle ++(10,1);
+\node at (-0.5,0.5) {$S_1$};
+\node (b1) at (7,0-0.15) {};
+\draw[dashed] (b1) -- ($(b1)+(0,1.15)$);
+}
+
+\newcommand{\drawStwo}{
+% P_2
+\draw[fill=gray!40] (6,-0.5) rectangle ++(5,-1) node[midway]{$P_2$};
+% S_2
+\draw (3,-0.5) rectangle ++(12,-1);
+\node at (12.5,-1) {$S_2$};
+\node (b2) at (9.6,0-1.65) {};
+\draw[dashed] (b2) -- ($(b2)+(0,1.15)$);
+}
+
+
+\begin{figure}
+\centering
+\captionsetup[subfigure]{justification=centering}
+
+\begin{subfigure}{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.6, every node/.style={scale=1}]
+\drawSone
+\Runfig{3}{0.5}{0.6}{0.5}{5}
+\draw (10.05,1.35) arc(40:180:0.6 and 0.5);
+\drawStwo
+\draw[|-|] ($(b1)+(0,-2)$) -- ($(b2)+(0,-0.5)$) node[midway,yshift=-0.3cm]{$\Delta_1$};
+\end{tikzpicture}
+\subcaption[fig:periodic_overlap:largest]{Largest overlap (stored).}
+\end{subfigure}
+
+\vspace{1cm}
+
+\begin{subfigure}{\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.6, every node/.style={scale=1}]
+\drawSone
+\Runfig{3}{0.5}{0.6}{0.5}{8}
+\begin{scope}[xshift=3.6cm]
+\draw (10.05,1.35) arc(40:180:0.6 and 0.5);
+\draw[dash pattern=on 2pt off 2pt,xshift=-1.2cm,yshift=-1.25cm] (6.5,0) rectangle ++(2.7,1) node[midway]{$P_1$};
+\draw[dotted] (5.3,-1.25) -- (5.3,-3);
+\draw[dotted] (2.9,0.5) -- (2.9,-3.5);
+\draw[<-] (5.3,-3) -- (6,-3) node[right]{$\leq b$};
+\draw[<-] (2.9,-3.5) -- (6,-3.5) node[right]{$ > b$};
+\draw[|-|] ($(b1)+(0,-4)$) -- ($(b2)+(3.6,-2.5)$) node[midway,yshift=-0.3cm]{$\Delta'_1$};
+\begin{scope}[yshift=-1cm]
+\drawStwo
+\end{scope}
+\end{scope}
+\end{tikzpicture}
+\subcaption[fig:periodic_overlap:shortest]{Shortest overlap (stored) and (dashed) the $P_1$ generating a co-occurrence at distance less than $b$.}
+\end{subfigure}
+
+
+\caption{An example where the closest occurrence of $P_1$ and $P_2$ is given by an overlap of $S_1$ and $S_2$ which we did not store. This overlap might or might not be present in $A$, however, the close occurrence is there in either case.}\label{fig:periodic_overlaps}
+\end{figure}

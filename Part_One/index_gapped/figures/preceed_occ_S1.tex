@@ -1,0 +1,46 @@
+\newcommand{\Sone}[1]{
+\draw[thick] (#1) -- ($(#1)+(\Sonelength,0)$);
+}
+\newcommand{\Sonedotted}[1]{
+\draw[dashed] (#1) -- ($(#1)+(\Sonelength,0)$);
+}
+
+\begin{figure}
+\centering
+\begin{tikzpicture}[scale=1, every node/.style={scale=0.8}]
+\draw[white] (0,1.7) -- (1,1.7); %spacing
+\renewcommand{\Sonelength}{1}
+\renewcommand{\Stwolength}{7}
+
+%S2
+\node[left] (s2) at (0,0.5*\rheight) {$S_2$};
+\node[left] () at (0,2*\rheight) {$S_1$};
+\draw (0,0) rectangle ++ (\Stwolength,\rheight) node[midway] {$\rev{U_2}$};
+
+\draw[<->] (0,-2*\rheight) -- (\Stwolength,-2*\rheight) node[midway, below] {$l_2$};
+\draw (\Stwolength,0) rectangle ++ (2,\rheight) node[midway] {$V_2$};
+\draw[<->] (\Stwolength,-0.5*\rheight) -- (0.7*\Stwolength,-0.5*\rheight) node[midway,below] {$2^k$};
+
+%p1
+\node (p1) at (0.3*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.5*\rheight)$) node[below] {$p_1$};
+\Sone{0.3*\Stwolength,1.2*\rheight};
+
+%p'1
+\node (p1) at (0.56*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.5*\rheight)$) node[below] {$p'_1$};
+\Sone{(0.56*\Stwolength,1.2*\rheight}
+\Sonedotted{(0.6*\Stwolength,1.6*\rheight}
+\Sonedotted{(0.64*\Stwolength,2*\rheight}
+
+%p''1
+\node (p1) at (0.68*\Stwolength,0) {};
+\draw ($(p1)+(0,0.01)$) -- ($(p1)+(0,-0.5*\rheight)$) node[below] {$p''_1$};
+\Sone{(0.68*\Stwolength,2.4*\rheight};
+
+\Sonedotted{0.25*\Stwolength,1.6*\rheight}
+\Sonedotted{0.05*\Stwolength,1.4*\rheight}
+
+\end{tikzpicture}
+\caption{In thick, the occurences $(p_1,p'_1,p''_1)$ stored for every $k \in [0,\log N]$. Dashed lines represent other occurences of $S_1$ that we don't store for this $k$.}
+\end{figure}
