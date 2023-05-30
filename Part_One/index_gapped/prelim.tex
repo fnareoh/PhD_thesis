@@ -83,11 +83,65 @@ We assume the reader to be familiar with the definition of a compact trie (see e
 
 The standard tree-based implementation of a trie for a generic set of strings $\mathcal{S}= \{S_1, \ldots, S_k\}$ takes $\Theta\left(\sum_{i=1}^k |S_i|\right)$ space. Given a pattern $P$ of length $m$ and $\tau > 0$
 suffixes $Q_1,\dots,Q_{\tau}$ of $P$, the trie allows retrieving the ranges of strings in (the lexicographically-sorted) $\mathcal{S}$ prefixed by
-$Q_1,\dots,Q_{\tau}$ in $O(m^2)$ time. However, in this work, we build the tries for very special sets of strings only, which allows for a much more efficient implementation based on the techniques of Christiansen et al.~\cite{talg/ChristiansenEKN21}, the proof is given in Appendix~\ref{app:proofs}:
+$Q_1,\dots,Q_{\tau}$ in $O(m^2)$ time. However, in this work, we build the tries for very special sets of strings only, which allows for a much more efficient implementation based on the techniques of Christiansen et al.~\cite{talg/ChristiansenEKN21}:
 
 \begin{restatable}{lemma}{tries}\label{lm:tries}
 Given an RLSLP $G$ of size $g$ and height $h$. Assume that every string in a set~$\mathcal{S}$ is either a prefix or a suffix of the expansion of a non-terminal of $G$ or its reverse. The trie for $\mathcal{S}$ 
 can be implemented in space $O(|\mathcal{S}|)$ to maintain the following queries in $O(m + \tau \cdot (h + \log m))$ time: Given a pattern $P$ of length $m$ and suffixes $Q_i$ of $P$, $1 \le i \le \tau$, find, for each $i$, the interval of strings in the (lexicographically sorted) $\mathcal{S}$ prefixed by $Q_i$. 
 \end{restatable}
+
+
+\begin{proof}
+    Let us first recall the definition of the Karp--Rabin fingerprint.
+    
+    \begin{definition}[Karp--Rabin fingerprint]
+    For a prime~$p$ and an~$r \in \mathbb{F}_p^\ast$, the \emph{Karp--Rabin fingerprint}~\cite{karp1987efficient} of a string~$X$ is defined as a tuple $(r^{|X|-1} \mod p, r^{-|X|+1} \mod p, \varphi_{p,r}(X))$, where $\varphi_{p,r}(X)=\sum_{k=0}^{|X|-1} S[k]r^k\mod p$.
+    \end{definition}
+    
+    We use the following result of Christiansen et al.~\cite{talg/ChristiansenEKN21}, which builds on Belazzougui~et~al.~\cite{esa/BelazzouguiBPV10} and Gagie~et~al.~\cite{latin/GagieGKNP14,soda/GagieNP18}.
+     
+    \begin{fact}[{\cite[Lemma 6.5]{talg/ChristiansenEKN21}}]\label{fact:compact_trie}
+    Let $\mathcal{S}$ be a set of strings and assume we have a data structure supporting extraction of any length-$l$ prefix of strings in $\mathcal{S}$ in
+    time $f_e(l)$ and computing the Karp--Rabin fingerprint $\varphi$ of any length-$l$ prefix of a string in $\mathcal{S}$
+    in time $f_h(l)$. We can then build a data structure that uses $O(|\mathcal{S}|)$ space and supports the following queries in $O(m + f_e (m) + \tau ( f_h (m) + \log m))$ time: Given a pattern $P$ of length $m$ and $\tau > 0$
+    suffixes $Q_1,\dots,Q_{\tau}$ of $P$, find the intervals of strings in (the lexicographically-sorted) $\mathcal{S}$ prefixed by
+    $Q_1,\dots,Q_{\tau}$.
+    \end{fact}
+    
+    It should be noted that despite using a hash function, the query algorithm is deterministic: the proof shows that $p$ and $r$ can be chosen during the construction time to ensure that there are no collisions on the substrings of the strings in $\mathcal{S}$.  
+    
+    To bound $f_e$, we use~\cite[Lemma 6.6]{talg/ChristiansenEKN21} which builds on G\k{a}sieniec et al.~\cite{dcc/GasieniecKPS05} and Claude and Navarro~\cite{spire/ClaudeN12a}.
+    
+    \begin{fact}[{\cite[Lemma 6.6]{talg/ChristiansenEKN21}}]\label{fact:prefsuf_extraction} Given an RLSLP
+    of size $O(g)$, there exists a data structure of size $O(g)$ such that any length-$l$ prefix or suffix of $\str{A}$ can be
+    obtained from any non-terminal $A$ in time $f_e(l) = O(l)$.
+    \end{fact}
+    
+    To bound $f_h(l)$, we introduce a simple construction based on the following well-known fact:
+    
+    \begin{fact}\label{fact:fingerprints}
+    Consider strings $X,Y,Z$ where $XY = Z$. Given the Karp--Rabin fingerprints of two of the three strings, one can compute the fingerprint of the third string in constant time.
+    \end{fact}
+    
+    \begin{claim}\label{claim:fingerprint_extraction}
+    Given a RLSLP $G$ of size $g$ and height $h$, there exists a data structure of size $O(g)$ that given a non-terminal $A$ and an integer $l$ allows to retrieve the Karp-Rabin fingerprints of the length-$l$ prefix and suffix of $\str{A^r}$ and $\rev{\str{A^r}}$ in time $f_h(l) = O(h + \log l)$.
+    \end{claim}
+    \begin{proof}
+    The claim for $\rev{\str{A^r}}$ follows for the claim for $\str{A^r}$ by considering the grammar $G_{rev}$, where the order of the non-terminals in each production is reversed. Below we focus on extracting the fingerprints for $\str{A^r}$, and we further restrict our attention to prefixes of $\str{A^r}$, the algorithm for suffixes being analogous. 
+    
+    The data structure consists of two sets. The first set contains the lengths of the expansions of all non-terminals in the grammar, and the second one their fingerprints. 
+     
+    By Fact~\ref{fact:fingerprints} and doubling, it suffices to show an algorithm for computing the fingerprint of the length-$l$ prefix of $\str{A}$. Assume that $A$ associated with a rule $A\rightarrow BC$. If the length of $\str{A}$ is smaller than $l$, we return error. Otherwise, to compute the fingerprint of the length-$l$ prefix of $\str{A}$, we consider two cases. If $l\leq |\str{B}|$, we recurse on $B$ to retrieve the fingerprint of the $l$-length prefix of $\str{B}$. Otherwise, we recurse on $C$ to retrieve the fingerprint of $\str{C}[\dots l-|\str{B}|)$ and then compute the fingerprint of the $l$-length prefix of $\str{A}$ from the fingerprints of $\str{B}$ and $\str{C}[\dots l-|\str{B}|)$ in constant time by Fact~\ref{fact:fingerprints}. 
+    
+    For a non-terminal $A$ associated with a rule $A\rightarrow B^{r}$, we compute the fingerprint analogously. If the length of $\str{A}$ is smaller than $l$, we return error. Otherwise, let $q$ be such that $q \cdot |\str{B}| \leq l < (q+1) \cdot |\str{B}|$. We compute the fingerprint of $\str{B}^q$ from the fingerprint of $\str{B}$ by applying Fact~\ref{fact:fingerprints} $O(1+\log q)$ times, and the fingerprint of $\str{B}[\dots l-q \cdot |\str{B}|)$ recursively. We can then apply Fact~\ref{fact:fingerprints} to compute the fingerprint of the length-$l$ prefix of $\str{A}$ in constant time. Note that in this case, the length of the prefix decreases by a factor at least $q$. 
+    
+    If we are in a terminal $A$, the calculation takes $O(1)$ time (the prefix must be equal to $A$ itself). 
+     
+    In total, we spend $O(h+\log l)$ time as we recurse $O(h)$ times, and whenever we spend more than constant time in a symbol, we charge it on the decrease in the length. The fingerprints of length-$l$ suffixes are computed analogously.
+    \end{proof}
+    
+    
+    By substituting the bounds for $f_e(l)$ (Fact~\ref{fact:fingerprints}) and $f_h(l)$ (Claim~\ref{fact:prefsuf_extraction}) into Fact~\ref{fact:compact_trie}, we obtain the claim of the lemma.
+\end{proof}
 
 

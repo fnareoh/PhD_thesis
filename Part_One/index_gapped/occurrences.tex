@@ -83,6 +83,52 @@ Assume that $[|\lab(u)|,+\infty] \times [|\lab(v)|,+\infty]$ contains a point $(
 To show the reverse direction, let $\ell = \off(u)+1$ and $r = \off(u)+|\str{A}|$, i.e. $S[\ell \dots r] = \str{A}$. The string $\str{A}$ contains an occurrence $\str{A}[q \ldots q+|P|)$ of $P$ iff $S[\ell+q \ldots \ell+q+|P|)$ is an occurrence of $P$ in $S$. From Claim~\ref{claim:primary_occurrence} it follows that if $w$ is the lowest node in the parse tree of $G'$ that contains leaves $S[\ell+q], \dots, S[\ell+q+|P|-1]$ in its subtree and $A'$ is its label, then there exists a split $s \in \splits(G',P)$ such that $\rev{P[\dots s]}$ is a prefix of $\rev{\str{\head(A')}}$ and $P(s\dots ]$ of $\str{\tail(A')}$. By definition of $u$ and $v$, the leaf of \Tpre\ labeled with $\rev{\str{\head(A')}}$ belongs to $I(u)$ and the leaf of \Tsuf\ labeled with $\str{\tail(A')}$ belongs to $I(v)$. Let $h_{pre}$ ($h_{suf}$) be the heavy path in \Tpre (\Tsuf) containing $u$ ($v$) and $(x,y)$ be the point in $\Pset(A,h_{pre},h_{suf})$ created for $A'$. As $|\lab(u)| \le x$ and $|\lab(v)| \le y$, the rectangle $[|\lab(u)|,+\infty] \times [|\lab(v)|,+\infty]$ is not empty.  
 \end{proof}
 
-It remains to explain how to retrieve the leftmost/rightmost occurrences in a non-terminal, as well as to answer predecessor/successor queries. The main idea for all four types of queries is to start at any node of the parse tree of $G'$ labeled by $A$ and recurse down via emptiness queries and case inspection. Since the length of the expansion decreases each time we recurse from a non-terminal to its child and the height of $G'$ is $h = O(\log N)$, this allows to achieve the desired query time. We provide full details in Appendix~\ref{app:occurrences}. %\qed
+It remains to explain how to retrieve the leftmost/rightmost occurrences in a non-terminal, as well as to answer predecessor/successor queries. The main idea for all four types of queries is to start at any node of the parse tree of $G'$ labeled by $A$ and recurse down via emptiness queries and case inspection. Since the length of the expansion decreases each time we recurse from a non-terminal to its child and the height of $G'$ is $h = O(\log N)$, this allows to achieve the desired query time. 
+%We provide full details in Appendix~\ref{app:occurrences}. %\qed
 
+
+\begin{claim}\label{claim:leftmost_rightmost}
+Given a non-terminal $A$ of $G'$, we can find the leftmost and the rightmost occurrences of $P$ in $\str{A}$ and as a corollary in $\str{\head(A)}$ and $\str{\tail(A)}$ in $O(\log^{2} N\log\log N)$ time.  % h splits \log^{\eps} N
+\end{claim}
+\begin{proof}
+We explain how to find the leftmost occurrence of $P$ in $\str{A}$, the rightmost one can be found analogously. We first check whether $\str{A}$ contains an occurrence of $P$ via Claim~\ref{claim:emptiness} in $O(\log N\log \log N)$ time. If it does not, we can stop immediately. Below we assume that there is an occurrence of $P$ in  $\str{A}$. Next, we check whether $\str{\head(A)}$ contains an occurrence of $P$ via Claim~\ref{claim:emptiness} in $O(\log N\log \log N)$ time. If it does, the leftmost occurrence of $P$ in $\str{A}$ is the leftmost occurrence of $P$ in $\str{\head(A)}$ and we can find it by recursing on $\head(A)$. If $\str{\head(A)}$ does not contain an occurrence of $P$, but $\str{A}$ contains relevant occurrences of $P$, then the leftmost occurrence of $P$ in $\str{A}$ is the leftmost relevant occurrence of $P$ in $\str{A}$ and we can find it in $O(|\splits(G',P)|) = O(\log N)$ time. Finally, if $P$ neither occurs in $\str{\head(A)}$ nor has relevant occurrences in $\str{A}$, then the leftmost occurrence of $P$ in $\str{A}$ is the leftmost occurrence of $P$ in $\str{\tail(A)}$. If $\tail(A)$ is a non-terminal $C$, we recurse on $C$ to find it. If $\tail(A)=B^{r-1}$ for a non-terminal $B$, $\str{\tail(A)}$ cannot contain an occurrence of $P$ because $\str{B}$ does not contain $P$ and there are no relevant occurrences in $A$. We recurse down at most $h = O(\log N)$ levels, and spend $O(\log N\log \log N)$ time per level. The claim follows.
+\end{proof}
+
+\begin{lemma}\label{lm:predecessor}
+Let $A$ be a non-terminal of $G'$. For any position $p$, we can find the rightmost occurrence $q \le p$ of $P$ in $\str{A}$ and the leftmost occurrence $q'\geq p$ of $P$ in $\str{A}$ in $O(\log^{3} N\log \log N)$ time.  
+\end{lemma}
+\begin{proof}
+First we describe how to locate $q$. Consider a node $u$ of the parse tree of $G'$ labeled by $A$. The algorithm starts at $u$ and recurses down. Let $A'$ be the label of the current node. It computes the leftmost and rightmost occurrences in $\str{A'}$, $\str{\head(A')}$ and $\str{\tail(A')}$ as well as all relevant occurrences via Claim \ref{claim:leftmost_rightmost}. If the leftmost occurrence of $P$ in $\str{A'}$ is larger than $p$, the search result is empty. Otherwise, consider two cases. 
+
+\begin{enumerate}
+\item $A'$ is associated with a rule $A' \rightarrow B'C'$, i.e. $\head(A') = B'$, $\tail(A') = C'$. 
+\begin{enumerate}
+\item If $p \le |\str{B'}|$, recurse on $B'$. 
+\item Assume now that $p > |\str{B'}|$. If the leftmost  occurrence of $P$ in $\str{C'}$ is smaller than $p$, recurse on $C'$. Otherwise, return the rightmost relevant occurrence of $P$ in $\str{A'}$ if it exists else the rightmost occurrence of $P$ in $\str{B'}$. 
+\end{enumerate}
+\item $A'$ is associated with a rule $A \rightarrow (B')^r$, i.e. $\head(A') = B'$, $\tail(A') = (B')^{r-1}$.  Let an integer $k$ be such that $(k-1) \cdot |\str{B'}|+1 \le p \le k \cdot |\str{B'}|$. The desired occurrence of $P$ is the rightmost one of the following ones:
+\begin{enumerate}
+    \item The rightmost occurrence $q \le p$ of $P$ which crosses the border between two copies of $\str{B'}$. To compute $q$, we compute all relevant occurrences of $P$ in $\str{A'}$ and then shift each of them by the maximal possible shift $r' \cdot |\str{B'}|$, where $r'$ is an integer, which guarantees that it starts before $p$ and ends before $|\str{A'}|$ and take the rightmost of the computed occurrences to obtain $q$.
+    \item The rightmost occurrence $q$ of $P$ such that for some integer $k'$, we have $(k'-1) \cdot |\str{B'}| \le q \le q+|P|-1 \le k' \cdot |\str{B'}|$ (i.e. the occurrence fully belongs to some copy of $\str{B'}$). In this case, $q$ is either the rightmost occurrence of $P$ in the $(k-1)$-th copy of $\str{B'}$, or the rightmost occurrence of $P$ in the $k$-th copy of $\str{B'}$ that is smaller than $p$. In the second case, we compute $q$ by recursing on $B'$.
+    \end{enumerate}
+\end{enumerate}
+    We recurse down at most $h$ levels. On each level we spend $O(\log^{2} N\log\log N)$ time to compute the leftmost, the rightmost, and relevant occurrences and respective shifts for a constant number of non-terminals via Claim~\ref{claim:leftmost_rightmost}. Therefore, in total we spend $O(h \cdot \log^{2} N\log\log N) = O(\log^{3} N\log\log N)$ time. 
+    
+    
+Locating $q'$ is very similar and differs only in small technicalities. The algorithm starts at the node $u$ and recurses down. Let $A'$ be the label of the current node. We compute the leftmost and rightmost occurrences in $\str{A'}$, $\str{\head(A')}$ and $\str{\tail(A')}$ as well as all relevant occurrences via Claim \ref{claim:leftmost_rightmost}. If the rightmost occurrence of $P$ in $\str{A'}$ is smaller than $p$, the search result is empty. Otherwise, consider two cases. 
+
+\begin{enumerate}
+\item $A'$ is associated with a rule $A' \rightarrow B'C'$, i.e. $\head(A') = B'$, $\tail(A') = C'$. 
+\begin{enumerate}
+\item If $p > |\str{B'}|$, recurse on $C'$. 
+\item Assume now that $p \leq |\str{B'}|$. If the rightmost  occurrence of $P$ in $\str{B'}$ is larger than $p$, recurse on $B'$. Otherwise, return the leftmost relevant occurrence $q$ satisfying $q\geq p$, if it exists, and otherwise the leftmost occurrence of $P$ in $\str{C'}$. %Otherwise, return the rightmost relevant occurrence of $P$ in $\str{A'}$ if it exists else the rightmost occurrence of $P$ in $\str{B'}$. 
+\end{enumerate}
+\item $A'$ is associated with a rule $A \rightarrow (B')^r$, i.e. $\head(A') = B'$, $\tail(A') = (B')^{r-1}$.  Let an integer $k$ be such that $(k-1) \cdot |\str{B'}|+1 \le p \le k \cdot |\str{B'}|$. The desired occurrence of $P$ is the leftmost one of the following ones:
+\begin{enumerate}
+    \item The leftmost occurrence $q' \geq p$ of $P$ which crosses the border between two copies of $\str{B'}$. To compute $q'$, we compute all relevant occurrences of $P$ in $\str{A'}$ and then shift each of them by the minimal possible shift $r' \cdot |\str{B'}|$, where $r'$ is an integer, which guarantees that it starts after $p$ and ends before $|\str{A'}|$ (if it exists) and take the leftmost of the computed occurrences to obtain $q$.
+    \item The leftmost occurrence $q'$ of $P$ such that for some integer $k'$, we have $(k'-1) \cdot |\str{B'}| \le q' \le q'+|P|-1 \le k' \cdot |\str{B'}|$ (i.e. the occurrence fully belongs to some copy of $\str{B'}$). In this case, $q'$ is either the leftmost occurrence of $P$ in the $(k+1)$-st copy of $\str{B'}$, or the leftmost occurrence of $P$ in the $k$-th copy of $\str{B'}$ that is larger than $p$. In the second case, we compute $q'$ by recursing on $B'$.
+    \end{enumerate}
+\end{enumerate}
+The time complexities are the same as for computing $q$.
+\end{proof}
 
