@@ -9,7 +9,7 @@ Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22} showed that given $p$-
 Assume to be given $p$-boundary information of strings $s_k, t_k$ for $k \in [1,q]$. One can compute all crossing occurrences of $p$ in all strings $s_k t_k$, for $k\in[1,q]$, in $O(q+m)$ time. For each $k$, the output is represented as an arithmetic progression.
 \end{lemma}
 
-For completeness, the proof of the lemma is given in the appendix. The proof and our algorithm exploit the following fact:
+The proof and our algorithm exploit the following fact:
 
 \begin{fact}[{see~\cite[Lemma 2.2, Theorem 1.3]{DBLP:conf/soda/GanardiG22}}]
 \label{fact:substring_concat}
@@ -20,3 +20,46 @@ Let $w$ be the size of the machine word. A string $p$ of length $m$ can be prepr
 \item Given $q$ substrings $u_1,\ldots,u_q$ of $p$ one can compute $\prefix(u_i)$ and $\suffix(u_i)$ in $O(q+m/w)$ time.
 \end{itemize}
 \end{fact} 
+
+Consider two strings $s,t$. Let $x, y$ be \suffixinfo{$p$} of $s$ and $u, v$ \prefixinfo{$p$} of $t$. To find all crossing occurrences of $p$ in a string $st$, it suffices to look at occurrences in $xyuv$ as $xy$ contains $\suffix(s)$ and $uv$ contains $\prefix(t)$.
+
+We can also assume that $x$ is a prefix of $p$ and $v$ a suffix of $p$ because there is an occurrence of $p$ in $xyuv$ if and only if there is an occurrence of $p$ in $\suffix(x) y u\prefix(v)$. Here and below, whenever we replace a string $x$ with $\suffix(x)$ and or a string $v$ with $\prefix(v)$, we assume to compute them using Fact~\ref{fact:substring_concat}. 
+
+By Corollary~\ref{cor:arithmetic_progression}, the crossing occurrences of $p$ form a single arithmetic progression. 
+We will consider several cases and for each case will report an arithmetic progression of occurrences, but in the end they can be merged into a single one. We repeatedly make use of the following procedure:
+
+\begin{proposition}\label{claim:big_overlap}
+Let $\ell$ be a prefix of $p$, $r$ a suffix of $p$, and $c$ a concatenation of at most three substrings of $p$. One can report all occurrences of $p$ in $\ell c$ starting at positions $i \leq |\ell|/2$ and all occurrences in $cr$ ending at positions $j \geq |c|+|r|/2$ using a constant number of longest common extension queries.
+%
+The occurrences are output as an arithmetic progression.
+\end{proposition}
+\begin{proof}
+We show how to proceed for the occurrences in $s = \ell c$, the proof for the occurrences in $c r$ is symmetric. Assume that there is an occurrence of $p$ at position $i \leq |\ell|/2$. As $\ell$ is a prefix of $p$, $i= \alpha \cdot d$, where $0 \leq \alpha \leq |\ell|/2d$ is an integer and $d$ is the period of $\ell$. 
+
+After a classical shared linear-time preprocessing the period of any prefix of $p$ can be extracted in $O(1)$ time~\cite{JoC/KnuthMorrisPratt}. If $d >|\ell|/2$, then the only candidate is $i=0$ and we can test whether $p$ occurs at this position using a constant number of longest common extension queries.
+We now assume $d \leq |\ell|/2$. Let $\alpha_{\max} \leq |\ell|/(2d)$ be the rightmost position such that $\alpha_{\max} \cdot d +m \leq |s|$. If there are none, then $|s| < m$ and there are no occurrences of $p$ in $s$. Let $k \geq |\ell|$ be the rightmost position such that $p[0 \dots k-1]$ has period $d$; $k$ can be computed by one longest common extension query on $p$ and $p[d \dots m-1]$. Furthermore, using $O(1)$ more longest common extension queries, one can check if $p[0 \dots k-1]$ occurs at position $\alpha_{\max} \cdot d$ and if not, compute the first mismatching position.
+
+Consider first the case where $p[0 \dots k-1]$ occurs at position $\alpha_{\max} \cdot d$. If $k=m$, then $p$ occurs at every position $\alpha \cdot d$ with $0 \leq \alpha \leq \alpha_{\max}$. If $k<m$, then $p$ cannot occur at a position $\alpha d$ with $\alpha \leq \alpha_{\max}$ by the maximality of~$k$.
+It suffices to check if $p$ occurs at position $\alpha_{max} \cdot d$ using $O(1)$ longest common extension queries and report it accordingly. Now assume that $p[0 \dots k-1]$ does not occur at position $\alpha_{\max}\cdot  d$ and let $p[0 \dots i-1]$ be the longest prefix starting at position $\alpha_{\max} \cdot d$ in $s$, meaning $p[i] \neq s[\alpha_{\max} \cdot d +i]$.
+By construction, $d$ is a period of $s[0 \dots \alpha_{\max} \cdot d + i-1]$. Consequently, no occurrence of $p[0 \dots k-1]$ in $\ell c$ can cross position $i$, meaning there is no occurrence of $p$ in $\ell c$ starting at position $\alpha \cdot d$ with $\alpha \cdot d + k > \alpha_{\max} \cdot d + i$. Thus, occurrences can only be at positions $\alpha \cdot d \leq \alpha_{\max} \cdot d +i-k$. If $k=m$, by the $d$-periodicity of $s[0 \dots \alpha_{\max} d + i-1]$, any such position is valid and we can report the occurrences as a single arithmetic progression.
+If $k<m$, the only possible candidate is the maximal $\alpha \cdot d$ such that $\alpha \cdot d +k < \alpha_{\max} +i $ (by maximality of $k$), and we can check whether there is an occurrence of $p$ via $O(1)$ longest common extension queries as above, and report it accordingly.
+\qed
+\end{proof}
+
+We start by applying Proposition~\ref{claim:big_overlap} on $\ell = x$ and $c = yuv$ to report all occurrences starting before $|x|/2$ and then apply it again on $\ell = \suffix(x[|x|/2 \dots])$ and $c = yuv$, which gives all occurrences of $p$ in $xyuv$ starting before~$3|x|/4$. Symmetrically, we can report all occurrences of $p$ ending after $|xyu| + |v|/4$. 
+
+It remains to report the occurrences of $p$ in a string $x' yu v'$, where $x' = \suffix(x[3|x|/4 \dots])$ and $v' = \prefix(v[\dots |v|/4])$. As $|x|, |v| \le m$, we have $|x'|, |v'| \le m/4$. For an occurrence $i$ of $p$ in $x' yu v'$, consider three (overlapping) cases:
+\begin{enumerate}
+\item \label{it:1} The occurrence is fully contained in $x'yu$;
+\item \label{it:2} The occurrence fully contains $yu$;
+\item \label{it:3} The occurrence is fully contained in $yuv'$.
+\end{enumerate}
+Consider Case~\ref{it:1}. By applying  Proposition~\ref{claim:big_overlap} on $c = x'y$ and $r = u$, we can assume that $|u| \le m/2$. We then have three subcases: (a) either an occurrence of $p$ is fully contained in $x'y$, or (b) it contains $y$, or (c) it is fully contained in~$yu$. In Case~\ref{it:1}(a), as $|x'| \le m/4$ and $|y| \le m$, any occurrence of $p$ in $x'y$ ends in the second half of $y$ and hence we can report all occurrences by applying Proposition~\ref{claim:big_overlap} once to $x'$ and $\prefix(y)$. Case~\ref{it:1}(c) is analogous. We repeat the argument for Case~\ref{it:3}. Thus, it remains to report all occurrences of $p$ in a string $q=efg$, where $|e|, |g| \le m/4$, $e$ is a prefix of $p$, $g$ is a suffix of $p$, such they fully contain $f$.
+
+Recall that $f$ is given by its starting and ending positions in $p$, let $f = p[i \dots j]$. If the length of $f$ is smaller than $m/2$, then $|q|<m$ and there are no occurrences of $p$ in $q$. Assume now that $|f| \ge m/2$.
+
+ 
+By Corollary~\ref{cor:imp}, after $O(m)$-time and $O(m)$-space preprocessing we can find the arithmetic progression of the occurrences of $f$ in $p$ in constant time. If there are only two occurrences, we test if they extend in $e$ and $g$ to an occurrence of~$p$ using two longest common extension queries. 
+
+Assume now that there are at least three occurrences. Let $p_{\text{mid}}$ be the minimal substring of $p$ which contains all occurrences of $f$. By Corollary~\ref{cor:arithmetic_progression}, the period of~$p_{\text{mid}}$ equals the period of $f$, $d$. Let $p=p_{\text{left}} p_{\text{mid}} p_{\text{right}}$. Next, using two longest extension queries, we compute the maximal substring $f'$ of $q$ that starts and ends with an occurrence of $f$. Namely, by Corollary~\ref{cor:arithmetic_progression}, it suffices to check how far the periodicity in $f$ extends beyond $f$: $f'$ must be periodic with period $d$, must fully contain $f$, and must start at a position $|e|-\alpha \cdot d$ and end at a position $|e|+|f|+\alpha \cdot \beta$ for some integers $\alpha, \beta$. Let $q = e'f'g'$. By Corollary~\ref{cor:arithmetic_progression}, the occurrences of $f$ in $q$ start at positions $|e'| + \alpha \cdot d$ for integer $0 \leq \alpha \leq (|f'|-|f|)/d$. Hence, if $p_{\text{left}}$ is not empty, then the only possible position where $p$ can occur in $q$ is $|e'|-|p_{\text{left}}|$, and we can test whether it is the case using $O(1)$ longest common extension queries. If $p_{\text{right}}$ is not empty, then the only possible position where $p$ can occur in $q$ is $|e'|+|f'|-|p_{\text{left}} p_{\text{mid}}|$. Otherwise, if both $p_{\text{left}}$ and $p_{\text{right}}$ are empty, the arithmetic progression of occurrences of $p=p_{\text{mid}}$ in $q$ is simply $|e'|+\alpha \cdot d$ for $0 \leq \alpha \leq (|f'|-|p_{\text{mid}}|)/d$. 
+\qed
