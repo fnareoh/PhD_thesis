@@ -1,0 +1,29 @@
+\newcommand{\inputpmgapped}[1]{\input{Part_One/pm_gapped/#1}}
+
+
+%\renewcommand{\occ}[0]{\mathrm{output}}
+\newcommand{\suffix}{\mathsf{suffix}}
+\newcommand{\prefix}{\mathsf{prefix}}
+\newcommand{\substringinfo}[1]{#1-substring information}
+\newcommand{\boundaryinfo}[1]{#1-boundary information}
+\newcommand{\suffixinfo}[1]{#1-suffix information}
+\newcommand{\prefixinfo}[1]{#1-prefix information}
+
+\contextbox{Publication}{
+This chapter corresponds to the following publication:~\fullcite{}
+}
+
+
+\small{
+    Originating from the work of Navarro and Thankanchan [TCS 2016], the problem of consecutive pattern matching is a variant of the fundamental pattern matching problem, where one is given a text and a pair of patterns $p_1,p_2$, and must compute consecutive occurrences of $p_1,p_2$ in the text. Assuming that the text is given as a straight-line program of size $g$, we develop an algorithm that computes all consecutive occurrences of $p_{1}, p_{2}$ in optimal $O(g+|p_1|+|p_2|+\occ)$ time. As a corollary, we also derive an algorithm that reports all co-occurrences separated by a distance $d \in [a,b]$ in $O(g+|p_1|+|p_2|+\occ)$ time and an algorithm that reports the top-$k$ closest co-occurrences in $O(g+|p_1|+|p_2|+k)$ time.
+}
+
+
+\inputpmgapped{intro}
+\inputpmgapped{prelim}
+\inputpmgapped{boundary}
+\inputpmgapped{crossing}
+\inputpmgapped{gapped}
+\inputpmgapped{variants}
+
+%TODO ADD BACK THE PROOF THAT WAS MOVED TO THE APPENDIX !

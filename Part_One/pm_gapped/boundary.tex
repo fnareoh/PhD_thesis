@@ -1,0 +1,36 @@
+ 
+\section{Boundary information}
+For the duration of this section, fix a pattern $p$ of length $m$. 
+For a string $s$, let $\prefix(s)$ be the longest prefix of $s$ which is a suffix of $p$ and $\suffix(s)$ the longest suffix of $s$ which is a prefix of $p$. If $s$ occurs in $p$ as a substring $f = p[i\dots j]$, we call~$f$ (here and below a substring of $p$ is specified by its endpoints in $p$) \emph{\substringinfo{$p$}} for $s$, and otherwise \substringinfo{$p$} for $s$ is undefined. 
+%\PGtodo{should it be a substring or a fragment? what is $u$?}
+The \emph{\boundaryinfo{$p$}} for a string $s$ is defined as follows:
+\begin{enumerate}
+\item If $s$ occurs in $p$, then it is simply \substringinfo{$p$} for $s$;
+\item Otherwise, it is two substrings of $p$, $u_s$ and $v_s$ such that $\prefix(s)$ is a prefix of $u_s v_s$ which in turn is a prefix of $s$ (\emph{\prefixinfo{$p$}}), and two substrings of $p$, $x_s, y_s$ such that $\suffix(s)$ is a suffix of $x_s y_s$ which in turn is a suffix of $s$ (\emph{\suffixinfo{$p$}}). (See Fig.~\ref{fig:pboundary}.)
+\end{enumerate}
+
+\inputpmgapped{figures/fig_boundary}
+
+Let $s, t$ be two strings and $q = st$ their concatenation. Assume to be given \boundaryinfo{$p$} for $s, t$. By definition, Algorithm~\ref{alg:boundary}, first described in~\cite{DBLP:conf/soda/GanardiG22}, correctly defines \boundaryinfo{$p$} for $q$.
+
+\begin{algorithm}[!ht]
+\centering
+\begin{enumerate}
+\item \label{case:s_is_substring} If $s$ is a substring of $p$ and $t$ is not,  then the \suffixinfo{$p$} of $q$ is the \suffixinfo{$p$} of $t$ and we define the \prefixinfo{$p$} for $q$ as follows:
+        \begin{enumerate} 
+        \item  If $su_t$ is a substring of $p$, then $u_q=su_t$ and $v_q=v_t$;
+        \item \label{case:t_is_substring} Otherwise, $u_q=s$ and $v_q=u_t$.
+        \end{enumerate}
+\item If $t$ is a substring of $p$ and $s$ is not, then the \prefixinfo{$p$} of $q$ is the \prefixinfo{$p$} of $s$ and we define the suffix information for $q$ as follows: 
+        \begin{enumerate}
+            \item \label{case:merge} If $y_s t$ is a substring of $p$ then $y_q=y_s t$ and $x_q=x_s$;
+            \item \label{case:crop} Otherwise, $x_q=y_s$ and $y_q=t$;
+        \end{enumerate}
+\item \label{case:both_are_substring} If $s$ and $t$ are both substrings of $p$, and $q$ is a substring $p[i \dots j]$ of $p$, then the \boundaryinfo{$p$} is \substringinfo{$p$} for $q$, and we define it equal to $(i,j)$. Otherwise, we put $u_q=x_q=s$ and $v_q=y_q=t$. 
+
+\item \label{case:none_is_substring} If neither $s$ nor $t$ is a substring of $p$, then one can take \prefixinfo{$p$} for $q$ equal to \prefixinfo{$p$} for $s$ and \suffixinfo{$p$} to \suffixinfo{$p$} for $t$. 
+\end{enumerate}
+\caption{Boundary information of $q = st$}
+\label{alg:boundary}
+\end{algorithm}
+

@@ -1,0 +1,22 @@
+\begin{definition}[Crossing occurrences]
+Let $s,t$ be two strings. We say that a position $i$ is a \emph{crossing occurrence} of $p$ in a string $q=st$ if $i$ is an occurrence of $p$ in $q$ and $i \le |s| \le i+|p|-1$. By extension, $i$ is a \emph{crossing occurrence} of $p$ in the expansion $\str{A}$ of a non-terminal $A$ of a grammar $G$, or simply a crossing occurrence for $A$, if $A$ is associated with a production $A\rightarrow BC$ and $i \le |B| \le i+|p|-1$.
+\end{definition}
+
+Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22} showed that given $p$-boundary information of two strings $s,t$ one can efficiently decide whether there is a crossing occurrence of $p$ in $q = st$. By slightly modifying their solution, we can report all such occurrences: 
+
+\begin{lemma}
+\label{lemma:crossing}
+Assume to be given $p$-boundary information of strings $s_k, t_k$ for $k \in [1,q]$. One can compute all crossing occurrences of $p$ in all strings $s_k t_k$, for $k\in[1,q]$, in $O(q+m)$ time. For each $k$, the output is represented as an arithmetic progression.
+\end{lemma}
+
+For completeness, the proof of the lemma is given in the appendix. The proof and our algorithm exploit the following fact:
+
+\begin{fact}[{see~\cite[Lemma 2.2, Theorem 1.3]{DBLP:conf/soda/GanardiG22}}]
+\label{fact:substring_concat}
+Let $w$ be the size of the machine word. A string $p$ of length $m$ can be preprocessed in $O(m)$ time so that:
+\begin{itemize}
+\item $q$ \emph{substring concatenation queries} on $p$ can be answered in $O(q+m/w)$ time. A substring concatenation query on a string $p$ asks: Given two substrings $u = p[i\dots j]$ and $v = p[k \dots \ell]$ of $p$, check whether $uv$ occurs in $p$ and, if so, return an occurrence; 
+\item Given $q$ substrings $u_1,\ldots,u_q$ of $p$ one can compute their longest prefix and longest suffix with a given prefix or suffix of $p$ in $O(q)$ time. Below we refer to such queries as \emph{longest common extension queries}, slightly abusing the standard terminology;
+\item Given $q$ substrings $u_1,\ldots,u_q$ of $p$ one can compute $\prefix(u_i)$ and $\suffix(u_i)$ in $O(q+m/w)$ time.
+\end{itemize}
+\end{fact} 

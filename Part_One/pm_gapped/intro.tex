@@ -1,0 +1,31 @@
+\section{Introduction}
+In the classical pattern matching problem, one is given a pattern and a text, and must find all substrings of the text equal to the pattern. However, considering potential applications, it is advantageous to enable queries beyond simply identifying exact matches of a given pattern in the preprocessed text. 
+
+Recently, 
+Navarro and Thankanchan~\cite{NavarroT16} suggested a generalisation of the pattern matching problem, where in addition to the pattern and the text one is given two integers $a,b$, and must find all pairs of consecutive occurrences of the pattern in the text separated by a distance $d \in [a,b]$. They showed that there is a $O(n \log n)$-space index for this problem with optimal query time $O(m+\occ)$, where $n$ is the length of the text and $m$ of the pattern. 
+
+Following their work, indexing for consecutive occurrences is receiving growing attention in the literature~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887}. 
+
+Bille et al.~\cite{cpm/BilleGPS21} considered an even more general case of the problem, where a query consists of two different patterns $p_1, p_2$ of total length $m$ and two integers $a,b$, and one must find all pairs of consecutive occurrences of $p_1,p_2$ in the text separated by a distance $d \in [a,b]$. For reporting the occurrences, they showed a linear-space data structure with $\tilde O(m+n^{2/3} \occ)$ query time. On the other hand, by reduction from the set intersection problem, they showed a lower bound suggesting that 
+achieving query time better than $\tilde O(m+\sqrt{n})$ for indexes of size $\tilde O(n)$ is impossible, even if $a=0$ is fixed. 
+
+Gawrychowski et al.~\cite{DBLP:journals/corr/abs-2304-00887} showed that one can circumvent this lower bound in the case $a=0$ assuming that the text is very compressible: assuming that the text is represented by a straight-line program (SLP) of size $g$, they showed a $\tilde{O}(g^5)$-space data structure with $\tilde{O}(m+\occ)$ query time, where $m$ is the total length of the patterns.  
+
+Unfortunately, the above upper bounds, despite their theoretical interest, are still far from providing an efficient solution. Motivated by this, we study the dual variant of the problem, where one must process the text and the patterns simultaneously. Note that if the text is uncompressed and has length $n$, the problem can be solved by classical online pattern matching in $O(n+m+\occ)$ time by keeping the most recent occurrences of $p_1$ and $p_2$. In this work, we show that a similar complexity can be achieved for very compressible texts by extending the ideas of~\cite{DBLP:conf/soda/GanardiG22}:
+
+\begin{theorem}\label{th:main}
+Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+\end{theorem}
+
+Using similar techniques, we derive an algorithm to output all consecutive occurrences with a bounded distance between them:
+
+\begin{corollary}\label{cor:ab}
+Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text separated by a distance $d \in [a,b]$ can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+\end{corollary}
+
+Finally, our techniques allow to derive an efficient solution for 
+the variant of the problem suggested by Bille et al.~\cite{DBLP:conf/fsttcs/BilleGPRS20}, where one must report the top-$k$ consecutive occurrences of $p$ with smallest distances between them. 
+
+\begin{corollary}\label{cor:topk}
+Given an integer $k$, a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, the $k$ closest consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+k)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+\end{corollary}

@@ -1,0 +1,151 @@
+ 
+\section{Compressed consecutive pattern matching}
+\label{sec:consec}
+We are now ready to prove Theorem~\ref{th:main}. Recall that the text has length $n$ and is represented by an SLP $G$ of size $g \ll n$, and the patterns $p_1,p_2$ have total length $m$.
+
+\subsection{Computing boundary information and crossing occurrences}
+\label{sec:boundary}
+We first use a linear-time pattern matching algorithm (e.g. the Knuth-Morris-Pratt algorithm~\cite{JoC/KnuthMorrisPratt}) to check whether $p_2$ is a substring of $p_1$. If it is, then every co-occurrence of $p_1, p_2$ in the text is a pair $(i,i+\ell)$, where $i$ is an occurrence of $p_1$ in the text and $\ell$ is the leftmost occurrence of $p_2$ in $p_1$. (By definition, there is no occurrence of $p_2$ in $[i,i+\ell)$. Note also that there cannot exist an occurrence $i < i' \le i+\ell$ of $p_1$, because then $i+\ell-i' < \ell$ would be an occurrence of $p_2$ in $p_1$, a contradiction with the choice of $\ell$.) In other words, to find all co-occurrences of $p_1,p_2$ in the text it suffices to find all occurrences of $p_1$ in the text, which can be done in $O(g+m+\occ)$ time~\cite{DBLP:conf/soda/GanardiG22}.
+
+Below we assume that $p_2$ is not a substring of $p_1$. Define an array $P$ such that for every $j$ in $[0\dots |p_2|-1]$, $P[j]$ is the rightmost occurrence of $p_1$ in $p_2$ to the left of $j$. We call $P$ the \emph{predecessor array}. $P$ can be computed in $O(m)$ time by a linear-time pattern matching algorithm.
+
+By~\cite{DBLP:conf/focs/GanardiJL19}, we can restructure the SLP $G$ representing the text in $O(g)$ time to ensure that its height is $O(\log n)$, while its size increases by only a constant factor. 
+
+For every symbol $A$ of $G$ (a non-terminal or a terminal) associated with a production $A\rightarrow BC$, we compute:
+\begin{enumerate}
+    \item \boundaryinfo{$p_1$} and \boundaryinfo{$p_2$} for $\str{A}$;
+    \item All crossing occurrences of $p_1$ and $p_2$ for $A$;
+    \item The rightmost and the leftmost occurrences of $p_1$ and $p_2$ in $\str{A}$;
+    \item Furthermore, if \suffixinfo{$p_2$} for $\str{A}$ is $(x_A,y_A)$, then we compute:
+    \begin{enumerate}
+    	\item \boundaryinfo{$p_1$} of $x_A$ and $y_A$, which we refer to as \emph{secondary boundary information};
+    	\item All crossing occurrences of $p_1$ for $x_A, y_A$;
+    	\item The rightmost occurrence of $p_1$ in $\str{A}$ starting before $x_A$.
+   	\end{enumerate}
+\end{enumerate}
+
+\begin{proposition}
+There is a $O(g)$-time algorithm that computes boundary and secondary boundary information for all symbols of $G$.
+\end{proposition}
+\begin{proof}
+We first compute boundary information. Let the $k$-th level $L_k$ of $G$ be the set of its symbols whose parse tree has height $k$. We apply Algorithm~\ref{alg:boundary} to compute boundary information for the symbols of each level in turn, starting from level $0$. Processing $L_k$ takes $|L_k|$ substring concatenation queries and $O(|L_k|)$ extra time. Since the height of $G$ is $O(\log n)$, by Fact~\ref{fact:substring_concat} we obtain $O(\sum_{k} (|L_k| + m/w)) = O(g+m)$ total time. 
+
+The secondary boundary information is computed by applying Algorithm ~\ref{alg:boundary} on the substrings constituting the boundary information. In more detail, note that for any non-terminal $A$ of $G$ associated with a production $A \rightarrow BC$ Algorithm~\ref{alg:boundary} computes the boundary information of $A$ by either copying the boundary information of $B$ or $C$ or by concatenating the substrings constituting the boundary information of $B$ and $C$ a constant number of times. It follows that in total there are $O(|L_k|)$ copying and concatenation operations at level $k$. For each concatenation operation, we apply Algorithm~\ref{alg:boundary} to update the boundary information. 
+Processing $L_k$ hence takes $O(|L_k|)$ substring concatenation queries and $O(|L_k|)$ extra time. As above, this leads to  $O(\sum_{k} (|L_k| + m/w)) = O(g+m)$ total time. 
+\qed
+\end{proof}
+
+We now apply Lemma~\ref{lemma:crossing} to compute all crossing occurrences for the non-terminals of $G$ in $O(g+m)$ time. By a second application of Lemma~\ref{lemma:crossing}, we compute, for every non-terminal $A$ of $G$, all crossing occurrences for pairs $x_A,y_A$, which constitute \suffixinfo{$p_2$} for $A$, using the same amount of time. 
+
+\begin{proposition}\label{claim:leftmost_rightmost}
+Given the boundary information and the crossing occurrences for all symbols of $G$, one can compute the rightmost and leftmost occurrences of $p_1$ and $p_2$ in the expansion of every symbol of $G$ in $O(g)$ time. 
+\end{proposition}
+\begin{proof}
+We explain how to compute the rightmost occurrences of $p_1$, the rest can be computed analogously. The algorithm processes the symbols of $G$ bottom-up. Consider a symbol $A$ of $G$. If it is a terminal, then we can find the rightmost occurrence of $p_1$ in its expansion (if it exists) in $O(1)$ time. Otherwise, assume that $A$ is associated with a production $A \rightarrow BC$. If $\str{C}$ contains an occurrence of $p_1$, then the rightmost occurrence of $p_1$ in $\str{A}$ is the rightmost occurrence of $p_1$ in $\str{C}$ (and we have already computed it). Otherwise, if there are crossing occurrences of $p_1$ for $\str{B}, \str{C}$, it is the rightmost such occurrence. And finally, if $\str{C}$ does not contain an occurrence of $p_1$ and there are no crossing occurrences, then we copy the rightmost occurrence of $p_1$ in $\str{B}$. 
+\qed
+\end{proof} 
+
+We will need the following auxiliary claim:
+
+\begin{observation}\label{obs:arithmetic_predecessor}
+Given an arithmetic progression by its starting position, difference, and  length, we can find the predecessor of a number $x$ in that progression in constant time.
+\end{observation}
+    
+\begin{proposition}\label{claim:preceding_x_A}
+There is a $O(g+m)$-time algorithm that computes, for each symbol $A$ of $G$, the rightmost occurrence of $p_1$ in $\str{A}$ starting before $x_A$, where $(x_A,y_A)$ is \suffixinfo{$p_2$} for $\str{A}$. 
+\end{proposition}    
+\begin{proof}   
+Let $(x_B,y_B)$ (resp., $(x_C,y_C)$) be \suffixinfo{$p_2$} for $\str{B}$ (resp., $\str{C}$). Recall Algorithm~\ref{alg:boundary} that we used to compute boundary information. 
+
+In Cases \ref{case:s_is_substring} and \ref{case:none_is_substring}, the \suffixinfo{$p_2$} of $A$ is the \suffixinfo{$p_2$} of $C$. Therefore, the rightmost occurrence of $p_1$ before $x_A$ in $\str{A}$ is either the last occurrence before $x_C=x_A$ in $\str{C}$, or the rightmost crossing occurrence of $p_1$ for $A$, or the rightmost occurrence of $p_1$ in $\str{B}$, and we can compute it in constant time.
+
+In Case \ref{case:both_are_substring}, either $(x_A,y_A)$ is undefined or $x_A = \str{B}$, and therefore the rightmost occurrence of $p_1$ is undefined. 
+
+In Case \ref{case:merge}, $x_A=x_B$, and therefore the rightmost occurrence of $p_1$ in $\str{A}$ before $x_A$ is either the rightmost occurrence of $p_1$ in $\str{B}$ before $x_B$ or the rightmost crossing occurrence of $p_1$ for $A$ that precedes $x_B$, which can be found in constant time by Observation~\ref{obs:arithmetic_predecessor}. 
+
+In Case \ref{case:crop}, we have $x_A=y_B$. Thus, the rightmost occurrence before $x_A$ equals to one of the following: 
+        \begin{enumerate}
+            \item The rightmost crossing occurrence of $p_1$ for $x_B$ and $y_B$; 
+            \item The rightmost occurrence fully contained in $x_B$; 
+            \item The rightmost occurrence of $p_1$ preceding $x_B$;
+            \item The rightmost crossing occurrence of $p_1$ for $A$ preceding $x_B$.
+        \end{enumerate}
+We can find the rightmost occurrence fully contained in $x_B=p_2[i \dots j]$ by querying the predecessor array for $j-|p_1|+1$, and the two other occurrences have been already computed. 
+\qed
+\end{proof}
+    
+\subsection{Reporting co-occurrences}
+We now show how to quickly report the co-occurrences using the precomputed information. 
+
+\begin{proposition}\label{claim:predecessor_of_crossing}
+Consider a symbol $A$ of $G$ associated with a production rule $A \rightarrow BC$. Let $j < |\str{B}| \le j+p_2-1$ be an occurrence of $p_2$ in $\str{A}$. One can find the rightmost occurrence $i \le j$ of $p_1$ such that $i+|p_1|-1 < |\str{B}|$ in $O(1)$ time.  
+\end{proposition}
+\begin{proof}
+Let $(x_B, y_B)$ be \suffixinfo{$p_2$} for $\str{B}$. By definition, $j$ belongs to $x_By_B$. If $j$ belongs to $y_B$, then $i$ is the rightmost existing one of the following candidates:
+\begin{enumerate}
+    \item The rightmost occurrence $i' \le j$ of $p_1$ such that $\str{A[i..i+|p_1|)}$ is fully contained in $y_B$ (which we can find in $O(1)$ time using the predecessor array $P$); 
+    \item The rightmost crossing occurrence $i' \le j$ of $p_1$ for $x_B, y_B$ (which we can find in $O(1)$ time by Observation~\ref{obs:arithmetic_predecessor});
+    \item The rightmost occurrence of $p_1$ that is fully in $x_B$ (which we can find in $O(1)$ time using the predecessor array $P$); 
+    \item The rightmost occurrence of $p_1$ in $\str{B}$ starting before $x_B$ (which we have precomputed). 
+\end{enumerate}
+If $j$ is in $x_B$, then $i$ is the rightmost existing one of the following candidates:
+     \begin{itemize}
+         \item The rightmost occurrence $i' \le j$ of $p_1$ such that $\str{A}$ is fully contained in $x_B$ (which we can find in $O(1)$ time using the predecessor array $P$);
+         \item The rightmost crossing occurrence $i' \le j$ of $p_1$ for $x_B, y_B$ (which we can find in $O(1)$ time by Observation~\ref{obs:arithmetic_predecessor});
+         \item The rightmost occurrence of $p_1$ in $\str{B}$ starting before $x_B$. 
+     \end{itemize}
+It follows that $i$ can be computed in constant time.
+\qed 
+\end{proof}
+
+\begin{definition}[Primary co-occurrence]
+Let $A$ be a non-terminal of $G$ associated with a production $A \rightarrow BC$. We say that a co-occurrence $(i,j)$ of $p_1, p_2$ in $\str{A}$ is \emph{primary} if $i \le |\str{B}| \le j + |p_2|-1$.   
+\end{definition}
+
+For a node $u$ of the parse tree of $G$, denote by $\off(u)$ the number of leaves to the left of the subtree rooted at $u$.
+
+\begin{observation}
+\label{obs:primarycoocc}
+Assume that $p_2$ is not a substring of $p_1$, and let $(i,j)$ be a co-occurrence of $p_1,p_2$ in the text. In the parse tree of $G$, there exists a unique node $u$ such its label $A$ is associated with a production $A \rightarrow BC$, and $(i-\off(u),j-\off(u))$ is a primary co-occurrence of $p_1,p_2$ in $\str{A}$.
+\end{observation}
+       
+\begin{lemma}\label{lem:primary}
+Assume that $p_2$ is not a substring of $p_1$ and that we are given the information computed in Section~\ref{sec:boundary}. 
+There is a $O(g+m)$-time algorithm that reports all primary co-occurrences of $p_1$ and $p_2$ in the extensions of the non-terminals of $G$. If there is more than one primary co-occurrence in the extension of a non-terminal, they are output as a single arithmetic progression. 
+\end{lemma}
+\begin{proof}
+Let $A$ be a non-terminal associated with a production $A \rightarrow BC$. We consider three types of co-occurrences of $p_1,p_2$ in $\str{A}$:
+\begin{enumerate}
+	\item \label{lemma:type1} The occurrence of $p_1$ is fully contained in $\str{B}$ and the occurrence of $p_2$ is fully contained in $\str{C}$, or
+	\item \label{lemma:type2} The occurrence of $p_1$ is a crossing occurrence for $\str{B},\str{C}$ and the occurrence of $p_2$ is not, or
+	\item \label{lemma:type3} The occurrence of $p_2$ is a crossing occurrence for $\str{B},\str{C}$.
+\end{enumerate}
+
+Let $(i,j)$ be a co-occurrence of Type~\ref{lemma:type1}. It must have the property that $i$ is the rightmost occurrence of $p_1$ fully contained in $\str{A}[\dots |\str{B}|-1]$, $j$ is the leftmost occurrence of $p_2$ in $\str{A}[|\str{B}| \dots]$, and there are no occurrences of $p_1, p_2$ in between. As we store all crossing occurrences for $B,C$, the rightmost occurrences of $p_1,p_2$ in $\str{B}$ and the leftmost occurrences of $p_1,p_2$ in $\str{C}$, we can check whether $(i,j)$ exists and compute it in $O(1)$ time by Observation~\ref{obs:arithmetic_predecessor}.
+   
+A co-occurrence $(i,j)$ of of Type~\ref{lemma:type2} must satisfy the following properties: 
+\begin{enumerate}
+       \item $j$ cannot be in $\str{A}[\dots |\str{B}|-1]$, since it is not a crossing occurrence and $p_2$ is not a substring of $p_1$;
+       \item Since $i$ and $j$ are consecutive, and $i$ is a crossing occurrence, $i$ must be the rightmost crossing occurrence and $j$ must the leftmost occurrence of $p_2$ in $\str{A}[|\str{B}| \dots] = \str{C}$.
+\end{enumerate}
+We retrieve $i$, the rightmost crossing occurrence of $p_1$, and $j$, the leftmost occurrence of $p_2$ in $\str{A}[|\str{B}| \dots]$. It remains to check that there is no occurrence of $p_1$ in $(i,j]$ and no occurrence of $p_2$ in $[i,j)$. If there is an occurrence of $p_1$ in $(i,j]$, it can only be the leftmost occurrence of $p_1$ in $\str{A}[|\str{B}| \dots] = \str{C}$. If there is an occurrence of $p_2$ in $[i,j)$, it can only be a crossing occurrence for $A$. Both conditions can be tested in constant time by Observation~\ref{obs:arithmetic_predecessor}. 
+
+For Type~\ref{lemma:type3}, consider two cases. First, consider the case when $j$ is the leftmost crossing occurrence. Let $i' \le j$ be the rightmost occurrence of $p_1$ such that $i'+|p_1|-1 < |\str{B}|$, which we can find in $O(1)$ time by Proposition~\ref{claim:predecessor_of_crossing} and $i''$ be the rightmost crossing occurrence of $p_1$ that is at most $j$, which we can find in $O(1)$ time as well using Observation~\ref{obs:arithmetic_predecessor}. By definition, the only candidate for a co-occurrence containing $j$ is $(i = \max\{i',i''\},j)$. By construction of~$i'$ and $i''$, there can't be any  occurrence of $p_1$ in $(i,j]$ and it suffices to check whether there are occurrences of $p_2$ in $[i,j)$. If there is such an occurrence, it must be the rightmost occurrence of $p_2$ in $\str{B}$, and we can check if it is the case in constant time. 
+
+Consider now the case when $j$ is not the leftmost crossing occurrence of $p_2$ for~$A$.
+By Corollary~\ref{cor:arithmetic_progression}, all crossing occurrences of $p_2$ form an arithmetic progression. Let $j_0$ be the leftmost occurrence, $d$ be the difference and $\ell$ the length of this progression. By Corollary~\ref{cor:arithmetic_progression}, $\str{A}[j_0, j_0+\ell \cdot d+|p_2|-1]$ is periodic with period~$d$. Let $1 \le k \le \ell$ be the largest such that the occurrence $j^\ast = j_0+k \cdot d$ forms a co-occurrence with an occurrence $i$ of $p_1$. By definition of a co-occurrence, $j_0 \le j^\ast-d < i \le j^\ast$. Furthermore, since $p_2$ is not a substring of $p_1$, we have $i+|p_1|-1 < j^\ast+|p_2|-1$. Hence, by periodicity, $(i-k'\cdot d, j^\ast-k' \cdot d)$ is a co-occurrence for \emph{all} $1-k \le k' \le \ell-k$. (In particular, by maximality of $j^\ast$, we have $j^\ast = j_0+\ell\cdot d$.) Hence, it suffices to find the co-occurrence for $k'=1-k$, i.e. to find the occurrence of $p_1$ preceding $j_0+d$. This can be done in constant time similarly to the case above. This case is illustrated in Figure~\ref{fig:p2_crossing_periodic}.
+
+
+\begin{figure}
+\centering
+\inputpmgapped{figures/crossing_co_occ}
+\caption{Co-occurrences with crossing occurrences of $p_2$ forming an arithmetic progression.}
+\label{fig:p2_crossing_periodic}
+\end{figure}
+
+By Fact~\ref{fact:substring_concat}, the algorithm takes $O(g+m)$ time. 
+\qed
+\end{proof}
+    
+Finally, we report all co-occurrences of $p_1,p_2$ in the text given the primary co-occurrences for the non-terminals of $G$. Using the approach of~\cite[Section 6.4]{talg/ChristiansenEKN21}), it can be done in $O(g+\occ)$ time. Observation~\ref{obs:primarycoocc} guarantees that we report all co-occurrences.
+\todo[inline]{Maybe put reference to the previous section}
