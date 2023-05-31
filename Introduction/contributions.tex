@@ -34,8 +34,14 @@ Here we choose to apply this reasoning recursively on $\Oh(\log n)$ levels throu
 
 
 % Gapped
+In Chapter~\ref{chap:gapped_index}, we begin our study of gapped consecutive matching. Recall that we are given $P_1$, $P_2$, and interval $[a,b]$ and must report all pairs of positions $(i,j)$ in $T$ such that an occurrence of $P_1$ starts at position $i$, an occurrence $P_2$ starts at position $j$, there are no occurrences of $P_1$ or $P_2$ starting in the interval $[i+1,j-1]$, and finally $j-i \in [a,b]$.
+% Give specific motivations of the model ?
 % Indexing
-
+% Motivation to study indexing 
+Bille et al.~\cite{bille2022gapped} introduced those queries and gave a conditional lower bound stating that for indexes of size $\tilde \Oh(|T|)$ achieving a query time faster than $\tilde \Oh(|P_1|+|P_2|+\sqrt{|T|})$ would contradict the Set Disjointness conjecture, even if $a=0$ is fixed. Additionally, they provide a non-trivial upper bound that uses $\tilde \Oh(|T|)$ space and $\tilde \Oh (|P_1| +|P_2| + |T|^{2/3}\occ^{1/3})$ time to report all $\occ$ occurrences. 
+% Our contributions
+We study the case where $a=0$ is fixed and the text is given as a straight-line program (SLP), and our contribution is to create an index taking space polynomial in the size of the grammar that answer such queries in optimal time up to poly log factors (Theorem~\ref{thm:close_co_occurrences}). This way, we circumvent the lower bound for highly compressible texts.
+% Sketch of the idea
 % PM
 
 % Squares
