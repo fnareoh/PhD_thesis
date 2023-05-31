@@ -116,7 +116,7 @@
         \par\nobreak
         %\interlinepenalty\@M
     %\selectfontchapheads 
-    \huge \bfseries #1\par\nobreak
+    \LARGE \bfseries \hyphenpenalty=10000 #1\par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
@@ -129,7 +129,7 @@
         \par\nobreak
         \interlinepenalty\@M
     %\selectfontchapheads 
-    \huge \bfseries #1 \par\nobreak
+    \LARGE \bfseries \hyphenpenalty=10000 #1 \par\nobreak
     %\vspace*{1\p@}%
     \hrulefill
     \par\nobreak
@@ -389,7 +389,7 @@
 
 \color{\@couleurpolice} % Some schools use white font
 
-\vspace{1.25cm}
+\vspace{0.5cm}
 {\normalTwelve \if\@nomecoleB\empty ~\\ \else \fi} % To compensate the 2 lines of MathSTIC
 {\setlength{\baselineskip}{0.9\baselineskip}
 {\largeTwelve \if\vnometablissementA\empty ~ \else \textsc{\vnometablissementA} \fi} \\
@@ -407,14 +407,14 @@
 {\normalTwelve Sp\'{e}cialit\'{e} : \textit{\@spec}}
 
 %\fontsize{12}{10}\selectfont
-\vspace{1cm}
+\vspace{0.75cm}
 \hspace{0.6cm}{\normalTwelve Par \vspace{0.15cm}}
 \par}
-\hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{1.25cm}
+\hspace{0.6cm}{\LARGETwelve \textbf{\@author}} \vspace{1cm}
 
 {\LargeTwelve \textbf{\@title}} \vspace{0.75cm}
 	
-{\largeTwelve \@lesoustitre} \vspace{0.5cm}
+{\largeTwelve \@lesoustitre} %\vspace{0.5cm}
 \begin{spacing}{1}
 	 \smallTwelve
 	 \textbf{Th\`{e}se pr\'{e}sent\'{e}e et soutenue \`{a} \@lieu, le \@date} \\
@@ -464,45 +464,45 @@
 }
 
 \newcommand{\titleFR}[1]{%
-\vspace{-0.5cm}
-{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.2cm}}}
+\vspace{-0.6cm}
+{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.1cm}}}
 \vspace{-1cm}
 \selectlanguage{french}
 \section*{\selectfontbackcover\smallTwelve \textcolor{couleur-ecole-verso}{Titre : }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
 }
 
 \newcommand{\keywordsFR}[1]{%
-\vspace{-0.2cm}
-\noindent{\small \textbf{Mot cl\'{e}s : }#1}
+\vspace{-0.3cm}
+\noindent{\footnotesizeTwelve \textbf{Mot cl\'{e}s : }#1}
 }
 
 \newcommand{\abstractFR}[1]{%
-\vspace{-0.2cm}
+\vspace{-0.3cm}
 \begin{multicols}{2}
 \begin{spacing}{1}
-	\noindent\small \textbf{R\'{e}sum\'{e} : }#1
+	\noindent\footnotesizeTwelve \textbf{R\'{e}sum\'{e} : }#1
 \end{spacing}
 \end{multicols}
 }
 
 \newcommand{\titleEN}[1]{%
-\vspace{0.5cm}
-{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.2cm}}}
+\vspace{-0.1cm}
+{\centering \noindent \textcolor{couleur-ecole-verso}{\rule{\textwidth}{0.1cm}}}
 \vspace{-1cm}
 \selectlanguage{english}
 \section*{\selectfontbackcover\smallTwelve \textcolor{couleur-ecole-verso}{Title: }{\selectfontbackcover\mdseries{#1}}} % In this particular case, font style needs to get re-selected locally
 }
 
 \newcommand{\keywordsEN}[1]{%
-\vspace{-0.2cm}
-\noindent{\small \textbf{Keywords: }#1}
+\vspace{-0.3cm}
+\noindent{\footnotesizeTwelve \textbf{Keywords: }#1}
 }
 
 \newcommand{\abstractEN}[1]{%
-\vspace{-0.2cm}
+\vspace{-0.3cm}
 \begin{multicols}{2}
 \begin{spacing}{1}
-	\noindent\small \textbf{Abstract: }#1
+	\noindent\footnotesizeTwelve \textbf{Abstract: }#1
 \end{spacing}
 \end{multicols}
 }

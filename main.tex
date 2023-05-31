@@ -29,29 +29,27 @@
 
 \selectlanguage{english}
 \chapter*{Abstract}\thispagestyle{empty}
-\small{\input{./Abstract/abstract}}
-\vspace{0.4cm}
-\noindent\hrulefill
-\vspace{0.4cm}
+{\input{./Abstract/abstract}}
+%\vspace{0.4cm}
+%\noindent\hrulefill
+%\vspace{0.4cm}
 
 
 \selectlanguage{french}
-\small{\input{./Abstract/resume_francais}}
 \input{./Abstract/resume_long}
 
 %\input{./Acknowledgement/acknowledgement}
 
+\backmatter
 \selectlanguage{english}
 \renewcommand{\contentsname}{Table of Contents}
 \tableofcontents 
+
 
 %\clearemptydoublepage
 \input{./Introduction/introduction}
 \input{./Introduction/contributions}
 \input{./Introduction/prelim}
-
-
-\mainmatter
 
 \input{./Part_One/part_one}
 
