@@ -32,7 +32,7 @@ We first compute boundary information. Let the $k$-th level $L_k$ of $G$ be the 
 
 The secondary boundary information is computed by applying Algorithm ~\ref{alg:boundary} on the substrings constituting the boundary information. In more detail, note that for any non-terminal $A$ of $G$ associated with a production $A \rightarrow BC$ Algorithm~\ref{alg:boundary} computes the boundary information of $A$ by either copying the boundary information of $B$ or $C$ or by concatenating the substrings constituting the boundary information of $B$ and $C$ a constant number of times. It follows that in total there are $O(|L_k|)$ copying and concatenation operations at level $k$. For each concatenation operation, we apply Algorithm~\ref{alg:boundary} to update the boundary information. 
 Processing $L_k$ hence takes $O(|L_k|)$ substring concatenation queries and $O(|L_k|)$ extra time. As above, this leads to  $O(\sum_{k} (|L_k| + m/w)) = O(g+m)$ total time. 
-\qed
+
 \end{proof}
 
 We now apply Lemma~\ref{lemma:crossing} to compute all crossing occurrences for the non-terminals of $G$ in $O(g+m)$ time. By a second application of Lemma~\ref{lemma:crossing}, we compute, for every non-terminal $A$ of $G$, all crossing occurrences for pairs $x_A,y_A$, which constitute \suffixinfo{$p_2$} for $A$, using the same amount of time. 
@@ -42,7 +42,7 @@ Given the boundary information and the crossing occurrences for all symbols of $
 \end{proposition}
 \begin{proof}
 We explain how to compute the rightmost occurrences of $p_1$, the rest can be computed analogously. The algorithm processes the symbols of $G$ bottom-up. Consider a symbol $A$ of $G$. If it is a terminal, then we can find the rightmost occurrence of $p_1$ in its expansion (if it exists) in $O(1)$ time. Otherwise, assume that $A$ is associated with a production $A \rightarrow BC$. If $\str{C}$ contains an occurrence of $p_1$, then the rightmost occurrence of $p_1$ in $\str{A}$ is the rightmost occurrence of $p_1$ in $\str{C}$ (and we have already computed it). Otherwise, if there are crossing occurrences of $p_1$ for $\str{B}, \str{C}$, it is the rightmost such occurrence. And finally, if $\str{C}$ does not contain an occurrence of $p_1$ and there are no crossing occurrences, then we copy the rightmost occurrence of $p_1$ in $\str{B}$. 
-\qed
+
 \end{proof} 
 
 We will need the following auxiliary claim:
@@ -71,7 +71,7 @@ In Case \ref{case:crop}, we have $x_A=y_B$. Thus, the rightmost occurrence befor
             \item The rightmost crossing occurrence of $p_1$ for $A$ preceding $x_B$.
         \end{enumerate}
 We can find the rightmost occurrence fully contained in $x_B=p_2[i \dots j]$ by querying the predecessor array for $j-|p_1|+1$, and the two other occurrences have been already computed. 
-\qed
+
 \end{proof}
     
 \subsection{Reporting co-occurrences}
@@ -95,7 +95,7 @@ If $j$ is in $x_B$, then $i$ is the rightmost existing one of the following cand
          \item The rightmost occurrence of $p_1$ in $\str{B}$ starting before $x_B$. 
      \end{itemize}
 It follows that $i$ can be computed in constant time.
-\qed 
+ 
 \end{proof}
 
 \begin{definition}[Primary co-occurrence]
@@ -144,7 +144,7 @@ By Corollary~\ref{pmgapped:cor:arithmetic_progression}, all crossing occurrences
 \end{figure}
 
 By Fact~\ref{fact:substring_concat}, the algorithm takes $O(g+m)$ time. 
-\qed
+
 \end{proof}
     
 Finally, we report all co-occurrences of $p_1,p_2$ in the text given the primary co-occurrences for the non-terminals of $G$. Using the approach of~\cite[Section 6.4]{talg/ChristiansenEKN21}), it can be done in $O(g+\occ)$ time. Observation~\ref{obs:primarycoocc} guarantees that we report all co-occurrences.
