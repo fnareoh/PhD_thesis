@@ -38,7 +38,7 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
 \begin{figure}[!ht]
 \begin{subfigure}{0.5\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8,every node/.style={scale=0.8}]
     \node[state,initial] (i)   {$i$}; 
    	\node[state,accepting](f)[right=of i] {$f$};
     \path[->] 
@@ -49,22 +49,22 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
 \end{subfigure}
 \begin{subfigure}{0.4\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8,every node/.style={scale=0.8}]
     \node[state,initial] (i)   {$i$};
     \node[state](f_1)[right=of i] {};
     \node[state,accepting](f)[right=of f_1] {$f$};
-    \draw (1,0) ellipse (1.6cm and 0.8cm);
-    \node at (0.9,-0.5) {$T(A)$};
-    \draw (2.95,0) ellipse (1.6cm and 0.8cm);
-    \node at (2.95,-0.5) {$T(B)$};
+    \draw (1.1,0) ellipse (2cm and 0.8cm);
+    \node at (1,-0.5) {$T(A)$};
+    \draw (3.5,0) ellipse (2cm and 0.8cm);
+    \node at (3.55,-0.5) {$T(B)$};
 \end{tikzpicture}
 \caption{$T(A\cdot B)$}
 \label{fig:Thompson:AB}
 \end{subfigure}
 
-\begin{subfigure}{0.5\textwidth}
+\begin{subfigure}[b]{0.5\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8,every node/.style={scale=0.8}]
     \node[state,initial] (i)   {$i$};
     \node[state](i_1)[above right=of i] {};
     \node[state](f_1)[right=of i_1] {};
@@ -76,30 +76,30 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
     (i) edge [above] node {$\eps$} (i_2)
     (f_1) edge [above] node {$\eps$} (f)
     (f_2) edge [above] node {$\eps$} (f);
-    \draw (2.57,1.7) ellipse (1.6cm and 0.8cm);
-    \node at (2.6,1.6) {$T(A)$};
-    \draw (2.57,-1.7) ellipse (1.6cm and 0.8cm);
-    \node at (2.6,-1.7) {$T(B)$};
+    \draw (3.1,2) ellipse (1.9cm and 0.8cm);
+    \node at (3.1,2) {$T(A)$};
+    \draw (3.1,-2) ellipse (1.9cm and 0.8cm);
+    \node at (3.1,-2) {$T(B)$};
 \end{tikzpicture}
 \caption{$T(A|B)$}
 \label{fig:Thompson:AorB}
 \end{subfigure}
-\begin{subfigure}{0.4\textwidth}
+\begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}
+\begin{tikzpicture}[scale=0.8,every node/.style={scale=0.8}]
     \node[state,initial] (i)   {$i$};
     \node[state](i_1)[right=of i] {};
     \node[state](f_1)[right=of i_1] {};
     \node[state,accepting](f)[right=of f_1] {$f$};
-    \draw (2.85,0) ellipse (1.6cm and 0.8cm);
     \path[->] 
     (i) edge [above] node {$\eps$} (i_1)
     (f_1) edge [above] node {$\eps$} (f);
     \draw [->] (f_1) ..  controls  ($(f_1)+(-0.5,1.5cm)$) and ($(i_1)+(0.5,1.5cm)$) ..  (i_1);
     \node at (2.85,1.4) {$\eps$};
-   	\draw [->] (i) ..  controls  ($(i)+(0.5,-1.5cm)$) and ($(f)+(-0.5,-1.5cm)$) ..  (f);
-   	\node at (2.85,-1.1) {$\eps$}; 
-    \node at (2.85,0) {$T(A)$};
+    \draw [->] (i) ..  controls  ($(i)+(0.5,-1.5cm)$) and ($(f)+(-0.5,-1.5cm)$) ..  (f);
+    \node at (2.85,-1.1) {$\eps$}; 
+    \draw (3.5,0) ellipse (2cm and 0.8cm);
+    \node at (3.5,0) {$T(A)$};
 \end{tikzpicture}
 \caption{$T(A^*)$}
 \label{fig:Thompson:A*}
@@ -110,7 +110,7 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
 
 \begin{figure}[!ht]
 \centering
-\begin{subfigure}{0.5\textwidth}
+\begin{subfigure}{0.9\textwidth}
 \resizebox{\textwidth}{!}{
  \begin{tikzpicture}
     \node[state,initial] (i)   {$i$};
@@ -146,7 +146,9 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
 \end{tikzpicture}}
 \caption{$T(b(ab|b)^*ab)$}
 \end{subfigure}
-\begin{subfigure}{0.4\textwidth}
+
+
+\begin{subfigure}{0.7\textwidth}
 \resizebox{\textwidth}{!}{
  \begin{tikzpicture}
     \node[state,initial] (i)   {$i$};
