@@ -24,7 +24,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{these-dbl}[19/03/2023 v6]
 
-\LoadClass[twoside,10pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
+\LoadClass[twoside,12pt,a4paper]{report}	% notez le "twoside", essentiellement pour alterner les en-tete et pieds de page gauche et droit si on veut utliser les fancyhead. 
 
 \RequirePackage[utf8]{inputenc} 
 \RequirePackage[french,english]{babel} % Last language is the default, use \selectlanguage{english} to switch
@@ -48,7 +48,7 @@
 \RequirePackage{color}
 \RequirePackage{comment}
 \RequirePackage{wallpaper}
-\RequirePackage[inner=30mm,outer=20mm,top=30mm,bottom=30mm]{geometry}
+\RequirePackage[inner=30mm,outer=30mm,top=30mm,bottom=30mm]{geometry}
 \RequirePackage{setspace}
 %Ou bien : \RequirePackage[top=4 cm, bottom=4 cm, left=3 cm, right=3 cm]{geometry} % On peut modifier ces valeurs pour augmenter ou r\'{e}duire les marges. Attention aux en-têtes de chapitres. 
 \RequirePackage{epigraph} % \cleartoevenpage
@@ -61,8 +61,6 @@
 \RequirePackage{eso-pic} % For \AddToShipoutPicture used for cover backgrounds
 \RequirePackage{framed} % utilise pour coloriser les encarts
 
-% Si on veut retourner au format classique du template c'est 12pt
-% outer=30mm et décommenter la ligne suivante
 %\onehalfspacing %Interligne 1,5
 
 \RequirePackage{ifthen} % Entrer valeurs bool\'{e}ennes et autres options
