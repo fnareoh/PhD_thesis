@@ -41,6 +41,13 @@
 \RequirePackage{fix-cm}
 \RequirePackage{abstract}
 \RequirePackage{graphicx} % Pour ins\'{e}rer des images. Utiliser le format jpg pour plus de simplicit\'{e}.
+
+
+\RequirePackage[immediate]{silence}
+\WarningFilter[temp]{latex}{Command \underline  has changed.}
+\WarningFilter[temp]{latex}{Command \underbar  has changed.}
+\WarningFilter[temp]{latex}{Text page}
+
 \RequirePackage{sectsty} % obligatoire, pour jouer avec l'apparence des titres
 \RequirePackage{shorttoc} % pour le sommaire, au debut.
 \RequirePackage{fancyhdr} % Afin de r\'{e}aliser soi-même les en-têtes et pieds de page, voir chaque d\'{e}but de chapitre.

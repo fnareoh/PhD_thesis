@@ -1,6 +1,6 @@
  
 \section{Preliminaries}
-\label{sec:prelim}
+\label{pmgapped:sec:prelim}
 A \emph{string} $s$ of length $|s| = n$ is a sequence $s[0]s[1]\dots s[n-1]$ of characters from an alphabet~$\Sigma$. We define $f = s[i \dots j]$ to be equal to $s[i] \dots s[j]$ which we call a \emph{substring} of $s$ if $i \le j$ and to the empty string which we denote by $\varepsilon$ otherwise. We say that a substring $s[i \dots j]$ is fully contained in another substring $s[i' \dots j']$ if $i' \le i \le j \le j'$. We call a substring $s[0 \dots i]$ \emph{a prefix} of $s$ and use a simplified notation $s[\dots i]$, and a substring $s[i \dots n-1]$ \emph{a suffix} of $s$ denoted by $s[i \dots]$. We say that a string $x$ occurs in $s$ if $x = s[i \dots j]$ for some $0 \le i \le j \le n-1$. Abusing notation, we call both the substring $s[i \dots j]$ and its starting position $i$ an occurrence  of $x$ in $s$. 
 %
 
@@ -9,7 +9,7 @@ An occurrence $q_1$ of $p_1$ together with an occurrence $q_2$ of $p_2$ form a \
 An integer $\pi$ is a \emph{period} of a string $s$ of length $n$ if $s[i]=s[i+\pi]$ for all $i=0,\dots, n-1-\pi$. We say that $s$ is \emph{periodic} if its smallest period, referred to as \emph{the period} of $s$, is at most $|s|/2$. We also exploit the well-known corollary of the Fine and Wilf's periodicity lemma~\cite{fine1965uniqueness}:
 
 
-\begin{corollary}\label{cor:arithmetic_progression}
+\begin{corollary}\label{pmgapped:cor:arithmetic_progression}
 Let $x, y$ be strings and $i$ a fixed position in $x$. If there are at least three occurrences of a string $y$ in a string $x$ containing $i$, then they form an arithmetic progression with difference equal to the period of $y$. 
 \end{corollary}
 
@@ -23,7 +23,7 @@ We assume the reader to be familiar with suffix trees. We build the suffix tree 
 \qed   
 \end{proof}
 
-\begin{corollary}[{of Corollary~\ref{cor:arithmetic_progression} and Proposition~\ref{prop:suffix_tree}}]
+\begin{corollary}[{of Corollary~\ref{pmgapped:cor:arithmetic_progression} and Proposition~\ref{prop:suffix_tree}}]
 \label{cor:imp}
 One can preprocess a string $p$ of length $m$ in $O(m)$ time and space to maintain the following queries in constant time: Given a substring $x = p[i \dots j]$ of length $\ge m/2$, one can output the arithmetic progression of the starting positions of occurrences of $x$ in $p$ in constant time.
 \end{corollary}

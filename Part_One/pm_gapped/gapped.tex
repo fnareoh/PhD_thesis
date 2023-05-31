@@ -1,10 +1,10 @@
  
 \section{Compressed consecutive pattern matching}
-\label{sec:consec}
+\label{pmgapped:sec:consec}
 We are now ready to prove Theorem~\ref{th:main}. Recall that the text has length $n$ and is represented by an SLP $G$ of size $g \ll n$, and the patterns $p_1,p_2$ have total length $m$.
 
 \subsection{Computing boundary information and crossing occurrences}
-\label{sec:boundary}
+\label{pmgapped:sec:boundary}
 We first use a linear-time pattern matching algorithm (e.g. the Knuth-Morris-Pratt algorithm~\cite{JoC/KnuthMorrisPratt}) to check whether $p_2$ is a substring of $p_1$. If it is, then every co-occurrence of $p_1, p_2$ in the text is a pair $(i,i+\ell)$, where $i$ is an occurrence of $p_1$ in the text and $\ell$ is the leftmost occurrence of $p_2$ in $p_1$. (By definition, there is no occurrence of $p_2$ in $[i,i+\ell)$. Note also that there cannot exist an occurrence $i < i' \le i+\ell$ of $p_1$, because then $i+\ell-i' < \ell$ would be an occurrence of $p_2$ in $p_1$, a contradiction with the choice of $\ell$.) In other words, to find all co-occurrences of $p_1,p_2$ in the text it suffices to find all occurrences of $p_1$ in the text, which can be done in $O(g+m+\occ)$ time~\cite{DBLP:conf/soda/GanardiG22}.
 
 Below we assume that $p_2$ is not a substring of $p_1$. Define an array $P$ such that for every $j$ in $[0\dots |p_2|-1]$, $P[j]$ is the rightmost occurrence of $p_1$ in $p_2$ to the left of $j$. We call $P$ the \emph{predecessor array}. $P$ can be computed in $O(m)$ time by a linear-time pattern matching algorithm.
@@ -37,7 +37,7 @@ Processing $L_k$ hence takes $O(|L_k|)$ substring concatenation queries and $O(|
 
 We now apply Lemma~\ref{lemma:crossing} to compute all crossing occurrences for the non-terminals of $G$ in $O(g+m)$ time. By a second application of Lemma~\ref{lemma:crossing}, we compute, for every non-terminal $A$ of $G$, all crossing occurrences for pairs $x_A,y_A$, which constitute \suffixinfo{$p_2$} for $A$, using the same amount of time. 
 
-\begin{proposition}\label{claim:leftmost_rightmost}
+\begin{proposition}
 Given the boundary information and the crossing occurrences for all symbols of $G$, one can compute the rightmost and leftmost occurrences of $p_1$ and $p_2$ in the expansion of every symbol of $G$ in $O(g)$ time. 
 \end{proposition}
 \begin{proof}
@@ -110,7 +110,7 @@ Assume that $p_2$ is not a substring of $p_1$, and let $(i,j)$ be a co-occurrenc
 \end{observation}
        
 \begin{lemma}\label{lem:primary}
-Assume that $p_2$ is not a substring of $p_1$ and that we are given the information computed in Section~\ref{sec:boundary}. 
+Assume that $p_2$ is not a substring of $p_1$ and that we are given the information computed in Section~\ref{pmgapped:sec:boundary}. 
 There is a $O(g+m)$-time algorithm that reports all primary co-occurrences of $p_1$ and $p_2$ in the extensions of the non-terminals of $G$. If there is more than one primary co-occurrence in the extension of a non-terminal, they are output as a single arithmetic progression. 
 \end{lemma}
 \begin{proof}
@@ -133,7 +133,7 @@ We retrieve $i$, the rightmost crossing occurrence of $p_1$, and $j$, the leftmo
 For Type~\ref{lemma:type3}, consider two cases. First, consider the case when $j$ is the leftmost crossing occurrence. Let $i' \le j$ be the rightmost occurrence of $p_1$ such that $i'+|p_1|-1 < |\str{B}|$, which we can find in $O(1)$ time by Proposition~\ref{claim:predecessor_of_crossing} and $i''$ be the rightmost crossing occurrence of $p_1$ that is at most $j$, which we can find in $O(1)$ time as well using Observation~\ref{obs:arithmetic_predecessor}. By definition, the only candidate for a co-occurrence containing $j$ is $(i = \max\{i',i''\},j)$. By construction of~$i'$ and $i''$, there can't be any  occurrence of $p_1$ in $(i,j]$ and it suffices to check whether there are occurrences of $p_2$ in $[i,j)$. If there is such an occurrence, it must be the rightmost occurrence of $p_2$ in $\str{B}$, and we can check if it is the case in constant time. 
 
 Consider now the case when $j$ is not the leftmost crossing occurrence of $p_2$ for~$A$.
-By Corollary~\ref{cor:arithmetic_progression}, all crossing occurrences of $p_2$ form an arithmetic progression. Let $j_0$ be the leftmost occurrence, $d$ be the difference and $\ell$ the length of this progression. By Corollary~\ref{cor:arithmetic_progression}, $\str{A}[j_0, j_0+\ell \cdot d+|p_2|-1]$ is periodic with period~$d$. Let $1 \le k \le \ell$ be the largest such that the occurrence $j^\ast = j_0+k \cdot d$ forms a co-occurrence with an occurrence $i$ of $p_1$. By definition of a co-occurrence, $j_0 \le j^\ast-d < i \le j^\ast$. Furthermore, since $p_2$ is not a substring of $p_1$, we have $i+|p_1|-1 < j^\ast+|p_2|-1$. Hence, by periodicity, $(i-k'\cdot d, j^\ast-k' \cdot d)$ is a co-occurrence for \emph{all} $1-k \le k' \le \ell-k$. (In particular, by maximality of $j^\ast$, we have $j^\ast = j_0+\ell\cdot d$.) Hence, it suffices to find the co-occurrence for $k'=1-k$, i.e. to find the occurrence of $p_1$ preceding $j_0+d$. This can be done in constant time similarly to the case above. This case is illustrated in Figure~\ref{fig:p2_crossing_periodic}.
+By Corollary~\ref{pmgapped:cor:arithmetic_progression}, all crossing occurrences of $p_2$ form an arithmetic progression. Let $j_0$ be the leftmost occurrence, $d$ be the difference and $\ell$ the length of this progression. By Corollary~\ref{pmgapped:cor:arithmetic_progression}, $\str{A}[j_0, j_0+\ell \cdot d+|p_2|-1]$ is periodic with period~$d$. Let $1 \le k \le \ell$ be the largest such that the occurrence $j^\ast = j_0+k \cdot d$ forms a co-occurrence with an occurrence $i$ of $p_1$. By definition of a co-occurrence, $j_0 \le j^\ast-d < i \le j^\ast$. Furthermore, since $p_2$ is not a substring of $p_1$, we have $i+|p_1|-1 < j^\ast+|p_2|-1$. Hence, by periodicity, $(i-k'\cdot d, j^\ast-k' \cdot d)$ is a co-occurrence for \emph{all} $1-k \le k' \le \ell-k$. (In particular, by maximality of $j^\ast$, we have $j^\ast = j_0+\ell\cdot d$.) Hence, it suffices to find the co-occurrence for $k'=1-k$, i.e. to find the occurrence of $p_1$ preceding $j_0+d$. This can be done in constant time similarly to the case above. This case is illustrated in Figure~\ref{fig:p2_crossing_periodic}.
 
 
 \begin{figure}
