@@ -46,7 +46,7 @@ To report consecutive occurrences without constraints on the distance between $P
 This is obtained through Theorem~\ref{th:occurrences} where we provide an efficient data structure to compute several efficient queries. We rely on an efficient implementation of compact tries (see preliminaries~\ref{sec:prelim:tries}) which takes advantages of the strings being prefixes and suffixes of the non-terminals. This implementation uses Karp--Rabin Fingerprints (see preliminaries~\ref{sec:prelim:KR}) and the compacted tries are then augmented using a heavy path decomposition (see preliminaries~\ref{sec:prelim:HP}). This construction forms a sketch tailored to the grammar compression and the specific queries needed for consecutive occurrences.
 Theorem~\ref{th:occurrences} is then reused for our main result: Theorem~\ref{thm:close_co_occurrences}, with an index that can report consecutive occurrences with distances in an interval $[0,b]$ using $\Oh (g^5\log^5(|T|))$ space.
 % Comments
-Those indexes circumvent the lower bound for highly compressible texts, which was not a given considering that some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in section~\ref{sec:intro:scalability}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case of a distance in $[a,b]$\footnote{We started writing a solution for the general case, but it was very technical and had an impractical space-complexity of $\tilde \Oh(g^{15})$...} as open questions.
+Those indexes circumvent the lower bound for highly compressible texts, which was not a given considering that some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in section~\ref{sec:intro:scalability}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case of a distance in $[a,b]$\footnote{We started writing a solution for the general case, but it was very technical and had an unreasonable space-complexity of $\tilde \Oh(g^{15})$...} as open questions.
 
 
 % PM
@@ -54,10 +54,17 @@ Partially motivated by the limitations of a space usage in $\tilde \Oh(g^5)$, In
 % Results
 We show that an analogue complexity can be used when the text is highly compressible: all consecutive occurrences can be reported in $\Oh(g+|P_1|+|P_2|+\occ)$ time (see Theorem~\ref{th:main}) where $g$ is the size of the grammar compressed text. We then derive from this result algorithms for gapped consecutive matching (Corollary~\ref{cor:ab}) and the k-closest consecutive occurrences (Corollary~\ref{cor:topk}).
 % Insights
-Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22} introduced an efficient sketch for grammar compressed pattern matching: boundary information. For a given pattern $p$, the $p$-boundary information of a string $s$ stores either one $p$-substring information if $s$ occurs in $p$, or several substrings of $p$ that contain the longest prefix of $s$ that is a suffix of $p$ ($p$-prefix information) and several substrings of $p$ that contain the longest suffix of $s$ that is a prefix of $p$. The authors show how use this sketch to determine in $\Oh(g+|P|)$ whether $P$ occurs in the compressed text. We sightly extend their approach to report all occurrences crossing the boundary (Lemma~\ref{lemma:crossing}). Then by repeating a similar sketch in the notion of ``secondary boundary information'' and  carefully handling all cases, we obtain Theorem~\ref{th:main}.
-
+Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22} introduced an efficient sketch for grammar compressed pattern matching: boundary information. For a given pattern $p$, the $p$-boundary information of a string $s$ stores either one $p$-substring information if $s$ occurs in $p$, or several substrings of $p$ that contain the longest prefix of $s$ that is a suffix of $p$ ($p$-prefix information) and several substrings of $p$ that contain the longest suffix of $s$ that is a prefix of $p$. The authors show how use this sketch to determine in $\Oh(g+|P|)$ whether $P$ occurs in the compressed text. We sightly extend their approach to report all occurrences crossing the boundary (Lemma~\ref{lemma:crossing}). Then by repeating a similar sketch which we call ``secondary boundary information'' and  carefully handling all cases, we obtain Theorem~\ref{th:main}.
 
 % Squares
+All previous chapters heavily rely on the Fine-Wilf periodicity lemma and its corollaries (see preliminaries~\ref{sec:prelim:FW}) to efficiently represent occurrences of a string crossing a position, thus it felt only natural to also study periodicity detection. In Chapter~\ref{chap:squares} we show how to report all runs  in optimal time in the most abstract model where they can be defined: General (unordered) alphabets where the only operation allowed is an equality test between two characters. 
+We first focus on the problem of square detection, then extend our approach to square and run reporting.
+% Kown results and open questions
+In 1984, Main and Lorentz~\cite{Main1984} designed an $\Oh(n\log n)$ time algorithm for square detection a text of size $n$ over a general unordered alphabet. They also provided a matching lower bound for strings that have $\Omega(n)$ distinct symbols but left as an open question whether a faster algorithm was possible if one restricts the size of the alphabet.
+% Classical use of f/LZ-facto 
+% Lowerbounds
+% Delta approximate factorization sketch
+% Structure of the proof
 
 % Part two
 
