@@ -57,14 +57,17 @@ We show that an analogue complexity can be used when the text is highly compress
 Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22} introduced an efficient sketch for grammar compressed pattern matching: boundary information. For a given pattern $p$, the $p$-boundary information of a string $s$ stores either one $p$-substring information if $s$ occurs in $p$, or several substrings of $p$ that contain the longest prefix of $s$ that is a suffix of $p$ ($p$-prefix information) and several substrings of $p$ that contain the longest suffix of $s$ that is a prefix of $p$. The authors show how use this sketch to determine in $\Oh(g+|P|)$ whether $P$ occurs in the compressed text. We sightly extend their approach to report all occurrences crossing the boundary (Lemma~\ref{lemma:crossing}). Then by repeating a similar sketch which we call ``secondary boundary information'' and  carefully handling all cases, we obtain Theorem~\ref{th:main}.
 
 % Squares
-All previous chapters heavily rely on the Fine-Wilf periodicity lemma and its corollaries (see preliminaries~\ref{sec:prelim:FW}) to efficiently represent occurrences of a string crossing a position, thus it felt only natural to also study periodicity detection. In Chapter~\ref{chap:squares} we show how to report all runs  in optimal time in the most abstract model where they can be defined: General (unordered) alphabets where the only operation allowed is an equality test between two characters. 
+All previous chapters rely heavily on the Fine-Wilf periodicity lemma and its corollaries (see preliminaries~\ref{sec:prelim:FW}) to efficiently represent occurrences of a string crossing a position, thus it felt only natural to also study periodicity detection. In Chapter~\ref{chap:squares} we show how to report all runs  in optimal time in the most abstract model where they can be defined: General (unordered) alphabets where the only operation allowed is an equality test between two characters. 
 We first focus on the problem of square detection, then extend our approach to square and run reporting.
 % Kown results and open questions
-In 1984, Main and Lorentz~\cite{Main1984} designed an $\Oh(n\log n)$ time algorithm for square detection a text of size $n$ over a general unordered alphabet. They also provided a matching lower bound for strings that have $\Omega(n)$ distinct symbols but left as an open question whether a faster algorithm was possible if one restricts the size of the alphabet.
-% Classical use of f/LZ-facto 
+In 1984, Main and Lorentz~\cite{Main1984} designed an $\Oh(n\log n)$ time algorithm for square detection a text $T$ of size $n$ over a general unordered alphabet. They also provided a matching lower bound for strings that have $\Omega(n)$ distinct symbols but left as an open question whether a faster algorithm was possible if one restricts the size of the alphabet.
 % Lowerbounds
+We start by proving that the problems requires $\Omega(n \log \sigma)$ comparison even if the size of the alphabet is known (Theorem~\ref{thm:lowerbound}). Additionally, in Theorem~\ref{thm:inapproxalph}, we show that computing any relevant approximation of the number of distinct characters requires $\Omega(n\sigma)$ operations.
+% General ordered
+For general ordered alphabet (where an order is given on the alphabet), Crochemore~\cite{Crochemore1986} used the $f$-factorization (related to popular Lempel-Ziv factorization) to give an algorithm for square detection running in $\Oh(n\log \sigma)$ time. Roughly speaking, the $f$-factorization and Lempel-Ziv factorization (LZ factorisation) detect repetitive fragments in the text and can be computed efficiently using a suffix tree or suffix array. However, for general unordered alphabet we show that they require $\Omega(n\sigma)$ operations to be computed (as a corollary of the lower bound on approximating the alphabet), where $\sigma$ is the number of distinct characters in $T$.
 % Delta approximate factorization sketch
-% Structure of the proof
+Instead, we introduce the $\Delta$-approximate LZ factorization which will act as a sketch capturing only the squares that are sufficiently long ($\geq 8\Delta$), as opposed to the $f$-factorization and LZ factorization that capture all squares.
+
 
 % Part two
 
