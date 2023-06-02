@@ -18,6 +18,7 @@ However, the need for text processing goes far beyond exact matching of patterns
 One of the oldest and most classic models for more complex queries is \ul{regular expressions} search, introduced by Kleene in 1951~\cite{RM-704}.
 % Explain the formalism
 The regular expression formalism offers a concise description for sets of strings through recursive combinations of characters from an alphabet $\Sigma$ along with three fundamental operators: concatenation ($\cdot$), union ($|$), and Kleene star ($\ast$).
+\todo[inline]{Add a oneline description of what union and star do.}
 %We denote the set of string represented by a regular expression $R$ by $L(R)$. Let $\eps$ denote the empty string.
 % characters
 %For any character $c \in \Sigma \cup \{\eps\}$, $L(c) = \{c\}$.
@@ -38,7 +39,7 @@ Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular express
 
 % Don't care
 Although the versatility of regular expression makes them widely used across fields, they are notoriously difficult to write for users.\todo{lowerbounds details ?}
-As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted *, can occur in both the pattern and the text, and matches to any other character of the alphabet (but only one).\todo{change the don't care symbol to '?'}
+As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted ?, can occur in both the pattern and the text, and matches to any other character of the alphabet (but only one).
 % Space seed
 This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
 % Gapped matching
@@ -132,10 +133,10 @@ While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of ar
 
 \begin{figure}
     \centering
-    \begin{subfigure}[b]{0.4\textwidth}
+    \begin{subfigure}[b]{0.45\textwidth}
         \begin{tikzpicture}
             \node (img) {\includegraphics[width=\textwidth]{0_sheets/wayback_machine.png}};
-            \node [below right,text width=2.9cm,align=center, fill=white] at (0.25,-0.5){\footnotesize{Pages removed due to security concerns.}};
+            \node [below right,text width=2.7cm,align=center, fill=white] at (0.25,-0.5){{\fontsize{7pt}{6pt}\selectfont Pages removed due to security concerns.}};
             \draw[->] (1,-0.5) -- (1.3,0.3);
         \end{tikzpicture}
         \caption{The Wayback Machine Archive}
@@ -144,7 +145,7 @@ While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of ar
     \includegraphics[width=\textwidth]{0_sheets/sra_growth.png}
     \caption{The Sequence Read Archive}
     \end{subfigure}
-    \caption{Plots of the database growth for the Wayback Machine~\cite{web-archive-growth} and the Sequence Read Archive~\cite{sra}.}
+    \caption{Plots of the database growth for the Wayback Machine~\cite{web-archive-growth} and the Sequence Read Archive~\cite{sra}. The databases are not only big but also still quickly growing.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
