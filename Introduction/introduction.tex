@@ -18,7 +18,7 @@ However, the need for text processing goes far beyond exact matching of patterns
 One of the oldest and most classic models for more complex queries is \ul{regular expressions} search, introduced by Kleene in 1951~\cite{RM-704}.
 % Explain the formalism
 The regular expression formalism offers a concise description for sets of strings through recursive combinations of characters from an alphabet $\Sigma$ along with three fundamental operators: concatenation ($\cdot$), union ($|$), and Kleene star ($\ast$).
-\todo[inline]{Add a oneline description of what union and star do.}
+For two regular expressions $R_1$ and $R_2$ the concatenation $R_1\cdot R_2$ matches any concatenation of a string matching $R_1$ and a string matching $R_2$. The union symbol $(R_1|R_2)$ allows to match any string matching either $R_1$ or $R_2$. While $(R_1)^\ast$ matches any number of repetitions of a string matching $R_1$, including no repetition thus the empty string.
 %We denote the set of string represented by a regular expression $R$ by $L(R)$. Let $\eps$ denote the empty string.
 % characters
 %For any character $c \in \Sigma \cup \{\eps\}$, $L(c) = \{c\}$.
@@ -35,10 +35,10 @@ Another way to describe them is through automata with the Thompson automaton con
 The use of regular expression gained popularity in the 1970s through their efficient implementation in Unix tools such as awk, grep or sed.
 They have become a crucial tool in many fields such as internet traffic analysis~\cite{4221791,4579527}, databases, data mining~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, computer networks~\cite{10.1145/1159913.1159952}, and protein search~\cite{10.1145/369133.369220}.
 Chapter~\ref{chap:regexp} provides a new streaming algorithm for regular expression membership and pattern matching.
-
+\todo[inline]{Add lower bounds from fine-grained complexity.}
 
 % Don't care
-Although the versatility of regular expression makes them widely used across fields, they are notoriously difficult to write for users.\todo{lowerbounds details ?}
+Although the versatility of regular expression makes them widely used across fields, they are notoriously difficult to write for users.
 As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted ?, can occur in both the pattern and the text, and matches to any other character of the alphabet (but only one).
 % Space seed
 This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
