@@ -1,13 +1,11 @@
  \section{Contributions}\label{intro:sec:contrib}
 
- \todo[inline]{Work In Progress, do not review}
+ \todo[inline]{If I have time to write up the streaming gapped, add a description of it, else remove it of the rest of the introduction.}
 
-So far, we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications and while maintaining performances that can scale to the large volumes of input data.
+So far, we presented the two core challenges at the heart of text processing: enabling relevant (and sometimes complex) queries suited to specific applications while also maintaining performances that can scale to the large volumes of data.
 %
 This thesis makes theoretical and practical contributions to address both needs. 
-Each contribution is presented as an independent chapter corresponding to a publication. This choice was motivated by the variety of subjects and techniques as well as how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. This section is meant to give an overview of the main contributions of the thesis and how they relate to the concept of sketches.
-
-\todo[inline]{If I have time to write up the streaming gapped, add a description of it}
+Each chapter is  an independent publication, with a specific problem, state of the art and contribution. This choice was motivated by the variety of subjects and techniques used, as well as how they were conceived during the Ph.D as independent projects (with varying sets of co-authors). However, this section is meant to give an overview of the main contributions of the thesis, some insights on the techniques used, and how they relate to the concept of sketches.
 
 Part~\ref{part:complex_queries} focuses on a theoretical study of complex queries. 
 %
@@ -29,7 +27,7 @@ Here is a bird's eye view of how we prove our result: we start by defining \emph
 %
 The basis of our approach is to store efficiently some specific occurrences of prefixes of the atomic strings. Those stored occurrences are then linked to test if there is a “partial” match of $R$ (Definition~\ref*{def:partial_occ_regexp}). Because we store only a few occurrences over periodic regions of the text, they can be very far apart, with just a long periodic substring in between. To reconstruct a partial match, we must check if that long periodic substring corresponds to a run of the Thompson's automaton. We formulate it as finding a path of a specific weight in a multi-graph. We then efficiently solve this graph problem by translating it into a circuit using addition and convolution gates that can be evaluated in a space-efficient manner using a general framework~\cite{LokshtanovN10,Bringmann17}. Additionally, we improve that framework by removing its dependency on the Extended Riemann Hypothesis (Theorem~\ref{thm:bombieri}). 
 %Sketches
-Here the key innovation relating to sketches is how the specific occurrences we store are chosen. It is common in streaming algorithms to handle the aperiodic and periodic strings as two separate cases.\todo{Explain why the aperiodic case is usually simpler}
+Here the key innovation relating to sketches is how the specific occurrences we store are chosen. Due to properties on periodicity (see preliminaries~\ref{sec:prelim:FW}), it is common in streaming algorithms to handle the aperiodic and periodic strings as two separate cases.
 Here we choose to apply this reasoning recursively on $\Oh(\log n)$ levels through the notion of ``anchor'' position (Definition~\ref{def:anchors}). For each atomic string (or a prefix of it) and anchor, either there are just a few occurrences crossing the anchor, and we can afford to store them, or the region is periodic, and we can look at an earlier position instead. This is key for achieving the desired space complexity and to store only the necessary occurrences.
 
 
