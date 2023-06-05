@@ -12,7 +12,7 @@ The Burrows-Wheeler Transform (BWT)~\cite{burrows1994block} of a string $S$ is a
 The BWT is also the basis for the FM-index~\cite{ferragina2005indexing}, one of the first and most popular compressed indexes, which is essentially a rank data structure over the BWT combined with a suffix-array sample.  The FM-index is an important data structure in combinatorial pattern matching and bioinformatics, and is itself the basis for popular tools such as Bowtie~\cite{langmead2009ultrafast,langmead2012fast} and BWA~\cite{li2009fast} that align DNA reads to reference genomes.  We refer the reader to Navarro's~\cite{navarro2016compact} and M\"akinen et al.'s~\cite{makinen2015genome} textbooks for detailed discussions of how FM-indexes are implemented and used for read alignment.
 
 \begin{figure}[t]
-\begin{center}
+\centering
 \begin{tabular}{c@{\hspace{20ex}}c}
 \begin{tabular}{rc}
    & $F$ \hspace{11ex} $L$\\
@@ -54,9 +54,7 @@ The BWT is also the basis for the FM-index~\cite{ferragina2005indexing}, one of 
 \end{tabular}
 \caption{The matrices whose rows are the lexicographically sorted rotations of {\tt GATTAGATACAT\$} {\bf (left)} and of {\tt GATTA\$}, {\tt TTAGA\$}, {\tt TAGATA\$}, {\tt GATAC\$} and {\tt ATACAT\$} {\bf (right)}.  The BWT and EBWT are {\tt TTTCGGAA\$AATA} and {\tt TCAAATTGTTTTCGG\$GAAAA\$\$ATAAAT\$A\$} with 8 and 19 runs, respectively.}
 \label{fig:dollars}
-\end{center}
 \end{figure}
-
 \subsection{EBWT}
 \label{subsec:EBWT}
 
