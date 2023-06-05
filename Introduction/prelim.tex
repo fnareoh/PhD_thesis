@@ -24,21 +24,17 @@ Thus, $\Oh(k)$ words are sufficient to store the compacted trie.
 %With the addition of failure links\todo{undef} to each node (which requires a preprocessing time in $\Oh(|S_1| + ... +|S_k|$)), the compacted trie enables the reporting of all occurrences of strings in $\mathcal{S}$ in a text $T$ in time $\Oh(|T|+occ)$ where $occ$ is the total number of occurrences. For a detailed explanation see Chapter 3.4 of~\cite{Gusfield1997}. 
 
 
-A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T$ i.e. over the collection $\{T[j..]$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapters 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}. Tries and Suffix Trees are use in every chapter of Part~\ref{part:complex_queries}.
+A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T$ i.e. over the collection $\{T[j..]$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapters 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}. Tries and Suffix Trees are used in Chapter~\ref{chap:regexp} to~\ref{chap:squares}.
 
 \input{Introduction/fig_tries_suffix.tex}
 
 \subsection{Heavy Path Decomposition}\label{sec:prelim:HP}
 
 \subsection{Karp-Rabin Fingerprint}\label{sec:prelim:KR}
-\todo[inline,color=teal]{Mention where they are used: Streaming indirectly, LCS Approx XBWT}
+\todo[inline,color=teal]{Mention where they are used: Streaming indirectly, Gapped indexing indirectly for the compact tries,  LCS Approx XBWT}
 
 \subsection{Periodicity and Fine-Wilf Lemma}\label{sec:prelim:FW}
 Compact run representation of occ crossing a given position
-
-\subsection{Streaming Pattern Matching}
-Application to the explanation of Breslauer \& Gallil (needed for both streaming)
-
 
 
 \subsection{Compression Techniques}
