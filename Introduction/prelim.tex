@@ -1,38 +1,30 @@
 \section{Preliminaries}\label{sec:prelim}
 
-\todo[inline]{Once the preliminaries have been completed, possibly add the relevant reference in the introduction}
-
 This section aims at presenting the basic concepts that are needed to understand the following chapters, as well as presenting the methods of compression used in this work and their connections.
 
 A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$ (not linked to a specific position), whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$ respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
 
 \subsection{Tries and Suffix Trees}\label{sec:prelim:tries}
-\todo[inline]{The \$ should be fixed/explained better}
 Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over the alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
-For any path, we say the path \emph{spells} the string obtain by concatenating the label of the edges of the path.
+For any path, we say the path \emph{spells} the string obtained by concatenating the label of the edges of the path.
 Likewise, when referring to a node within the tree, we define it as spelling the string spelled by the unique path from the root to that node.
-The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases we mark the node with a special character $\$$ outside the alphabet $\Sigma$.
+The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases, we mark the ending node with a special character $\$$ outside the alphabet $\Sigma$.
 
-The more efficient compacted trie is obtained by contracting  into a single edge any path from a node marked by a \$ or branching (with at least two children) to its lowest ancestor that is either branching or marked by a \$.
-This edge is then labeled with the string spelled by the path it replaced.
+The more efficient compacted trie is obtained by contracting  into a single edge any path from a node that is either marked by a \$ or branching (with at least two children) to its lowest ancestor that is either branching or marked by a \$.
+This edge is then labelled with the string spelled by the path it replaced.
 Let $S$ be a string spelled by a node of the non-compacted trie, if it is also spelled by a node of the compacted trie we say the node is \emph{explicit} else it is \emph{implicit}. Those definitions are illustrated in Figure~\ref{fig:intro:tries_suffix_tree}. Note that for any two nodes $i$ and $j$, their lowest common ancestor spells the longest common prefix between the strings spelled by $i$ and $j$.
 % dynamic z-fast tries 
-Although they are not needed in this manuscript it might be helpful for the reader to know that dynamic z-fast tries~\cite{belazzougui2010dynamic} have been designed specifically to optimize predecessor and successor (lexicographic order) queries and longest common prefix queries.
-% patricia trie
-%Patricia tries~\cite{morrison1968patricia} are compacted tries on the bit encodings of the strings, where comparison are made bit by bit and therefore each node has at most two children. A radix tree also operate on the bit encodings of the strings but can compare several bits at a time. For a radix $r$, the radix tree compares the strings by blocks of $r$ bits and each node can have $2^r$ children, a patricia trie is a radix tree with $r=1$.
-
-Notice that all nodes are either branching or leaves and that all leaves spell a different string of $\mathcal{S}$. 
+Dynamic z-fast tries~\cite{belazzougui2010dynamic} are not needed in this manuscript but might be interesting for the reader to know that as they have been specifically designed to optimize predecessor and successor (lexicographic order) queries and longest common prefix queries.
+%
+Notice that all nodes are either branching or marked by a \$ and that all node marked by a \$ spell a different string of $\mathcal{S}$. 
 Hence, there are $\Oh(k)$ nodes in the compacted trie.
-For each edge there exist $(i,s,e)$ such that its label is equal to $S_i[s .. e]$, thus we can avoid storing the label explicitly and just store the reference $(i,s,e)$ to the input strings of $\mathcal{S}$.
+For each edge, there exists $(i,s,e)$ such that its label is equal to $S_i[s .. e]$, thus we can avoid storing the label explicitly and just store the reference $(i,s,e)$ to the input strings of $\mathcal{S}$.
 Thus, $\Oh(k)$ words are sufficient to store the compacted trie.
 %
 %With the addition of failure links\todo{undef} to each node (which requires a preprocessing time in $\Oh(|S_1| + ... +|S_k|$)), the compacted trie enables the reporting of all occurrences of strings in $\mathcal{S}$ in a text $T$ in time $\Oh(|T|+occ)$ where $occ$ is the total number of occurrences. For a detailed explanation see Chapter 3.4 of~\cite{Gusfield1997}. 
 
 
-A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T$ i.e. over the collection $\{T[j..]$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapter 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}.
-
-
-\todo[inline,color=teal]{Mention where they are used: Streaming Squares Gapped}
+A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T$ i.e. over the collection $\{T[j..]$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapters 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}. Tries and Suffix Trees are use in every chapter of Part~\ref{part:complex_queries}.
 
 \input{Introduction/fig_tries_suffix.tex}
 
