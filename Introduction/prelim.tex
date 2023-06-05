@@ -30,8 +30,23 @@ A suffix tree of a string $T$ of length $n$ is the compacted trie containing the
 
 \subsection{Heavy Path Decomposition}\label{sec:prelim:HP}
 
-\subsection{Karp-Rabin Fingerprint}\label{sec:prelim:KR}
-\todo[inline,color=teal]{Mention where they are used: Streaming indirectly, Gapped indexing indirectly for the compact tries,  LCS Approx XBWT}
+\subsection{Karp--Rabin Fingerprint}\label{sec:prelim:KR}
+
+For $p$ is a prime number and $r \in \mathbb{F}_p$ (the finite field of integer modulo $p$), the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+$\varphi_{p,r}(S) = \sum_{i = 0}^{|S|-1}  S[i]r^{i} \bmod p$.
+
+It is easy to see that if two strings $S_1$ and $S_2$ are equal then $\varphi_{p,r}(S_1) = \varphi_{p,r}(S_2)$. However, the reverse is not true, two distinct string $S_1$ and $S_2$ can have colliding fingerprints.
+% Collision
+From a theoretical point of view, for a given integer $n$, if $p$ is chosen to be $\Theta(n^k)$ and $r$ is chosen at random in $\mathbb{F}_p$, $|S_1|\leq n$, $|S_2|\leq n$, then $\varphi_{p,r}(S_1) - \varphi_{p,r}(S_2) = 0$ can be seen as a polynomial over $\mathbb{F}_p$. This polynomial has degree greater than zero (because $S_1 \neq S_2$), and at most $\max(|S_1|,|S_2|) < n$ thus it can have at most $n$ roots thus the probability of the fingerprints $S_1$ and $S_2$ colliding is less than $\frac{n}{n^k} = \frac{1}{n^{k-1}}$.
+% Practice
+In practice $p$ is often chosen as a large primary number around $2^{27}$ to still fit on a 32-bit integer and $r$ is often also hard coded as a parameter (this is the case in the implementation of Chapter~\ref{chap:LCS}), sometimes to a power of two in order to speed up the computation (this is the case in the implementation of Chapter~\ref{chap:XBWT}).
+
+% Sliding window property
+This fingerprint has a nice ``sliding'' property in the sense that for a window of a text $T$ and two integers $i,m$ such that $i+m < |T|$, we can express efficiently the fingerprint of $T[i+1..i+m]$ as a function of the fingerprint of $T[i..i+m-1]$, $T[i]$ and $T[i+m]$:
+$$ r \varphi_{p,r}(T[i+1..i+m]) = \varphi_{p,r}(T[i..i+m-1])\times r - T[i] + T[i+m]r^k \mod p$$
+This allows Karp--Rabin fingerprints to be used for an online matching algorithm running in $\Oh(|P|+|T|)$ that can err with small probability (Monte-Carlo).
+% Differences in definitions Gapped
+The precise definition can vary slightly depending on the specific property needed. In Chapter~\ref{chap:gapped_index}, the fingerprint of a string $S$ are defined as a triple $(r^{|S|-1} \mod p, r^{-|S|+1} \mod p, \varphi_{p,r}(S))$, to have the property that given three string $X,Y,Z$ such that $XY =Z$, and the fingerprint of any two strings we can deduce in constant time the third fingerprint (Fact~\ref{fact:fingerprints}). In other definitions such as the one in~\cite{Gusfield1997}, $r=2$ is fixed and $p$ is a random prime number chosen bellow a fixed parameter $I$, the collision-probability  analysis is therefore also different.
 
 \subsection{Periodicity and Fine-Wilf Lemma}\label{sec:prelim:FW}
 Compact run representation of occ crossing a given position
