@@ -32,39 +32,38 @@ These results give a good understanding of the time complexity of regular expres
 
 
 % Don't care
-Although the versatility of regular expression makes them widely used in practice across fields, they are notoriously difficult to write for users.
-As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted ?, can occur in both the pattern and the text, and matches to any other character of the alphabet (but only one).
+Although the versatility of regular expressions makes them widely used in practice across fields, they are notoriously difficult to write for users.
+As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted \texttt{?}, can occur in both the pattern and the text, and matches any other character of the alphabet.
 % Space seed
-This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
+This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally, space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
 % Gapped matching
-Patterns with don't cares are sometimes~\cite{lewenstein2011indexing} described as $P= P_1g_1P_2g_2 \dots g_\ell P_{\ell+1}$ where $P_1$,$P_2$,\dots,$P_{\ell+1}$ are patterns over the alphabet $\Sigma$ and $g_1,g_2,\dots,g_{\ell}$ are integers describing the length of the gaps. 
+Patterns with don't cares are sometimes~\cite{lewenstein2011indexing} described as $P= P_1g_1P_2g_2 \dots g_\ell P_{\ell+1}$ where $P_1$,$P_2$,\dots,$P_{\ell+1}$ are patterns over the alphabet $\Sigma$ and $g_1,g_2,\dots,g_{\ell}$ are the length of the maximal stretches of \texttt{?}. 
 % variable length gap
 Naturally this question was later extended to the problem of string matching with \underline{variable length gap}~\cite{bille2012string,bille2014string} where the length of the gaps can vary in intervals $[a_i,b_i]$ for $i\in[1,\ell]$.
 % Applications
-Note that variable length gaps are also supported to query the PROSITE database.
+Note that variable length gaps are also supported by the PROSITE~\cite{hulo2006prosite} database.
 % variants
 Different variants of the problem have been studied~\cite{kopelowitz2016color,cohen2009range,brodal1999finding}, including a simpler version with just two patterns $P_1$ and $P_2$ and a single gap~\cite{peterlongo2006gapped,iliopoulos2009indexing} and the special case $P_1=P_2$~\cite{muthukrishnan2002efficient,keller2007range}.
 
 % consecutive
-In 2016, Navarro and Thankatchan~\cite{NAVARRO2016108} proposed an interesting variant, where given a single pattern $P$ and an interval $[a,b]$, one must report all consecutive occurrences of $P$ starting at positions $(i,j)$ (consecutive meaning no other occurrence in between $i$ and $j$) such that $j-i$ belongs to $[a,b]$. Since, consecutive occurrences have been studied in several publications~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887,DBLP:journals/corr/abs-2211-16860}.
+In 2016, Navarro and Thankatchan~\cite{NAVARRO2016108} proposed a natural variant to pattern matching with a variable length gap, where given a single pattern $P$ and an interval $[a,b]$, one must report all consecutive occurrences of $P$ starting at positions $(i,j)$ (consecutive meaning no other occurrence in between $i$ and $j$) such that $j-i$ belongs to $[a,b]$. Since, consecutive occurrences have been studied in several publications~\cite{DBLP:conf/fsttcs/BilleGPRS20,cpm/BilleGPS21,DBLP:journals/corr/abs-2304-00887,DBLP:journals/corr/abs-2211-16860}.
 % Gapped consecutive matching
-Recently Bille et al.~\cite{bille2022gapped} proposed a natural combination of the two lines of research: \underline{gapped consecutive matching} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all consecutive occurrences of $P_1$ and $P_2$ with distance in $[a,b]$.
+Recently Bille et al.~\cite{bille2022gapped} proposed a combination of the gapped and consecutive lines of research: \underline{gapped consecutive matching} where we are given two patterns $P_1$ and $P_2$ as well as an interval $[a,b]$ and must report all consecutive occurrences of $P_1$ and $P_2$ with distance in $[a,b]$.
 % Motivations
 %This model can be linked to gapped q-grams~\cite{burkhardt2003better} which is an alternative to spaced seeds which were mentioned earlier.
 % This thesis
-We study gapped consecutive pattern matching in various settings in Chapters~\ref{chap:gapped_pm} and~\ref{chap:gapped_index}.
+We study gapped consecutive pattern matching in various settings in Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm}, a summary of the contribution is given in Section~\ref{intro:sec:contrib}.
 %~\ref{chap:gapped_stream},
 
-Although an in-depth non-standard matching listing is out of the scope of this manuscript, for completeness, we detail other models found in the literature.
+Although an in-depth non-standard matching listing is out of scope for this manuscript, for completeness, we detail other models found in the literature, and Table~\ref{fig:intro:match_model} provides exemples for each of the models.
 % Degenerate strings
-The modelization of flexible and diverse DNA sequences~\cite{comm1970iupac} lead to the model of \underline{degenerate} strings~\cite{abrahamson1987generalized} (also called indeterminate) where each position of the string corresponds to a subset of $\Sigma$.
+The modelling of flexible and diverse DNA sequences~\cite{comm1970iupac} lead to the model of \underline{degenerate} strings~\cite{abrahamson1987generalized} (also called indeterminate), where each position corresponds to a subset of $\Sigma$.
 % (Elastic/Generalised) Degenerate strings
-This model has recently been continued in two directions: \underline{elastic degenerate} strings~\cite{iliopoulos2021efficient} where each position is a subset of strings over $\Sigma$ and \underline{generalised degenerate} strings~\cite{alzamel_et_al:LIPIcs:2018:9323} where each position is a subset of strings of $\Sigma^k$ but where the length $k$ can vary from position to position.
-%\todo{Detail the biological problem behind the model}
+This model has recently been extended in two directions: \underline{elastic degenerate} strings~\cite{iliopoulos2021efficient} where each position is a subset of strings over $\Sigma$ and \underline{generalized degenerate} strings~\cite{alzamel_et_al:LIPIcs:2018:9323} where each position is a subset of strings of $\Sigma^k$, and the length $k$ can vary from position to position.
 % Weighted string
-Alternatively, when probabilities are given for each character and positions in the form of a position weight matrix~\cite{thompson1994clustal} the strings are called \underline{weighted} (or uncertain). Then, the cumulative probability that a string occurs at a starting position is the product of the probabilities of the corresponding characters at each position. This model has been used in molecular biology in ``profiles'' that represent multiple aligned strings~\cite{doi:10.1073/pnas.84.13.4355} though they study a slightly different score: $\log \frac{p(x,i)}{p(x)}$ where $p(x,i)$ is the probability that the $i$th character is equal to $x$ and $p(x)$ is the overall frequency of $x$. 
+Alternatively, when each position is assigned a random variable with values in $\Sigma$ the strings are called \underline{weighted} (or uncertain) and represented by a weight matrix~\cite{thompson1994clustal}, see Table~\ref{fig:intro:match_model} for an example. Then, the cumulative probability that a string occurs at a starting position is the product of the probabilities of the corresponding characters at each position, and a match is often defined by a threshold on that cumulative probability. This model has been used in molecular biology in ``profiles'' that represent multiple aligned strings~\cite{doi:10.1073/pnas.84.13.4355} though they study a slightly different score: $\log \frac{p(x,i)}{p(x)}$ where $p(x,i)$ is the probability that the $i$th character is equal to $x$ and $p(x)$ is the overall frequency of $x$. 
 % Abelian/jumbled/many other names 
-In the model of \underline{abelian} matching, a string (or a substring) is entirely identified by the letter it contains (with multiplicities), disregarding their order. It stems from the automatic discovery of clusters of genes in genomes where they can occur in a different order but still linked to the same function~\cite{eres2004permutation}, but the same concept has also been used in the context  of using mass spectrometry for DNA assembly~\cite{bocker2003sequencing} where the strings without order are called compomers. This model is also known as jumbled and permutation pattern matching, and several other names, see~\cite{ejaz2010abelian}.
+In the model of \underline{abelian} matching, a string (or a substring) is entirely identified by the characters it contains (with multiplicities), disregarding their order. It stems from the automatic discovery of clusters of genes in genomes where they can occur in a different order but still linked to the same function~\cite{eres2004permutation}, but the same concept has also been used in the context  of using mass spectrometry for DNA assembly~\cite{bocker2003sequencing} where the strings without order are called compomers. This model is also known as jumbled and permutation pattern matching, and several other names, see~\cite{ejaz2010abelian}.
 % order preserving
 The \underline{order-preserving} model~\cite{kim2014order,kubica2013linear} takes a somewhat opposite approach and says that two strings match if they have the same relative shape: $\forall i,j \in [0,n-1], X[i] < X[j] \leftrightarrow Y[i] < Y[j]$. This matching model aims at capturing the trend detection needed in the stock market and music melody matching problems~\cite{kim2014order}.
 %
@@ -74,7 +73,7 @@ Another application-driven model is \underline{parametrized strings} or ``p-stri
 \subsection{Repetition Detection}
 \todo[inline]{Work in progress do not review!\\ TODO: Detail}
 So far we focussed on matching models where we are given a pattern and text as well as conditions that define a match of the pattern in the text. But another central task in text processing is repetitions detection. By repetitions, we refer to consecutive occurrences of the same fragment. They can be repeated twice (a square), three times (a cube) or more, then represented as a run: a maximal periodic substring. They are needed as a theoretical tool to avoid needless repetitive computations, but they also naturally occur in DNA with an important role in genomic fingerprinting~\cite{Kolpakov2003}.
-The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word, in Chapter~\ref{chap:squares} we provide an optimal algorithm for square detection.
+The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free string, in Chapter~\ref{chap:squares} we provide an optimal algorithm for square detection.
 
 % Should also define runs
 
