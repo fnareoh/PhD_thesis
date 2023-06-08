@@ -7,7 +7,7 @@ So far, we presented the two core challenges at the heart of text processing: en
 This thesis makes theoretical and practical contributions to address both needs. 
 Each chapter is  an independent publication, with a specific problem, a review of the state of the art, and contribution. This choice was motivated by the variety of subjects and techniques used, and how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. However, this section intends to provide an overview of the main contributions of the thesis, some insights into the techniques used, and how they relate to the concept of sketches.
 
-Part~\ref{part:complex_queries} focuses on a theoretical study of complex queries. 
+\textbf{Part~\ref{part:complex_queries}} focuses on a theoretical study of complex queries. 
 %
 % Regular expressions
 We start with regular expression search in the streaming setting.
@@ -42,7 +42,7 @@ In \textbf{Chapter~\ref{chap:gapped_index}}, we begin our study of gapped consec
 Bille et al.~\cite{bille2022gapped} introduced those queries and gave a conditional lower bound stating that for indexes of size $\tilde \Oh(|T|)$ (the $\tilde \Oh$ notation hides logarithmic factors) achieving a query time faster than $\tilde \Oh(|P_1|+|P_2|+\sqrt{|T|})$ would contradict the Set Disjointness conjecture, even if $a=0$ is fixed. Additionally, they provide a non-trivial upper bound that uses $\tilde \Oh(|T|)$ space and $\tilde \Oh (|P_1| +|P_2| + |T|^{2/3}\occ^{1/3})$ time to report all $\occ$ occurrences. 
 % Our contributions
 We study the case where $a=0$ is fixed, and the text $T$ of size $n$ is given as a straight-line program $G$ of size $g$. A straight-line program (SLP) is a context-free grammar generating exactly one string. We chose this formalism for its convenient interface that allows random access in $\Oh(\log n)$ time~\cite{random_access_grammar_compress} and that it captures the  Lempel--Ziv factorization up to a logarithmic factor: a Lempel--Ziv factorization of size $z$ can be transformed into an SLP of size $\Oh(z\log n)$~\cite{CharikarLLPPRSS02,Rytter02}.
-
+%
 Our contribution is to create an index taking space polynomial in the size of the grammar that answers such queries in optimal time up to poly log factors.
 To report consecutive occurrences without constraints on the distance between $P_1$ and $P_2$, our index uses $\Oh(g^2\log^4|T|)$ space where $g$ is the size of the SLP (see Corollary~\ref{cor:all}).
 % Insights
@@ -74,11 +74,29 @@ For general ordered alphabets (where an order is given), Crochemore~\cite{Croche
 Instead, we introduce the $\Delta$-approximate LZ factorization which acts as a sketch capturing only the sufficiently long squares (of length at least $8\Delta$), as opposed to the $f$-factorization and LZ factorization that capture all squares.
 We present our final algorithm in steps. We first assume that the alphabet size is known and focus on giving an upper bound on the number of comparisons, then we proceed to remove the assumption on knowing the alphabet size, and finally we provide an overall efficient algorithm running in time $\Oh(n\log\sigma)$.
 % MY contrib
-In this work, I helped formalize and clarify the proofs throughout the process, but I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the important technical ideas.
+In this work, I helped formalize and clarify the proofs throughout the process. I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the main technical ideas.
 
 % Part two
-
-% LCS
+\textbf{Part~\ref{part:approx-bio}} explores the use of approximation to further reduce the size of sketches and provide more efficient algorithms. Each chapter provides a proof of concept implementation for applications to bioinformatics.
+%
+% LCS approx k
+Earlier in this introduction we detailed the importance of similarity measures for numerous applications.
+% ED
+In bioinformatics the edit distance is the most popular similarity measure, however Backurs and Indyk~\cite{DBLP:conf/stoc/BackursI15} proved a conditional lower bound (based on SETH) which suggest it is unlikely to be computable in strongly subquadratic time.
+% ED approx
+The need to overcome this quadratic-time barrier lead to the study of approximate algorithm for the edit distance. Chakraborty et al.~\cite{DBLP:conf/focs/ChakrabortyDGKS18} gave the first breakthrough result with a constant-factor approximation algorithm that computes the edit distance between two strings of length $n$ in time $\tilde{\Oh}(n^{2-2/7})$.
+Since our publication~\cite{DBLP:conf/cpm/GourdelKRS20} (presented in Chapter~\ref{chap:LCS}), a series of work have been published on approximating the edit distance~\cite{brakensiek2020constant,koucky2020constant} with the strongest result being~\cite{andoni2020edit} with a constant factor approximation in time $n^{1+\eps}$ for any $\eps>0$ (where the approximation constant depends solely on $\eps$).
+Nevertheless, these algorithms tend to be quite technical and even those meant to be simpler such as~\cite{andoni2020simple} do not seem to have been implemented and evaluated in practice.
+% Our problem 
+In \textbf{Chapter~\ref{chap:LCS}}, we take another approach by considering a different similarity measure meant to be both robust to small changes and simple enough to allow for efficient computation. We consider \kApproxLCS: an approximate version of \kLCS. The formal definition of the latter is, for an integer $k$ and two string $X$ and $Y$, $\lcsk(X,Y)$ is the maximal length of a substring of $X$ that occurs in $Y$ with a most $k$ mismatches.
+For a constant $\eps > 0$, the \kApproxLCS problem needs to return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches. This problem has been introduced by Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} after they showed that there is $k=\Theta(\log n)$ such that \kLCS cannot be solved in strongly subquadratic time.
+% Our contrib
+In Theorem~\ref{th:klcs_upper} we provide two algorithms: one assuming a constant size alphabet running in $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and space, and one in $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ time and linear space without constraints on the alphabet. The first result relies on an Approximate Nearest Neighbour data structure~\cite{DBLP:conf/stoc/AndoniR15} as a black box and is more of theoretical interest. Whereas our second contribution is simpler and practical as we confirm by an experimental evaluation.
+Additionally, in Fact~\ref{lm:klcs_lower}, we show a conditional lower bound for \kApproxLCS (with a construction similar to the proof for the lower bound of \kLCS ).
+% Sketches
+To show those results we rely on Karp--Rabin fingerprints and a sketch estimating the Hamming distance based on dimension reduction, both detailed in Section~\ref{lcs:sec:prelim}.
+% MY contrib
+I participated in all aspects of the work and implemented the practical evaluation of our algorithm.
 
 % DTW
 
