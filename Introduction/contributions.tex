@@ -51,7 +51,7 @@ Theorem~\ref{th:occurrences} is then reused for our main result: Theorem~\ref{th
 % Sketches
 The straight-line program input is the main sketch used in this work, but I would argue that the index we construct forms a grammar-based sketch specific to consecutive occurrences.
 % Comments
-The index of~\ref{thm:close_co_occurrences} circumvents the lower bound for highly compressible texts, which was not a given considering that some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in Section~\ref{sec:intro:scalability}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case with $0 \leq a \leq b \leq |T|$\footnote{We started writing a solution for the general case, but it was very technical and had an unreasonable space-complexity of $\tilde \Oh(g^{15})$...} as open questions. I contributed actively to every part of that work.
+The index of~\ref{thm:close_co_occurrences} circumvents the lower bound for highly compressible texts, which was not a given considering that some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in Section~\ref{sec:intro:scalability}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case with $0 \leq a \leq b \leq |T|$\footnote{We started writing a solution for the general case, but it was very technical and had an unreasonable space-complexity of $\tilde \Oh(g^{15})$...} as open questions. I contributed to every part of that work.
 
 % PM
 Partially motivated by the limitations of a space usage in $\tilde \Oh(g^5)$, in \textbf{Chapter~\ref{chap:gapped_pm}}, we address the dual problem: consecutive pattern matching, where the patterns and the text are processed simultaneously. Note that for an uncompressed text, consecutive pattern matching can be solved by a classic online matching algorithm, just keeping track of the most recent occurrences of $P_1$ and $P_2$ in $\Oh(|T|+|P_1|+|P_2|+\occ)$ time.
@@ -74,7 +74,7 @@ For general ordered alphabets (where an order is given), Crochemore~\cite{Croche
 Instead, we introduce the $\Delta$-approximate LZ factorization which acts as a sketch capturing only the sufficiently long squares (of length at least $8\Delta$), as opposed to the $f$-factorization and LZ factorization that capture all squares.
 We present our final algorithm in steps. We first assume that the alphabet size is known and focus on giving an upper bound on the number of comparisons, then we proceed to remove the assumption on knowing the alphabet size, and finally we provide an overall efficient algorithm running in time $\Oh(n\log\sigma)$.
 % MY contrib
-In this work, I helped formalize and clarify the proofs throughout the process. I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the main technical ideas.
+In this work, I helped formalize and clarify the proofs throughout the process. I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the major technical ideas.
 
 % Part two
 \textbf{Part~\ref{part:approx-bio}} explores the use of approximation to further reduce the size of sketches and provide more efficient algorithms. Each chapter provides a proof of concept implementation for applications to bioinformatics.
@@ -99,5 +99,18 @@ To show those results we rely on Karp--Rabin fingerprints and a sketch estimatin
 I participated in all aspects of the work and implemented the practical evaluation of our algorithm.
 
 % DTW
+Continuing our exploration of similarity measures, the next chapter focuses on the Dynamic Time Warping (DTW) distance.
+% RLE / Sketches
+In \textbf{Chapter~\ref{chap:DTW}}, we consider one of the simplest from of sketching: run-length encoding. The run-length encoding of a string $S$ of length $N$ is a concise representation $\RLE(S)=(c_1,l_1)(c_2,l_2)...(c_n,l_n)$ where $(c_i,l_i)$ represents the character $c_i \in \Sigma$ repeated $l_i$ times  for $i \in [1,n]$, and such that $\sum_{i\in [1,n]} l_i = N$.
+This sketch is especially relevant for the DTW distance as one must ``wrap'' the two strings : double some character until the strings are of equal length and then sum the distances between the characters at the same position. Therefore, the runs of equal characters tend to be aligned despite variations in length, making the run-length encoding very natural.
+\todo[inline]{Previous results on RLE DTW}
+% Our contrib 
+When the distances between characters of $\Sigma$ are integers, for a pattern $P$ with $m$ runs and a text $T$ with $n$ runs, we show that there is $\Oh(n+m)$-time algorithm that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most 1. More generally for an integer $k$, we provide an algorithm $\Oh(knm)$-time that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most $k$.
+% Bio motivation
+Our interest and research on DTW is also motivated by potential applications in the analysis of biological data produced by the third generation sequencing which we detail in Section~\ref{dtw:sec:experiments}.
+% My contrib
+I contributed to every part of that work except for the approximation algorithms given as corollary of our second algorithm which were added by Tatiana Starikovskaya.
+% Update
+Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(n^2)$-time computation of the DTW distance between two strings of length $n$, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
 
 % XBWT
