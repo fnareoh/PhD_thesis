@@ -1,8 +1,16 @@
 \section{Preliminaries}\label{sec:prelim}
 
-This section aims at presenting the basic concepts that are needed to understand the following chapters, as well as presenting the different sketches used in this work and their connections.
+This section aims at presenting the basic concepts that are needed to understand the following chapters, as well as presenting the different sketches used in this work and their interconnections.
+1
 
-A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$ (not linked to a specific position), whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$ respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
+\noindent A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$ (not linked to a specific position), whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$ respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
+
+\subsection{The Strong Exponential Time Hypothesis}
+
+The Strong Exponential Time Hypothesis (SETH) has already been mentioned several times in this introduction as it is the basis for many important conditional lower bound. Conditional lower bound are a crucial tool to understand the problems complexity and whether the current upper bound are optimal. In this thesis we never work directly from SETH, but for completeness here is the Hypothesis's statement:
+
+\defproblem{\textsc{The Strong Exponential Time Hypothesis}}{ 
+The  satisfiability of conjunctive normal form (CNF) formulas with $N$ variables\\ and $M$ clauses cannot be solved in time $2^{N(1-o(1))}$.}\\
 
 \subsection{Tries and Suffix Trees}\label{sec:prelim:tries}
 Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over the alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
