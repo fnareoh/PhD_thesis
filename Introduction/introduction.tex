@@ -155,7 +155,7 @@ We will detail in Section~\ref{intro:sec:contrib} how each contribution of this 
 %summarize their respective scalability approaches as follows (with some approaches that can be combined): 
 
 \begin{itemize}
-\item Compressed input: as mentioned already, highly redundant data can sometimes be compressed into a sketch of a more manageable size. 
+\item Compressed input: as mentioned already, highly redundant data can sometimes be represented by a sketch of a more manageable size. 
 Consequently, algorithms that can directly operate on the sketch become much more efficient. This is very natural approach as the data is almost always shared in a compressed format, the difficulty focusses on working with the sketch's property and structure. However, it is important to note that not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that to compute the longest common subsequence of two strings of uncompressed size $N$, given in a sketch of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the Strong Exponential Time Hypothesis (SETH). 
 Very recently, Ganesh et al.~\cite{ganesh2022compression} also showed a lower bound $\Omega(N^{k-1}n)$ conditioned on SETH to compute the median edit distance and length of the longest common subsequence of $k$ strings.
 In other words, even if the input is given compressed form, we cannot avoid a high dependency in the uncompressed size. In this thesis, Chapters~\ref{chap:gapped_pm} and~\ref{chap:gapped_index} both take as input a sketch, more precisely a grammar compressed text and their complexities are given as a function of the size of the compressed input.
