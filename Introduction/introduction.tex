@@ -78,13 +78,36 @@ The study of squares in strings goes back to 1906 with the work of Thue~\cite{th
 % Should also define runs
 % Mention palindromes and stuffs ?
 
-\subsection{Similarity Measures}
-\todo[inline]{Work in progress do not review!\\ TODO: Complete rewrite and add citations about other model with mismatches}
-% Similarity measures
-% Explain/illustrate ED, LCS, LCS with $k$ mismatches, DTW
+\subsection{Similarity Measures and Distances}
+\todo[inline]{Work in progress !}
 % The notion of robustness of the similarity measure
-Although regular expressions are powerful, Bioinformatics\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer} also need relevant and efficient similarity measures such as the Levenshtein distance~\cite{levenshtein1966binary} or Dynamic Time warping distance~\cite{sakoe1978dynamic}. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at a distance at most a threshold $\tau$.
-We contribute to this line of research in Chapters~\ref{chap:LCS} and~\ref{chap:DTW}.
+% Similarity measures
+Many string applications have to work around noise in the input data, which makes it difficult to search for exact matches. Some of the models presented earlier define their match to take into account noisy input, but another important approach is to work with distances and similarity measures. Quantifying the degree of similarity and dissimilarity of two strings is for example needed in Bioinformatics~\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison} and plagiarism detection~\cite{lukashenko2007computer}. 
+
+A distance measure quantifies the dissimilarity between strings, while a similarity measure quantifies the degree of resemblance or likeness between strings. Most distances can be derived into similarity measure, and most similarity measure have a corresponding distance, thus in this section we alternate between the two terms depending on which form is most common in the literature.
+
+\todo[inline]{Add citation for every distance.}
+% Hamming
+One of the simplest distance on string is the \underline{Hamming distance}: For two strings $X$ and $Y$ with $|X|=|Y|$ it is the number of mismatches between $X$ and $Y$. Alternatively, the Hamming distance is defined as the number of substitutions needed to transform $X$ into $Y$.
+% Longuest Common Subsequence
+When instead the goal is to have a similarity measure robust to insertions and deletions in the strings $X$ and $Y$, one can consider the length of the \underline{Longest Common Subsequence} between $X$ and $Y$. That is finding the largest $\ell$ such that there exist positions $i_1<... < i_\ell$ and $j_1< ... < j_\ell$ such that $X[i_p] = Y[j_p]$ for all $p \in [1,\ell]$.
+% ED / Levenshtein
+For the \underline{Levenshtein distance}~\cite{levenshtein1966binary} (also called edit distance) the operations allowed are substitutions, insertions and deletions. This metric is one of the most well known, due to the importance of finding global alignments (alignments of the two string with substitutions, insertions and deletions) in bioinformatics~\cite{Gusfield1997}.
+% LCS with $k$ mismatches
+\todo[inline]{LCSapprox k}
+% DTW
+In Chapter~\ref{chap:DTW}, we consider a popular distance for temporal sequences but less common for strings: the \underline{Dynamic Time Warping (DTW) distance}~\cite{sakoe1978dynamic}. For strings, the DTW distance can be described as follows: double some character until the strings are of equal length and then sum the distances between the characters at the same positions.
+%
+\todo[inline]{Description of how those similarities measure are used for approximate matching}
+%
+All similarity measures and distances mentioned above are illustrated in Figure TODO.
+\todo[inline]{Have a figure illustrating of each similarity measure/distance.}
+% PM
+% Approximate matching
+
+
+%also need relevant and efficient similarity measures such as the Levenshtein distance or Dynamic Time warping distance~. They also often need to report all occurrences with an error bound\cite{landau1986efficient,landau1989fast}: at a distance at most a threshold $\tau$.
+%We contribute to this line of research in Chapters~\ref{chap:LCS} and~\ref{chap:DTW}.
 
 
 \subsection{Scalability Issues}\label{sec:intro:scalability}

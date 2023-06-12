@@ -104,11 +104,10 @@ In our algorithms, we rely on Karp--Rabin fingerprints and a sketch estimating t
 I participated in all aspects of the work and implemented the practical evaluation of our algorithm.
 
 % DTW
-Continuing our exploration of similarity measures, the next chapter focuses on the Dynamic Time Warping (DTW) distance.\todo{Todo, detail it earlier in the distance/similarity measure section}
+Continuing our exploration of similarity measures and distances, the next chapter focuses on the Dynamic Time Warping (DTW) distance. Recall that for the DTW distance, one must ``wrap'' the two strings: double some character until the strings are of equal length and then sum the distances between the characters at the same positions.
 % RLE / Sketches
 In \textbf{Chapter~\ref{chap:DTW}}, we consider one of the simplest from of sketching: run-length encoding. The run-length encoding of a string $S$ of length $N$ is a concise representation $\RLE(S)=(c_1,l_1)(c_2,l_2)...(c_n,l_n)$ where $(c_i,l_i)$ represents the character $c_i \in \Sigma$ repeated $l_i$ times  for $i \in [1,n]$, and such that $\sum_{i\in [1,n]} l_i = N$.
-This sketch is especially relevant for the DTW distance as one must ``wrap'' the two strings : double some character until the strings are of equal length and then sum the distances between the characters at the same position. Therefore, the runs of equal characters tend to be aligned despite variations in length, making the run-length encoding very natural.
-In fact, Froese et al.~\cite{DBLP:journals/corr/abs-1903-03003} gave an algorithm with running time $\Oh(mN+nM)$, where $M,N$ are the length of the strings, and $m, n$ are the sizes of their run length encodings.
+This sketch is especially relevant for DTW as the runs of equal characters tend to be aligned despite variations in length. That is why the number of runs in the strings have already been used by Froese et al.~\cite{DBLP:journals/corr/abs-1903-03003} who gave an algorithm computing the DTW distance between two string with running time $\Oh(mN+nM)$, where $M,N$ are the length of the strings, and $m, n$ are the sizes of their run length encodings.
 
 % Our contrib 
 Our contribution is as follows: when the distances between characters of $\Sigma$ are integers, for a pattern $P$ with $m$ runs and a text $T$ with $n$ runs, we show that there is $\Oh(n+m)$-time algorithm that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most 1. More generally for an integer $k$, we provide an algorithm $\Oh(knm)$-time that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most $k$.
