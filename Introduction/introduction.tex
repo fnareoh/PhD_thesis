@@ -95,16 +95,20 @@ When instead the goal is to have a similarity measure robust to insertions and d
 % ED / Levenshtein
 For the \underline{Levenshtein distance}~\cite{levenshtein1966binary} (also called edit distance) the operations allowed are substitutions, insertions and deletions. This metric is one of the most well known, due to the importance of finding global alignments (alignments of the two string with substitutions, insertions and deletions) in bioinformatics~\cite{Gusfield1997}.
 %\todo[inline]{Add the Jarno-Winkler distance which allows translocations ?}
-Apart from the direct comparison of two strings, distances are also used to define approximate matching problems~\cite{landau1986efficient,landau1989fast} where for given an integer $tau$, a pattern $P$ and a text $T$, one must report all positions $j$ such that there is a substring $T[i..j]$ that is at distance at most $tau$ from $P$.
+Unfortunately, Backurs and Indyk~\cite{DBLP:conf/stoc/BackursI15} proved a conditional lower bound (based on SETH) which suggests it is unlikely to be computable in strongly subquadratic time.
 % LCS with $k$ mismatches
-\todo[inline]{LCSapprox k}
+Therefore, in Chapter~\ref*{chap:LCS} we consider another similarity measure resilient to substitutions: \kApproxLCS which is an approximate version of \kLCS . In the \kLCS problem, given an integer $k$ and two strings $X$ and $Y$, $\lcsk(X,Y)$ we must compute the maximal length of a substring (not subsequence) of $X$ that occurs in $Y$ with at most $k$ mismatches. 
+But again, Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} showed (conditioned on SETH) that there is $k=\Theta(\log n)$ such that \kLCS cannot be solved in strongly subquadratic time, thus they introduced \kApproxLCS . In that problem we are given a constant $\eps > 0$, and need to return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches.
+In Section~\ref{intro:sec:contrib}, we explain our contributions to the study of that similarity measure.
+
+% Approximate matching
+Apart from the direct comparison of two strings, distances are also used to define approximate matching problems~\cite{landau1986efficient,landau1989fast} where for given an integer $\tau$, a pattern $P$ and a text $T$, one must report all positions $j$ such that there is a substring $T[i..j]$ that is at distance at most $\tau$ from $P$.
 % DTW
-In Chapter~\ref{chap:DTW}, we consider a popular distance for temporal sequences but less common for strings: the \underline{Dynamic Time Warping (DTW) distance}~\cite{sakoe1978dynamic}. For strings, the DTW distance can be described as follows: double some character to obtain strings of equal length and in order to minimize the sum of the distances between the characters at the same positions, this sum is the DTW distance.
+We study approximate matching in Chapter~\ref{chap:DTW} according to a popular distance for temporal sequences but less common for strings: the \underline{Dynamic Time Warping (DTW) distance}~\cite{sakoe1978dynamic}. For strings, the DTW distance can be described as follows: double some characters to obtain strings of equal length and in order to minimize the sum of the distances between the characters at the same positions, this sum is the DTW distance.
 %
 All similarity measures and distances mentioned above are illustrated in Figure TODO.
 \todo[inline]{Have a figure illustrating of each similarity measure/distance.}
 % PM
-% Approximate matching
 
 
 %also need relevant and efficient similarity measures such as the Levenshtein distance or Dynamic Time warping distance~. They also often need to report all occurrences with an error bound\: at a distance at most a threshold $\tau$.
