@@ -79,7 +79,7 @@ For general ordered alphabets (where an order is given), Crochemore~\cite{Croche
 Instead, we introduce the $\Delta$-approximate LZ factorization which acts as a sketch capturing only the sufficiently long squares (of length at least $8\Delta$), as opposed to the $f$-factorization and LZ factorization that capture all squares.
 We present our final algorithm in steps. We first assume that the alphabet size is known and focus on giving an upper bound on the number of comparisons, then we proceed to remove the assumption on knowing the alphabet size, and finally we provide an overall efficient algorithm running in time $\Oh(n\log\sigma)$.
 % MY contrib
-In this work, I helped formalize and clarify the proofs throughout the process. I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the major technical ideas.
+In this work, I participated in formalizing and clarifying the proofs throughout the research process. I give to my co-authors Jonas Ellert and Pawel Gawrychowski the credit for the major technical ideas.
 
 % Part two
 \textbf{Part~\ref{part:approx-bio}} explores the use of approximation to further reduce the size of sketches and provide more efficient algorithms. Each chapter provides a proof of concept implementation for bioinformatics applications.
@@ -119,4 +119,39 @@ I contributed to every part of that work except for the approximation algorithms
 Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(n^2)$-time computation of the DTW distance between two strings of length $n$, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
 
 % XBWT
-\todo[inline]{Todo: Add contributions XBWT}
+For \textbf{Chapter~\ref{chap:XBWT}}, we leave the study of similarity measure to consider the very applied problem of readsets indexing. 
+% Approximation
+Additionally, in this chapter, the point of view on approximation different, instead of studying approximate matching where one reports all substrings at a given distance from the pattern, we propose a compressed index that has the downside of reporting false positive: occurrence of the pattern that are not fully included in a read.
+
+% Add context on readsets and how big their representation can be despite the repetitiveness
+Recall that a read is a sequence of base pairs, generally short (the precise length depends on the sequencing technique), obtained when sequencing DNA. To be able to re-assembled the entire DNA sequence, each position of the sequence is generally covered by multiple reads. The average number of reads covering a position is called the sequencing coverage.
+The standard sequencing coverage for short reads is now between $30$ and $50$, making the readsets highly repetitive, especially when the DNA sequenced comes from a single individual.
+\todo{Maybe a part of this should be on the intro about reads}
+% BWT and importance of the FM index for bio tools
+To index a single repetitive string, the FM-index~\cite{} based on the Burrows-Wheeler transform (BWT)~\cite{} is one of the most important datastructre\footnote{The authors of both the BWT and FM-index received in 2022 the \textit{ACM Paris Kanellakis Theory and Practice Award} for those breakthroughs.}, and it has been applied in several bioinformatics tools for short read alignment~\cite{}.
+
+% The issue of generalizing the BWT to a collection of strings 
+Unfortunately, extending the BWT and FM index to a collection of string is not straightforward. A possible approach is to concatenate all strings of the collection with a distinct separator character between each string and then to build the FM index of the resulting string. However, with this approach the string can be very large, making the BWT challenging to build and update and the alphabet size increases by the number of strings in the collection. Some methods get around this increase in the alphabet size by having a single separator symbol and applying the strings input order to break ties (this is done in tools like \texttt{BEETL}~\cite{}, \texttt{ropeBWT}~\cite{} and \texttt{BCR}~\cite{}). \texttt{BigBWT}\cite{} uses another method, there are two separator symbols, one is put between each string and the other just at the end of the resulting string as a way to break ties. But both of those approach create a result that depends on the order of the strings in the input collection. A common heuristic (used by {BEETL}~\cite{}, \texttt{ropeBWT}\cite{}) is to sort the sting in the collection according to their colexicographic order so that the strings with similar suffixes are grouped together.
+% EBWT
+Mantaci et al.\cite{} generalized the concept of BWT to collection of string. The EBWT is a permutation of the character in those string according to the lexicographic order of the suffixes that immediately follow them, considering each string to be cyclic\footnote{This is the ($\preccurlyeq_\omega$) order define by Mantaci et al.}. This means that the EBWT is a permutation with one cycle per string in the collection compared to just one cycle for the BWT.
+In the literature, several variants of the EBWT are commonly used without much distinction. The first variant is the EBWT of the collection where each string is appended a shared end of string symbol, and the second is the EBWT of the collection where each string is appended a unique end of string symbol. 
+
+Those nuances between definition of the BWT for a concatenation of strings and EBWT with or without distinct dollars may seem minor, but they do impact the resulting string, and they have become crucial in light of a recent improvement of the FM-index: the $r$-index.
+% r-index
+Gagie et al~\cite{} designed FM-index that takes space proportional to $r$, the number of runs in the BWT of the indexed string. More precisely the data structures occupies $\Oh(r\log\log n)$ space while still being able to count and locate all occurrences of a pattern in optimal time.
+Since the parameter $r$ has been considered in several data structures and is often seen as a measure of the repetitiveness of the text.
+% the variety of EBWT versions
+Cenzato and Lipták showed in a very interesting survey of the BWT variants for string collections~\cite{}, how the final  number of runs can drastically change depending on the variant. 
+They compared the number of runs produced by each variant to the number of runs in the BWT where the dollars are ordered by the Bentley et al.\cite{} order (implemented by~\cite{}), which minimize the numbers of runs in the resulting BWT.
+Their results demonstrate the efficiency of colexicographic heuristic in practice (which is also visible in Chapter~\ref{chap:XBWT}) and they also provide a theoretical upper bound.
+
+% Our idea
+The work we present in Chapter~\ref{chap:XBWT} precedes the survey of Cenzato and Lipták and the construction of an optimal order by Bentley et al.\cite{}, and it takes an independent approach to optimizing the number of runs for the BWT. We propose to take advantage of information very commonly associated to reads: alignment to a reference genome. We build a tree where the main truck is the reference and reads branch out of the trunk at the position they are aligned to, and then compute the generalization of the BWT for trees: the eXtended Burrows Wheeler transform (XBWT)~\cite{}. Intuitively this provides context to the reads that allows for better sorting and limits run-break, formally we show that if the reads are almost identical to the reference and that the differences are located towards the end of the reads (which is the case in practice for short reads) we can bound the number of runs in the XBWT depending on the number of runs in the BWT of the reference. We then test our approach in practice and show that it does obtain fewer runs than the BWT with the colexicographic heuristic.
+% False Possitive
+The design of the index based on the branching tree makes it so that when counting the number of occurrences of a pattern we cannot avoid counting occurrences that are not fully contain in a read (that are partially or entirely in the reference).
+% The prefix free parsing construction of the XBWT
+With the goal of a scalable construction of the index in mind, we adapt the technique of a prefix-free parsing construction of the BWT that TODO~\cite{} to construct the XBWT. 
+% sketches in the prefix free parsing
+% My contributions
+
+\todo[inline]{Todo: prefix free parsing XBWT sketches and my personal contributions}
