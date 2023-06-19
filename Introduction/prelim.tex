@@ -2,33 +2,35 @@
 
 This section aims at presenting the basic concepts needed to understand the following chapters, as well as presenting the different sketches used in this work and their interconnections.
 
-\noindent A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$ (not linked to a specific position), whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$ respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
+A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$. %(not linked to a specific position), whereas the fragment $T[i..j]$ refers to the specific occurrence of $T[i..j]$ starting at position $i$ in $T$. 
+If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$, respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
 
 \subsection{The Strong Exponential Time Hypothesis}
 
-The Strong Exponential Time Hypothesis (SETH) has already been mentioned several times in this introduction as the basis of many important conditional lower bounds. Conditional lower bounds are a crucial tool to understand the problems complexity and whether the current upper bounds are optimal. In this thesis we never work directly from SETH, but for completeness here is the Hypothesis's statement:
+The Strong Exponential Time Hypothesis (SETH) has already been mentioned several times in this introduction as the basis of many important conditional lower bounds. Conditional lower bounds are a crucial tool to understand the problems complexity and whether the current upper bounds are optimal. In this thesis we never work directly with SETH, but for completeness here is the hypothesis's statement:
 
 \defproblem{\textsc{The Strong Exponential Time Hypothesis}}{ 
 The satisfiability of conjunctive normal form (CNF) formulas with $N$ variables\\ and $M$ clauses cannot be solved in time $2^{N(1-o(1))}$.}\\
+\todo[inline]{Rework the formulation, $M$ not appearing CNF not explained.}
 
 \subsection{Tries and Suffix Trees}\label{sec:prelim:tries}
-Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over the alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
+Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over an alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
 For any path, we say the path \emph{spells} the string obtained by concatenating the label of the edges of the path.
-Likewise, when referring to a node within the tree, we define it as spelling the string spelled by the unique path from the root to that node.
-The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases, we mark the ending node with a special character $\$$ outside the alphabet $\Sigma$.
+Likewise, when referring to a node within the tree, we define its label as the string spelled by the unique path from the root to that node.
+The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases, we mark the ending node with a special end-of-string character.
 
-The more efficient compacted trie is obtained by contracting  into a single edge any path from a node that is either marked by a \$ or branching (with at least two children) to its lowest ancestor that is either branching or marked by a \$.
+The more efficient compacted trie is obtained by contracting  into a single edge each maximal path from a node that is either marked (by an end-of string character) or branching (with at least two children) to its lowest ancestor that is either branching or marked.
 This edge is then labelled with the string spelled by the path it replaced.
 Let $S$ be a string spelled by a node of the non-compacted trie, if it is also spelled by a node of the compacted trie we say the node is \emph{explicit} else it is \emph{implicit}. Those definitions are illustrated in Figure~\ref{fig:intro:tries_suffix_tree}. Note that for any two nodes $i$ and $j$, their lowest common ancestor spells the longest common prefix between the strings spelled by $i$ and $j$.
 % dynamic z-fast tries 
 Dynamic z-fast tries~\cite{belazzougui2010dynamic} are not needed in this manuscript but might be interesting for the reader to know that as they have been specifically designed to optimize predecessor and successor (lexicographic order) queries and longest common prefix queries.
 %
-Notice that all nodes are either branching or marked by a \$ and that all node marked by a \$ spell a different string of $\mathcal{S}$. 
+Notice that all nodes are either branching or marked and that all node marked spell a different string of $\mathcal{S}$. 
 Hence, there are $\Oh(k)$ nodes in the compacted trie.
 For each edge, there exists $(i,s,e)$ such that its label is equal to $S_i[s .. e]$, thus we can avoid storing the label explicitly and just store the reference $(i,s,e)$ to the input strings of $\mathcal{S}$.
 Thus, $\Oh(k)$ words are sufficient to store the compacted trie.
 
-A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T$ i.e. over the collection $\{T[j..]$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapters 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}. Tries and Suffix Trees are used in Chapter~\ref{chap:regexp} to~\ref{chap:squares}.
+A suffix tree of a string $T$ of length $n$ is the compacted trie containing the suffixes of $T\$$ (where \$ is a special symbol out of $\Sigma$) i.e. over the collection $\{T[j..]\$$ for $ j \in [0,n-1] \}$. It can be stored in $O(n)$ space and for linearly-sortable alphabet constructed in $O(n)$ time~\cite{Farach1997}. For more details on the suffix tree see Chapters 5 to 9 of~\cite{Gusfield1997}. We illustrate this definition in Figure~\ref{subfig:suffixtree}. Tries and suffix trees are used in Chapters~\ref{chap:regexp} to~\ref{chap:squares}.
 
 \input{Introduction/fig_tries_suffix.tex}
 
@@ -36,21 +38,29 @@ A suffix tree of a string $T$ of length $n$ is the compacted trie containing the
 
 \subsection{Karp--Rabin Fingerprint}\label{sec:prelim:KR}
 
-For $p$ a prime number and $r \in \mathbb{F}_p$ (the finite field of integers modulo $p$), the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
-$\varphi_{p,r}(S) = \sum_{i = 0}^{|S|-1}  S[i]r^{i} \bmod p$.
-
-It is easy to see that if two strings $S_1$ and $S_2$ are equal then $\varphi_{p,r}(S_1) = \varphi_{p,r}(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have colliding fingerprints.
-% Collision
-From a theoretical point of view, for a given integer $n$, if $p$ is chosen to be $\Theta(n^k)$ and $r$ is chosen at random in $\mathbb{F}_p$, $|S_1|\leq n$, $|S_2|\leq n$, then $\varphi_{p,r}(S_1) - \varphi_{p,r}(S_2) = 0$ can be seen as a polynomial over $\mathbb{F}_p$. This polynomial has degree greater than zero (because $S_1 \neq S_2$), and at most $\max(|S_1|,|S_2|) < n$ thus it can have at most $n$ roots. Thus, the probability of the fingerprints $S_1$ and $S_2$ colliding is less than $\frac{n}{n^k} = \frac{1}{n^{k-1}}$.
-% Practice
-In practice, $p$ is often chosen as a large primary number around $2^{27}$ to still fit on a 32-bit integer and $r$ is often also hard coded as a parameter (this is the case in the implementation of Chapter~\ref{chap:LCS}). Sometimes $r$ is chosen as a power of two in order to speed up the computation (this is the case in the implementation of Chapter~\ref{chap:XBWT}).
+% Original (Gusfield) definition
+For $p$ a prime number, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a binary string $S$ is defined as
+$H_{p}(S) = \sum_{i = 0}^{|S|-1}  S[i]2^{|S|-i-1} \bmod p$.
+% Colisions
+It is easy to see that if two strings $S_1$ and $S_2$ are equal then $H_p(S_1) = H_p(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have equal fingerprints.
 %
+However, we can bound the probability of collision between $P_1$ and $P_2$ by choosing the prime $p$ at random bellow an integer $I$. For a detail analysis see Chapter~4.4 of~\cite{Gusfield1997}.
 % Sliding window property
-This fingerprint has a nice ``sliding'' property in the sense that for a window of a text $T$ and two integers $i,m$ such that $i+m < |T|$, we can express efficiently the fingerprint of $T[i+1..i+m]$ as a function of the fingerprint of $T[i..i+m-1]$, $T[i]$ and $T[i+m]$:
-$$ r \varphi_{p,r}(T[i+1..i+m]) = \varphi_{p,r}(T[i..i+m-1])\times r - T[i] + T[i+m]r^k \mod p$$
+This fingerprint has a convenient ``sliding'' property in the sense that for a window of a binary text $T$ and two integers $i,m$ such that $i+m < |T|$, we can express efficiently the fingerprint of $T[i+1..i+m]$ as a function of the fingerprint of $T[i..i+m-1]$, $T[i]$ and $T[i+m]$:
+$$ H_{p}(T[i+1..i+m]) = ( H_{p}(T[i..i+m-1])\times 2 - T[i]2^{m} + T[i+m]  ) \mod p$$
 This allows Karp--Rabin fingerprints to be used for an online matching algorithm running in $\Oh(|P|+|T|)$ that can err with a small probability (Monte-Carlo).
+% Practice
+In practice, $p$ is often chosen as a large primary number around $2^{27}$ to still fit on a 32-bit integer, and in the implementation of Chapter~\ref{chap:XBWT}, we replace $2^{|S|-i-1}$ by $256^{|S|-i-1}$ to accommodate for the UTF-8 input instead of binary.
+
+% Porat and Porat variant 
+In Chapters~\ref{chap:gapped_index} and~\ref{chap:LCS}, we use a variant of Karp--Rabin fingerprint defined by Porat and Porat~\cite{Porat:09}: 
+for $p$ a prime number and $r \in \mathbb{F}_p$ (the finite field of integers modulo $p$), the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+$\varphi_{p,r}(S) = \sum_{i = 0}^{|S|-1}  S[i]r^{i} \bmod p$.
+% Collision analysis
+The collision analysis of this variant is simpler as it avoids having to pick a random prime number: for a given integer $n$, if $p$ is chosen to be $\Theta(n^k)$ and $r$ is chosen at random in $\mathbb{F}_p$, $|S_1|\leq n$, $|S_2|\leq n$, then $\varphi_{p,r}(S_1) - \varphi_{p,r}(S_2) = 0$ can be seen as a polynomial over $\mathbb{F}_p$. This polynomial has degree greater than zero (because $S_1 \neq S_2$), and at most $\max(|S_1|,|S_2|) < n$ thus it can have at most $n$ roots. Thus, the probability of the fingerprints $S_1$ and $S_2$ colliding is less than $\frac{n}{n^k} = \frac{1}{n^{k-1}}$.
 % Differences in definitions Gapped
-Note that the precise definition can vary slightly depending on the specific property needed. In Chapter~\ref{chap:gapped_index}, the fingerprint of a string $S$ is defined as a triple $(r^{|S|-1} \mod p, r^{-|S|+1} \mod p, \varphi_{p,r}(S))$, to have the property that given three strings $X,Y,Z$ such that $XY =Z$, and the fingerprint of any two strings, we can deduce in constant time the third fingerprint (Fact~\ref{fact:fingerprints}). In other definitions such as the one in~\cite{Gusfield1997}, $r=2$ is fixed and $p$ is a random prime number chosen below a fixed parameter $I$, the collision-probability  analysis is consequently also different.
+Note that the precise definition can vary slightly depending on the specific property needed. In Chapter~\ref{chap:gapped_index}, the fingerprint of a string $S$ is defined as a triple $(r^{|S|-1} \mod p, r^{-|S|+1} \mod p, \varphi_{p,r}(S))$, to have the property that given three strings $X,Y,Z$ such that $XY =Z$, and the fingerprint of any two strings, we can deduce in constant time the third fingerprint (Fact~\ref{fact:fingerprints}). 
+
 
 \subsection{Periodicity and Fine-Wilf Lemma}\label{sec:prelim:FW}
 Compact run representation of occ crossing a given position

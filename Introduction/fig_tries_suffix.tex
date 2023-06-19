@@ -21,23 +21,23 @@
     [
         [,edge label={node[centerlabel] {C}} 
             [,edge label={node[centerlabel] {A}} 
-                [\$, edge label={node[centerlabel] {T}}]
+                [*, edge label={node[centerlabel] {T}}]
             ]
             [, edge label={node[centerlabel] {O}}
                 [, edge label={node[centerlabel] {D}}
-                    [\$, edge label={node[centerlabel] {E}}
-                        [\$, edge label={node[centerlabel] {D}}]
+                    [*, edge label={node[centerlabel] {E}}
+                        [*, edge label={node[centerlabel] {D}}]
                     ]
                 ]
                 [, edge label={node[centerlabel] {T}}
                     [, edge label={node[centerlabel] {T}}
                         [, edge label={node[centerlabel] {A}}
                             [, edge label={node[centerlabel] {G}}
-                                [\$, edge label={node[centerlabel] {E}}]
+                                [*, edge label={node[centerlabel] {E}}]
                             ]
                         ]
                         [, edge label={node[centerlabel] {O}}
-                            [\$, edge label={node[centerlabel] {N}}]
+                            [*, edge label={node[centerlabel] {N}}]
                         ]
                     ]
                 ]
@@ -45,7 +45,7 @@
         ]
         [, edge label={node[centerlabel] {T}}
             [, edge label={node[centerlabel] {O}}
-                [\$, edge label={node[centerlabel] {N}}]
+                [*, edge label={node[centerlabel] {N}}]
             ]
         ] 
     ]
@@ -73,18 +73,18 @@
     % Compacted Trie for {CAT, CODE, CODED, COTTAGE, COTTON, TON}
     [,
         [,edge label={node[centerlabel,left] {$(1,0,0)$}} 
-            [\$, edge label={node[centerlabel,left] {$(1,1,2)$}}]
+            [*, edge label={node[centerlabel,left] {$(1,1,2)$}}]
             [, edge label={node[centerlabel,right] {$(2,1,1)$}}, 
-                [\$, edge label={node[centerlabel,left] {$(2,2,3)$}}
-                    [\$, edge label={node[centerlabel,left] {$(3,4,4)$}}]
+                [*, edge label={node[centerlabel,left] {$(2,2,3)$}}
+                    [*, edge label={node[centerlabel,left] {$(3,4,4)$}}]
                 ]
                 [, edge label={node[centerlabel,right] {$(4,2,3)$}}, 
-                    [\$, edge label={node[centerlabel,left] {$(4,4,6)$}}]
-                    [\$, edge label={node[centerlabel,right] {$(5,4,5)$}}]
+                    [*, edge label={node[centerlabel,left] {$(4,4,6)$}}]
+                    [*, edge label={node[centerlabel,right] {$(5,4,5)$}}]
                 ]
             ]
         ]
-        [\$, edge label={node[centerlabel,right] {$(6,0,2)$}}] 
+        [*, edge label={node[centerlabel,right] {$(6,0,2)$}}] 
     ]
 \end{forest}
 \end{subfigure}
@@ -110,28 +110,28 @@
         % suffix tree for 
     [,l sep=18mm,s sep=5mm,
             [,edge label={node[mylabel] {A}}
-                [\$, edge label={node[mylabel,rotate=-180] {C}}]
-                [\$, edge label={node[mylabel]{GATAC}}]
+                [*, edge label={node[mylabel,rotate=-180] {C\$}}]
+                [*, edge label={node[mylabel]{GATAC\$}}]
                 [, edge label={node[mylabel] {T}}
-                    [\$, edge label={node[mylabel,rotate=-180]{AC}}]
-                    [\$, edge label={node[mylabel]{TAGATAC}}]
+                    [*, edge label={node[mylabel,rotate=-180]{AC\$}}]
+                    [*, edge label={node[mylabel]{TAGATAC\$}}]
                 ]
             ]
-            [\$,edge label={node[mylabel] {C}}]
+            [*,edge label={node[mylabel,rotate=-180] {C\$}}]
             [,edge label={node[mylabel] {GAT}}
-                [\$,edge label={node[mylabel,rotate=-180] {AC}}]
-                [,edge label={node[mylabel] {TAGATAC\$}}]
+                [*,edge label={node[mylabel,rotate=-180] {AC\$}}]
+                [*,edge label={node[mylabel] {TAGATAC\$}}]
             ]
             [,edge label={node[mylabel] {T}}
                 [,edge label={node[mylabel,rotate=-180] {A}}
-                    [\$,edge label={node[mylabel,rotate=-180] {C}}]
-                    [\$,edge label={node[mylabel] {GATAC}}]
+                    [*,edge label={node[mylabel,rotate=-180] {C\$}}]
+                    [*,edge label={node[mylabel] {GATAC\$}}]
                 ]
-                [\$,edge label={node[mylabel] {TAGATAC}}]
+                [*,edge label={node[mylabel] {TAGATAC\$}}]
             ]
         ]
     \end{forest}
     \end{subfigure}
-\caption{Subfigure (\ref{sub@subfig:trie}) shows the trie of $\mathcal{S}=$\{CAT, CODE, CODED, COTTAGE, COTTON, TON\}, (\ref{sub@subfig:compacttrie}) its compacted form and (\ref{sub@subfig:suffixtree}) represents the suffix tree of the string GATTAGATACAT (with full strings instead of references). In (\ref{sub@subfig:trie}) and (\ref{sub@subfig:compacttrie}) the nodes labeled with a \$ spell a string from $\mathcal{S}$. Note that the string COT is spelled by an implicit node of the trie of $\mathcal{S}$.}
+\caption{Subfigure (\ref{sub@subfig:trie}) shows the trie of $\mathcal{S}=$\{CAT, CODE, CODED, COTTAGE, COTTON, TON\}, (\ref{sub@subfig:compacttrie}) its compacted form and (\ref{sub@subfig:suffixtree}) represents the suffix tree of the string GATTAGATACAT (with full strings instead of references). In (\ref{sub@subfig:trie}) and (\ref{sub@subfig:compacttrie}) the nodes marked with a * spell a string from $\mathcal{S}$. Note that the string COT is spelled by an implicit node of the trie of $\mathcal{S}$.}
 \label{fig:intro:tries_suffix_tree}
 \end{figure}
