@@ -134,22 +134,30 @@ Here, again, the search options are limited to the metadata of the websites and 
 
 %%%%%%%%%% Bioinformatics
 %Intro DNA representation
-Large archives also exist in bioinformatics, but the structure of biological sequences is very different from that of code or webpages.
-DNA is typically stored as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}} which can be stored using just 2 bits per base. However, this type of storage requires scanning the whole string to search for a pattern. 
-At the opposite of the spectrum, a suffix tree enables more efficient sequence analysis but necessitates 10 bytes per base~\cite{navarro2016compact}, which amounting to 30 gigabytes for a human genome containing 3.3 billion bases. 
-And thousands of genomes have been sequences through projects such as the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} which reached its milestone in 2018. 
-A trade-off between those two extremes has been found through the development of compact data structures that exploit redundancy to decrease space usage. For a human genome it allows representing the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
-% Redundancy intra genome and intergenome
-The redundancy that compact data structures can exploit in genomes can come either from repeated regions in the genome (intra-genome redundancy) or by considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).  
-% Reads
-However, for DNA, another common data model is the one of reads: when DNA is sequenced, the output is a set of fragments (called \emph{reads}) of the original sequence. Reads can contain sequencing errors, including nucleotide insertions, deletions, and substitutions. The typical length and error rate of the reads vary depending on the sequencing techniques. To be able to reconstruct the original sequence, reads are extracted in such quantities that each position of the original genome is covered multiple times. This means readsets are larger than the assembled genome and even more redundant. In Chapter~\ref{chap:XBWT} we explore this topic for short reads and propose a data structure specifically tailored to the specificities of a sequencing technique. 
+Large archives also exist in bioinformatics, but the structure of biological sequences is very different from that of code or webpages, which are typically structured, with links, a large alphabet, and a reasonable number of distinct words.
+% DNA Introduction
+The genetic information encoded in DNA can be abstracted as just a string over the nucleotide alphabet \texttt{\{A,T,C,G\}}.
+We obtain this string after sequencing and assembling. When a genome is sequenced, the output is a set of fragments, called \emph{reads}, extracted from the original sequence. Reads can contain sequencing errors, including nucleotide insertions, deletions, and substitutions. The typical length and error rate of the reads vary depending on the sequencing techniques. In any case, the original genome has to be assembled from the reads, which are extracted in such quantities that each position of the original genome is covered multiple times. This makes readsets larger and more redundant than the assembled genome.
+
+
+% Redundancy
+Consequently, bioinformatics applications work with either a single assembled sequence or a set of sequences. In both cases, the sequences can be redundant either from repeated regions in a genome (intra-genome redundancy) or by considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).
+% Single sequence indexes 
+Exploiting this redundancy is key to providing efficient algorithms, an example of that is the problem of indexing a single string.
+If the DNA is stored just as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}}
+alphabet \texttt{\{A,T,C,G\}}, it uses just 2 bits per base but requires scanning the whole string to search for a pattern. 
+Alternatively, the suffix tree is a classical structure that enables more efficient sequence analysis but necessitates 10 bytes per base~\cite{navarro2016compact}, which amounts to 30 gigabytes for a human genome containing 3.3 billion bases. 
+This would not be practical for projects where thousands of genomes have been sequenced such as the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} completed in 2018. 
+Fortunately, compact data structures that exploit redundancy to decrease space usage offer an interesting trade-off: for a human genome it allows representing the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
+
 % Cheaper = more sequencing
-Additionally, the drastic decrease in sequencing cost and increase in throughput since 2008 (faster than expected by Moore's law~\cite{muir2016real}) have lead to higher volumes of DNA being sequenced. 
+Scalable algorithms are crucial for bioinformatics as there has been a drastic decrease in sequencing cost and an increase in throughput since 2008 (faster than expected by Moore's law~\cite{muir2016real}) which both lead to higher volumes of DNA being sequenced. 
 % ENA
 So far, the European Nucleotide Archive has accumulated more than 47 petabytes~\cite{ena} of sequencing data.
 % SRA
-While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of archive including 38 petabases in open access. However, like for the software heritage project and internet archive, in the ENA and the NCBI, the data is indexed solely based on its metadata.\\
-%\todo[inline]{Look for more reasonable size example ? It's unclear if anybody would want to index the entire SRA}
+While the NCBI Sequence Read Archive has more than 73 petabases~\cite{sra} of data including 38 petabases in open access and is still growing, see Figure~\ref{fig:scalability}. However, like for the software heritage project and internet archive, in the ENA and the NCBI, the data is indexed solely based on its metadata.
+% Link to this thesis 
+In Chapter~\ref{chap:XBWT}, we propose a compact index specifically designed for sets of short reads, that takes advantage of the redundant input to achieve better compression and scalability. 
 
 %%%% Astronomical data 
 \todo[inline]{Add applications to astronomical data and pulsar detection.}
