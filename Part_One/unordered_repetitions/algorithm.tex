@@ -7,7 +7,7 @@ difficulty is in efficiently implementing the sparse suffix tree construction al
 then computing a $\Delta$-approximate factorisation. We first how to obtain an $\Oh(n\log \sigma+n\log^{*}n)$ time
 algorithm that still uses only $\Oh(n\log \sigma)$ comparisons, and then further improve its running time to $\Oh(n\log \sigma)$.
 
-\subsection[Constructing Suffix Tree and Delta-Approximate Factorisation]{Constructing Suffix Tree and \boldmath$\Delta$\unboldmath-Approximate Factorisation}
+\subsection[Constructing the Suffix Tree and Factorisation]{Constructing the Suffix Tree and \boldmath$\Delta$\unboldmath-Approximate Factorisation}
 \label{sec:suffixtree}
 
 To give an efficient algorithmic construction of the sparse suffix tree from \cref{lem:sparse}, we will use a restricted version of LCEs, where a query $\textnormal{ShortLCE}_x(i, j)$ (for any positive integer $x$) returns $\min(x, \lce(i, j))$. The following result was given by Gawrychowski et al.~\cite{Gawrychowski2016}:
