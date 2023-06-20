@@ -1,0 +1,70 @@
+
+\newcolumntype{E}[1]{>{\small \arraybackslash}m{#1}}
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}
+
+\renewcommand{\arraystretch}{1.25}
+\begin{table}
+    \small
+    \begin{tabularx}{\textwidth}{E{10cm}   R}
+        \renewcommand{\arraystretch}{1}
+        Similarity & Example \\
+        \hline
+        % Hamming
+        \begin{minipage}{10cm}
+        Hamming Distance  \\
+        $\mathrm{HD}(X,Y)=  \left\{
+            \begin{array}{l}
+                +\infty \mbox{ if } |X| \neq |Y| \mathrm{,}\\
+                |\{ i \mbox{ s.t. } X[i]\neq Y[j] \}| \mbox{, else.}
+            \end{array} \right.$
+        \end{minipage}
+        &
+        $\begin{array}{r}
+            X= \mathrm{\texttt{AAAATG}}\\
+            \mathrm{ \texttt{|||**|}}\\
+            Y= \mathrm{\texttt{AAATCG}}\\
+            \mathrm{HD}(X,Y)=2
+        \end{array}$\\
+        %
+        % LCSubsequence
+        \begin{minipage}{10cm}
+        Length of the Longest Common Subsequence \\
+        $ \mathrm{LCSeq}(X_i,Y_j)= \left\{
+            \begin{array}{l}
+                0 \mbox{ if } i=0 \mbox{ or } j=0 {,}\\
+                \mathrm{LCSeq}(X_{i-1},Y_{j-1})+1 \mbox{ if } X[i]=Y[j]\mbox{,} \\
+                \max(\mathrm{LCSeq}(X_{i-1},Y_j),\mathrm{LCSeq}(X_i,Y_{j-1})) \mbox{, else.}
+            \end{array} \right. $
+        \end{minipage}
+        &
+        $\begin{array}{r}
+            X= \mathrm{\texttt{AAAATG}}\\
+            Y= \mathrm{\texttt{\underline{AAT}C}}\\
+            \mathrm{LCseq}(X,Y)=3
+        \end{array}$\\
+        % ED
+        \begin{minipage}{10cm}
+            Levenshtein/Edit distance \\
+            $ \mathrm{ED}(X_i,Y_j)= \left\{
+                \begin{array}{l}
+                    \max(i,j) \mbox{ if } i=0 \mbox{ or } j=0 {,} \\
+                    \mbox{else, } \min 
+                    \begin{pmatrix}
+                        \mathrm{ED}(X_{i-1},Y_{j-1})+d(X[i],Y[j]), \\
+                        \mathrm{ED}(X_{i-1},Y_j)+1, \\
+                        \mathrm{ED}(X_i,Y_{j-1})+1
+                    \end{pmatrix} 
+                \end{array} \right. $
+            \end{minipage}
+            &
+            $\begin{array}{r}
+                X= \mathrm{\texttt{AAAATG}}\\
+                   \mathrm{\texttt{||~~|*}}\\
+                Y= \mathrm{\texttt{AA\-\-TC}}\\
+                \mathrm{ED}(X,Y)=3
+            \end{array}$\\
+    \end{tabularx}
+    \caption{Example for various similarities, in bold those we study in this thesis.}
+    \label{fig:intro:similarities}
+\end{table}
+\renewcommand{\arraystretch}{1}

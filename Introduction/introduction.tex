@@ -72,6 +72,9 @@ Another application-driven model is \underline{parametrized strings} or ``p-stri
 
 \subsection{Periodicity Detection}
 \todo[inline]{Work in progress do not review!\\ TODO: Detail}
+
+The use of combinatorial insights of the input has been a key tool in developing efficient algorithms.
+
 So far we focused on matching models where we are given a pattern and text as well as conditions that define a match of the pattern in the text. But another central task in text processing is repetitions detection. By repetitions, we refer to consecutive occurrences of the same fragment. They can be repeated twice (a square), three times (a cube) or more, then represented as a run: a maximal periodic substring. They are needed as a theoretical tool to avoid needless repetitive computations, but they also naturally occur in DNA with an important role in genomic fingerprinting~\cite{Kolpakov2003}.
 The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free string, in Chapter~\ref{chap:squares} we provide an optimal algorithm for square detection.
 
@@ -109,6 +112,7 @@ All similarity measures and distances mentioned above are illustrated in Figure 
 \todo[inline]{Have a figure illustrating of each similarity measure/distance.}
 % PM
 
+\input{Introduction/fig-similarities.tex}
 
 %also need relevant and efficient similarity measures such as the Levenshtein distance or Dynamic Time warping distance~. They also often need to report all occurrences with an error bound\: at a distance at most a threshold $\tau$.
 %We contribute to this line of research in Chapters~\ref{chap:LCS} and~\ref{chap:DTW}.
