@@ -70,16 +70,6 @@ The \underline{order-preserving} model~\cite{kim2014order,kubica2013linear} take
 % Parametrized matching
 Another application-driven model is \underline{parametrized strings} or ``p-string'' introduced by Baker~\cite{baker1993theory}, where two strings match if we can transform one into the other by applying a function renaming the parameters, meant to detect code duplication.
 
-\subsection{Periodicity Detection}
-\todo[inline]{Work in progress do not review!\\ TODO: Detail}
-
-The use of combinatorial insights of the input has been a key tool in developing efficient algorithms.
-
-So far we focused on matching models where we are given a pattern and text as well as conditions that define a match of the pattern in the text. But another central task in text processing is repetitions detection. By repetitions, we refer to consecutive occurrences of the same fragment. They can be repeated twice (a square), three times (a cube) or more, then represented as a run: a maximal periodic substring. They are needed as a theoretical tool to avoid needless repetitive computations, but they also naturally occur in DNA with an important role in genomic fingerprinting~\cite{Kolpakov2003}.
-The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free string, in Chapter~\ref{chap:squares} we provide an optimal algorithm for square detection.
-
-% Should also define runs
-% Mention palindromes and stuffs ?
 
 \subsection{Similarity Measures and Distances}
 % The notion of robustness of the similarity measure
@@ -116,6 +106,20 @@ All similarity measures and distances mentioned above are illustrated in Figure~
 %also need relevant and efficient similarity measures such as the Levenshtein distance or Dynamic Time warping distance~. They also often need to report all occurrences with an error bound\: at a distance at most a threshold $\tau$.
 %We contribute to this line of research in Chapters~\ref{chap:LCS} and~\ref{chap:DTW}.
 
+
+\subsection{Repetition Detection}
+\todo[inline]{Work in progress do not review!\\ TODO: Detail}
+
+Another central task in text processing is repetition detection. Locating repeated fragments of a text can be useful to remove duplicated data or to compress its representation. Combinatorial insight about the structure of specific inputs can also benefit the design of efficient algorithm or even be applied to trend detection.
+\todo[inline]{I really need some ref for the last one.}
+
+A natural form of repetition experienced every day through phenomenons such as seasons or tides, is periodicity. Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and we call the period of $T$ the smallest integer $p$ such that $T$ has period $p$.
+
+But often, input data can contain some periodic substring rather than being entirely periodic,  which naturally leads to  the concept of runs. Runs are maximal substring that are periodic with a given period, i.e. a substring $T[i:j]$ is a run if it is periodic, let $p$ be its period, and if $T[i-1:j]$ and $T[i:j+1]$, if well-defined, are not periodic with period $p$.
+
+A substring $T[i:i+2k-1]$ such that $T[i:i+k-1]=T[i+k:i+2k-1]$ is called a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}.
+
+\todo[inline]{Detail more the beginning, Mention  palindromes, covers, cadences, and other work on approximate periodicity. Also have a paragraph on the framework of substring equation unifying many forms of periodicity.}
 
 \subsection{Scalability Issues}\label{sec:intro:scalability}
 
