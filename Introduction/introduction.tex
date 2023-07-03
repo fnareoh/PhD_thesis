@@ -108,18 +108,36 @@ All similarity measures and distances mentioned above are illustrated in Figure~
 
 
 \subsection{Repetition Detection}
-\todo[inline]{Work in progress do not review!\\ TODO: Detail}
+\todo[inline]{TODO: Add citations and check grammar}
 
 Another central task in text processing is repetition detection. Locating repeated fragments of a text can be useful to remove duplicated data or to compress its representation. Combinatorial insight about the structure of specific inputs can also benefit the design of efficient algorithm or even be applied to trend detection.
 \todo[inline]{I really need some ref for the last one.}
 
 A natural form of repetition experienced every day through phenomenons such as seasons or tides, is periodicity. Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and we call the period of $T$ the smallest integer $p$ such that $T$ has period $p$.
+%
+But often, input data only contains substrings that are (rather than being entirely periodic),  which naturally leads to  the concept of runs. Runs are maximal substring that are periodic with a given period, i.e. a substring $T[i:j]$ is a run if it is periodic, let $p$ be its period, and if $T[i-1:j]$ and $T[i:j+1]$, if well-defined, are not periodic with period $p$. 
 
-But often, input data can contain some periodic substring rather than being entirely periodic,  which naturally leads to  the concept of runs. Runs are maximal substring that are periodic with a given period, i.e. a substring $T[i:j]$ is a run if it is periodic, let $p$ be its period, and if $T[i-1:j]$ and $T[i:j+1]$, if well-defined, are not periodic with period $p$.
+When there are just two repetitions in a substring, meaning a $T[i:i+2k-1]$ such that $T[i:i+k-1]=T[i+k:i+2k-1]$, it is called a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}. 
+%
+%The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word.
+In Chapter~\ref{chap:squares}, for strings over an unordered alphabet of size $\sigma$ (where only equality tests are allowed to compare characters), we provide algorithm testing whether it contains a square in $\Oh(n\log \sigma)$ time which we show is optimal. We then extend it to reporting all runs in the string.
 
-A substring $T[i:i+2k-1]$ such that $T[i:i+k-1]=T[i+k:i+2k-1]$ is called a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}.
+Many other forms of string regularities have been considered in the literature, although they are out of scope for this thesis, we list a few of them for completeness.
+% Palindromes
+Palindromes are strings that are identical when read backward or forward, formally, a string $T$ of length $n$ is a palindrome if $T[n-1] \dots T[1]T[0] = T[0]T[1] \dots T[n-1]$. Palindromes are found in music~\cite{tablecannon,crabcannon} and genomes~\cite{brazda2016palindrome,svetec2021palindromes} where they are linked to the regulation of gene replication and implicated in the evolution and development of diseases such as cancer and neurodegenerative disorders.
+% Covers
+Another way to view repeated fragments is through the lenses of string covers~\cite{iliopoulos1996covering}. A string $C$ is a cover of a string $T$ if $T$ occurs in a string constructed by overlapping and concatenating occurrences of $C$. A substring of $T$ is called a seed if it covers $T$, and a cover of minimal length is called a quasiperiod $T$. 
+Those notions generalize the concept of periods in the sense that they additionally allow for superposition of the repetitions but other approaches have been considered as generalizations.
+% Cadences
+Cadences~\cite{AMIR20174} in a string are characters that are repeated at regular intervals. Formally, given a string $T[0,n-1]$, a cadence is a pair $(i,d)$ such that $0 \leq i,d < n$ and for every $k \geq 0$ such that $i+kd < n$ we have $T[i] = T[i+kd]$. They intuitively define a periodicity that is woven regularly inside an aperiodic string.
+% Approximate periodicity
+Approximations of periodicity have also been considered. A series of publications~\cite{} worked on detecting whether a given string is close to any periodic string under a given metric.
+% finding approximate periodic progressions
+Some works~\cite{} focus on approximate periodic progressions. They take as input a sequence of increasing integers and then define an approximate periodicity by looking at the increase between any two consecutive numbers.
 
-\todo[inline]{Detail more the beginning, Mention  palindromes, covers, cadences, and other work on approximate periodicity. Also have a paragraph on the framework of substring equation unifying many forms of periodicity.}
+
+% Substring equations
+\todo[inline]{Have a paragraph on the framework of substring equation unifying many forms of periodicity.}
 
 \subsection{Scalability Issues}\label{sec:intro:scalability}
 
