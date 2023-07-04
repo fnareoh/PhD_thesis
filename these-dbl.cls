@@ -55,7 +55,7 @@
 \RequirePackage{color}
 \RequirePackage{comment}
 \RequirePackage{wallpaper}
-\RequirePackage[inner=30mm,outer=30mm,top=30mm,bottom=30mm]{geometry}
+\RequirePackage[inner=30mm,outer=20mm,top=30mm,bottom=30mm]{geometry}
 \RequirePackage{setspace}
 %Ou bien : \RequirePackage[top=4 cm, bottom=4 cm, left=3 cm, right=3 cm]{geometry} % On peut modifier ces valeurs pour augmenter ou r\'{e}duire les marges. Attention aux en-têtes de chapitres. 
 \RequirePackage{epigraph} % \cleartoevenpage
