@@ -10,8 +10,7 @@ If $i > j$, then $T[i..j]$ is the empty string. We additionally use the notation
 The Strong Exponential Time Hypothesis (SETH) has already been mentioned several times in this introduction as the basis of many important conditional lower bounds. Conditional lower bounds are a crucial tool to understand the problems complexity and whether the current upper bounds are optimal. In this thesis we never work directly with SETH, but for completeness here is the hypothesis's statement:
 
 \defproblem{\textsc{The Strong Exponential Time Hypothesis}}{ 
-The satisfiability of conjunctive normal form (CNF) formulas with $N$ variables\\ and $M$ clauses cannot be solved in time $2^{N(1-o(1))}$.}\\
-\todo[inline]{Rework the formulation, $M$ not appearing CNF not explained.}
+The satisfiability of formulas in conjunctive normal form (a conjunction of clauses, where each clause is a disjunction of litterals) with $N$ variables\\ and $\Oh(N)$ clauses cannot be solved in time $2^{N(1-o(1))}$.}\\
 
 \subsection{Tries and Suffix Trees}\label{sec:prelim:tries}
 Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over an alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
