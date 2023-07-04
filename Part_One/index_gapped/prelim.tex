@@ -98,7 +98,7 @@ can be implemented in space $O(|\mathcal{S}|)$ to maintain the following queries
     For a prime~$p$ and an~$r \in \mathbb{F}_p^\ast$, the \emph{Karp--Rabin fingerprint}~\cite{karp1987efficient} of a string~$X$ is defined as a tuple $(r^{|X|-1} \mod p, r^{-|X|+1} \mod p, \varphi_{p,r}(X))$, where $\varphi_{p,r}(X)=\sum_{k=0}^{|X|-1} S[k]r^k\mod p$.
     \end{definition}
     
-    We use the following result of Christiansen et al.~\cite{talg/ChristiansenEKN21}, which builds on Belazzougui~et~al.~\cite{esa/BelazzouguiBPV10} and Gagie~et~al.~\cite{latin/GagieGKNP14,soda/GagieNP18}.
+    \noindent We use the result of Christiansen et al.~\cite{talg/ChristiansenEKN21}, which builds on Belazzougui~et~al.~\cite{esa/BelazzouguiBPV10} and Gagie~et~al.~\cite{latin/GagieGKNP14,soda/GagieNP18}.
      
     \begin{fact}[{\cite[Lemma 6.5]{talg/ChristiansenEKN21}}]\label{fact:compact_trie}
     Let $\mathcal{S}$ be a set of strings and assume we have a data structure supporting extraction of any length-$l$ prefix of strings in $\mathcal{S}$ in
@@ -117,7 +117,7 @@ can be implemented in space $O(|\mathcal{S}|)$ to maintain the following queries
     obtained from any non-terminal $A$ in time $f_e(l) = O(l)$.
     \end{fact}
     
-    To bound $f_h(l)$, we introduce a simple construction based on the following well-known fact:
+    \noindent To bound $f_h(l)$, we introduce a simple construction based on the following well-known fact:
     
     \begin{fact}\label{fact:fingerprints}
     Consider strings $X,Y,Z$ where $XY = Z$. Given the Karp--Rabin fingerprints of two of the three strings, one can compute the fingerprint of the third string in constant time.
