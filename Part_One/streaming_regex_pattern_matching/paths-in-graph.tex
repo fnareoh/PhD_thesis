@@ -62,12 +62,12 @@ The reader familiar with this area can skip this part.
 We first remind the definitions of von Mangoldt function~$\Lambda(n)$ and Chebyshev functions $\psi$ and $\vartheta$:
 
 \begin{align*}
-\psi(x;q,a) &= \sum_{\substack{n\leq x\\ n\equiv a \Mod q}} \Lambda(n), \quad &\text{ where } &\Lambda(n) = \begin{cases} \log p  &\text{ if } n=p^{k} \text{ for some prime } p \text{ and } k \in \Zp, \\  0 &\text{ otherwise. } \end{cases} \\ 
+\psi(x;q,a) &= \sum_{\substack{n\leq x\\ n\equiv a \Mod q}} \Lambda(n), \quad &\text{ where } &\Lambda(n) = \begin{cases} \log p  &\text{ if } n=p^{k} \\ & \mbox{ for some prime } p \mbox{ and } k \in \Zp, \\  0 &\text{ otherwise. } \end{cases} \\ 
 \vartheta(x;q,a) &= \sum_{\substack{p\leq x \\ p \equiv a\Mod q}} \log p, \quad &\text{ where } &\text{the summation is over prime numbers $p$.
 }
 \end{align*}
 \noindent
-By skipping the last two arguments we denote $\vartheta(x) = \sum_{0\leq a<q} \vartheta(x;q,a)$ and similarly for $\psi(x)$.
+By skipping the last two arguments we denote $\vartheta(x) = \sum_{0\leq a<q} \vartheta(x;q,a)$, analogous for $\psi(x)$.
 
 \begin{fact}[By definition]\label{fa:vartheta_pi}
  $ \vartheta(x;q,a) \leq  \pi(x;q,a)\cdot\log x$.
@@ -122,8 +122,8 @@ Now we rewrite~\eqref{eq:property_of_good_q} using properties of $\phi(n),\varth
 In more detail:
 \begin{align*}
  \frac{x}{\phi(q)} - \psi(x;q,1) &= \Oh(\sqrt x (\log x)^{-A+B}) & \text{ from~\eqref{eq:property_of_good_q}} \\
- \frac xq & \le \vartheta(x;q,1) + \Oh(\sqrt x) + \Oh(\sqrt x (\log x)^{-A+B}) & \text{ from Fact~\ref{fa:psi_vartheta} and }\phi(q)\leq q \\
- \frac xq & \le \pi(x;q,1)\cdot\log x + \Oh(\sqrt x (\log x)^{-A+B}) & \text{from Fact \ref{fa:vartheta_pi} and } B > A \\
+ \frac xq & \le \vartheta(x;q,1) + \Oh(\sqrt x) + \Oh(\sqrt x (\log x)^{-A+B}) & \text{ by Fact~\ref{fa:psi_vartheta} and }\phi(q)\leq q \\
+ \frac xq & \le \pi(x;q,1)\cdot\log x + \Oh(\sqrt x (\log x)^{-A+B}) & \text{by Fact \ref{fa:vartheta_pi} and } B > A \\
  \pi(x;q,1) & \ge  \sqrt x (\log x)^{B-1}  - \Oh(\sqrt x (\log x)^{-A+B-1}) & \text{ as } q\in\mathcal{R} \\
  \pi(x;q,1) &= \Omega(\sqrt{x}(\log x)^{B-1}) & \text{ as } A=1 \\
 \end{align*}
@@ -191,7 +191,7 @@ We define $(\textsc{or},\textsc{Convolution}_x)$-product of matrices consisting 
 
 $$\forall_{\substack{u,v\in V(G)\\ d\in\{0,\ldots,x\}}} (A\odot B)[u,v][d]:=\bigvee_{\substack{w\in V(G) \\  i\in \{0,\ldots,d\}}} A[u,w][i] \wedge B[w,v][d-i]$$
 
-\noindent Now we compute the consecutive arrays $C_k$ by repeated application of $(\textsc{or},\textsc{Convolution}_x)$-product as follows:
+ Now, we compute the consecutive arrays $C_k$ as follows by repeateadly applying the $(\textsc{or},\textsc{Convolution}_x)$-product:
 $$C_{k+1}:=C_k \odot C_0 \odot C_k$$
 
 Both invariants for the array $C_k$ follow by inductive reasoning, as every walk of weight $d$ can be split into three parts of weights $d_1,d_2,d_3$ where $d_1,d_3\leq d/2$ and the middle part consists of a single edge (recall that for each edge $(u,v)$ of weight $0 \le d \le x$ we have $C_0[u,v][d] = 1$).

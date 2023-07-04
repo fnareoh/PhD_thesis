@@ -1,4 +1,4 @@
-\begin{tikzpicture}
+\begin{tikzpicture}[scale = 0.9]
 	\begin{pgfonlayer}{nodelayer}
 		\node [style=none] (0) at (-19.25, -0.275) {};
 		\node [style=none] (1) at (-19.25, 1) {};

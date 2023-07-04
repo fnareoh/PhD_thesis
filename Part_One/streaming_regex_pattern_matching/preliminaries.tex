@@ -15,7 +15,7 @@ For two regular expressions $A$ and $B$, we can form a new expression using one 
 \begin{itemize}
 \item $A \cdot B$ is a regular expression and $L(A \cdot B)=\{XY, \text{ for } X \in L(A) \text{and } Y \in L(B) \}$;
 \item $A \mid B$ is a regular expression and $L(A \mid B)= L(A) \cup L(B)$;
-\item $A^\ast$ is a regular expression and  $L(A^*)= \bigcup_{k  \geq 0} \{ X_1 X_2 \dots X_k, \text{ where } X_i \in L(A) \text{ for } 1 \leq i \leq k \}$.
+\item $A^\ast$ is a regular expression and  $L(A^*)= \bigcup_{k  \geq 0} \{ X_1 X_2 \dots X_k, \text{ where } X_i \in L(A) \text{ for }$ $1 \leq i \leq k \}$.
 \end{itemize}
 \end{definition}
 
@@ -86,7 +86,7 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
 \end{subfigure}
 \begin{subfigure}[b]{0.4\textwidth}
 \centering
-\begin{tikzpicture}[scale=0.8,every node/.style={scale=0.8}]
+\begin{tikzpicture}[scale=0.75,every node/.style={scale=0.7}]
     \node[state,initial] (i)   {$i$};
     \node[state](i_1)[right=of i] {};
     \node[state](f_1)[right=of i_1] {};
@@ -98,7 +98,7 @@ Figure~\ref{fig:Thompson_example} gives an example of the Thompson automata for 
     \node at (2.85,1.4) {$\eps$};
     \draw [->] (i) ..  controls  ($(i)+(0.5,-1.5cm)$) and ($(f)+(-0.5,-1.5cm)$) ..  (f);
     \node at (2.85,-1.1) {$\eps$}; 
-    \draw (3.5,0) ellipse (2cm and 0.8cm);
+    \draw (3.6,0) ellipse (2.2cm and 0.8cm);
     \node at (3.5,0) {$T(A)$};
 \end{tikzpicture}
 \caption{$T(A^*)$}
