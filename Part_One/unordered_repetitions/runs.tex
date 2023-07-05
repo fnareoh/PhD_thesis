@@ -61,7 +61,7 @@ There are $\Oh(\log n)$ levels of recursion, and each level takes $\Oh(n)$ time 
 
 \begin{lemma}
 \label{lem:long:run}
-Let $T = b_{1}b_{2}\ldots b_{z}$ be a $\Delta$-approximate LZ factorisation, and $\chi = \sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)}$.
+Let $T = b_{1}b_{2}\ldots b_{z}$ be a $\Delta$-approximate LZ factorisation of $T$, and \sloppy $\chi = \sum_{\absolute{\tail\left(b_{i}\right)} \geq \Delta}\absolute{\tail\left(b_{i}\right)}$.
 We can compute in $\Oh\left(\chi + z\right)$ time and $\Oh\left(\chi\right)$ comparisons
 a multiset $R$ of size $\Oh(\chi)$ of runs with the property that a run $T[s..e]$ is possibly not in $R$ only if $e-s+1 < 8\Delta$ or
 there is some tail $\tail(b_i) = T[a_2..a_3]$ with $a_2 < s$ and $e < a_3$.

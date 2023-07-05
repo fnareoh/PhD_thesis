@@ -50,7 +50,7 @@ The dense fragments are $D_1 = T[h_2..h_3)$, $D_2 = T[h_7..h_8)$, and $D_3 = T[h
 The primary occurrences of dense fragments are grey, while the secondary occurrences (the ones that we aim to find) are white.
 A purple box in the text, and the matching purple line underneath the text, correspond to some substring $T[j\cdot\tau-r_{j - 1}..j\cdot\tau)$. Similarly, the orange boxes and lines correspond to substrings $T[j\cdot\tau..j\cdot\tau + \ell_j)$.
 }{
-\begin{tikzpicture}[x=.0098\textwidth, y=1.3em]
+\begin{tikzpicture}[scale=0.9,x=.0098\textwidth, y=1.3em]
 
 \tikzset{slimfit/.style={inner sep=0, outer sep=0, minimum width=0, minimum height=0}}
 \tikzset{every node/.style={slimfit}}
@@ -256,7 +256,7 @@ evaluate=\x as \y using int(\x+\z-1)] \z in {1,3,5,1,2,4,2,5,0,3,0,0,5,1,3,4} {
 
 \subcaptionbox{\label{fig:improv:2}The string $T'$ used to find all the occurrences of dense fragments. Each position $\hat{h}_x$ maps to position $h_x$ in \cref{fig:improv:1}. The substring indicated by the purple box preceding $h_x = (j+x)\tau$ and the orange box succeding $h_x$ is exactly $T[h_x - r_{j + x - 1}..h_x + \ell_{j + x})$. Each $\underset{\smash{\scriptstyle x}}{\smash{\texttt{\textdollar}}}%
 $ is a distinct separator symbol that is unique within $T'$.}{
-\begin{tikzpicture}[x=.0098\textwidth, y=1.3em]
+\begin{tikzpicture}[scale=0.9,x=.0098\textwidth, y=1.3em]
 
 \tikzset{slimfit/.style={inner sep=0, outer sep=0, minimum width=0, minimum height=0}}
 \tikzset{every node/.style={slimfit}}

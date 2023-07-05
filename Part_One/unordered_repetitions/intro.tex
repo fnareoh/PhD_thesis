@@ -38,7 +38,7 @@ in the paper of Bannai et al.~\cite{Bannai2017} showing an upper bound of $n$, a
 for binary strings~\cite{Fischer2015,Holub2017}. This was complemented by a sequence of 
 lower bounds~\cite{Franek2008,Matsubara2008,Matsubara2009,Simpson2010}.
 
-\paragraph{Algorithms on strings. }
+\paragraph{Algorithms on strings.}
 In this paper, we are interested in the algorithmic aspects of detecting repetitions in strings. The most basic question
 in this direction is checking if a given length-$n$ string contains at least one square,
 while the most general version asks for computing all the runs.
@@ -56,8 +56,8 @@ This is somewhat unsatisfactory, and motivates the following open question that 
 Is there a faster algorithm to determine if a string is square-free if we restrict the size of the alphabet?
 \end{question}
 
-Another $\Oh(n\log n)$ time algorithm for finding all repetitions was given by Crochemore~\cite{Crochemore1981},
-who also showed that for constant-size alphabets testing square-freeness can be done in  $\Oh(n)$ time~\cite{Crochemore1986}.
+Crochemore~\cite{Crochemore1981} gave another $\Oh(n\log n)$ time algorithm for finding all repetitions,
+and also showed that for constant-size alphabets testing square-freeness can be done in  $\Oh(n)$ time~\cite{Crochemore1986}.
 In fact, the latter algorithm works in $\Oh(n\log \sigma)$ time for alphabets of size $\sigma$ with a linear order on the characters.
 That is, it needs to test if the character at some position is smaller than the character at another position.
 In the remaining part of the paper, we will refer to this model as general ordered alphabet, while the model
