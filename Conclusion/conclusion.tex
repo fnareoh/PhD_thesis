@@ -4,16 +4,37 @@
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 \chaptermark{Conclusion}
+% Contributions
+% Context
+In this thesis, we presented the need for more general string queries than classical pattern matching, and the scalability challenges that come from the large production of data and its archival.
+%
+In Section~\ref*{intro:sec:contrib}, we detailed the sketch-based approach common to all contributions. For each problem considered and solution developed, using a compression (lossy or lossless) enabled processing and storing the data efficiently to yield better time and space complexities.
+%
+The sketching techniques we use are diverse and do not create a framework to be applied ``as is'' to other problems, but my personal takeaway from this thesis is the importance of thinking in terms of the key characteristic of the input for a given query. 
+%
+I find this idea elegant and inspiring for problems that range from very theoretical to very applied. On the theoretical side, for regular expression, we stored only a few key occurrences of the words in the stream (crossing some anchors positions) and were still able to reconstruct partial matches of the entire expression. For squares, introducing the $\Delta$-approximate Lempel-Ziv factorization allowed capturing squares large enough without requiring too many comparisons, that were not strictly needed. On the practical side, we showed that our sketch-based algorithm for the Longest Common Substring with Approximately $k$ Mismatches was in deed faster than the quadratic dynamic programming algorithm. 
+%
+%\todo[inline]{Here I could detail a bit for each project what is the key characteristic I am thinking about.}
+%
+%Intuitively, for the regular expression search in a stream of Chapter~\ref{chap:regexp}, the key is both detecting the word of the regular expression in the stream (using Karp--Rabin fingerprints) and recomposing those occurrences into a full match. Then, the difficulty comes from limiting the number of occurrences of words we have to keep track of, and this is done through the use of anchor positions.
+%
+%For the grammar compression studied in Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm}, both of our algorithms exploit the recursive structure of the grammar by first searching for ``relevant'' consecutive occurrences in each non-terminal. Those are the consecutive occurrences occurring in that non-terminal that are newly generated, and not fully included in one of its children.
+%\todo[inline]{I will do it for the rest if it seems good}
+%
+% Open questions in many of the works
+Most of the chapters leave open questions and future works to be done:
+\begin{itemize}
+    \item Chapter~\ref{chap:regexp}: Is it possible to search for any regular expression with $d$ $|$ and $\ast$ symbols in a stream of length $n$ in $\mathrm{poly}(d,\log n)$ space and time complexity ?
+    \item Chapter~\ref{chap:gapped_index}: Can we improve the compressed index for consecutive matching to $\Ohtilde(g)$ space and $\Ohtilde(m+\occ)$ and for close consecutive occurrences, can we improve the $\Ohtilde(g^5)$ space ? Is there an efficient index for the general case where we search for consecutive occurrences separated by a distance in an interval $[a,b]$ ?
+    \item Chapter~\ref{chap:squares}: Do our lowerbound of $\Omega(n\ln \sigma)$ comparisons hold for randomized algorithm ?
+    \item Chapter~\ref{chap:LCS}: could we implement our $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and space solution using implementation of Approximate Nearest Neighbour data structure such as~\cite{} and add it to the practical evaluation ?
+    \item Chapter~\ref{chap:DTW}: For a pattern $P$, a text $T$ and an integer $k$, is there a $\Oh(k(n+m))$ time algorithm that computes all positions $r$ such that the smallest DTW distance between $P$ and $T[1..r]$ is at most $k$ ? Additionally, the practical application of DWT for third generation sequencing alignment would be interesting to investigate further, but it is difficult due to many tools using an alignment based on the edit distance as their ground truth.    
+    \item Chapter~\ref{chap:XBWT}: We measured the improvement of our structure in terms of the number of runs as a first step, but it remains to evaluate the full data-structure in terms of space usage and query time.
+\end{itemize}
+%
+In addition to all those open questions and future work, I would personally be very interested in learning more about the practical applications of sketching.  
+% 
+
 %What are my takeaways ? Future work ?
 %Theoretical point of view: Elegance and power of taking a model that represents the true complexity of the input.
 %Practical point of view: the need for theoretical guarantees sometimes offsetted by %the technical complexity of those results, there are important and significant work to be done on engineering to yield efficient result in practice (space seed field seems especially interesting) 
-
-\newpage
-\chapter*{The Cat and the Yarn}
-
-Inspired by the book "Le chat au pays des nombres" by Ivar Ekeland and John O'brien, which presents the Hilbert's paradox of the Grand Hotel in a kids book format, I decided (on my own time) to sketch a comic inspired by this thesis. I dedicate it to Hana, Mira, and all the little girls that may take an interest in computer science one day.
-\vfill
-\begin{center}
-    \frame{\includegraphics[width=12.5cm]{Conclusion/comic.pdf}}
-\end{center}
-\vfill
