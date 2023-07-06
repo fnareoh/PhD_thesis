@@ -108,31 +108,34 @@ All similarity measures and distances mentioned above are illustrated in Figure~
 \subsection{Repetition Detection}
 
 Another central task in text processing is repetition detection. Locating repeated fragments of a text can be useful to remove duplicated data or to compress its representation. Combinatorial insight into the structure of specific inputs can also benefit the design of efficient algorithms.
+\todo[inline]{To detail and add references}
 
-Periodicity is a natural form of repetition experienced every day through phenomena such as seasons or tides. Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and we call the period of $T$ the smallest integer $p$ such that $T$ has period $p$.
+Periodicity is a natural form of repetition extensively observed in music~\cite{arom1989time}, genomics~\cite{pich2018somatic}, and in a number of physics models. \todo{add financial data if I find a good example}
+Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and the smallest period of $T$ is simply called the period of $T$.
 %
-But often, input data only contains periodic substrings (rather than being entirely periodic),  which naturally leads to the concept of runs. Runs are maximal substring that are periodic with a given period, i.e. a substring $T[i:j]$ is a run if it is periodic, let $p$ be its period, and $T[i-1:j]$ and $T[i:j+1]$, if well-defined, are not periodic with period $p$. 
+But often, input data only contains periodic substrings (rather than being entirely periodic), which naturally leads to the concept of runs. Runs are maximal substrings that are periodic with a given period, i.e. a substring $T[i..j]$ is a run if it is periodic, let $p$ be its period, and $T[i-1..j]$ and $T[i..j+1]$, if well-defined, are not periodic with period $p$. 
 
-When there are just two repetitions in a substring, meaning a $T[i:i+2k-1]$ such that $T[i:i+k-1]=T[i+k:i+2k-1]$, it is referred to as a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}. 
+A simpler model often considered are squares: substrings $T[i..i+2k-1]$ such that $T[i..i+k-1]=T[i+k..i+2k-1]$, it is referred to as a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}. 
 %
 %The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word.
-In Chapter~\ref{chap:squares}, for strings over an unordered alphabet of size $\sigma$ (where only equality tests are allowed to compare characters), we provide algorithm for testing whether it contains a square in $\Oh(n\log \sigma)$ time which we show is optimal. We then extend it to reporting all runs in the string.
+In Chapter~\ref{chap:squares}, for strings over an unordered alphabet of size $\sigma$ (where only equality tests are allowed to compare characters), we provide an algorithm for testing whether it contains a square in $\Oh(n\log \sigma)$ time which we show is optimal. We then extend it to reporting all runs in the string.
+\todo[inline]{Add some history in the paragraph above.}
 
-Many other forms of string regularities have been considered in the literature, although they are out of the scope of this thesis, we list a few of them for completeness.
+Many other forms of string regularities have been considered in the literature. Although they are out of the scope of this thesis, we list a few of them for completeness.
 % Palindromes
 Palindromes are strings that are identical when read backward or forward, formally, a string $T$ of length $n$ is a palindrome if $T[n-1] \dots T[1]T[0] = T[0]T[1] \dots T[n-1]$. Palindromes are found in music~\cite{tablecannon,crabcannon} and genomes~\cite{brazda2016palindrome,svetec2021palindromes} where they are linked to the regulation of gene replication and implicated in the evolution and development of diseases such as cancer and neurodegenerative disorders.
 % Covers
 Another way to view repeated fragments is through the lenses of string covers~\cite{iliopoulos1996covering}. A string $C$ is a cover of a string $T$ if $T$ occurs in a string constructed by overlapping and concatenating occurrences of $C$. A substring of $T$ is called a seed if it covers $T$ and a cover of minimal length is called a quasiperiod of $T$. 
 Those notions generalize the concept of periods in the sense that they additionally allow for superposition of the repetitions, but other approaches have been considered as generalizations.
 % Cadences
-Cadences~\cite{AMIR20174} in a string are characters that are repeated at regular intervals. Formally, given a string $T[0,n-1]$, a cadence is a pair $(i,d)$ such that $0 \leq i,d < n$ and for every $k \geq 0$ such that $i+kd < n$ we have $T[i] = T[i+kd]$. They intuitively define a periodicity that is woven regularly inside an aperiodic string.
+Cadences~\cite{AMIR20174} in a string are characters that are repeated at regular intervals. Formally, given a string $T[0,n-1]$, a cadence is a pair $(i,d)$ such that $0 \leq i,d < n$ and for every $k \geq 0$ such that $i+kd < n$ we have $T[i] = T[i+kd]$. Intuitively, a cadence defines a periodicity that is woven regularly inside an aperiodic string.
 % Approximate periodicity
-Approximations of periodicity have also been considered. A series of publications~\cite{SIM2001557,AMIR2015215,AmirICALP2010, KociumakaRADO2018, AMIR20182} worked on detecting whether a given string is close to any periodic string under a given metric.
+Approximate periodicity has been considered as well. A series of publications~\cite{SIM2001557,AMIR2015215,AmirICALP2010, KociumakaRADO2018, AMIR20182} studied the problem of deciding whether a given string is close to any periodic string under a given metric.
 % finding approximate periodic progressions
-Some works~\cite{AMIR201460,Gfeller2011} focus on approximate periodic progressions. They take as input a sequence of increasing integers and then define an approximate periodicity by looking at the increase between any two consecutive numbers.
+%Other works~\cite{AMIR201460,Gfeller2011} focus on approximate periodic progressions. They take as input a sequence of increasing integers and then define an approximate periodicity in the progression of numbers.
 
 % Substring equations
-Interestingly, a number of those definitions can be formulated through substring equations and Gawrychowski et al.~\cite{GAWRYCHOWSKI2020174} gave an algorithm that from a set of substring equations over strings of length $n$ can produce a "generic" solution which contains a maximal number of different characters and from which every solution can be generated through character renaming. Their algorithm produces a generic solution in $\Oh(n)$ which generalizes solutions to various reconstruction problems such as reconstructing a string from its maximal palindromes or runs.
+Interestingly, a number of those definitions can be formulated through substring equations and Gawrychowski et al.~\cite{GAWRYCHOWSKI2020174} gave an algorithm that from a set of substring equations over strings of length $n$ can produce a ``generic'' solution which contains a maximal number of different characters and from which every solution can be generated through character renaming. They gave an algorithm producing a generic solution in $\Oh(n)$ which generalizes solutions to various reconstruction problems such as reconstructing a string from its maximal palindromes or runs.
 
 \subsection{Scalability Issues}\label{sec:intro:scalability}
 

@@ -43,25 +43,26 @@ $H_{p}(S) = \sum_{i = 0}^{|S|-1}  S[i]2^{|S|-i-1} \bmod p$.
 % Colisions
 It is easy to see that if two strings $S_1$ and $S_2$ are equal then $H_p(S_1) = H_p(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have equal fingerprints.
 %
-However, we can bound the probability of collision between $P_1$ and $P_2$ by choosing the prime $p$ at random bellow an integer $I$. For a detail analysis see Chapter~4.4 of~\cite{Gusfield1997}.
+However, we can bound the probability of such event by choosing the prime $p$ at random bellow an integer $I$. If $I=n^2m$ the probability of a false match at a given position is $\Oh(\frac{1}{n})$, For a detail analysis see Chapter~4.4 of~\cite{Gusfield1997}.
 % Sliding window property
 This fingerprint has a convenient ``sliding'' property in the sense that for a window of a binary text $T$ and two integers $i,m$ such that $i+m < |T|$, we can express efficiently the fingerprint of $T[i+1..i+m]$ as a function of the fingerprint of $T[i..i+m-1]$, $T[i]$ and $T[i+m]$:
 $$ H_{p}(T[i+1..i+m]) = ( H_{p}(T[i..i+m-1])\times 2 - T[i]2^{m} + T[i+m]  ) \mod p$$
 This allows Karp--Rabin fingerprints to be used for an online matching algorithm running in $\Oh(|P|+|T|)$ that can err with a small probability (Monte-Carlo).
 % Practice
-In practice, $p$ is often chosen as a large primary number around $2^{27}$ to still fit on a 32-bit integer, and in the implementation of Chapter~\ref{chap:XBWT}, we replace $2^{|S|-i-1}$ by $256^{|S|-i-1}$ to accommodate for the UTF-8 input instead of binary.
+In practice, $p$ is often chosen as a large prime number around $2^{27}$ to still fit into a 32-bits integer, and in the implementation of Chapter~\ref{chap:XBWT}, we replace $2^{|S|-i-1}$ by $256^{|S|-i-1}$ to accommodate for the UTF-8 where each character is encoded on 8 bits.
 
 % Porat and Porat variant 
 In Chapters~\ref{chap:gapped_index} and~\ref{chap:LCS}, we use a variant of Karp--Rabin fingerprint defined by Porat and Porat~\cite{Porat:09}: 
-for $p$ a prime number and $r \in \mathbb{F}_p$ (the finite field of integers modulo $p$), the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+for a prime number $p$  and $r \in \mathbb{F}_p$ (the finite field of integers modulo $p$), the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
 $\varphi_{p,r}(S) = \sum_{i = 0}^{|S|-1}  S[i]r^{i} \bmod p$.
 % Collision analysis
-The collision analysis of this variant is simpler as it avoids having to pick a random prime number: for a given integer $n$, if $p$ is chosen to be $\Theta(n^k)$ and $r$ is chosen at random in $\mathbb{F}_p$, $|S_1|\leq n$, $|S_2|\leq n$, then $\varphi_{p,r}(S_1) - \varphi_{p,r}(S_2) = 0$ can be seen as a polynomial over $\mathbb{F}_p$. This polynomial has degree greater than zero (because $S_1 \neq S_2$), and at most $\max(|S_1|,|S_2|) < n$ thus it can have at most $n$ roots. Thus, the probability of the fingerprints $S_1$ and $S_2$ colliding is less than $\frac{n}{n^k} = \frac{1}{n^{k-1}}$.
+The collision analysis of this variant is simpler: %as it avoids having to pick a random prime number: 
+for a given integer $n$, if $p$ is chosen to be $\Theta(n^k)$ and $r$ is chosen at random in $\mathbb{F}_p$, $|S_1|$, $|S_2|\leq n$, then $\varphi_{p,r}(S_1) - \varphi_{p,r}(S_2) = 0$ can be seen as a polynomial over $\mathbb{F}_p$. This polynomial has degree greater than zero (because $S_1 \neq S_2$), and at most $\max(|S_1|,|S_2|) < n$ thus it can have at most $n$ roots. Thus, the probability that the fingerprints $S_1$ and $S_2$ collide is less than $\frac{n}{n^k} = \frac{1}{n^{k-1}}$.
 % Differences in definitions Gapped
-Note that the precise definition can vary slightly depending on the specific property needed. In Chapter~\ref{chap:gapped_index}, the fingerprint of a string $S$ is defined as a triple $(r^{|S|-1} \mod p, r^{-|S|+1} \mod p, \varphi_{p,r}(S))$, to have the property that given three strings $X,Y,Z$ such that $XY =Z$, and the fingerprint of any two strings, we can deduce in constant time the third fingerprint (Fact~\ref{fact:fingerprints}). 
+Note that the precise definition can vary slightly depending on the specific property needed. In Chapter~\ref{chap:gapped_index}, the fingerprint of a string $S$ is defined as a triple $(r^{|S|-1} \mod p, r^{-|S|+1} \mod p, \varphi_{p,r}(S))$, to have the property that given three strings $X,Y,Z$ such that $XY =Z$, and the fingerprints of two of the strings, we can deduce in constant time the third fingerprint (Fact~\ref{fact:fingerprints}). 
 
 
-\subsection{Periodicity and Fine-Wilf Lemma}\label{sec:prelim:FW}
+\subsection{Periodicity and Fine--Wilf Lemma}\label{sec:prelim:FW}
 Compact run representation of occ crossing a given position
 
 
