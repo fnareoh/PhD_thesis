@@ -1,6 +1,5 @@
 \clearemptydoublepage
-\backmatter
-
+\bookmarksetup{startatroot}
 \chapter*{Conclusion}
 \addcontentsline{toc}{chapter}{Conclusion}
 \chaptermark{Conclusion}
@@ -10,9 +9,9 @@ In this thesis, we presented the need for more general string queries than class
 %
 In Section~\ref*{intro:sec:contrib}, we detailed the sketch-based approach common to all contributions. For each problem considered and solution developed, using a compression (lossy or lossless) enabled processing and storing the data efficiently to yield better time and space complexities.
 %
-The sketching techniques we use are diverse and do not create a framework to be applied ``as is'' to other problems, but my personal takeaway from this thesis is the importance of thinking in terms of the key characteristic of the input for a given query. 
+The sketching techniques we use are diverse and do not create a framework to be applied ``as is'' to other problems, but my personal takeaway is the importance of thinking in terms of the key characteristic of the input for a given query. I find it very helpful in algorithmic design both for theoretical studies and applied projects.
 %
-I find this idea elegant and inspiring for problems that range from very theoretical to very applied. On the theoretical side, for regular expression, we stored only a few key occurrences of the words in the stream (crossing some anchors positions) and were still able to reconstruct partial matches of the entire expression. For squares, introducing the $\Delta$-approximate Lempel-Ziv factorization allowed capturing squares large enough without requiring too many comparisons, that were not strictly needed. On the practical side, we showed that our sketch-based algorithm for the Longest Common Substring with Approximately $k$ Mismatches was in deed faster than the quadratic dynamic programming algorithm. 
+%I find this idea elegant and inspiring for problems that range from very theoretical to very applied. On the theoretical side, for regular expression, we stored only a few key occurrences of the words in the stream (crossing some anchors positions) and were still able to reconstruct partial matches of the entire expression. For squares, introducing the $\Delta$-approximate Lempel-Ziv factorization allowed capturing squares large enough without requiring too many comparisons, that were not strictly needed. On the practical side, we showed that our sketch-based algorithm for the Longest Common Substring with Approximately $k$ Mismatches was in deed faster than the quadratic dynamic programming algorithm. 
 %
 %\todo[inline]{Here I could detail a bit for each project what is the key characteristic I am thinking about.}
 %
@@ -32,9 +31,10 @@ Most of the chapters leave open questions and future works to be done:
     \item Chapter~\ref{chap:XBWT}: We measured the improvement of our structure in terms of the number of runs as a first step, but it remains to evaluate the full data-structure in terms of space usage and query time.
 \end{itemize}
 %
-In addition to all those open questions and future work, I would personally be very interested in learning more about the practical applications of sketching.  
+In addition to all those open questions and future work, I would be interested in learning more about use of sketches in bioinformatics. In this area, sketching generally does not include lossless compression and just refers to generating an approximate, compact summary of data.
 % 
 
 %What are my takeaways ? Future work ?
 %Theoretical point of view: Elegance and power of taking a model that represents the true complexity of the input.
 %Practical point of view: the need for theoretical guarantees sometimes offsetted by %the technical complexity of those results, there are important and significant work to be done on engineering to yield efficient result in practice (space seed field seems especially interesting) 
+\backmatter
