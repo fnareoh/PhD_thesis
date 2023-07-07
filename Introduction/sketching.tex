@@ -1,0 +1,37 @@
+\section{Sketching}\label{intro:sec:sketching}
+%%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+It goes without saying that algorithms with super-linear time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of algorithm is dictated both by the specific needs of the application and the typical scale of the input.
+%
+Also note that some applications require \emph{data structures}, which are algorithms where the complexity analysis is split in two parts: the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query. The scalability challenge is then focussed on the space and time needed for the queries. Chapters~\ref{chap:gapped_index} and~\ref{chap:XBWT} build data structures.
+
+\todo[inline]{Detail the intuition of KR (can't reconstruct the text but fast matches), LZ good compression in practice and no loss of information but bad worst case.}
+Several approaches can be used to cope with large amounts of data, such as distributed algorithms that are designed to work on several computers sharing a network (with limited transfer). In this thesis, we focus on a different approach to process massive string data, that of sketching. A \textbf{sketch} is a lossless or lossy compression that keeps only the essential characteristic of the input needed to answer a given query, offering promising scalability potential. Example of sketches include Karp--Rabin fingerprints for lossy compression (see Preliminaries~\ref{sec:prelim:KR}) and Lempel--Ziv factorization for lossless compression (see Preliminaries~\ref{sec:prelim:compress}). 
+We will detail in Section~\ref{intro:sec:contrib} how each contribution of this thesis relates to sketching but let us first summarize three general sketch-based approaches (that can sometimes be combined):
+%summarize their respective scalability approaches as follows (with some approaches that can be combined): 
+
+\begin{itemize}
+\item \textbf{Compressed input:} as mentioned already, highly redundant data can sometimes be represented by a sketch of a more manageable size. 
+Consequently, algorithms that can directly operate on the sketch become much more efficient. This is very natural approach as the data is almost always shared in a compressed format, the difficulty is working with the sketch's property and structure. However, it is important to note that not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that to compute the longest common subsequence of two strings of uncompressed size $N$, given in a grammar compression of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the Strong Exponential Time Hypothesis (SETH). 
+Very recently, Ganesh et al.~\cite{ganesh2022compression} also showed a lower bound $\Omega(N^{k-1}n)$ conditioned on SETH to compute the median edit distance and length of the longest common subsequence of $k$ strings.
+In other words, even if the input is given in compressed form, we cannot avoid a high dependency in the uncompressed size. In this thesis, Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm} both take as input a sketch, more precisely a grammar compressed text and their complexities are given as a function of the size of the compressed input.
+%
+%Streaming
+\item \textbf{Streaming algorithms:} there, the data is considered so large that it can only be handled as a stream. % then it must be processed on the fly without the possibility of going back.
+For the pattern matching problem, the pattern and the length of the text are known in advance and can be preprocessed, then the characters of the text arrive one by one and can only be accessed later if they are stored explicitly. 
+This model focuses on small space complexity and accounts for all space usage, including the space required to store the input.
+%for every extra space needed apart from the current character.
+Thus, sketches are crucial to keep the necessary information about the data already seen while limiting space usage.
+Chapter~\ref{chap:regexp} is set in this model. %~\ref{chap:gapped_stream}
+% Secondary memory
+Those streaming algorithms relate in practice to the notion of efficient second-memory algorithms. One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
+It is  common knowledge that random access to disk is very inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is comparable to the speed of most RAM. %which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
+Therefore, an algorithm that uses few random accesses (including streaming algorithms) can be executed directly on disk which allows it to scale to large inputs much more easily. 
+%The main issue with this approach is that not all problems admit efficient solutions avoiding random access. For example, given a list and a permutation, returning the permuted list requires to access the elements in the order of the permutation, possibly random. 
+We use this approach of streaming on secondary memory to limit main memory usage in Chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
+%
+% Approximation algorithms
+\item \textbf{Approximation algorithms:} When dealing with very large datasets, it is not always needed to provide precise answers to queries. Allowing for some approximation in the results can enable shortcuts and help bypass lower bounds. There, using sketches in the form of lossy compression inherently introduces approximation but allows for even smaller and more efficient representations.
+The entire second part of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answers correctly with high probability.
+\end{itemize}
+
