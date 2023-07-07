@@ -26,10 +26,9 @@
 \input{./Couverture-these/pagedegarde}
 
 \frontmatter
-
 \selectlanguage{english}
-\chapter*{Abstract}\thispagestyle{empty}
-{\input{./Abstract/abstract}}
+\chapter*{Abstract}
+{\input{./Abstract/abstract}}\thispagestyle{empty}
 %\vspace{0.4cm}
 %\noindent\hrulefill
 %\vspace{0.4cm}
@@ -37,14 +36,17 @@
 
 \selectlanguage{french}
 \input{./Abstract/resume_long}
+\thispagestyle{empty}
 
-%\input{./Acknowledgement/acknowledgement}
+\input{./Acknowledgement/acknowledgement}\thispagestyle{empty}
 
-\backmatter
 \selectlanguage{english}
+\pagestyle{empty}
+\clearpage
 \renewcommand{\contentsname}{Table of Contents}
-\tableofcontents 
-
+\tableofcontents
+\thispagestyle{empty}
+\clearpage
 
 %\clearemptydoublepage
 \input{./Introduction/introduction}
@@ -59,7 +61,6 @@
 
 \input{./Conclusion/conclusion}
 
-\backmatter
 \printbibliography[heading=bibintoc]
 
 %list publications

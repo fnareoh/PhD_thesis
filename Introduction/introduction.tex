@@ -9,15 +9,13 @@ When answering the classic question ``What is your Ph.D. about?'' to family and 
 Indeed, exact pattern matching has been long studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching which have also been thoroughly compared in practice~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
 
 
-
 % String notations
 In order to present the context of this thesis, we will need minor preliminaries. We assume the reader to be familiar with the little $o$, big $\Oh$, and theta $\Theta$ notations for complexities. For lowerbounds, we use the notation $f(n)=\Omega(g(n))$ to denote that $f$ is bounded bellow asymptotically by $g$. For ease of readability, we additionally use the notation $\Ohtilde$ that hides polylogarithmic factors in the size of the input. 
 We will also need some classical string notations: A string of length $n$ is a sequence $T[0] \dots T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$. The substring $T[i..j]$ is the string $T[i] \cdots T[j]$.
 If $i > j$, then $T[i..j]$ is the empty string. We also use the notation $T[i..j)$ and $T(i..j]$ which stand for $T[i..j-1]$ and $T[i+1..j]$, respectively. We call the substrings of the form $T[0..i]$ \emph{prefixes}  and use the notation $T[..i]$, analogously \emph{suffixes} refer to substrings $T[j..n-1]$ and are denoted $T[j..]$.
 
-
 % Complexities in algorithms vs DT 
-Note that in this introduction, \emph{data structures} are seen as algorithms where the complexity analysis is split in two parts: the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query, thus the focus is often on improving the space and time needed for the queries. This choice was made because we also consider the streaming model which has a different complexity paradigm that we will present later on.
+In this introduction, \emph{data structures} are seen as algorithms where the complexity analysis is split in two parts: the \emph{construction} and the \emph{query}. The construction is generally more expensive and meant to be performed once, whereas the queries are meant to be fast and performed multiple times with varying input-query, thus the focus is often on improving the space and time needed for the queries. We also consider the streaming model that has a different complexity paradigm which we will present later on.
 
 
 \subsection{Matching Models}\label{sec:intro:complex}
