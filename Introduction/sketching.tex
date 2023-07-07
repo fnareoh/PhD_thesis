@@ -1,6 +1,11 @@
 \section{Sketching}\label{intro:sec:sketching}
 %%%%%%%%%%%%%%%%%%%%%% Approaches to adress scalibility %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+
+So far, we presented the two core challenges at the heart of modern text processing: enabling relevant (and sometimes complex) queries suited to specific applications while also maintaining performances that can scale to large volumes of data.
+%
+This thesis makes theoretical and practical contributions to address both needs. 
+
 It goes without saying that algorithms with super-linear time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of algorithm is dictated both by the specific needs of the application and the typical scale of the input.
 
 
@@ -34,3 +39,4 @@ We use this approach of streaming on secondary memory to limit main memory usage
 The entire second part of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answers correctly with high probability.
 \end{itemize}
 
+\todo[inline]{Add a description and refs of the use of sketches for bioinformatics}
