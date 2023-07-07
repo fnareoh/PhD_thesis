@@ -55,7 +55,7 @@ Recently Bille et al.~\cite{bille2022gapped} proposed a combination of the gappe
 We study gapped consecutive pattern matching in various settings in Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm}, a summary of the contribution is given in Section~\ref{intro:sec:contrib}.
 %~\ref{chap:gapped_stream},
 
-Although an in-depth non-standard matching listing is out of scope for this manuscript, for completeness, we detail other models found in the literature, and Table~\ref{fig:intro:match_model} provides exemples for each of the models.
+Although an in-depth non-standard matching listing is out of scope for this manuscript, for completeness, we detail other models found in the literature, and Table~\ref{fig:intro:match_model} provides examples for each of the models.
 % Degenerate strings
 The modelling of flexible and diverse DNA sequences~\cite{comm1970iupac} lead to the model of \underline{degenerate} strings~\cite{abrahamson1987generalized} (also called indeterminate), where each position corresponds to a subset of $\Sigma$.
 % (Elastic/Generalised) Degenerate strings
@@ -63,7 +63,7 @@ This model has recently been extended in two directions: \underline{elastic dege
 % Weighted string
 Alternatively, when each position is assigned a random variable with values in $\Sigma$ the strings are called \underline{weighted} (or uncertain) and represented by a weight matrix~\cite{thompson1994clustal}, see Table~\ref{fig:intro:match_model} for an example. Then, the cumulative probability that a string occurs at a starting position is the product of the probabilities of the corresponding characters at each position, and a match is often defined by a threshold on that cumulative probability. This model has been used in molecular biology in ``profiles'' that represent multiple aligned strings~\cite{doi:10.1073/pnas.84.13.4355} though they study a slightly different score: $\log \frac{p(x,i)}{p(x)}$ where $p(x,i)$ is the probability that the $i$th character is equal to $x$ and $p(x)$ is the overall frequency of $x$. 
 % Abelian/jumbled/many other names 
-In the model of \underline{abelian} matching, a string (or a substring) is entirely identified by the characters it contains (with multiplicities), disregarding their order. It stems from the automatic discovery of clusters of genes in genomes where they can occur in a different order but still linked to the same function~\cite{eres2004permutation}, but the same concept has also been used in the context  of using mass spectrometry for DNA assembly~\cite{bocker2003sequencing} where the strings without order are called compomers. This model is also known as jumbled and permutation pattern matching, and several other names, see~\cite{ejaz2010abelian}.
+In the model of \underline{Abelian} matching, a string (or a substring) is entirely identified by the characters it contains (with multiplicities), disregarding their order. It stems from the automatic discovery of clusters of genes in genomes where they can occur in a different order but still linked to the same function~\cite{eres2004permutation}, but the same concept has also been used in the context  of using mass spectrometry for DNA assembly~\cite{bocker2003sequencing} where the strings without order are called compomers. This model is also known as jumbled and permutation pattern matching, and several other names, see~\cite{ejaz2010abelian}.
 % order preserving
 The \underline{order-preserving} model~\cite{kim2014order,kubica2013linear} takes a somewhat opposite approach and says that two strings match if they have the same relative shape: $\forall i,j \in [0,n-1], X[i] < X[j] \leftrightarrow Y[i] < Y[j]$. This matching model aims at capturing the trend detection needed in the stock market and music melody matching problems~\cite{kim2014order}.
 %
@@ -85,20 +85,19 @@ One of the simplest distances on strings is the \underline{Hamming distance}: Fo
 % Longuest Common Subsequence
 When instead the goal is to have a similarity measure robust to insertions and deletions in the strings $X$ and $Y$, one can consider the length of the \underline{Longest Common Subsequence} between $X$ and $Y$: the largest $\ell$ such that there exist positions $i_1<... < i_\ell$ and $j_1< ... < j_\ell$ such that $X[i_p] = Y[j_p]$ for all $p \in [1,\ell]$. Note that the longest common subsequence has been used as the basis of comparison programs like \texttt{diff} which are then applied in version control systems like git.
 % ED / Levenshtein
-For the \underline{Levenshtein distance}~\cite{levenshtein1966binary} (also called edit distance) the operations allowed are substitutions, insertions, and deletions. This metric is one of the most well known, due to the importance of finding global alignments (alignments of the two string with substitutions, insertions, and deletions) in bioinformatics~\cite{Gusfield1997}.
-\todo[inline]{Precise the many versions of ED defined, ideally explain how it can be defined from a metric over the char.}
-%\todo[inline]{Add the Jarno-Winkler distance which allows translocations ?}
+For the \underline{Levenshtein distance}~\cite{levenshtein1966binary} (also called the edit distance hereafter) the operations allowed are substitutions, insertions, and deletions, all with cost $1$. This definition can be generalized to allow costs to differ for each of the operations (weighted edit distance) or even for the cost to depend on which character is being added, removed or substituted (alphabet-weighted edit distance). This metric is one of the most well known, due to the importance of finding global alignments (alignments of the two string with substitutions, insertions, and deletions) in bioinformatics~\cite{Gusfield1997}.
 Unfortunately, Backurs and Indyk~\cite{DBLP:conf/stoc/BackursI15} proved a conditional lower bound (based on SETH) which suggests it is unlikely to be computable in strongly subquadratic time.
 % LCS with $k$ mismatches
 As an attempt to circumvent this lowerbound, in Chapter~\ref{chap:LCS} we consider the \underline{Longest Common Substring (LCS) with Approximately $k$ Mismatches} an approximate version of a measure resilient to substitutions: \underline{LCS with $k$ Mismatches}. In the \kLCS problem, given an integer $k$ and two strings $X$ and $Y$, $\lcsk(X,Y)$ we must compute the maximal length of a substring (not subsequence) of $X$ that occurs in $Y$ with at most $k$ mismatches. 
-But again, Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} showed (conditioned on SETH) that there is $k=\Theta(\log n)$ such that \kLCS cannot be solved in strongly subquadratic time, thus they introduced \kApproxLCS . In that problem, we are given a constant $\eps > 0$, and need to return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches.
-In Section~\ref{intro:sec:contrib}, we explain our contributions to the study of similarity measures.
-\todo[inline]{Replace the last sentence by a more concrete and concise description of my contrib.}
+But again, Kociumaka, Radoszewski, and Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} showed (conditioned on SETH) that there is $k=\Theta(\log n)$ such that \kLCS cannot be solved in strongly subquadratic time, thus they introduced \kApproxLCS.
+In Chapter~\ref{chap:LCS} we study that problem, where we are given a constant $\eps > 0$, and need to return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches. We provide two new algorithms with different space-time trade-offs and evaluate the speed of one of them in practice compared to the quadratic dynamic programming solution for \kLCS. In Section~\ref{intro:sec:contrib}, we further detail our contributions.
+%\todo[inline]{Replace the last sentence by a more concrete and concise description of my contrib.}
 
 % Approximate matching
 Apart from the direct comparison of two strings, distances are also used to define approximate matching problems~\cite{landau1986efficient,landau1989fast} where for given an integer $\tau$, a pattern $P$, and a text $T$, one must report all positions $j$ such that there is a substring $T[i..j]$ that is at distance at most $\tau$ from $P$.
+For a survey on the results before 2001 on approximate matching for the Edit, Hamming and Longest Common Subsequence distances, see~\cite{navarro2001guided}.
 % DTW
-We study approximate matching in Chapter~\ref{chap:DTW} with regards to a popular distance for temporal sequences, which is less common for strings: the \underline{Dynamic Time Warping (DTW) distance}~\cite{sakoe1978dynamic}. For strings, the DTW distance can be described as follows: duplicate some characters to obtain strings of equal length and to minimize the sum of the distances between the characters at the same positions, this sum is the DTW distance. Computing the edit distance (for a given metric space over the characters) has been reduced to computing DTW~\cite{DBLP:conf/icalp/Kuszmaul19} (over the same metric space, just with an added null character).
+We study approximate matching in Chapter~\ref{chap:DTW} with regard to a popular distance for temporal sequences, which is less common for strings: the \underline{Dynamic Time Warping (DTW) distance}~\cite{sakoe1978dynamic}. For strings, the DTW distance can be described as follows: duplicate some characters to obtain strings of equal length and to minimize the sum of the distances between the characters at the same positions, this sum is the DTW distance. Computing the edit distance (for a given metric space over the characters) has been reduced to computing DTW~\cite{DBLP:conf/icalp/Kuszmaul19} (over the same metric space, just with an added null character).
 %
 All similarity measures and distances mentioned above are illustrated in Figure~\ref{fig:intro:similarities}.
 % PM
@@ -110,7 +109,7 @@ All similarity measures and distances mentioned above are illustrated in Figure~
 Another central task in text processing is repetition detection. Locating repeated fragments of a text can be useful to remove duplicated data or to compress its representation. Combinatorial insight into the structure of specific inputs can also benefit the design of efficient algorithms.
 \todo[inline]{To detail and add references}
 
-Periodicity is a natural form of repetition extensively observed in music~\cite{arom1989time}, genomics~\cite{pich2018somatic}, and in a number of physics models. \todo{add financial data if I find a good example}
+In music~\cite{arom1989time}, genomic~\cite{pich2018somatic}, finance~\cite{harvey2007trends} and physic, a number of dataset present signs of repetition of a periodic phenomenon.
 Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and the smallest period of $T$ is simply called the period of $T$.
 %
 But often, input data only contains periodic substrings (rather than being entirely periodic), which naturally leads to the concept of runs. Runs are maximal substrings that are periodic with a given period, i.e. a substring $T[i..j]$ is a run if it is periodic, let $p$ be its period, and $T[i-1..j]$ and $T[i..j+1]$, if well-defined, are not periodic with period $p$. 
@@ -159,7 +158,7 @@ Here, again, the search options are limited to the metadata of the websites and 
 %Intro DNA representation
 Large archives also exist in bioinformatics, but the structure of biological sequences is very different from that of code or webpages, which are typically structured, with links, a large alphabet, and a reasonable number of distinct words.
 % DNA Introduction
-The genetic information encoded in DNA can be abstracted as just a string over the nucleotide alphabet \texttt{\{A,T,C,G\}}.
+The genetic information encoded in DNA can be abstracted as just a string over the nucleotide alphabet \texttt{\{A, T, C, G\}}.
 We obtain this string after sequencing and assembling. When a genome is sequenced, the output is a set of fragments, called \emph{reads}, extracted from the original sequence. Reads can contain sequencing errors, including nucleotide insertions, deletions, and substitutions. The typical length and error rate of the reads vary depending on the sequencing techniques. In any case, the reads have to be aligned and merged in order to reconstruct the original genome, this problem is called sequence assembly. To make this reconstruction possible, the read are extracted in such quantities that each position of the original genome is covered multiple times. This makes readsets larger and more redundant than the assembled genome.
 
 
@@ -167,7 +166,7 @@ We obtain this string after sequencing and assembling. When a genome is sequence
 Consequently, bioinformatics applications work with either a single assembled sequence or a set of sequences. In both cases, the sequences can be redundant either from repeated regions in a genome (intra-genome redundancy) or by considering several genomes (from the same specie) that share portions of their genomes (inter-genome redundancy).
 % Single sequence indexes 
 Exploiting this redundancy is key to providing efficient algorithms, an example of that is the problem of indexing a single string.
-If the DNA is stored just as a string over the nucleotide alphabet \texttt{\{A,T,C,G\}}, it uses just 2 bits per base but requires linearly scanning the whole string to search for a pattern. 
+If the DNA is stored just as a string over the nucleotide alphabet \texttt{\{A, T, C, G\}}, it uses just 2 bits per base but requires linearly scanning the whole string to search for a pattern. 
 Alternatively, the suffix tree is a classical structure that enables more efficient sequence analysis but necessitates 10 bytes per base~\cite{navarro2016compact}, which amounts to 30 gigabytes for a human genome containing 3.3 billion bases. 
 This would not be practical for projects where thousands of genomes have been sequenced such as the 1000 Genomes project~\cite{10002015global} completed in 2015 and the 100K Genomes project~\cite{100Kgenomes} completed in 2018. 
 Fortunately, compact data structures that exploit redundancy to decrease space usage offer an interesting trade-off: for a human genome it allows representing the sequence and its suffix tree using just 4 gigabytes~\cite{navarro2016compact}.
@@ -189,7 +188,7 @@ In Chapter~\ref{chap:XBWT}, we propose a compact index specifically designed for
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
         \begin{tikzpicture}
-            \node (img) {\includegraphics[width=\textwidth]{0_sheets/wayback_machine.png}};
+            \node (img) {\includegraphics[width=0.95\textwidth]{0_sheets/wayback_machine.png}};
             \node [below right,text width=2.7cm,align=center, fill=white] at (0.25,-0.5){{\fontsize{7pt}{6pt}\selectfont Pages removed due to security concerns.}};
             \draw[->] (1,-0.5) -- (1.3,0.3);
         \end{tikzpicture}

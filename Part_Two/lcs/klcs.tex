@@ -21,7 +21,7 @@ In the $(c,r)$-\NN problem with failure probability~$f$, the aim is, given a set
 Using the reduction, we will show our first solution to the \kApproxLCS decision problem based on the result of Andoni and Razenshteyn~\cite{DBLP:conf/stoc/AndoniR15}, who showed that for any constant $f$, there is a data structure for the $(c,r)$-\NN problem that has $\Oh(n^{1+\rho+o(1)}+d \cdot n)$ size, $\Oh(d\cdot n^{\rho+o(1)})$ query time, and $\Oh(d \cdot n^{1+\rho+o(1)})$ preprocessing time, where $\rho = 1/(2c^2-1)$.
 
 \begin{lemma}\label{lm:opt_NN}
-Assume an alphabet of constant size $\sigma$. The decision variant of the \kApproxLCS problem can be solved in space $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ and time $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$. The answer is correct with constant probability. 
+Assume an alphabet of constant size $\sigma$. The decision variant of \kApproxLCS can be solved in space $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ and $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time. The answer is correct with constant probability. 
 \end{lemma}
 \begin{proof}
 Let $P$ be the set of all length-$\ell$ substrings of $X$ and $Q$ be the set of all length-$\ell$ substrings of $Y$,
@@ -56,7 +56,7 @@ We will rely on the modified version of the \twentyquestions game that we
 \subsection{Proof of Theorem~\ref{th:LCS'k-decision}}\label{lcs:sec:decision}
 We first give an algorithm for the decision version of the \kApproxLCS problem that uses $\Oh(n \log n)$ space and $\Oh(n^{1+1/(1+\eps)} \log n + \sigma n \log^2 n)$ time, and then we improve the space and time complexity. 
 
-We assume to have fixed a Karp--Rabin fingerprinting function $\varphi$ for a prime $q = \Omega(\max\{n^5, \sigma\})$ and an integer $r \in \mathbb{Z}_q$. With error probability inverse polynomial in $n$, we can find such $q$ in $\Oh(\log^{\Oh(1)}n)$ time;
+We assume to have fixed a Karp--Rabin fingerprinting $\varphi$ for a prime $q = \Omega(\max\{n^5, \sigma\})$ and an integer $r \in \mathbb{Z}_q$. With error probability inverse polynomial in $n$, we can find such $q$ in $\Oh(\log^{\Oh(1)}n)$ time;
 see~\cite{DBLP:journals/moc/TaoCH12,agrawal2004primes}. 
 
 Let~$\Projections$ be the set of all projections of strings of length $\ell$ onto a single position, i.e., the value $\pi_i(S)$ of the $i$-th projection on a string $S$ of length $\ell$ is simply its $i$-th character $S[i]$. More generally, for a length-$\ell$ string $S$ and a function $h=(\pi_{a_1},\ldots,\pi_{a_m}) \in \Projections^m$, we define $h(S)$ as $S[a_{1}] S[a_{2}] \cdots S[a_{m}]$.
@@ -72,7 +72,7 @@ We will perform two tests. The first test chooses an arbitrary subset $\Collisio
 \caption{\kApproxLCS (decision variant)}
 \begin{algorithmic}[1]
 \State Choose a set $\Hashes$ of $L$ functions from $\Projections^m$ uniformly at random
-\State $\Collisions^{\Hashes}_{\ell}\!=\!\{(S_1,S_2, h) : S_1, S_2\text{---length-$\ell$ substrings of $X,Y$ resp. and }\varphi(h(S_1)) = \varphi(h(S_2))\}$\label{ln:hashes}
+\State $\Collisions^{\Hashes}_{\ell}=\{(S_1,S_2, h):S_1, S_2\text{-length-$\ell$ substrs. of $X,Y$ resp. and }\varphi(h(S_1)) = \varphi(h(S_2))\}$\label{ln:hashes}
 
 \State Choose an arbitrary subset $\Collisions' \subseteq \Collisions^{\Hashes}_{\ell}$ of size $\min\{4nL,|\Collisions^{\Hashes}_{\ell}|\}$
 \State Compute $\sk_\eps(\cdot)$ sketches for all length-$\ell$ substrings of $X, Y$  \label{ln:sketches}
@@ -101,7 +101,7 @@ Computing the sketches (Line~\ref{ln:sketches}) takes $\Oh(\sigma n \log^2 n)$ t
 \end{proof}
 
 \begin{lemma}\label{lm:hash_function_exists}
-Let $S_1$ and $S_2$ be two length-$\ell$ substrings of $X$ and $Y$, respectively, with $\HD(S_1, S_2) \le k$. 
+Let $S_1$ and $S_2$ be two length-$\ell$ substrings of $X$ and $Y$, with $\HD(S_1, S_2) \le k$. 
 If $L=\Theta(n^{1/(1+\eps)})$ is large enough, then, with probability at least $3/4$, there exists a function $h\in \Hashes$ such that $h(S_1)=h(S_2)$.
 \end{lemma}
 \begin{proof}

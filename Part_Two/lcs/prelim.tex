@@ -1,12 +1,16 @@
 We assume that the alphabet of the strings $X, Y$ is $\Sigma = \{1,\ldots,\sigma\}$, where $\sigma = n^{\Oh(1)}$.
 
-\subparagraph*{Karp--Rabin fingerprints. } The Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S = s_1 s_2 \dots s_\ell$ is defined as
+
+\noindent\textbf{Karp--Rabin fingerprints. }\\
+\noindent The Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S = s_1 s_2 \dots s_\ell$ is defined as
 
 $$\varphi(S) = \left(\sum_{i = 1}^{\ell} r^{i-1} s_i\right) \bmod q,$$ 
 %
 where $q = \Omega(\max\{n^5, \sigma\})$ is a prime number, and $r \in \mathbb{F}_q$ is chosen uniformly at random.  Obviously, if $S_1 = S_2$, then $\varphi(S_1) = \varphi(S_2)$. Furthermore, for any $\ell \le n$, if the fingerprints of two $\ell$-length strings $S_1, S_2$ are equal, then $S_1, S_2$ are equal with probability at least $1-1/n^4$ (for a proof, see e.g.~\cite{Porat:09}).
 
-\subparagraph*{Dimension reduction. } We will exploit a computationally efficient variant of the Johnson--Lindenstrauss lemma~\cite{MR737400} which describes a low-distortion embedding from a high-dimensional Euclidean space into a low-dimensional one. Let $\norm{\cdot}$ be the Euclidean ($L_2$) norm of a vector. We will exploit the following claim which follows immediately from~\cite[Theorem 1.1]{ACHLIOPTAS2003671}:
+
+\noindent\textbf{Dimension reduction.}\\
+\noindent We will exploit a computationally efficient variant of the Johnson--Lindenstrauss lemma~\cite{MR737400} which describes a low-distortion embedding from a high-dimensional Euclidean space into a low-dimensional one. Let $\norm{\cdot}$ be the Euclidean ($L_2$) norm of a vector. We will exploit the following claim which follows immediately from~\cite[Theorem 1.1]{ACHLIOPTAS2003671}:
  
 \begin{lemma}\label{lm:dim_reduction}
 Let $P$ be a set of $n$ vectors in $\mathbb{R}^{\ell}$, where $\ell \le n$. Given $\alpha = \alpha(n) > 0$ and a constant $\beta > 0$, there is $d = \Theta(\alpha^{-2}\log n)$ and a scalar $c > 0$ such that the following holds. Let $M$ be a $d \times \ell$ matrix filled with i.u.d.\ $\pm1$ random variables. For all $U \in P$, define $\sk_\alpha (U) = c \cdot M U$. Then for all $U,V \in P$ there is $\norm{U-V}^2 \leq \norm{\sk_\alpha(U)-\sk_\alpha(V)}^2 \leq (1+\alpha) \norm{U-V}^2$ with probability at least $1- n^{-\beta}$. 
