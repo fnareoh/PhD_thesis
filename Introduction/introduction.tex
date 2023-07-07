@@ -127,9 +127,8 @@ But often, input data only contains periodic substrings (rather than being entir
 
 A simpler model often considered are squares: substrings $T[i..i+2k-1]$ such that $T[i..i+k-1]=T[i+k..i+2k-1]$, it is referred to as a square or a tandem. This form of repetition naturally occurs in DNA and plays an important role in genomic fingerprinting~\cite{Kolpakov2003,GYMREK20179}. 
 %
-%The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word.
-In Chapter~\ref{chap:squares}, for strings over an unordered alphabet of size $\sigma$ (where only equality tests are allowed to compare characters), we provide an algorithm for testing whether it contains a square in $\Oh(n\log \sigma)$ time which we show is optimal. We then extend it to reporting all runs in the string.
-\todo[inline]{Add some history in the paragraph above.}
+The study of squares in strings goes back to 1906 with the work of Thue~\cite{thue1906} on the construction of an infinite square free word. In terms on algorithm, the most basic question is testing whether a string of length $n$ contains at least one square, and it was first considered by Main and Lorentz~\cite{Main1984} who design an $\Oh(n \log n)$ time algorithm. They used a divide and conquer approach that can be adapted to report a compact representation of all squares in the same time complexity. At the same time they showed that $\Omega(n\log n)$ comparisons (checking if two characters are equal) where necessary, but their proofs uses strings with up to $n$ distinct characters. Therefore, they left as an open question whether a faster algorithm could be designed when the alphabet size is restricted.  
+And indeed, we show in Chapter~\ref{chap:squares} that for a string over an unordered alphabet of size $\sigma$, there is an algorithm for testing whether it contains a square in $\Oh(n\log \sigma)$ time using only equality tests to compare characters. We also show that this result is optimal for deterministic algorithms and extend it to reporting all runs in the string.
 
 Many other forms of string regularities have been considered in the literature. Although they are out of the scope of this thesis, we list a few of them for completeness.
 % Palindromes
