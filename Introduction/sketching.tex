@@ -4,15 +4,18 @@
 
 So far, we presented the two core challenges at the heart of modern text processing: enabling relevant (and sometimes complex) queries suited to specific applications while also maintaining performances that can scale to large volumes of data.
 %
-This thesis makes theoretical and practical contributions to address both needs. 
+This thesis offers new theoretical and practical trade-offs between complex and scalable queries, and we do so through the use of \textbf{sketches}.
+%
+In this thesis, a sketch is a lossless or lossy compression that keeps only the essential characteristic of the input needed to answer a given query, offering promising scalability potential. 
+% Lossy KR
+Example of sketches for lossy compression include Karp--Rabin fingerprints (see Preliminaries~\ref{sec:prelim:KR}). It uses a rolling hash function that quickly finds the positions where a pattern occurs (with high probability) in the text. A fingerprint occupies constant space but only allows to check whether two strings match with high probability, and not reconstructing the original string.
+% Lossless LZ
+For lossless compression, an example is the Lempel--Ziv factorization (see Preliminaries~\ref{sec:prelim:compress}), a very efficient compression in practice, that always allows reconstructing the original string, but in the worst case, the Lempel--Ziv factorization can occupy as much space as the original input.
+% The use of sketches
+There exist a myriad of sketches and how to choose one entirely depends on the problem's characteristic and space limitations, but they can be grouped under three general approaches (that can sometimes be combined):
 
-It goes without saying that algorithms with super-linear time complexity cannot scale to terabytes and petabytes of inputs. Consequently, the choice of algorithm is dictated both by the specific needs of the application and the typical scale of the input.
+%In Section~\ref{intro:sec:contrib}, we detail our contributions and their use of sketches, but let us first summarize 
 
-
-\todo[inline]{Detail the intuition of KR (can't reconstruct the text but fast matches), LZ good compression in practice and no loss of information but bad worst case.}
-Several approaches can be used to cope with large amounts of data, such as distributed algorithms that are designed to work on several computers sharing a network (with limited transfer). In this thesis, we focus on a different approach to process massive string data, that of sketching. A \textbf{sketch} is a lossless or lossy compression that keeps only the essential characteristic of the input needed to answer a given query, offering promising scalability potential. Example of sketches include Karp--Rabin fingerprints for lossy compression (see Preliminaries~\ref{sec:prelim:KR}) and Lempel--Ziv factorization for lossless compression (see Preliminaries~\ref{sec:prelim:compress}). 
-We will detail in Section~\ref{intro:sec:contrib} how each contribution of this thesis relates to sketching but let us first summarize three general sketch-based approaches (that can sometimes be combined):
-%summarize their respective scalability approaches as follows (with some approaches that can be combined): 
 
 \begin{itemize}
 \item \textbf{Compressed input:} as mentioned already, highly redundant data can sometimes be represented by a sketch of a more manageable size. 
@@ -28,15 +31,35 @@ This model focuses on small space complexity and accounts for all space usage, i
 Thus, sketches are crucial to keep the necessary information about the data already seen while limiting space usage.
 Chapter~\ref{chap:regexp} is set in this model. %~\ref{chap:gapped_stream}
 % Secondary memory
-Those streaming algorithms relate in practice to the notion of efficient second-memory algorithms. One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
-It is  common knowledge that random access to disk is very inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is comparable to the speed of most RAM. %which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
+Those streaming algorithms also relate to the practical notion of efficient second-memory algorithms. One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
+Random access to disk is in general quite inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is comparable to the speed of most RAM. %which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
 Therefore, an algorithm that uses few random accesses (including streaming algorithms) can be executed directly on disk which allows it to scale to large inputs much more easily. 
 %The main issue with this approach is that not all problems admit efficient solutions avoiding random access. For example, given a list and a permutation, returning the permuted list requires to access the elements in the order of the permutation, possibly random. 
-We use this approach of streaming on secondary memory to limit main memory usage in Chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read contiguously from disk, process the information (for the next phase or final output) and write to disk.
+We use this approach of streaming on secondary memory to limit main memory usage in Chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read and process the input as a stream from disk.
 %
 % Approximation algorithms
-\item \textbf{Approximation algorithms:} When dealing with very large datasets, it is not always needed to provide precise answers to queries. Allowing for some approximation in the results can enable shortcuts and help bypass lower bounds. There, using sketches in the form of lossy compression inherently introduces approximation but allows for even smaller and more efficient representations.
-The entire second part of this thesis is dedicated to this approach, and Chapter~\ref{chap:LCS} stands out as a particularly representative example. We treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answers correctly with high probability.
+\item \textbf{Approximation algorithms:} When dealing with very large datasets, it is not always needed to provide precise answers to queries. Allowing for some approximation in the results can enable shortcuts and help bypass lower bounds. There, using sketches in the form of lossy compression inherently introduces approximation but allows for more efficient processing.
+The entire second part of this thesis is dedicated to this approach. In particular, in Chapter~\ref{chap:LCS}, we treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answers correctly with high probability.
 \end{itemize}
 
-\todo[inline]{Add a description and refs of the use of sketches for bioinformatics}
+Before presenting this thesis's main contributions, I would like to mention a few sketches that have been very successful applied in bioinformatics to the large amounts of genomic data we mentioned in Section~\ref{sec:intro:scalability}.
+% Lossy only
+In this field, a sketch generally refers to lossy compression producing a small and approximate summary of the data, and does not include lossless compression as we do.
+% kmer decomposition
+Most of the sketching techniques in bioinformatics rely on the $k$-mer decomposition: the sequence (or sequences) are represented by their substrings of length $k$ (called $k$-mers). In general, a $k$-mer and its reverse complement are seen as equivalent and represented by the smallest of the two according to the lexicographic order (called the canonical $k$-mer).
+% Jaccard index
+Naturally, similar strings will tend to share a lot $k$-mers. The Jaccard index measure this similarity, for two sets $A$ and $B$, it is simply defined as $ \mathrm{J}(A,B) = \frac{|A\cap B|}{|A \cup B|} $.
+% The problem with just kmer set
+Unfortunately, dealing with complete $k$-mer sets quickly becomes infeasible as the input's size grows. 
+% Minhash
+The \textit{MinHash} sketch~\cite{MinHash97}, originally developed for duplicate detection in web pages and images, allows computing efficiently an estimator of the Jaccard Index. 
+% Explications
+For a given set of $S$ hash functions $(h_1,h_2,...,h_S)$, the sketch of a $k$-mer set $A$ is defined as: $$ \mathrm{MinHash}(A) = (\min_{a \in A} h_1(a), \min_{a \in A} h_2(a), ..., \min_{a \in A} h_S(a) ) $$
+%
+It is a locality-sensitive hash: similar inputs will have similar sketches with high probability. Therefore, for two $k$-mer sets the number of shared hashes in $\mathrm{MinHash}(A)$ and $\mathrm{MinHash}(B)$ is on average a good estimator of the shared elements.
+% Mash
+The first tool implementing this concept for $k$-mer set was Mash~\cite{ondov2016mash} and the speed at which it could compare two sets made it a game changer. However, it is important to note that it uses a variant of MinHash sometimes called KMV sketching or Bottom MinHash~\cite{bar2002counting} that uses a single hash function and is defined for a $k$-mer set $A$ as the $S$ the smallest elements of ${h(a)}_{a\in A}$. The estimator of the Jaccard index is then computed as follows: $$ \mathrm{J}_{\mathrm{mash}}(A,B) = \frac{|\mathrm{mash}(A)\cap \mathrm{mash}(B) \cap \mathrm{mash}(A \cup B) |}{|\mathrm{mash}(A \cup B)|}$$
+and the authors show that it is an unbiased estimator. Since the publication of mash, multiple variants have been considered, but not all the corresponding estimators are unbiased~\cite{10.1093/bioinformatics/btac244}. For visual illustrations of the MinHash variants, I recommend Camille Marchet's blog post~\cite{camsketch}.
+%
+MinHash and its variants are sketches for set similarity, but other sketches are used for other tasks: Bloom filters can be seen as sketches for set membership ("Is my element in the set?"), count-min sketches have been used for element frequency ("In how many sets does my element occur?"), and HyperLogLog sketches estimate set cardinality ("How many distinct elements are in my set ?"). Those are examples taken from the survey on sketching for genomics by Will P.M. Rowe~\cite{rowe2019levee}, and for more details see also the survey by Marçais et al.~\cite{marccais2019sketching} on ``Sketching and Sublinear Data Structures in Genomics''.
+
