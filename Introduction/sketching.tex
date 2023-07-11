@@ -8,7 +8,7 @@ This thesis offers new theoretical and practical trade-offs between complex and 
 %
 In this thesis, a sketch is a lossless or lossy compression that keeps only the essential characteristic of the input needed to answer a given query, offering promising scalability potential. 
 % Lossy KR
-Example of sketches for lossy compression include Karp--Rabin fingerprints (see Preliminaries~\ref{sec:prelim:KR}). It uses a rolling hash function that quickly finds the positions where a pattern occurs (with high probability) in the text. A fingerprint occupies constant space but only allows to check whether two strings match with high probability, and not reconstructing the original string.
+Example of sketches for lossy compression include Karp--Rabin fingerprints. They can be computed efficiently for a sliding window over the text (see Preliminaries~\ref{sec:prelim:KR}) and can be used to quickly finds the positions where a pattern occurs (with high probability) in the text. A fingerprint occupies constant space and allows checking whether two strings match with high probability, but in itself it does not contain enough information to reconstruct the original string.
 % Lossless LZ
 For lossless compression, an example is the Lempel--Ziv factorization (see Preliminaries~\ref{sec:prelim:compress}), a very efficient compression in practice, that always allows reconstructing the original string, but in the worst case, the Lempel--Ziv factorization can occupy as much space as the original input.
 % The use of sketches
@@ -18,22 +18,22 @@ There exist a myriad of sketches and how to choose one entirely depends on the p
 
 
 \begin{itemize}
-\item \textbf{Compressed input:} as mentioned already, highly redundant data can sometimes be represented by a sketch of a more manageable size. 
-Consequently, algorithms that can directly operate on the sketch become much more efficient. This is very natural approach as the data is almost always shared in a compressed format, the difficulty is working with the sketch's property and structure. However, it is important to note that not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that to compute the longest common subsequence of two strings of uncompressed size $N$, given in a grammar compression of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the Strong Exponential Time Hypothesis (SETH). 
+\item \textbf{Compressed input:} as mentioned already, highly redundant data can sometimes be represented by a sketch of a manageable size. 
+Consequently, algorithms that can directly operate on the sketch become much more efficient. This is a very natural approach as the data is almost always shared in a compressed format, the difficulty is working with the sketch's property and structure. However, it is important to note that not all problems can be solved faster with this approach. For example, Abboud et al.~\cite{abboud2017fine} showed that to compute the longest common subsequence of two strings of uncompressed size $N$, given in a grammar compression of size $n$, there is a lower bound $(nN)^{1-o(1)}$ assuming the Strong Exponential Time Hypothesis (SETH, see Preliminaries~\ref{sec:prelim:seth}). 
 Very recently, Ganesh et al.~\cite{ganesh2022compression} also showed a lower bound $\Omega(N^{k-1}n)$ conditioned on SETH to compute the median edit distance and length of the longest common subsequence of $k$ strings.
 In other words, even if the input is given in compressed form, we cannot avoid a high dependency in the uncompressed size. In this thesis, Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm} both take as input a sketch, more precisely a grammar compressed text and their complexities are given as a function of the size of the compressed input.
 %
 %Streaming
 \item \textbf{Streaming algorithms:} there, the data is considered so large that it can only be handled as a stream. % then it must be processed on the fly without the possibility of going back.
-For the pattern matching problem, the pattern and the length of the text are known in advance and can be preprocessed, then the characters of the text arrive one by one and can only be accessed later if they are stored explicitly. 
+For the pattern matching problem, the pattern and the length of the text are known in advance and can be preprocessed. Then the characters of the text arrive one by one and can only be accessed later if they are stored explicitly. 
 This model focuses on small space complexity and accounts for all space usage, including the space required to store the input.
 %for every extra space needed apart from the current character.
 Thus, sketches are crucial to keep the necessary information about the data already seen while limiting space usage.
 Chapter~\ref{chap:regexp} is set in this model. %~\ref{chap:gapped_stream}
 % Secondary memory
-Those streaming algorithms also relate to the practical notion of efficient second-memory algorithms. One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
+Streaming algorithms also relate to the practical notion of efficient second-memory algorithms. One of the challenges when dealing with large inputs is the quantity of main memory used, as most computers are still limited to gigabytes of RAM. To circumvent this limitation, programs may resort to working directly from secondary memory as disk space scales at a much cheaper cost than RAM.
 Random access to disk is in general quite inefficient, however contiguous reads on recent SSD can read gigabytes (between 2.2 and 3.4 Gb) of data per second which is comparable to the speed of most RAM. %which is either comparable to the speed of reading from main memory or only 10 times slower (depending on the model of RAM).
-Therefore, an algorithm that uses few random accesses (including streaming algorithms) can be executed directly on disk which allows it to scale to large inputs much more easily. 
+Therefore, an algorithm that uses no or few random accesses (including streaming algorithms) can be executed directly on disk which allows it to scale to large inputs much more easily. 
 %The main issue with this approach is that not all problems admit efficient solutions avoiding random access. For example, given a list and a permutation, returning the permuted list requires to access the elements in the order of the permutation, possibly random. 
 We use this approach of streaming on secondary memory to limit main memory usage in Chapter~\ref{chap:XBWT}. The construction of the index is split in phases that read and process the input as a stream from disk.
 %
@@ -48,7 +48,7 @@ In this field, a sketch generally refers to lossy compression producing a small 
 % kmer decomposition
 Most of the sketching techniques in bioinformatics rely on the $k$-mer decomposition: the sequence (or sequences) are represented by their substrings of length $k$ (called $k$-mers). In general, a $k$-mer and its reverse complement are seen as equivalent and represented by the smallest of the two according to the lexicographic order (called the canonical $k$-mer).
 % Jaccard index
-Naturally, similar strings will tend to share a lot $k$-mers. The Jaccard index measure this similarity, for two sets $A$ and $B$, it is simply defined as $ \mathrm{J}(A,B) = \frac{|A\cap B|}{|A \cup B|} $.
+Naturally, similar strings will tend to share a lot $k$-mers. The Jaccard index measures this similarity. For two sets $A$ and $B$, it is simply defined as $ \mathrm{J}(A,B) = \frac{|A\cap B|}{|A \cup B|} $.
 % The problem with just kmer set
 Unfortunately, dealing with complete $k$-mer sets quickly becomes infeasible as the input's size grows. 
 % Minhash
@@ -58,7 +58,8 @@ For a given set of $S$ hash functions $(h_1,h_2,...,h_S)$, the sketch of a $k$-m
 %
 It is a locality-sensitive hash: similar inputs will have similar sketches with high probability. Therefore, for two $k$-mer sets the number of shared hashes in $\mathrm{MinHash}(A)$ and $\mathrm{MinHash}(B)$ is on average a good estimator of the shared elements.
 % Mash
-The first tool implementing this concept for $k$-mer set was Mash~\cite{ondov2016mash} and the speed at which it could compare two sets made it a game changer. However, it is important to note that it uses a variant of MinHash sometimes called KMV sketching or Bottom MinHash~\cite{bar2002counting} that uses a single hash function and is defined for a $k$-mer set $A$ as the $S$ the smallest elements of ${h(a)}_{a\in A}$. The estimator of the Jaccard index is then computed as follows: $$ \mathrm{J}_{\mathrm{mash}}(A,B) = \frac{|\mathrm{mash}(A)\cap \mathrm{mash}(B) \cap \mathrm{mash}(A \cup B) |}{|\mathrm{mash}(A \cup B)|}$$
+The first tool implementing this concept for $k$-mer set was Mash~\cite{ondov2016mash} and the speed at which it could compare two sets made it a game changer. However, it is important to note that it uses a variant of MinHash sometimes called KMV sketching or Bottom MinHash~\cite{bar2002counting} that uses a single hash function and is defined for a $k$-mer set $A$ as $\mathrm{mash}(A)=(h(a_1),h(a_2),...,h(a_S))$ where $h(a_1) < h(a_2) < ... <h(a_S)$ are the $S$ the smallest elements of ${h(a)}_{a\in A}$.
+The estimator of the Jaccard index is then computed as follows: $$ \mathrm{J}_{\mathrm{mash}}(A,B) = \frac{|\mathrm{mash}(A)\cap \mathrm{mash}(B) \cap \mathrm{mash}(A \cup B) |}{|\mathrm{mash}(A \cup B)|}$$
 and the authors show that it is an unbiased estimator. Since the publication of mash, multiple variants have been considered, but not all the corresponding estimators are unbiased~\cite{10.1093/bioinformatics/btac244}. For visual illustrations of the MinHash variants, I recommend Camille Marchet's blog post~\cite{camsketch}.
 %
 MinHash and its variants are sketches for set similarity, but other sketches are used for other tasks: Bloom filters can be seen as sketches for set membership ("Is my element in the set?"), count-min sketches have been used for element frequency ("In how many sets does my element occur?"), and HyperLogLog sketches estimate set cardinality ("How many distinct elements are in my set ?"). Those are examples taken from the survey on sketching for genomics by Will P.M. Rowe~\cite{rowe2019levee}, and for more details see also the survey by Marçais et al.~\cite{marccais2019sketching} on ``Sketching and Sublinear Data Structures in Genomics''.
