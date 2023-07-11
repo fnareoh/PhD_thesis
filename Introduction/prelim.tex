@@ -2,7 +2,7 @@
 
 This section aims at presenting some recurring concepts needed to understand the following chapters, as well as presenting the different sketches used in this work and their interconnections.
 
-\subsection{The Strong Exponential Time Hypothesis}
+\subsection{The Strong Exponential Time Hypothesis}\label{sec:prelim:seth}
 
 The Strong Exponential Time Hypothesis (SETH) has already been mentioned several times in this introduction as the basis of many important conditional lower bounds. Conditional lower bounds are a crucial tool to understand the problems complexity and whether the current upper bounds are optimal. In this thesis we never work directly with SETH, but for completeness here is the hypothesis's statement:
 
@@ -13,7 +13,7 @@ The satisfiability of formulas in conjunctive normal form (a conjunction of clau
 Let $\mathcal{S} = {S_1,S_2, ..., S_k}$ be a collection of strings over an alphabet $\Sigma$. Its trie~\cite{thue1912gegenseitige,de1959file,fredkin1960trie} is a rooted tree with edge labels in $\Sigma$.
 For any path, we say the path \emph{spells} the string obtained by concatenating the label of the edges of the path.
 Likewise, when referring to a node within the tree, we define its label as the string spelled by the unique path from the root to that node.
-The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases, we mark the ending node with a special end-of-string character.
+The trie is a tree such that no two nodes spell the same string, each leaf spells a string of $\mathcal{S}$ and each $T_i \in \mathcal{S}$ is spelled by a leaf or an internal node. In both cases, we mark the nodes spelling the $T_i \in \mathcal{S}$  with a special end-of-string character.
 
 The more efficient compacted trie is obtained by contracting  into a single edge each maximal path from a node that is either marked (by an end-of string character) or branching (with at least two children) to its lowest ancestor that is either branching or marked.
 This edge is then labelled with the string spelled by the path it replaced.
@@ -33,12 +33,12 @@ A suffix tree of a string $T$ of length $n$ is the compacted trie containing the
 \subsection{Karp--Rabin Fingerprint}\label{sec:prelim:KR}
 
 % Original (Gusfield) definition
-For $p \geq \Sigma$ a prime number and a fix base $b\geq \Sigma$, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+For $p \geq \Sigma$ a prime number and an integer $b\geq \Sigma$, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
 $H_{p}(S) = \sum_{i = 0}^{|S|-1}  S[i]b^{|S|-i-1} \bmod p$.
 % Colisions
 It is easy to see that if two strings $S_1$ and $S_2$ are equal then $H_p(S_1) = H_p(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have equal fingerprints.
 %
-But we can bound the probability of such event by choosing the prime $p$ at random bellow an integer $I$. If $I=n^2m$ the probability of a false match at a given position is $\Oh(\frac{1}{n})$, For a detail analysis see Chapter~4.4 of~\cite{Gusfield1997}.
+But we can bound the probability of such event by choosing the prime $p$ at random bellow an integer $I$. If $I=|S_1|^2|S_2|$ the probability of a false match at a given position is $\Oh(\frac{1}{|S_1|})$, For a detail analysis see Chapter~4.4 of~\cite{Gusfield1997}.
 % Sliding window property
 This fingerprint has a convenient ``sliding'' property in the sense that for a window over a string $T$ and two integers $i,m$ such that $i+m < |T|$, we can express efficiently the fingerprint of $T[i+1..i+m]$ as a function of the fingerprint of $T[i..i+m-1]$, $T[i]$ and $T[i+m]$:
 $$ H_{p}(T[i+1..i+m]) = ( H_{p}(T[i..i+m-1])\times b - T[i]b^{m} + T[i+m]  ) \mod p$$
