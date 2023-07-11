@@ -33,7 +33,7 @@ A suffix tree of a string $T$ of length $n$ is the compacted trie containing the
 \subsection{Karp--Rabin Fingerprint}\label{sec:prelim:KR}
 
 % Original (Gusfield) definition
-For $p \geq \Sigma$ a prime number and an integer $b\geq \Sigma$, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+For $p \geq |\Sigma|$ a prime number and an integer $b\geq |\Sigma|$, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
 $H_{p}(S) = \sum_{i = 0}^{|S|-1}  S[i]b^{|S|-i-1} \bmod p$.
 % Colisions
 It is easy to see that if two strings $S_1$ and $S_2$ are equal then $H_p(S_1) = H_p(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have equal fingerprints.
