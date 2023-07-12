@@ -7,7 +7,7 @@
     {\renewcommand{\arraystretch}{1.5}
     \begin{tabularx}{\textwidth}{E{10cm}   R}
         Similarity measure & Example~~~ \\
-        \hline
+        \hline\\
         % Hamming
         \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         Hamming distance  \\
@@ -30,6 +30,7 @@
             \vspace{0.5cm}
         \end{minipage}\\
         %
+        \arrayrulecolor{gray}\hline \\
         % LCSubsequence
         \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         Length of the Longest Common Subsequence \\
@@ -51,6 +52,7 @@
                 \mathrm{LCseq}(X,Y)=3
             \end{array}$
         \end{minipage}\\
+        \arrayrulecolor{gray}\hline \\
         % ED
         \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
             Levenshtein/Edit distance \\
@@ -77,6 +79,7 @@
                     \mathrm{ED}(X,Y)=3
                 \end{array}$
         \end{minipage}\\
+        \arrayrulecolor{gray}\hline \\
         % DTW
         \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
             \textbf{Dynamic Time Warping distance} \\ 
@@ -104,6 +107,7 @@
             \mathrm{DTW}(X,Y)=1
         \end{array}$ 
     \end{minipage}\\
+    \arrayrulecolor{gray}\hline \\
     % LCSubstring
     \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         \small \mbox{Length of the Longest Common Substring} \\
@@ -120,6 +124,7 @@
         \end{array}$
         \vspace{0.5cm}
     \end{minipage}\\
+    \arrayrulecolor{gray}\hline \\
     % LCSubsting with k mismatches
     \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         \small \mbox{\textbf{Length of the Longest Common Substring with $k$ Mismatches}} \\
@@ -137,7 +142,7 @@
     \end{minipage}\\
     \end{tabularx}
     }
-    \caption{Example for various similarities, in bold those we study in this thesis, for a given metric $d:\Sigma \times \Sigma \rightarrow \mathbb{Z}^{+}$ over the alphabet. For two given strings $X$ and $Y$ and two integers $0 \leq i < |X|$ and $0 \leq j < |X|$, $X_i$ and $Y_j$ denote the prefixes of $X$ and $Y$ of length $i$ and $j$ respectively.}
+    \caption{Example for various similarities, in bold those we study in this thesis, for a given metric $d:\Sigma \times \Sigma \rightarrow \mathbb{Z}^{+}$ over the alphabet. For two given strings $X$ and $Y$ and two integers $0 \leq i < |X|$ and $0 \leq j < |Y|$, for compactness, $X_i$ and $Y_j$ denote the prefixes of $X$ and $Y$ of length $i$ and $j$ respectively.}
     \label{fig:intro:similarities}
 \end{table}
 \renewcommand{\arraystretch}{1}
