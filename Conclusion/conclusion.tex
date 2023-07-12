@@ -10,16 +10,29 @@ In this thesis, we presented the need for more general string queries than class
 In Section~\ref*{intro:sec:sketching} and~\ref*{intro:sec:contrib}, we detailed the sketch-based approach common to all contributions. Their use enabled processing and storing data efficiently to yield better time and space complexities.
 %
 The sketching techniques we use are diverse and are not immediate to apply to other problems, but my personal takeaway is the importance of thinking in terms of the key characteristic of the input for a given query. I find it very helpful in algorithmic design both for theoretical studies and applied projects.
+
+
 % Open questions in many of the works
-Most of the chapters leave open questions and future works to be done:
-\begin{itemize}
-    \item Chapter~\ref{chap:regexp}: Is it possible to search for any regular expression with $d$ $|$ and $\ast$ symbols in a stream of length $n$ in $\mathrm{poly}(d,\log n)$ space and time complexity ?
-    \item Chapter~\ref{chap:gapped_index}: Can we improve the compressed index for consecutive matching to $\Ohtilde(g)$ space and $\Ohtilde(m+\occ)$ and for close consecutive occurrences, can we improve the $\Ohtilde(g^5)$ space ? Is there an efficient index for the general case where we search for consecutive occurrences separated by a distance in an interval $[a,b]$ ?
-    \item Chapter~\ref{chap:squares}: Do our lowerbound of $\Omega(n\ln \sigma)$ comparisons hold for randomized algorithm ?
-    \item Chapter~\ref{chap:LCS}: could we implement our $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and space solution using implementation of Approximate Nearest Neighbour data structure such as~\cite{} and add it to the practical evaluation ?
-    \item Chapter~\ref{chap:DTW}: For a pattern $P$, a text $T$ and an integer $k$, is there a $\Oh(k(n+m))$ time algorithm that computes all positions $r$ such that the smallest DTW distance between $P$ and $T[1..r]$ is at most $k$ ? Additionally, the practical application of DWT for third generation sequencing alignment would be interesting to investigate further, but it is difficult due to many tools using an alignment based on the edit distance as their ground truth.    
-    \item Chapter~\ref{chap:XBWT}: We measured the improvement of our structure in terms of the number of runs as a first step, but it remains to evaluate the full data-structure in terms of space usage and query time.
-\end{itemize}
+Let me summarize briefly our contributions and the open questions they leave. 
+In Chapter~\ref{chap:regexp}, we gave streaming algorithms solving the regular expression pattern matching and membership problems. For a regular expression $R$ of size $m$ in a stream of size $n$, our algorithms run in $\Oh(d^3 \polylog n)$ space and $\Oh(nd^5\polylog n)$ time per character where $d$ is the number of $|$ and $\ast$ symbols in $R$. Is it possible to achieve $\mathrm{poly}(d,\log n)$ space and time complexity ?
+
+Chapters~\ref{chap:gapped_index} and~\ref{chap:gapped_pm}, studied gapped consecutive occurrences, where given a text $T$, strings pattern $P_1$ and $P_2$ and an interval $[a,b]$, find in $T$ all consecutive occurrence of $P_1$ and $P_2$ separated by a distance $d \in [a,b]$. In both chapters, the text $T$ is given as a straight line program (SLP, a grammar generating a single string) of size $g$, but Chapter~\ref{chap:gapped_index} focusses on indexing, while Chapter~\ref{chap:gapped_pm} studies pattern matching. In Chapter~\ref{chap:gapped_index}, we gave two indexes: to report consecutive occurrences without constraints on the distance, an index using $\Oh(g^2\log^4|T|)$ space, for consecutive occurrence at distance within $[0,b]$ an index taking $\Oh (g^5\log^5(|T|))$ space, and both with $\Ohtilde(|P_1|+|P_2|+\occ)$ query time. 
+%
+Can we improve the space complexity of our indexes, in particular is $\Ohtilde(g)$ possible for consecutive without distance constraint ? Is there an efficient index for the general case where we search for consecutive occurrences separated by a distance in an interval $[a,b]$ ?
+%
+In Chapter~\ref{chap:gapped_pm} we addressed pattern matching where the pattern and the text are processed simultaneously. We showed how to report all consecutive occurrences in $\Oh(g+|P_1|+|P_2|+\occ)$ optimal time and how we can filter the consecutive occurrences to report those at distance in $[a,b]$ in the same complexity.
+
+
+The last contribution of Part~\ref{part:complex_queries} (Chapter~\ref{chap:squares}), was a deterministic algorithm for reporting runs in $\Oh(n\log\sigma)$ for unordered alphabet (where the only comparison allowed between characters is equality testing) and showed a matching lowerbound for deterministic algorithm. It remains open whether the lowerbound of $\Omega(n\log \sigma)$ comparisons for square testing holds for randomized algorithms.
+
+
+Chapter~\ref{chap:LCS}, focussed on the \kApproxLCS problem, where for a constant $\eps > 0$ and given two strings $X$ and $Y$ and an integer $k$, we must return a substring of $X$ of length at least $\lcsk(X,Y)$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches. We provided two algorithms: one assuming a constant size alphabet running in $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and space, and one in $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ time and linear space without constraints on the alphabet.  We also confirmed the practicality of the second algorithm by an experimental evaluation.
+As future work, it would be interesting to implement our $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ time and space solution using implementation of Approximate Nearest Neighbour data structure such as~\cite{spotify_annoy} and add it to the practical evaluation.
+
+Next, we studied pattern matching with respect to the Dynamic Time Warping (DTW) distance. In Chapter~\ref{chap:DTW}, for a pattern $P$ of length $m$ and a text $T$ of length $n$ and an integer $k$, we provided an $\Oh(knm)$-time algorithm that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most $k$. It remains open whether an improvement to a $\Oh(k(n+m))$ time complexity is possible. Additionally, we detailed a possible practical application of DWT for third generation sequencing alignment through minimal experiments. It
+would be interesting to investigate further, unfortunately it seems difficult due to many tools using an alignment based on the edit distance under the hood.    
+
+Finally, in Chapter~\ref{chap:XBWT}, we studied the applicative problem of read indexing. We proposed using the read's alignment to give additional context and lead to better overall compression. Our index is based on the XBWT, and we provided a main memory efficient construction using prefix-free parsing. We measured the improvement of our structure in terms of the number of runs in the XBWT as a first step, but it remains to implement and evaluate the full data-structure in terms of space usage and query time.
 %
 \todo[inline]{Bellow is a Work in Progress do not review.}
 In addition to those open questions and future work, I would personally be interested in the use of spaced seeds~\cite{li2004patternhunter} in bioinformatics. A space seed is a binary sequence that describes positions that relevant (marked by a one) or irrelevant (marked by a zero). It can be used for the popular seed-and-extend approach where exact matches of a substring are extended to alignments, possibly with errors.
