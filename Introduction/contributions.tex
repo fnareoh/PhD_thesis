@@ -1,7 +1,7 @@
  \section{Contributions}\label{intro:sec:contrib}
  %\todo[inline]{Check past/present tense inconsistency when describing previous work.}
 
-In this manuscript, each chapter is  an independent publication, with a specific problem, a review of the state of the art, and a set of contributions. The choice of not unifying notations and merging those publications was motivated by the variety of subjects and techniques used, and how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. Nevertheless, this section intends to provide an overview of the main contributions, some insights into the techniques used, and how they relate to the over-arching concept of sketches.
+In this manuscript, each chapter corresponds to an independent publication, with a specific problem, a review of the state of the art, and a set of contributions. The choice of not unifying notations and merging those publications was motivated by the variety of subjects and techniques used, and how they were conceived as independent projects (with varying sets of co-authors) during the Ph.D. Nevertheless, this section intends to provide an overview of the main contributions, some insights into the techniques used, and how they relate to the over-arching concept of sketches.
 
 
 \textbf{Part~\ref{part:complex_queries}} focuses on a theoretical study of complex queries. 
@@ -117,7 +117,7 @@ This sketch is especially relevant for DTW as the runs of equal characters tend 
 % Our contrib 
 Our contribution is as follows: when the distances between characters of $\Sigma$ are integers, for a pattern $P$ with $m$ runs and a text $T$ with $n$ runs, we show that there is an $\Oh(n+m)$-time algorithm that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most 1. More generally for an integer $k$, we provide an algorithm $\Oh(knm)$-time that computes all locations $j$ where the DTW distance between $P$ and a suffix of $T[..j]$ is at most $k$.
 % Bio motivation
-Our interest and research on DTW is also motivated by potential applications to analysing biological data produced by the third generation sequencing where DNA is passed through a nanopore at an uneven speed which tends to create error in the length of stretches of the same nucleotide (homopolymers). We detail this potential application in Section~\ref{dtw:sec:experiments}.
+Our interest and research on DTW is also motivated by potential applications to analysing biological data produced by the third generation sequencing where DNA is passed through a nanopore at an uneven speed which tends to create error in the length of stretches of the same nucleotide (homopolymers)~\cite{delahaye2021sequencing}. We detail this potential application in Section~\ref{dtw:sec:experiments}.
 % My contrib
 I contributed to every part of that work except for the approximation algorithms (given as corollary of our second algorithm) which were added by Tatiana Starikovskaya.
 % Update
