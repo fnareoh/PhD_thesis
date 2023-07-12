@@ -27,7 +27,7 @@
                 Y= \mathrm{\texttt{AAATCG}}\\
                 \mathrm{HD}(X,Y)=2
             \end{array}$
-            \vspace{0.5cm}
+            \vspace{0.4cm}
         \end{minipage}\\
         %
         \arrayrulecolor{gray}\hline \\
@@ -40,15 +40,15 @@
                 \mathrm{LCSeq}(X_{i-1},Y_{j-1})+1 \mbox{ if } X[i]=Y[j]\mbox{,} \\
                 \max(\mathrm{LCSeq}(X_{i-1},Y_j),\mathrm{LCSeq}(X_i,Y_{j-1})) \mbox{, else.}
             \end{array} \right. $$
-            \vspace{0.5cm}
+            \vspace{0.4cm}
         \end{minipage}
         &
         \hfill
         \begin{minipage}{4cm} \renewcommand{\arraystretch}{1}
             \hfill
             $\begin{array}{r}
-                X= \mathrm{\texttt{AAAATG}}\\
-                Y= \mathrm{\texttt{\underline{AAT}C}}\\
+                X= \mathrm{\texttt{AAAAGC}}\\
+                Y= \mathrm{\texttt{\underline{AA}T\underline{C}}}\\
                 \mathrm{LCseq}(X,Y)=3
             \end{array}$
         \end{minipage}\\
@@ -66,7 +66,7 @@
                         \mathrm{ED}(X_i,Y_{j-1})+1
                     \end{pmatrix} 
                 \end{array} \right. $$
-                \vspace{0.5cm}
+                \vspace{0.4cm}
             \end{minipage}
             &
             \hfill
@@ -94,7 +94,7 @@
                     \mathrm{DTW}(X_i,Y_{j-1})
                 \end{pmatrix} + d(X[i],Y[j])
             \end{array} \right. $$
-            \vspace{0.5cm}
+            \vspace{0.4cm}
         \end{minipage}
         &
         \hfill
@@ -122,7 +122,7 @@
             Y= \mathrm{\texttt{~\underline{AAT}TCG}}\\
             \mathrm{LCS}(X,Y)=3
         \end{array}$
-        \vspace{0.5cm}
+        \vspace{0.4cm}
     \end{minipage}\\
     \arrayrulecolor{gray}\hline \\
     % LCSubsting with k mismatches
