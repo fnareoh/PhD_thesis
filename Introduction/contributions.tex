@@ -10,7 +10,7 @@ In this manuscript, each chapter corresponds to an independent publication, with
 We start with regular expression search in the streaming setting.
 %
 We assume to be given a regular expression $R$, a streaming text $T$ of length $n$. For regular expression \emph{membership} we need to determine, after having seen $T$ entirely, whether it matches a regular expression $R$, while for \emph{pattern matching}, we must answer, at each position $r$, whether there exists a substring $T[l..r]$ recognized by $R$.
-% Talk about the lowerbounds ?
+% Talk about the lower bounds ?
 % Main contribution
 In \textbf{Chapter~\ref{chap:regexp}}, our main contribution is to identify $d$, the number of union symbols and Kleene stars in $R$, as the key parameter that enables a space-efficient streaming algorithm. 
 % Previous uses of the parameter
