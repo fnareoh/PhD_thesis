@@ -57,7 +57,7 @@ We will rely on the modified version of the \twentyquestions game that we
 We first give an algorithm for the decision version of the \kApproxLCS problem that uses $\Oh(n \log n)$ space and $\Oh(n^{1+1/(1+\eps)} \log n + \sigma n \log^2 n)$ time, and then we improve the space and time complexity. 
 
 We assume to have fixed a Karp--Rabin fingerprinting $\varphi$ for a prime $q = \Omega(\max\{n^5, \sigma\})$ and an integer $r \in \mathbb{Z}_q$. With error probability inverse polynomial in $n$, we can find such $q$ in $\Oh(\log^{\Oh(1)}n)$ time;
-see~\cite{DBLP:journals/moc/TaoCH12,agrawal2004primes}. 
+see~\cite{DBLP:journals/moc/TaoCH12,AKS}. 
 
 Let~$\Projections$ be the set of all projections of strings of length $\ell$ onto a single position, i.e., the value $\pi_i(S)$ of the $i$-th projection on a string $S$ of length $\ell$ is simply its $i$-th character $S[i]$. More generally, for a length-$\ell$ string $S$ and a function $h=(\pi_{a_1},\ldots,\pi_{a_m}) \in \Projections^m$, we define $h(S)$ as $S[a_{1}] S[a_{2}] \cdots S[a_{m}]$.
 

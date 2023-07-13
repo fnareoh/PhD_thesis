@@ -33,7 +33,7 @@ A suffix tree of a string $T$ of length $n$ is the compacted trie containing the
 \subsection{Karp--Rabin Fingerprint}\label{sec:prelim:KR}
 
 % Original (Gusfield) definition
-For $p \geq |\Sigma|$ a prime number and an integer $b\geq |\Sigma|$, the Karp--Rabin fingerprint~\cite{DBLP:journals/ibmrd/KarpR87} of a string $S$ is defined as
+For $p \geq |\Sigma|$ a prime number and an integer $b\geq |\Sigma|$, the Karp--Rabin fingerprint~\cite{KRfingerprint} of a string $S$ is defined as
 $\varphi_{p}(S) = \sum_{i = 0}^{|S|-1}  S[i]b^{|S|-i-1} \bmod p$.
 % Colisions
 It is easy to see that if two strings $S_1$ and $S_2$ are equal then $\varphi_p(S_1) = \varphi_p(S_2)$. However, the reverse is not true, two distinct strings $S_1$ and $S_2$ can have equal fingerprints.
@@ -77,7 +77,7 @@ If $p$ and $q$ are both periods of a string $S$ such that $p+q \leq |S|+\gcd(p,q
 
 This is a basic tool in the field of combinatorics on words, and it has been extended to partial words (words with don't cares)~\cite{Berstel1999,Blanchet-Sadri2008,Blanchet-Sadri2002,Shur2004,Shur2001,Idiatulina2014,Kociumaka2022},
 Abelian periods\cite{Constantinescu2006,Blanchet-Sadri2013}, parametrized periods~\cite{Apostolico2008},
-order-preserving periods~\cite{Matsuoka2016,Gourdel2020}, approximate periods~\cite{Amir2010,Amir2012,Amir2015}.
+order-preserving periods~\cite{Matsuoka2016,GOURDEL2020104463}, approximate periods~\cite{AmirICALP2010,Amir2012,AMIR2015215}.
 In this thesis, in Chapters~\ref{chap:regexp} to~\ref{chap:gapped_pm} of Part~\ref{part:complex_queries}, we use the following corollary:
 
 \begin{corollary*}

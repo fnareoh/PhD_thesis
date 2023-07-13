@@ -18,7 +18,7 @@ A more reasonable and yet interesting query could concern occurrences of two giv
 Preprocessing a string for queries concerning two patterns has been first studied in the context of document
 retrieval, where the goal is to preprocess a collection of strings. There, in \emph{the two patterns document
 retrieval problem} the query consists of two patterns $P_{1}$ and $P_{2}$, and we must report
-all documents containing both of them~\cite{Muthukrishnan02}. In \emph{the forbidden pattern query problem}
+all documents containing both of them~\cite{muthukrishnan2002efficient}. In \emph{the forbidden pattern query problem}
 we must report all documents containing $P_{1}$ but not $P_{2}$~\cite{FischerGKLMSV12}.
 For both problems, the asymptotically fastest linear-space solutions need as much as $\Omega(\sqrt{N})$
 time to answer a query, where $N$ is the total length of all strings~\cite{HonSTV12,HonSTV10}. That is, the complexity
@@ -27,7 +27,7 @@ Larsen et al.~\cite{LarsenMNT15} established a connection between Boolean matrix
 and the two problems, thus providing a conditional explanation for the high $\Omega(\sqrt{N})$
 query complexity. Later, Kopelowitz et al.~\cite{KopelowitzPP16} provided an even stronger argument
 using a connection to the 3SUM problem.
-Even more relevant to this paper is the question considered by Kopelowitz and Krauthgamer~\cite{KopelowitzK16},
+Even more relevant to this paper is the question considered by Kopelowitz and Krauthgamer~\cite{kopelowitz2016color},
 who asked for preprocessing a string for computing, given two patterns $P_{1}$ and $P_{2}$, their
 occurrences that are closest to each other. The main result of their paper is a structure
 constructible in $O(N^{1.5}\log^{\epsilon}N)$ time that answers such queries in $O(|P_{1}|+|P_{2}|+\sqrt{N}\log^{\epsilon} N)$, for a string
@@ -37,7 +37,7 @@ and query time at the same time.
 
 The focus of this paper is the recently introduced variant of the indexing problem, called \emph{gapped indexing for consecutive occurrences}, in which a query consists of
 two patterns $P_{1}$ and $P_{2}$ and a range $[a,b]$, and one must find the pairs of consecutive occurrences of $P_1,P_2$ separated by a distance in the range $[a,b]$. Navarro and Thankanchan~\cite{NavarroT16} showed that for $P_1=P_2$ there is a $O(n \log n)$-space index with optimal query time $O(m+\occ)$, where $m = |P_1|=|P_2|$ and $\occ$ is the number of pairs to report, but in conclusion they noticed that extending their solution to the general case of
-two patterns might not be possible. Bille et al.~\cite{cpm/BilleGPS21} provided an evidence of hardness of the general case and established a (conditional) lower bound for gapped indexing for consecutive occurrences,
+two patterns might not be possible. Bille et al.~\cite{bille2022gapped} provided an evidence of hardness of the general case and established a (conditional) lower bound for gapped indexing for consecutive occurrences,
 by connecting its complexity to
 that of set intersection. This lower bound suggests that, at least for indexes of size $\tilde O(N)$,
 achieving \ul{query time better than $\tilde O(|P_{1}|+|P_{2}|+\sqrt{N})$ would contradict the Set Disjointness conjecture, even if $a=0$ is fixed}. In particular,
@@ -55,10 +55,10 @@ occurrences?
 The answer of course depends on the chosen compression method. With a goal to design an index that uses very little space, we focus on the most challenging  setting when the compression is capable of describing a string of exponential length (in the size of its representation). An elegant formalism for such a compression method is that of straight-line programs (SLP), which are context-free grammars describing exactly one string. SLPs are known to capture the popular Lempel--Ziv compression method up to a logarithmic factor~\cite{CharikarLLPPRSS02,Rytter02}, and at the same time provide a more convenient interface, and in particular, allow for random access in $O(\log N)$ time~\cite{random_access_grammar_compress}. 
 
 By now it is known that pattern matching admits efficient indexing in SLP-compressed space. Assuming a string $S$ of length $N$ described by an SLP with $g$ productions, Claude and Navarro~\cite{spire/ClaudeN12a} designed an $O(g)$-space index for $S$ that allows retrieving all occurrences of a pattern of length $m$ in time $O(m^2 \log \log N + \occ \log g)$. 
-Recently, several results have improved the query time bound while still using a comparable $O(g\log N)$ amount of space: Claude, Navarro and Pacheco~\cite{CNP2021} showed an index with query time $O((m^2 + \occ)  \log g)$; Christiansen et al.~\cite{talg/ChristiansenEKN21} used strings attractors to further improve the time bound to $O(m + \occ \log^\epsilon N)$; and Díaz-Domínguez et al.~\cite{spire/DNP2021} achieved $O((m \log m +\occ)\log g)$ query time. 
+Recently, several results have improved the query time bound while still using a comparable $O(g\log N)$ amount of space: Claude, Navarro and Pacheco~\cite{DBLP:journals/jcss/ClaudeNP21} showed an index with query time $O((m^2 + \occ)  \log g)$; Christiansen et al.~\cite{talg/ChristiansenEKN21} used strings attractors to further improve the time bound to $O(m + \occ \log^\epsilon N)$; and Díaz-Domínguez et al.~\cite{spire/DNP2021} achieved $O((m \log m +\occ)\log g)$ query time. 
 
 However it is not always the case that a highly compressible string is easier to preprocess.
-On the negative side, Abboud et al.~\cite{AbboudBBK17} showed that,
+On the negative side, Abboud et al.~\cite{abboud2017fine} showed that,
 for some problems on compressed strings,
 such as computing the LCS, \ul{one cannot completely avoid a high dependency on the length of the uncompressed
 string} and that for other problems on compressed strings, such as context-free grammar parsing or RNA folding,
@@ -66,14 +66,14 @@ one essentially cannot hope for anything better than just decompressing the stri
 uncompressed representation! This is also the case for some problems related to linear algebra~\cite{AbboudBBK20}. Hence, it was not clear to us if one can avoid a high dependency on the length of the uncompressed string
 in the gapped indexing for consecutive occurrences problem. 
 
-In this work, we address the lower bound of Bille et al.~\cite{cpm/BilleGPS21} and show that, despite the negative results by Abboud et al.~\cite{AbboudBBK17}, one can circumvent it assuming that the text is very compressible:
+In this work, we address the lower bound of Bille et al.~\cite{bille2022gapped} and show that, despite the negative results by Abboud et al.~\cite{abboud2017fine}, one can circumvent it assuming that the text is very compressible:
 
 \begin{theorem}\label{thm:close_co_occurrences}
 For an SLP of size $g$ representing a string $S$ of length $N$, there is an $O(g^5\log^5 N)$-space data structure that maintains the following queries: given two patterns $P_1, P_2$ both of length $O(m)$, and a range $[0,b]$, report all $\occ$ consecutive occurrences of $P_1$ and $P_2$ separated by a distance $d \in [0,b]$. The query time is $O(m\log N + (1+\occ) \cdot \log^4 N \log \log N)$. 
 \end{theorem}
 
 
-While achieving $O(g)$ space and $O(m+\occ)$ query time would contradict the Set Disjointness conjecture by the reduction of Bille et al.~\cite{cpm/BilleGPS21}, one might wonder if the space can be improved without increasing the query time and what is the true complexity of the problem when $a$ is not fixed (recall that $[a,b]$ is the range limiting the distance between co-occurrences to report). While we leave improvement on space and the general case as an interesting open question, we show that in the simpler case $a = 0, b = N$ (i.e. when there is no bound on the distance between the starting positions of $P_1$ and $P_2$), our techniques do allow for $O(g^2\log^4 N)$ space complexity, see Corollary~\ref{cor:all}\footnote{Note that the conditional lower bound of Bille et al.~\cite{cpm/BilleGPS21} does not hold for this simpler case.}.
+While achieving $O(g)$ space and $O(m+\occ)$ query time would contradict the Set Disjointness conjecture by the reduction of Bille et al.~\cite{bille2022gapped}, one might wonder if the space can be improved without increasing the query time and what is the true complexity of the problem when $a$ is not fixed (recall that $[a,b]$ is the range limiting the distance between co-occurrences to report). While we leave improvement on space and the general case as an interesting open question, we show that in the simpler case $a = 0, b = N$ (i.e. when there is no bound on the distance between the starting positions of $P_1$ and $P_2$), our techniques do allow for $O(g^2\log^4 N)$ space complexity, see Corollary~\ref{cor:all}\footnote{Note that the conditional lower bound of Bille et al.~\cite{bille2022gapped} does not hold for this simpler case.}.
 
 Throughout the paper we assume a unit-cost RAM model of computation with word size $\Theta(\log N)$. All space
 complexities refer to the number of words used by a data structure.

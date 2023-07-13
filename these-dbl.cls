@@ -174,10 +174,11 @@
 \RequirePackage[hyperref,backend=biber,
   % Exemples de styles: alphabetic, ieee, nature, numeric, verbose-trad1 (en utilisant \footcite{}).
   % https://www.overleaf.com/learn/latex/Biblatex_bibliography_styles
-  style=numeric-comp,
+  style=numeric,
   %refsegment=chapter,
   sorting=ynt,
   defernumbers=true,
+  maxbibnames=99,
   maxcitenames=99,
   ]{biblatex}
 

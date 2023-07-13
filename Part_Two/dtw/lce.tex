@@ -25,7 +25,7 @@ If $P[i]=T[j]$, we are in a homogeneous block and $D[i,j]$ belongs to a $1$-stre
 
 \DTWone*
 \begin{proof}
-For a string $S$, define $\overline{RLE}(S)$ to be a string such that $\overline{RLE}(S)[i]$ contains the letter forming the $i$-th run of $S$. We preprocess $P' = \overline{\RLE}(P)$ and $T' = \overline{\RLE}(T)$ in $\Oh(m+n)$ time and space to maintain longest common suffix queries in constant time~\cite{RMQ}. The input of a longest common suffix query are two positions $i,j$ of $P'$ and $T'$ respectively, and the output is the largest $\ell$ such that $P'[i-\ell \dd i] = T'[j-\ell \dd j]$.
+For a string $S$, define $\overline{RLE}(S)$ to be a string such that $\overline{RLE}(S)[i]$ contains the letter forming the $i$-th run of $S$. We preprocess $P' = \overline{\RLE}(P)$ and $T' = \overline{\RLE}(T)$ in $\Oh(m+n)$ time and space to maintain longest common suffix queries in constant time~\cite{10.1007/11780441_5}. The input of a longest common suffix query are two positions $i,j$ of $P'$ and $T'$ respectively, and the output is the largest $\ell$ such that $P'[i-\ell \dd i] = T'[j-\ell \dd j]$.
 
 Let $B_i$, $1 \le i \le n$, be the block of $D$ formed by the $m$-th run in $P$ and the $i$-th run in $T$. Using one longest common suffix query for each block $B_i$, we find the maximal streak containing it. If this streak reaches the first row of $D$, it is a $0$-streak and we can fill the last row of $B_i$ with zeros. 
 

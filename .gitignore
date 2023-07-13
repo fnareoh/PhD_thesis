@@ -16,3 +16,4 @@
 *.fls
 .vscode
 *.synctex*
+*.bak

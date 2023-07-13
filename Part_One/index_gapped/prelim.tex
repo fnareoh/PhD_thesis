@@ -5,7 +5,7 @@ We call a substring $S[0 \dots i]$ \emph{a prefix} of $S$ and use a simplified n
 
 An occurrence $q_1$ of $P_1$ and an occurrence $q_2$ of $P_2$ form a  \emph{consecutive occurrence (co-occurrence)} of strings $P_1,P_2$ in a string $S$ if there are no occurrences of $P_1,P_2$ between $q_1$ and $q_2$, formally, there should be no occurrences of $P_1$ in $(q_1,q_2]$ and no occurrences of $P_2$ in $[q_1,q_2)$. For brevity, we say that a co-occurrence is \emph{$b$-close} if $q_2-q_1 \le b$.  
  
-An integer $\pi$ is a \emph{period} of a string $S$ of length $N$, if $S[i]=S[i+\pi]$ for all $i=0,\dots, N-1-\pi$. The smallest period of a string $S$ is called \emph{the period} of $S$. We say that $S$ is \emph{periodic} if  the period of $S$ is at most $N/2$. We exploit the well-known corollary of the Fine and Wilf's periodicity lemma~\cite{fine1965uniqueness}:
+An integer $\pi$ is a \emph{period} of a string $S$ of length $N$, if $S[i]=S[i+\pi]$ for all $i=0,\dots, N-1-\pi$. The smallest period of a string $S$ is called \emph{the period} of $S$. We say that $S$ is \emph{periodic} if  the period of $S$ is at most $N/2$. We exploit the well-known corollary of the Fine and Wilf's periodicity lemma~\cite{Fine1965}:
 
 
 \begin{corollary}\label{cor:arithmetic_progression}
@@ -95,7 +95,7 @@ can be implemented in space $O(|\mathcal{S}|)$ to maintain the following queries
     Let us first recall the definition of the Karp--Rabin fingerprint.
     
     \begin{definition}[Karp--Rabin fingerprint]
-    For a prime~$p$ and an~$r \in \mathbb{F}_p^\ast$, the \emph{Karp--Rabin fingerprint}~\cite{karp1987efficient} of a string~$X$ is defined as a tuple $(r^{|X|-1} \mod p, r^{-|X|+1} \mod p, \varphi_{p,r}(X))$, where $\varphi_{p,r}(X)=\sum_{k=0}^{|X|-1} S[k]r^k\mod p$.
+    For a prime~$p$ and an~$r \in \mathbb{F}_p^\ast$, the \emph{Karp--Rabin fingerprint}~\cite{KRfingerprint} of a string~$X$ is defined as a tuple $(r^{|X|-1} \mod p, r^{-|X|+1} \mod p, \varphi_{p,r}(X))$, where $\varphi_{p,r}(X)=\sum_{k=0}^{|X|-1} S[k]r^k\mod p$.
     \end{definition}
     
     \noindent We use the result of Christiansen et al.~\cite{talg/ChristiansenEKN21}, which builds on Belazzougui~et~al.~\cite{esa/BelazzouguiBPV10} and Gagie~et~al.~\cite{latin/GagieGKNP14,soda/GagieNP18}.

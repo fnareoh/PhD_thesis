@@ -22,7 +22,7 @@ $\gcd(p,q)$ is also a period~\cite{Fine1965}.
 This was generalised in a myriad of ways, for strings~\cite{Castelli1999,Justin2000,Tijdeman2003},
 partial words (words with don't cares)~\cite{Berstel1999,Blanchet-Sadri2008,Blanchet-Sadri2002,Shur2004,Shur2001,Idiatulina2014,Kociumaka2022},
 Abelian periods\cite{Constantinescu2006,Blanchet-Sadri2013}, parametrized periods~\cite{Apostolico2008},
-order-preserving periods~\cite{Matsuoka2016,Gourdel2020}, approximate periods~\cite{Amir2010,Amir2012,Amir2015}.
+order-preserving periods~\cite{Matsuoka2016,GOURDEL2020104463}, approximate periods~\cite{AmirICALP2010,Amir2012,AMIR2015215}.
 Now, a square can be defined as a fragment of length twice its period. 
 The string $\texttt{a}^{n}$ contains $\Omega(n^{2})$ such fragments,
 thus from the combinatorial point of view it is natural to count only distinct squares.
@@ -69,7 +69,7 @@ based more on data structure considerations than combinatorial properties of wor
 Finally, a number of alternative $\Oh(n\log n)$ and $\Oh(n\log \sigma)$ time algorithms (respectively, for general unordered
 and general ordered alphabets) can be obtained from the work on online~\cite{Hong2008,Kosolobov2014,Kosolobov2015a}
 and parallel~\cite{Apostolico1996} square detection (interestingly, this cannot be done efficiently in the related
-streaming model~\cite{Merkurev2019,Merkurev2022}).
+streaming model~\cite{DBLP:conf/spire/MerkurevS19,Merkurev2022}).
 
 Faster algorithms for testing square-freeness of strings over general ordered alphabets  were obtained from more general results on finding all runs. Kolpakov and Kucherov~\cite{Kolpakov1999} not only proved that any length-$n$
 string contains only $\Oh(n)$ runs, but also showed how to find them in the same time assuming
@@ -87,8 +87,8 @@ size $\Theta(n)$.
 \paragraph{General alphabets.} While in many applications one can without losing generality assume some
 ordering on the characters of the alphabet, no such ordering is necessary for defining what a square is. Thus, it is natural
 from the mathematical point of view to seek algorithms that do not require such an ordering to efficiently test square-freeness.
-Similar considerations have lead to multiple beautiful results concerning the pattern matching problem, such as constant-space algorithms~\cite{Galil1983,Breslauer1992},
-or the works on the exact number of required equality comparisons ~\cite{Cole1995,Cole1997} 
+Similar considerations have lead to multiple beautiful results concerning the pattern matching problem, such as constant-space algorithms~\cite{GALIL1983280,Breslauer1992},
+or the works on the exact number of required equality comparisons ~\cite{Cole1997} 
  More recent examples include the work of Duval, Lecroq, and Lefebvre~\cite{Duval2014}
 on computing the unbordered conjugate/rotation, and Kosolobov~\cite{Kosolobov2016a} on finding the leftmost critical point.
 

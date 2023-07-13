@@ -8,7 +8,7 @@ This thesis offers new theoretical and practical trade-offs between complex and 
 %
 In this thesis, a sketch is a lossless or lossy compression that keeps only the essential characteristic of the input needed to answer a given query, offering promising scalability potential. 
 % Lossy KR
-Example of sketches for lossy compression include Karp--Rabin fingerprints~\cite{DBLP:journals/ibmrd/KarpR87} (see Preliminaries~\ref{sec:prelim:KR}) which occupy constant space and allow checking whether two strings match with high probability, but in itself do not contain enough information to reconstruct the original data.
+Example of sketches for lossy compression include Karp--Rabin fingerprints~\cite{KRfingerprint} (see Preliminaries~\ref{sec:prelim:KR}) which occupy constant space and allow checking whether two strings match with high probability, but in itself do not contain enough information to reconstruct the original data.
 % Lossless LZ
 For lossless compression, an example is the Lempel--Ziv factorization~\cite{ziv1977universal}, a very efficient compression in practice used in compression formats such as \texttt{png} or \texttt{zip}, that always allows reconstructing the original string, but in the worst case, the Lempel--Ziv factorization can occupy as much space as the original input.
 % The use of sketches
