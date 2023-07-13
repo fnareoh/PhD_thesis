@@ -63,13 +63,13 @@ Note that the precise definition can vary slightly depending on the specific pro
 
 Recall that a string $S$ has period $p$ if for all $i \in [0,N-p-1]$, $S[i]=S[i+p]$. There are two versions of the lemma, we give the proof only for the simpler version:
 
-\begin{lemma}[Fine--Wilf's Strong Periodicity Lemma~\cite{Fine1965}]
+\begin{lemma*}[Fine--Wilf's Strong Periodicity Lemma~\cite{Fine1965}]
 If $p$ and $q$ are both periods of a string $S$ such that $p+q \leq |S|+\gcd(p,q)$, then $\gcd(p,q)$ is also a period of $S$.
-\end{lemma}
+\end{lemma*}
 
-\begin{lemma}[Fine--Wilf's Weak Periodicity Lemma~\cite{Fine1965}]
+\begin{lemma*}[Fine--Wilf's Weak Periodicity Lemma~\cite{Fine1965}]
     If $p$ and $q$ are both periods of a string $S$ such that $p+q \leq |S|$, then $\gcd(p,q)$ is also a period of $S$.
-\end{lemma}
+\end{lemma*}
 \begin{proof}
     The proof is immediate when $p=q$. Without loss of generality, we can assume $p > q$ and our goal is to show that $p-q$ is also a period of $S$. Let $i\in[0,N-(p-q)-1]$, if $i+p < |S|$, then $S[i]=S[i+p]=S[i+p-q]$, else it implies that $i-q \geq 0$ thus $S[i] = S[i-q] = S[i+p-q]$. We showed that $p-q$ is also a period of $S$ and by a recurrence following Euclid's algorithm, we obtain that $\gcd(p,q)$ is also a period of $S$.
 \end{proof}
@@ -80,11 +80,17 @@ Abelian periods\cite{Constantinescu2006,Blanchet-Sadri2013}, parametrized period
 order-preserving periods~\cite{Matsuoka2016,Gourdel2020}, approximate periods~\cite{Amir2010,Amir2012,Amir2015}.
 In this thesis, in Chapters~\ref{chap:regexp} to~\ref{chap:gapped_pm} of Part~\ref{part:complex_queries}, we use the following corollary:
 
-\begin{corollary}
+\begin{corollary*}
     If there are at least three occurrences of a string $Y$ in a string $X$, where $|X| \leq 2|Y|$, then the occurrences of $Y$ in $X$ form an arithmetic progression equal to the period of $Y$. 
-\end{corollary}
-
-\todo[inline]{Write up a proof + fix numbering}
+\end{corollary*}
+\begin{proof}
+    Let $i<j<k$ be the starting position of occurrences of $Y$ in $X$, $i$ being the leftmost and $k$ the rightmost. Because $|X| \leq 2|Y|$, at least two of the substrings $X[i..i+|Y|)$, $X[j..j+|Y|)$, and $X[k..k+|Y|)$, overlap by more than $|Y|/2$.
+    Without loss of generality we can assume that it is the case for $X[i..i+|Y|)$ and $X[j..j+|Y|)$, meaning $X[j..i+|Y|)$ is a substring that is both a prefix and a suffix of $Y$, this implies a period of $j-i < |Y|/2$. 
+    Let $p$ be the period of $Y$, $j-i$ has to be a multiple of $p$, else the (weak) periodicity lemma ($p+j-i \leq |Y|$) would contradict the minimality of $p$.
+    %Thus, there exists an integer $n_j>0$ such that $j=i+n_jp$.
+    Next, because $|X| \leq 2|Y|$, $X[j..j+|Y|)$ and $X[k..k+|Y|)$ must overlap by at least $p$ position, i.e. $j+|Y|-1-k \geq p$. 
+    $X[k..j+|Y|)$, is both a prefix and a suffix of $|Y|$ which implies a period of $k-j \leq |Y| - p $, by the same argument of the minimality of $p$ we have that $k-j$ must be a multiple of $p$ and thus the substring $X[i..k+|Y|)$ is a run of period $p$ and each position $i+np$ for $0 \leq n \leq \lfloor \frac{k-1+|Y|-i}{p} \rfloor$ is the start of an occurrence of $Y$.
+\end{proof}
 
 \subsection{Compression Techniques}\label{sec:prelim:compress}
 What type of compression is used on what problem and why ?
