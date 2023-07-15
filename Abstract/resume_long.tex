@@ -1,5 +1,178 @@
-\chapter*{Résumé de la thèse}
+\chapter*{Résumé en français}\setcounter{page}{1}
 
 \input{./Abstract/resume_francais}
 
-\todo[inline]{To extend to 4 pages.}
+\newpage
+
+\section*{Contexte de la thèse}
+
+Lorsque je réponds à la question classique "Quel est le sujet de ta thèse ?" au près ma famille et à mes amis, je commence toujours par la fonction "Ctrl + F" dans leur éditeur de texte ou leur navigateur web préféré. Cela permet de mettre rapidement en évidence l'une des applications du problème de la correspondance exacte des motifs.
+%Si je me sens particulièrement ambitieuse dans mes explications, je tenterai de donner l'intuition de l'algorithme naïf $\Oh(nm)$. Imaginez un jeune enfant, alignant le motif à trouver sur chaque position du texte et comparant caractère par caractère, car l'enfant n'a pas encore appris à lire. En fonction du motif, l'enfant peut essayer des stratégies plus complexes permettant de sauter des parties du texte. 
+Mais même mes grands-parents savent immédiatement qu'une recherche efficace dans un texte est possible depuis des décennies et qu'il ne peut s'agir de mon véritable sujet de recherche.
+
+\subsection*{Traitement des chaines de caractères}
+
+Le problème de la recherche exacte de motif dans un texte a été largement étudié, avec en particulier le célèbre algorithme de Knuth-Morris-Pratt fait parti des algorithmes classiques. Charras et Lecroq ont depuis publié un manuel détaillé~\cite{charras2004handbook} sur les différentes solutions pour la recherche exacte de motif dans un texte et ces solutions ont également été comparées de manière approfondie en pratique~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
+
+
+\noindent\textbf{Reconnaissance de Motifs Complexes.} En général, cependant, le besoin de traitement de texte va bien au-delà de la recherche exacte de motifs.
+% Regexp
+L'un des modèles le plus utilisé et classique pour les requêtes complexes est \underline{la recherche par expressions régulières}, introduite par Kleene en 1951~\cite{RM-704}.
+% Definition
+Le formalisme des expressions régulières offre une description concise des ensembles de chaînes par des combinaisons récursives de caractères d'un alphabet $\Sigma$ ainsi que de trois opérateurs fondamentaux : la concaténation ($\cdot$), l'union ($|$) et l'étoile de Kleene ($\ast$).
+Pour deux expressions rationnelles $R_1$ et $R_2$, la concaténation $R_1\cdot R_2$ reconnait toute concaténation d'une chaîne reconnue per $R_1$ et d'une chaîne reconnue par $R_2$, l'union $(R_1|R_2)$ reconnait toute chaîne reconnue par $R_1$ ou $R_2$, et $(R_1)^\ast$ reconnait tout répétitions d'une chaîne reconnue par $R_1$, y compris l'absence de répétition, c'est-à-dire la chaîne vide.
+% Applications
+L'utilisation des expressions régulières a gagné en popularité dans les années 1970 grâce à leur mise en œuvre efficace dans les outils Unix tels que \texttt{awk}, \texttt{grep}, ou \texttt{sed}.
+Elles sont devenues un outil crucial dans de nombreux domaines tels que l'analyse du trafic internet~\cite{4221791,4579527}, les bases de données, l'exploration de données~\cite{1000341,10.5555/645927.672035,10.1145/375551.375569}, les réseaux informatiques~\cite{10.1145/1159913.1159952}, et la recherche de protéines~\cite{10.1145/369133.369220}.
+%
+Nous étudions les expressions régulières dans le Chapitre~\ref*{chap:regexp}.
+
+% Gapped matching
+Malheureusement, les bornes inférieures conditionnelles données par Backurs et Indyk~\cite{DBLP:conf/focs/BackursI16} suivis par Bringmann, Gr{\o}nlund, et Larsen~\cite{8104068} ont montré que certaines expressions régulières ne pouvaient pas être recherchées en temps fortement sous linéaire. En conséquence, nous considérons également dans les Chapitres~\ref*{chap:gapped_index} et~\ref*{chap:gapped_pm} un modèle de requête plus simple : \underline{la recherche de motifs consécutifs avec espacement}. 
+% Definiton
+Dans ce modèle, on nous donne deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, et il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacés d'une distance dans $[a, b]$. 
+
+
+
+\noindent\textbf{Mesures de Similarité.} 
+
+
+\noindent\textbf{Détections de Répétitions.}
+
+\subsection*{Difficulté du Passage à l'Échelle}
+
+\section*{L'Utilisation de Sketches}
+
+Jusqu'à présent, nous avons présenté les deux principaux défis au cœur du traitement de chaîne de caractère moderne : permettre des requêtes pertinentes (et parfois complexes) adaptées à des applications spécifiques tout en maintenant des performances qui permettent passer à l'échelle sur de grands volumes de données.
+%
+Cette thèse propose de nouveaux compromis, théoriques et pratiques, entre les requêtes complexes et effiicaces, et pour cela nous nous reposons sur l'utilisation de \textbf{sketches}.
+%
+Dans cette thèse, un sketch est une compression avec ou sans perte qui ne conserve que les caractéristiques essentielles de l'entrée nécessaires pour répondre à une requête donnée, offrant ainsi un potentiel prometteur pour le passage à l'échelle. 
+% KR avec perte
+Parmi les exemples de sketch pour la compression avec perte, on peut citer les empreintes de Karp--Rabin~\cite{KRfingerprint} (voir Préliminaires~\ref{sec:prelim:KR}) qui occupent un espace constant et permettent de vérifier si deux chaînes de caractères sont égales avec une probabilité élevée, mais les empreintes ne contiennent pas en elles-mêmes suffisamment d'informations pour reconstruire les données d'origine.
+% LZ sans perte
+Pour la compression sans perte, un exemple est la factorisation de Lempel--Ziv~\cite{ziv1977universal}, une compression très efficace en pratique utilisée dans des formats de compression tels que \texttt{png} ou \texttt{zip}, qui permet toujours de reconstruire la chaîne de caractères originale, mais dans le pire des cas, la factorisation de Lempel--Ziv peut occuper autant d'espace que l'entrée d'origine.
+
+\section*{Contributions}
+
+La \textbf{Partie ~\ref{part:complex_queries}} se concentre sur une étude théorique des requêtes complexes.
+% Expressions régulières
+Nous commençons par la recherche d'expressions régulières dans le modèle des données en streaming.
+%
+Nous supposons que l'on nous donne une expression régulière $R$, un texte en streaming $T$ de longueur $n$. Pour le problème d'\emph{appartenance} à une expression rationnelle, nous devons déterminer, après avoir vu $T$ entièrement, s'il est reconnu par l'expression rationnelle $R$, tandis que pour \emph{recherche}, nous devons répondre, à chaque position $r$, s'il existe une sous-chaîne $T[l..r]$ reconnue par $R$.
+% Parler des bornes inférieures ?
+% Contribution principale
+Dans le \textbf{Chapitre~\ref{chap:regexp}}, notre principale contribution est d'identifier $d$, le nombre de symboles d'union et d'étoiles de Kleene dans $R$, comme le paramètre clé qui permet un algorithme de streaming efficace en espace. 
+% Utilisations antérieures du paramètre
+Auparavant, Bille et Thorup~\cite{doi:10.1137/1.9781611973075.104}\footnote{Ils considèrent en fait $k$ comme le nombre de chaînes de caractères apparaissant dans $R$ mais $k=\Theta(d)$. } ont déjà utilisé ce paramètre pour proposer des algorithmes permettant de résoudre l'appartenance et la recherche d'une expression régulière de longueur $m$ en $\Oh(m)$ espace et $\Oh(n(\frac{d\log w}{w} + \log d))$ temps, où $w$ est la taille du mot machine. Mais il restait à savoir si $d$ pouvait être utilisé pour une solution efficace en termes d'espace.
+%
+Nous répondons à cette interrogation en fournissant des algorithmes randomisés Monte Carlo (e temps d'exécution est déterministe, mais les algorithmes peuvent se tromper avec une faible probabilité) permettant de résoudre les problèmes d'appartenance et de recherche d'une expression régulière en espace $\Oh(d^3\polylog n)$  et temps par caractère  $\Oh(nd^5\polylog n)$  (Théorème~\ref{th:memb}).
+
+Voici un bref résumé de la façon dont nous prouvons notre résultat : nous commençons par définir \emph{chaînes atomiques} qui sont les "mots" apparaissant dans l'expression régulière. Elles ne contiennent que des caractères de $\Sigma$ et il y en a $\Theta(d)$. Par exemple, pour $R= \mathrm{GAT}(\mathrm{TA} | \mathrm{O})(\mathrm{CAT})^*$ l'ensemble des chaînes atomiques est $\{$GAT, TA, O, CAT$\}$.
+%
+La base de notre approche consiste à stocker efficacement certaines occurrences spécifiques des préfixes des chaînes atomiques dans le texte $T$. Ces occurrences stockées sont ensuite liées pour tester s'il existe une correspondance "partielle" de $R$ (Définition~\ref*{def:partial_occ_regexp}).
+Sur des régions périodiques du texte, il peut y avoir trop d'occurrences pour les stocker toutes.
+Nous choisissons donc de ne stocker que quelques-unes de ces occurrences qui peuvent être très éloignées les unes des autres, avec juste une longue sous-chaîne périodique entre les deux. Pour reconstruire une correspondance partielle, nous devons vérifier si cette longue sous-chaîne périodique correspond à une exécution de l'automate de Thompson~\cite{Thompson_automaton}. Nous formulons cela comme la recherche d'un chemin de poids spécifique dans un multi-graphe. Nous résolvons ensuite efficacement ce problème de graphe en le traduisant en un circuit utilisant des portes d'addition et de convolution qui peuvent être évaluées de manière efficace en termes d'espace à l'aide d'un système général~\cite{LokshtanovN10,Bringmann17}. En outre, nous améliorons ce système en supprimant sa dépendance à l'Hypothèse de Riemann étendue (Théorème~\ref{thm:bombieri}). 
+%
+Les sketches utilisé dans ce Chapitre sont des empreintes de Karp--Rabin (Preliminaries~\ref{sec:prelim:KR}) utilisées pour détecter les correspondances entre les préfixes des chaînes atomiques, elles sont incluses dans l'algorithme de recherche de motifs (Theorem~\ref{th:pattern_matching}) que nous utilisons.\\
+
+Dans le \textbf{Chapitre~\ref{chap:gapped_index}}, nous commençons notre étude de la recherche de motifs consécutifs avec espacement. Dans ce problème, on nous donne deux motifs $P_1$, $P_2$, et un intervalle $[a,b]$ et nous devons trouver toutes les paires de positions $(i,j)$ dans un texte $T$ telles qu'une occurrence de $P_1$ commence à la position $i$, une occurrence de $P_2$ commence à la position $j$, il n'y a pas d'occurrence de $P_1$ ou $P_2$ commençant dans l'intervalle $[i+1,j-1]$, et enfin $j-i \in [a,b]$.
+%
+Bille et al. ~\cite{bille2022gapped} ont introduit ces requêtes et ont donné une borne inférieure conditionnelle indiquant que pour les index (texte traité en amont et les motifs donné ensuite sous forme de requêtes) de taille $\tilde \Oh(|T|)$ (la notation $\tilde \Oh$ cache les facteurs polylogarithmiques), l'obtention d'un temps de requête plus rapide que $\tilde \Oh(|P_1|+|P_2|+\sqrt{|T|})$ contredirait the Set Disjointness conjecture, même si $a=0$ est fixé. En outre, ils ont fourni une borne supérieure non triviale qui utilise $\tilde \Oh(|T|)$ d'espace et $\tilde \Oh (|P_1| +|P_2| + |T|^{2/3}\occ^{1/3})$ de temps pour rapporter toutes les $\occ$ occurrences.
+
+Nous supposons $a=0$ fixé, et que le texte $T$ de taille $n$ est donné comme un programme linéaire $G$ de taille $g$. Un programme linéaire est une grammaire sans contexte générant exactement une chaîne de caractères. Par exemple, la grammaire avec les non-terminaux $\A,B,C,D\}$ et les règles $\{A \rightarrow BC, B \rightarrow b, C \rightarrow DD, D\rightarrow d \}$ génère la chaîne de caractères \texttt{bdd}.
+Nous avons choisi ce formalisme car il permet de capturer la populaire factorisation de Lempel--Ziv à un facteur logarithmique près : une factorisation de Lempel--Ziv de taille $z$ peut être transformée en un programme linéaire de taille $\Oh(z\log n)$~\cite{CharikarLLPPRSS02,Rytter02}.
+%
+Notre contribution est de créer un index prenant un espace polynomial dans la taille de la grammaire qui rapporte les occurrences consécutives avec des distances dans $[0,b]$ en temps optimal à des facteurs poly log près.
+Pour rapporter les occurrences consécutives sans contraintes sur la distance entre $P_1$ et $P_2$, notre index utilise un espace en $\Oh(g^2\log^4|T|)$ où $g$ est la taille de la grammaire (voir Corollaire~\ref{cor:all}).
+%
+Nous nous appuyons sur une construction efficace d'arbre préfixe compacts (voir Preliminaries~\ref{sec:prelim:tries}) qui tire parti du fait que les chaînes sont des préfixes et des suffixes de chaînes générées par des non-terminaux. Cette implémentation utilise les empreintes de Karp--Rabin (voir Préliminaires~\ref{sec:prelim:KR}) et les arbres préfixes compactés sont ensuite augmentés à l'aide d'une décomposition en chemins de poids lourds.
+Nous réutilisons ensuite cette structure pour notre résultat principal : Theorem~\ref{thm:close_co_occurrences}, avec un index qui peut rapporter des occurrences consécutives avec des distances dans un intervalle $[0,b]$ en utilisant l'espace $\Oh (g^5\log^5(|T|))$.
+%
+Le programme linéaire donné en entrée est le principal sketch utilisé dans ce travail, mais l'index que nous construisons forme également un sketch de la grammaire spécifique à la recherche d'occurrences consécutives.
+%
+L'index du théorème~\ref{thm:close_co_occurrences} contourne la borne inférieure dans le cas des textes hautement compressibles (tels que $g^5 << n^2$). Il s'agit d' un résultat non trivial puisque certains problèmes ne peuvent échapper à une forte dépendance vis-à-vis de la taille de la chaîne non compressée (comme indiqué dans la section~\ref{sec:intro:scalability}). Cependant, nous nous attendons à ce que notre complexité en espace soit loin d'être optimale et nous laissons les améliorations ainsi que le cas général avec $0 \leq a \leq b \leq |T|$ comme des questions ouvertes.
+
+
+Partiellement motivés par les contraintes d'espace de notre index en $\tilde \Oh(g^5)$, dans \textbf{Chapter~\ref{chap:gapped_pm}}, nous abordons le problème dual : la recherche de motifs consécutifs.  Dans ce problème, les motifs et le texte arrivent et sont traités en même temps. Notons que pour un texte non compressé, la recherche de motifs consécutifs peut être résolue par un algorithme de recherche linéaire classique, en gardant simplement la trace des occurrences les plus récentes de $P_1$ et $P_2$ en temps $\Oh(|T|+|P_1|+|P_2|+\occ)$ .
+% Résultats
+Nous montrons qu'une complexité similaire peut être atteinte lorsque le texte est hautement compressible : toutes les occurrences consécutives peuvent être rapportées en temps $\Oh(g+|P_1|+|P_2|+\occ)$  (voir le Théorème~\ref{th:main}) où $g$ est la taille du texte compressé sous forme de grammaire. Nous dérivons ensuite de ce résultat des algorithmes pour la recherche d'occurrences consécutives avec espacement (Corollaire~\ref{cor:ab}) et pour la recherche des k occurrences consécutives les plus proches (Corollaire~\ref{cor:topk}).
+%
+Notre résultat est basé sur l'encodage efficace de l'"information frontalière" récemment introduit par Ganardi et Gawrychowski~\cite{DBLP:conf/soda/GanardiG22}. Pour un motif donné $P$, les informations  $P$-frontalières d'une chaîne $S$ stockent les sous-chaînes apparaissant à la fois dans $P$ et $S$. Elles sont choisies pour capturer uniquement les informations nécessaires à la détection de nouvelles occurrences de $P$ qui pourraient survenir lors de la concaténation d'une chaîne à $S$. 
+%
+Les auteurs montrent comment utiliser cet encodage pour déterminer en $\Oh(g+|P|)$ temps si $P$ apparaît dans le texte compressé. Nous étendons visiblement leur approche pour rapporter toutes les occurrences à cheval sur  la frontière (Lemma~\ref{lemma:crossing}). Nous répétons ensuite cette technique à un deuxième niveau avec des "informations frontalières secondaires" et analysons soigneusement tous les cas pour obtenir le Théorème~\ref{th:main}. Ici encore, l'esquisse principale est la grammaire sur laquelle nous travaillons.\\
+
+
+% Squares
+Tous les chapitres précédents s'appuient fortement sur la détection de la périodicité pour le design des algorithmes, et il semblait donc naturel d'étudier ce problème dans le \textbf{Chapitre~\ref{chap:squares}}. Nous montrons comment rapporter toutes les carrés en temps optimal dans le modèle le plus abstrait où ils peuvent être définis : les alphabets généraux (non ordonnés) où la seule opération autorisée est un test d'égalité entre deux caractères. 
+Nous considérons d'abord le problème de la détection des carrés, puis nous étendons notre approche pour rapporter les carrés et des repetitions par plages.
+% 
+En 1984, Main et Lorentz~\cite{Main1984} ont conçu un algorithme en $\Oh(n\log n)$ temps pour la détection de carrés dans un texte $T$ de taille $n$ sur un alphabet général non ordonné. Ils ont également fourni une borne inférieure correspondante pour les chaînes ayant $\Omega(n)$ symboles distincts, mais ont laissé ouverte la question de savoir si un algorithme plus rapide était possible si la taille de l'alphabet $\sigma=|\Sigma|$ était restreinte.
+% 
+Nous commençons par prouver que le problème nécessite $\Omega(n \log \sigma)$ comparaisons même si la taille de l'alphabet est connue (Théorème~\ref{thm:lowerbound}). En outre, dans le Théorème~\ref{thm:inapproxalph}, nous montrons que le calcul de toute approximation pertinente du nombre de caractères distincts nécessite $\Omega(n\sigma)$ opérations.
+%
+Pour les alphabets ordonnés généraux (lorsqu'un ordre est donné), Crochemore~\cite{Crochemore1986} a utilisé la factorisation $f$ (liée à la  factorisation de Lempel--Ziv) pour donner un algorithme de détection des carrés fonctionnant en temps $\Oh(n\log \sigma)$. En très résumé, la factorisation $f$ et la factorisation Lempel--Ziv (factorisation LZ) détectent les fragments répétitifs dans le texte et peuvent être calculées efficacement à l'aide d'un arbre à suffixes ou d'un tableau à suffixes. Cependant, nous montrons que pour les alphabets généraux non ordonnés, ces factorisations nécessitent $\Omega(n\sigma)$ opérations pour être calculées (corollaire de la borne inférieure sur l'approximation de l'alphabet). 
+% 
+Au lieu de cela, nous introduisons la factorisation de Lempel--Ziv $\Delta$-approchée qui agit comme un sketch capturant uniquement les carrés suffisamment longs (d'une longueur d'au moins $8\Delta$), par opposition à la factorisation $f$ et à la factorisation LZ qui capturent tous les carrés.
+Nous présentons notre algorithme final par étapes. Nous supposons d'abord que la taille de l'alphabet est connue et nous nous concentrons sur l'obtention d'une borne supérieure sur le nombre de comparaisons, puis nous supprimons l'hypothèse de la connaissance de la taille de l'alphabet, et enfin nous fournissons un algorithme global efficace fonctionnant en temps $\Oh(n\sigma)$.\\
+
+
+% Partie 2
+La \textbf{Partie~\ref{part:approx-bio}} explore l'utilisation d'approximations pour réduire encore la taille des sketches et fournir des algorithmes encore plus efficaces. Chaque chapitre fournit une implémentation pratique de ses algorithmes pour des applications en bio-informatique.
+%
+Plus tôt, nous avons détaillé l'importance des mesures de similarité pour de nombreuses applications.
+%
+En bio-informatique, la distance d'édition est sans doute la mesure de similarité la plus populaire, mais Backurs et Indyk~\cite{DBLP:conf/stoc/BackursI15} ont prouvé une borne inférieure conditionnelle (basée sur SETH) suggérant qu'il est peu probable que la distance d'édition soit calculable en temps fortement sous-quadratique.
+%
+La nécessité de surmonter cet obstacle a conduit à l'étude d'algorithmes approximatifs pour la distance d'édition. Chakraborty et al.~\cite{DBLP:conf/focs/ChakrabortyDGKS18} ont donné le premier résultat  avec un algorithme d'approximation à facteur constant qui calcule la distance d'édition entre deux chaînes de longueur $n$ en temps $\tilde{\Oh}(n^{2-2/7})$.
+Depuis notre publication~\cite{DBLP:conf/cpm/GourdelKRS20} (présentée dans le chapitre~\ref{chap:LCS}), une série de travaux ont été publiés sur l'approximation de la distance d'édition~\cite{brakensiek2020constant,koucky2020constant}, le résultat le plus fort étant~\cite{andoni2020edit} avec une approximation à facteur constant en temps $n^{1+\eps}$ pour tout $\eps>0$ (où la constante d'approximation dépend uniquement de $\eps$).
+Néanmoins, ces algorithmes ont tendance à être assez techniques et même ceux qui sont censés être plus simples, comme~\cite{andoni2020simple}, ne semblent pas avoir été implémentés et évalués dans la pratique.
+%
+Dans le \textbf{Chapitre~\ref{chap:LCS}}, nous adoptons une autre approche en considérant une mesure de similarité différente censée être à la fois robuste aux  changements légers et suffisamment simple pour permettre un calcul efficace. Nous considérons la plus longue sous-chaîne commune (abrégée LCS par la suite) avec environ k différences, qui est une version approximative de \kLCS. Rappelons que, pour un entier $k$ et deux chaînes $X$ et $Y$, $\lcsk(X,Y)$ est la longueur maximale d'une sous-chaîne de $X$ qui apparaît dans $Y$ avec au plus $k$ différences.
+Pour une constante $\eps > 0$, le problème LCS avec environ $k$ différences doit retourner une sous-chaîne de $X$ de longueur au moins $\lcsk(X,Y)$ qui apparaît dans $Y$ avec au plus $(1+\eps) \cdot k$ différences. Ce problème a été introduit par Kociumaka, Radoszewski et Starikovskaya~\cite{DBLP:journals/algorithmica/KociumakaRS19} après qui'ils aient montré qu'il existe $k=\Theta(\log n)$ tel que \kLCS ne peut pas être résolu exactement en temps fortement sous-quadratique (conditionné par SETH).
+% Notre contribution
+Dans le théorème~\ref{th:klcs_upper}, nous fournissons deux algorithmes : l'un supposant un alphabet de taille constante s'exécutant en $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ temps et en espace, et l'autre en $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ temps et en espace linéaire sans contraintes sur l'alphabet. Le premier résultat repose sur une structure de données pour la recherche de plus proches voisins~\cite{DBLP:conf/stoc/AndoniR15} comme boîte noire, et nous ne l'évaluons pas dans la pratique. En revanche, notre deuxième contribution est plus simple et nous confirmons son caractère pratique par une évaluation expérimentale.
+En outre, dans Fact~\ref{lm:klcs_lower}, nous montrons une borne inférieure conditionnelle pour LCS avec environ $k$ différences (avec une construction similaire à la preuve de la borne inférieure de \kLCS ).
+% Sketches
+Dans nos algorithmes, nous nous appuyons sur les empreintes de Karp--Rabin et sur un sketch estimant la distance de Hamming basée sur la réduction de dimensions, tous deux détaillés dans la section~\ref{lcs:sec:prelim}. \\
+
+
+% DTW
+En poursuivant notre exploration des mesures de similarité et des distances, le chapitre suivant se concentre sur la distance DTW (Dynamic Time Warping).  Pour la distance DTW, il faut " doubler " les deux chaînes : doubler un caractère jusqu'à ce que les chaînes soient de même longueur, puis additionner les distances entre les caractères situés aux mêmes positions.
+% RLE / Esquisses
+Pour proposer un algorithme efficace pour cette distance, dans le \textbf{Chapitre~\ref{chap:DTW}}, nous considérons l'une des formes les plus simples de sketchs : l'encodage par plages (run-length encoding). L'encodage par plages d'une chaîne $S$ de longueur $N$ est définit comme $\RLE(S)=(c_1,l_1)(c_2,l_2)... (c_n,l_n)$ où $(c_i,l_i)$ représente le caractère $c_i \in \Sigma$ répété $l_i$ fois pour $i \in [1,n]$, et tel que $\sum_{i\in [1,n]} l_i = |S|$.
+Ce sketch est particulièrement pertinent pour la DTW car les séries de caractères égaux ont tendance à être alignées malgré les variations de longueur. C'est pourquoi Froese et al.~\cite{DBLP:journals/corr/abs-1903-03003} ont déjà utilisé le nombre de runs dans les chaînes de caractères pour donner un algorithme calculant la distance DTW entre deux chaînes de caractères avec un temps d'exécution $\Oh(mN+nM)$, où $M,N$ sont la longueur des chaînes de caractères, et $m, n$ sont les tailles de leurs encodages par plage.
+
+% Notre contribution 
+Notre contribution est la suivante : lorsque les distances entre les caractères de $\Sigma$ sont des entiers, pour un motif $P$ avec $m$ runs et un texte $T$ avec $n$ runs, nous montrons qu'il existe un algorithme en $\Oh(n+m)$ temps qui calcule tous les positions $j$ où la distance DTW entre $P$ et un suffixe de $T[..j]$ est au plus de 1. Puis, plus généralement, pour un entier $k$, nous fournissons un algorithme en temps $\Oh(knm)$ qui calcule tous les positions $j$ où la distance DTW entre $P$ et un suffixe de $T[..j]$ est au maximum de $k$.
+% Motivation bio
+Notre intérêt et nos recherches sur DTW sont également motivés par des applications potentielles à l'analyse de données biologiques produites par le séquençage de troisième génération. Pour cette technologie,  l'ADN passe à travers un nanopore à une vitesse irrégulière, ce qui tend à créer des erreurs dans la longueur des plages du même nucléotide (homopolymères)~\cite{delahaye2021sequencing}. Nous détaillons cette application potentielle dans la section~\ref{dtw:sec:experiments}.
+% Mise à jour
+Depuis notre publication, Boneh, Golan, Mozes, et Weimann ont mis en ligne une prépublication~\cite{boneh2023near} avec un temps en $\tilde{\Oh}(N^2)$ pour le calcul de la distance DTW entre deux chaînes de longueur $N$, ce qui est optimale à des facteurs logarithmiques près. Ils suivent l'approche que Clifford et al.~\cite{clifford2019rle} ont utilisée pour montrer un résultat similaire pour la distance d'édition : ils représentent et traitent les entrées et les sorties à l'aide d'une fonction linéaire par morceaux.\\
+
+% XBWT
+Pour le \textbf{Chapitre~\ref{chap:XBWT}}, nous quittons l'étude des mesures de similarité pour nous concentrer sur le problème pratique de l'indexation des ensembles de lectures de séquençage. 
+% Approximation
+De plus, dans ce chapitre, la perspective sur l'approximation est différente. Au lieu d'étudier la correspondance approximative où l'on rapporte toutes les sous-chaînes à une distance donnée du motif, nous proposons un index compacte qui a l'inconvénient de rapporter des faux positifs : des occurrences du motif qui ne sont pas entièrement incluses dans une lecture.
+%
+Une lecture est une séquence de paires de bases, généralement courte (la longueur précise dépend de la technique de séquençage), obtenue lors du séquençage de l'ADN. Pour pouvoir réassembler l'ensemble de la séquence d'ADN, chaque position de la séquence est généralement couverte par plusieurs lectures. Le nombre moyen de lectures couvrant une position est appelé couverture de séquençage.
+La couverture de séquençage standard pour les lectures courtes dans le but d'assembler un génome se situe aujourd'hui entre 30 et 50, ce qui rend les ensembles de lectures très répétitifs, en particulier lorsque l'ADN séquencé provient d'un seul individu.
+%
+Pour indexer une chaîne répétitive unique, l'index FM~\cite{ferragina2005indexing} basé sur la transformation de Burrows-Wheeler (BWT)~\cite{burrows1994block} est l'une des structures de données les plus importantes, et elle a été appliquée dans plusieurs outils bioinformatiques pour l'alignement des lectures courtes~\cite{langmead2009ultrafast,langmead2012fast,li2009fast}.
+%
+L'amélioration la plus récente du FM-index est le $r$-index de Gagie et al.~\cite{gagie2020fully} qui occupe un espace proportionnel à $r$, le nombre de plages dans la BWT de la chaîne indexée. Plus précisément, la structure de données occupe $\Oh(r\log\log n)$ d'espace tout en étant capable de compter et de localiser toutes les occurrences d'un motif en un temps optimal ( à un facteur logarithmique près). Cela fait du nombre de plages dans la BWT un paramètre important pour les structures économes en espace et $r$ est souvent considéré comme une mesure de la répétitivité du texte.
+%
+Malheureusement, l'extension de la BWT à une collection de chaînes de caractères n'est pas simple. Nous recommandons au lecteur la publication de Cenzato et Lipták~\cite{cenzato_et_al_BWT_Collections} qui présente toutes les variantes existantes pour construire une structure de type BWT pour une collection de chaînes et l'impact sur le nombre de plages dans la transformation qui en résulte.
+
+Notre travail dans le chapitre~\ref{chap:XBWT} propose de tirer parti d'une information très couramment associée aux lectures : l'alignement sur un génome de référence. Nous construisons un arbre dont le tronc principal est la référence et les lectures se ramifient à partir du tronc depuis la position sur laquelle elles sont alignées, puis nous calculons la généralisation de la BWT pour les arbres : la transformée de Burrows--Wheeler étendue (XBWT)~\cite{ferragina2009compressing}. Intuitivement, notre transformation fournit un contexte aux lectures qui permet un meilleur tri et limite le nombre de ruptures dans les plages de la chaîne transformée. Formellement, nous montrons que si les lectures sont presque identiques à la référence et que les différences sont situées vers la fin des lectures (ce qui est le cas en pratique pour les lectures courtes), le nombre de plages dans la XBWT peut être limité en fonction du nombre de plages dans la BWT de la référence. Nous testons ensuite notre approche en pratique et montrons qu'elle permet d'obtenir moins de résultats que la BWT avec l'heuristique colexicographique populaire (15\% de moins pour un ensemble de lectures du chromosome 19 humain).
+% Fausses Positions
+Le principal inconvénient de notre index est que nous cherchons dans l'arbre de branchement et donc, lorsque nous comptons le nombre d'occurrences d'un motif, nous ne pouvons pas éviter de compter les occurrences qui ne sont pas entièrement contenues dans une lecture (qui sont partiellement ou entièrement dans le tronc principal correspondant à la référence).
+%
+Une autre contribution de notre travail est que, dans le but de permettre un passage à l'échelle de la construction de l'index, nous adaptons la technique de découpage sans préfixe pour la construction de la BWT inventée Boucher et al.~\cite{boucher2019prefix} à la construction de la XBWT. 
+%
+Dans la construction de la BWT par découpage sans préfixe, la chaîne d'entrée est découpée en phrases qui se chevauchent comme suit : nous maintenons un hash d'une fenêtre coulissante en utilisant les empreintes de Karp--Rabin, et chaque fois que le hash est égal à zéro, nous terminons la phrase en cours et en commençons une nouvelle. Cette technique, nous permet de créer un ensemble de phrases sans préfixe.
+La chaîne est ensuite décomposée en un \emph{dictionnaire} et d'un \emph{parse}. 
+Le dictionnaire associe chaque phrase à un métacaractère, et le parse est une chaîne de métacaractères dans l'ordre dans lequel les phrases correspondantes apparaissent dans la chaîne d'entrée.
+Cette construction utilise des sketches (empreintes digitales de Karp--Rabin) mais crée également un sketch par le biais de cette représentation compacte de la chaîne.
+L'intuition est que les sections répétées de la chaîne se traduiront par des phrases répétées qui peuvent être représentées par les mêmes métacaractères dans le parse, ce qui permet au dictionnaire de rester raisonnablement petit.
+La BWT de la chaîne d'entrée est alors construite à partir de la BWT du parse (où l'ordre entre les métacaractères est l'ordre lexicographique de la phrase qu'ils représentent) et de la BWT des phrases.
