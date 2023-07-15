@@ -43,9 +43,7 @@ In \textbf{Chapter~\ref{chap:gapped_index}}, we begin our study of gapped consec
 Bille et al.~\cite{bille2022gapped} introduced those queries and gave a conditional lower bound stating that for indexes of size $\tilde \Oh(|T|)$ (the $\tilde \Oh$ notation hides polylogarithmic factors) achieving a query time faster than $\tilde \Oh(|P_1|+|P_2|+\sqrt{|T|})$ would contradict the Set Disjointness conjecture, even if $a=0$ is fixed. Additionally, they provided a non-trivial upper bound that uses $\tilde \Oh(|T|)$ space and $\tilde \Oh (|P_1| +|P_2| + |T|^{2/3}\occ^{1/3})$ time to report all $\occ$ occurrences. 
 % Our contributions
 We assume $a=0$ is fixed, and that the text $T$ of size $n$ is given as a straight-line program $G$ of size $g$, which is a context-free grammar generating exactly one string. For example the grammar with the non-terminals $\{A,B,C,D\}$ and rules $\{A \rightarrow BC, B \rightarrow b, C \rightarrow DD, D\rightarrow d \}$ generates the string \texttt{bdd}.
-We choose this formalism 
-%for its convenient interface that allows random access in $\Oh(\log n)$ time~\cite{random_access_grammar_compress} 
-as it captures the popular Lempel--Ziv factorization up to a logarithmic factor: a Lempel--Ziv factorization of size $z$ can be transformed into an SLP of size $\Oh(z\log n)$~\cite{CharikarLLPPRSS02,Rytter02}.
+We choose this formalism as it captures the popular Lempel--Ziv factorization up to a logarithmic factor: a Lempel--Ziv factorization of size $z$ can be transformed into an SLP of size $\Oh(z\log n)$~\cite{CharikarLLPPRSS02,Rytter02}.
 %
 Our contribution is to create an index taking space polynomial in the size of the grammar that reports consecutive occurrences with distances in $[0,b]$ in optimal time up to poly log factors.
 To report consecutive occurrences without constraints on the distance between $P_1$ and $P_2$, our index uses $\Oh(g^2\log^4|T|)$ space where $g$ is the size of the SLP (see Corollary~\ref{cor:all}).
@@ -64,8 +62,7 @@ Partially motivated by the limitations of a space usage in $\tilde \Oh(g^5)$, in
 % Results
 We show that a similar complexity can be achieved when the text is highly compressible: all consecutive occurrences can be reported in $\Oh(g+|P_1|+|P_2|+\occ)$ time (see Theorem~\ref{th:main}) where $g$ is the size of the grammar compressed text. We then derive from this result algorithms for gapped consecutive matching (Corollary~\ref{cor:ab}) and the k-closest consecutive occurrences (Corollary~\ref{cor:topk}).
 % Insights
-Our result is based on the efficient ``boundary information'' encoding recently introduced by Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22}. For a given pattern $P$, the $P$-boundary information of a string $S$ stores substrings occurring both in $P$ and $S$. They are chosen to capture just the information needed to detect new occurrences of $P$ that could occur when concatenating a string to $S$.
-% either one $P$-substring information if $S$ occurs in $P$, or several substrings of $P$ that contain the longest prefix of $S$ that is a suffix of $P$ ($P$-prefix information) and several substrings of $P$ that contain the longest suffix of $S$ that is a prefix of $P$. 
+Our result is based on the efficient ``boundary information'' encoding recently introduced by Ganardi and Gawrychowski~\cite{DBLP:conf/soda/GanardiG22}. For a given pattern $P$, the $P$-boundary information of a string $S$ stores substrings occurring both in $P$ and $S$. They are chosen to capture just the information needed to detect new occurrences of $P$ that could occur when concatenating a string to $S$. 
 The authors show how to use this encoding to determine in $\Oh(g+|P|)$ time whether $P$ occurs in the compressed text. We sightly extend their approach to report all occurrences crossing the boundary (Lemma~\ref{lemma:crossing}). Then we repeat this technique on a second level with ``secondary boundary information'' and carefully analyse all cases to obtain Theorem~\ref{th:main}. Here, again, the main sketch is the straight-line program we work on, and I contributed to all aspects of the publication.
 %but the boundary information (and secondary boundary information) could also be seen as sketches on pattern combined to the text.
 
@@ -121,14 +118,14 @@ Our interest and research on DTW is also motivated by potential applications to 
 % My contrib
 I contributed to every part of that work except for the approximation algorithms (given as corollary of our second algorithm) which were added by Tatiana Starikovskaya.
 % Update
-Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(n^2)$-time computation of the DTW distance between two strings of length $n$, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
+Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(N^2)$-time computation of the DTW distance between two strings of length $N$, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
 
 
 
 % XBWT
 For \textbf{Chapter~\ref{chap:XBWT}}, we shift our focus from the study of similarity measures to the practical problem of readsets indexing. 
 % Approximation
-Additionally, in this chapter, the perspective on approximation is different, instead of studying approximate matching where one reports all substrings at a given distance from the pattern, we propose a compressed index that has the downside of reporting false positives: occurrences of the pattern that are not fully included in a read.
+Additionally, in this chapter, the perspective on approximation is different, instead of studying approximate matching where one reports all substrings at a given distance from the pattern, we propose a compact index that has the downside of reporting false positives: occurrences of the pattern that are not fully included in a read.
 
 % Add context on readsets and how big their representation can be despite the repetitiveness
 Recall that a read is a sequence of base pairs, generally short (the precise length depends on the sequencing technique), obtained when sequencing DNA. To be able to re-assemble the entire DNA sequence, each position of the sequence is generally covered by multiple reads. The average number of reads covering a position is called the sequencing coverage.
@@ -137,7 +134,7 @@ The standard sequencing coverage for short reads with the goal of assembling a g
 % BWT and importance of the FM-index for bio tools
 To index a single repetitive string, the FM-index~\cite{ferragina2005indexing} based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block} is one of the most important data structures\footnote{The authors of both the BWT and FM-index received in 2022 the \textit{ACM Paris Kanellakis Theory and Practice Award} for those breakthroughs.}, and it has been applied in several bioinformatics tools for short read alignment~\cite{langmead2009ultrafast,langmead2012fast,li2009fast}.
 %Most recent improvement: r-index
-The most recent improvement on the FM-index is  the $r$-index by Gagie et al.~\cite{gagie2020fully} that takes space proportional to $r$, the number of runs in the BWT of the indexed string. More precisely the data structure occupies $\Oh(r\log\log n)$ space while still being able to count and locate all occurrences of a pattern in optimal time. This makes the number of run in the BWT an important parameter for space efficiency, and is often seen as a measure of the repetitiveness of the text.
+The most recent improvement on the FM-index is  the $r$-index by Gagie et al.~\cite{gagie2020fully} that takes space proportional to $r$, the number of runs in the BWT of the indexed string. More precisely the data structure occupies $\Oh(r\log\log n)$ space while still being able to count and locate all occurrences of a pattern in optimal time (up to a logarithmic factor). This makes the number of run in the BWT an important parameter for space efficiency, and is often seen as a measure of the repetitiveness of the text.
 
 % The issue of generalizing the BWT to a collection of strings 
 Unfortunately, extending the BWT to a collection of strings is not straightforward. To better understand the context of Chapter~\ref{chap:XBWT}, let me give an overview of the current solutions and their impact on the resulting index structure. 
@@ -159,7 +156,7 @@ Their experiments demonstrate the efficiency of the heuristic ordering the end-o
 % Our idea
 Our work in Chapter~\ref{chap:XBWT} predates the publication of the survey of Cenzato and Lipták~\cite{cenzato_et_al_BWT_Collections} and the construction of an optimal order by Bentley et al.~\cite{bentley2019complexity}, and we take a different approach to optimizing the number of runs for the BWT. We propose to take advantage of information very commonly associated with reads: alignment to a reference genome. We build a tree where the main trunk is the reference and reads branch out of the trunk at the position they are aligned to, and then compute the generalization of the BWT for trees: the eXtended Burrows--Wheeler transform (XBWT)~\cite{ferragina2009compressing}. Intuitively, this provides a context to the reads that allows for better sorting and limits the number of runs breaking in the transformed string. Formally, we show that if the reads are almost identical to the reference and that the differences are located towards the end of the reads (which is the case in practice for short reads), the number of runs in the XBWT can be bounded depending on the number of runs in the BWT of the reference. We then test our approach in practice and show that it does obtain fewer runs than the BWT with the colexicographic heuristic (15\% less for a human chromosome 19 readset).
 % False Possitive
-The main drawback of our index is that we search in the branching tree thus, when counting the number of occurrences of a pattern, we cannot avoid counting occurrences that are not fully contained in a read (that are partially or entirely in the main truck reference).
+The main drawback of our index is that we search in the branching tree thus, when counting the number of occurrences of a pattern, we cannot avoid counting occurrences that are not fully contained in a read (that are partially or entirely in the main trunck coresponding to the reference).
 
 % The prefix free parsing construction of the XBWT
 Another contribution of our work is that, with the goal of a scalable construction of the index in mind, we adapt the technique of a prefix-free parsing construction of the BWT of Boucher et al.~\cite{boucher2019prefix} to the construction of the XBWT. 
