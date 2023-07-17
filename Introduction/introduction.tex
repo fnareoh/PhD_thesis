@@ -6,7 +6,7 @@ When answering the classic question ``What is your Ph.D. about?'' to family and 
 
 \section{Context}
 
-The exact pattern matching problem has been extensively studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{charras2004handbook} on the various solutions to exact pattern matching which have also been thoroughly compared in practice~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
+The exact pattern matching problem has been extensively studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{Charras2004} on the various solutions to exact pattern matching which have also been thoroughly compared in practice~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
 
 
 % String notations
@@ -46,7 +46,7 @@ These results give a good understanding of the time complexity of regular expres
 
 % Don't care
 Although the versatility of regular expressions makes them widely used in practice across fields, they are notoriously difficult to write for users.
-As a simpler alternative, Fischer and Paterson~\cite{fischer1974string} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted \texttt{?}, can occur in both the pattern and the text, and matches any other character of the alphabet.
+As a simpler alternative, Fischer and Paterson~\cite{FischerPaterson} introduced the \underline{``don't care''} pattern matching where a don't care (also called wildcard or gap) symbol, denoted \texttt{?}, can occur in both the pattern and the text, and matches any other character of the alphabet.
 % Space seed
 This model has been directly applied in the PROSITE~\cite{hulo2006prosite} database of proteins where wildcards are supported. More generally, space seeds~\cite{li2004patternhunter}, a similar concept where only some positions have to be matched, have been used in homology search~\cite{ma2002patternhunter}, alignment~\cite{david2011shrimp2}, assembly~\cite{birol2015spaced}, and metagenomics~\cite{bvrinda2015spaced}.
 % Gapped matching
@@ -87,7 +87,7 @@ Another application-driven model is \underline{parametrized strings} or ``p-stri
 \subsection{Similarity Measures and Distances}
 % The notion of robustness of the similarity measure
 % Similarity measures
-Many string applications have to work around noise in the input data, which makes it difficult to search for exact matches. Some of the models presented earlier define their match to take into account noisy input, but another important approach is to work with distances and similarity measures. Quantifying the degree of similarity and dissimilarity of two strings is for example needed in Bioinformatics~\cite{Gusfield1997}, music analysis~\cite{mongeau1990comparison}, and plagiarism detection~\cite{lukashenko2007computer}. 
+Many string applications have to work around noise in the input data, which makes it difficult to search for exact matches. Some of the models presented earlier define their match to take into account noisy input, but another important approach is to work with distances and similarity measures. Quantifying the degree of similarity and dissimilarity of two strings is for example needed in Bioinformatics~\cite{Gusfield1997}, music analysis~\cite{Mongeau1990}, and plagiarism detection~\cite{lukashenko2007computer}. 
 %
 A distance measure quantifies the dissimilarity between strings, while a similarity measure quantifies the degree of resemblance between strings. Most distances can be derived into similarity measure, and most similarity measure have a corresponding distance, thus in this section, we alternate between the two terms depending on which form is most common in the literature.
 

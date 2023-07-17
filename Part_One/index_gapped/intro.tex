@@ -36,7 +36,7 @@ and this problem, highlighting a difficulty in removing the $O(\sqrt{N})$ from b
 and query time at the same time.
 
 The focus of this paper is the recently introduced variant of the indexing problem, called \emph{gapped indexing for consecutive occurrences}, in which a query consists of
-two patterns $P_{1}$ and $P_{2}$ and a range $[a,b]$, and one must find the pairs of consecutive occurrences of $P_1,P_2$ separated by a distance in the range $[a,b]$. Navarro and Thankanchan~\cite{NavarroT16} showed that for $P_1=P_2$ there is a $O(n \log n)$-space index with optimal query time $O(m+\occ)$, where $m = |P_1|=|P_2|$ and $\occ$ is the number of pairs to report, but in conclusion they noticed that extending their solution to the general case of
+two patterns $P_{1}$ and $P_{2}$ and a range $[a,b]$, and one must find the pairs of consecutive occurrences of $P_1,P_2$ separated by a distance in the range $[a,b]$. Navarro and Thankanchan~\cite{NAVARRO2016108} showed that for $P_1=P_2$ there is a $O(n \log n)$-space index with optimal query time $O(m+\occ)$, where $m = |P_1|=|P_2|$ and $\occ$ is the number of pairs to report, but in conclusion they noticed that extending their solution to the general case of
 two patterns might not be possible. Bille et al.~\cite{bille2022gapped} provided an evidence of hardness of the general case and established a (conditional) lower bound for gapped indexing for consecutive occurrences,
 by connecting its complexity to
 that of set intersection. This lower bound suggests that, at least for indexes of size $\tilde O(N)$,

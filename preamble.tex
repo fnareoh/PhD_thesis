@@ -14,8 +14,12 @@
 \setlength{\headheight}{14pt}% Fix warning headheight
 \usepackage{bookmark} % To have the conclusion outside part 2
 
-\hfuzz=5pt
+%\hfuzz=40pt
+%\hfuzz=5pt
 \vbadness=10000 % I don't see its vbadness
+\hbadness=10000 % I don't see its hbadness
+
+\emergencystretch=1em
 
 \newcommand{\A}{\mathcal{A}}
 \newcommand{\Oh}{\mathcal{O}}
@@ -131,8 +135,6 @@
 
 % list of publication
 \usepackage{bibentry}
-
-\nobibliography{Introduction/intro}
 
 % no numbering toc
 \AtBeginDocument{\addtocontents{toc}{\protect\thispagestyle{empty}}} 
