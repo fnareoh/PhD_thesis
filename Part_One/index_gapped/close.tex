@@ -25,7 +25,7 @@ Assume first that $A$ is associated with a production $A \rightarrow BC$. We the
 Consider now the case where $A$ is associated with a production $A \rightarrow B^k$. The leaves labelled by $S[q_1]$ and $S[q_2+|P_2|-1]$ belong to the subtrees rooted at different children of $A$. If $S[q_1]$ belongs to the subtree rooted at the $k'$-th child of $A$, then $(q_1-\off(u)-|\str{B}| \cdot (k'-1),q_2-\off(u)-|\str{B}| \cdot (k'-1))$ is a relevant co-occurrence of $P_1,P_2$ in $\str{A}$. 
 \end{proof}
 
-\subsection{Combinatorial observations}
+\subsection{Combinatorial Observations}
 Informally, we define a set of $O(g^2)$ strings and show that for any patterns $P_1,P_2$ there are two strings $S_1,S_2$ in the set with the following property: whenever the expansion of a non-terminal $A$ in $G'$ contains a pair of occurrences $P_1,P_2$ forming a relevant co-occurrence, there are occurrences of $S_1,S_2$ in the proximity. This will allow us to preprocess the non-terminals of $G'$ for occurrences of the strings in the set and use them to detect $b$-close relevant co-occurrences of $P_1,P_2$. 
 
 Consider two tries, \Tpre\ and \Tsuf: For each production of $G'$ of the form $A\rightarrow BC$, we store $\str{C}$ in  \Tsuf\ and $\rev{\str{B}}$ in \Tpre. For each production of the form $A\rightarrow B^k$, we store $\str{B}$, $\str{B^2}$, $\str{B^{k-2}}$, and $\str{B^{k-1}}$ in \Tsuf\ and the reverses of those strings in \Tpre. For $j \in \{1,2\}$ and $s \in \splits(G', P_j)$ define $S_j(s) = \rev{U} V$, where $U$ is the label of the locus of $\rev{P_j[\dots s]}$ in \Tpre\ and $V$ is the label of the locus of $P_j(s \dots]$ in \Tsuf. Let $l_j(s) = |\rev{U}|$ and $\Delta_j(s) = l_j(s)-s$.  

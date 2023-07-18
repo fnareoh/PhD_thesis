@@ -12,7 +12,7 @@ Pour la recherche d'expressions régulières, nous donnons un algorithme en stre
 Ensuite, nous étudions la recherche de motifs consécutifs avec espacement, un type de requête plus simple, où étant donné deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacés d'une distance dans $[a, b]$. Nous étudions ce problème sous plusieurs angles : l'indexation compressée et la recherche de motifs dans un texte compressé.
 %Square
 %Nos solutions, pour les problèmes précédant, utilisent beaucoup la détection périodicité pour s'épargner des calculs redondants. Cette utilisation de la périodicité rend les carrés (sous-chaîne immédiatement répétée) intéressants à étudier au-delà de leur inhérente signification~\cite{Kolpakov2003}. 
-Motivés par l'importance de la périodicité dans les algorithmes précédents, nous étudions ensuite la détection de carrés pour alphabets sans ordres (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée en 1984 par Main et Lorentz~\cite{Main1984}.
+Motivés par l'importance de la périodicité, nous étudions ensuite la détection de carrés pour alphabets sans ordres (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée en 1984 par Main et Lorentz~\cite{Main1984}.
 
 % Second part
 La seconde partie de cette thèse propose quelques utilisations d'approximations pour aider à passer à l'échelle sur des grandes quantités de données, en particulier avec application à la bio-informatique.
@@ -20,7 +20,7 @@ La seconde partie de cette thèse propose quelques utilisations d'approximations
 Nous étudions tout d'abord la recherche approximative de motifs, où nous devons rapporter toutes les occurrences à une distance au plus égale à $k$ pour une mesure de similarité donnée.
 % LCS DTW
 %Motivés par les bornes inférieures pour le calcul des mesures de similarité les plus populaires,
-Nous fournissons des algorithmes paramétrés efficaces pour calculer la longueur de la plus longue sous-chaîne commune avec environ $k$ différences, puis pour la recherche de motifs avec déformation temporelle dynamique.
+Nous fournissons des algorithmes paramétrés efficaces pour calculer la longueur de la plus longue sous-chaîne commune avec environ $k$ différences, puis pour la recherche de motifs apparaissant avec une dynamic time warping distance au plus $k$.
 %En raison de leur robustesse aux entrées bruitées, ces deux mesures peuvent être appliquées à la détection de passages répétés dans un texte, nécessaire pour des applications telles que la détection de plagiat~\cite{zou2010cluster} et l'alignement de séquences biologiques~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
 % XBWT
 Enfin, nous proposons un index compressé pour des collections de lectures de séquençage redondantes. Cet index tire parti d'alignements sur un génome assemblé pour améliorer la compression, mais il peut en revanche renvoyer des faux positifs dans ses requêtes.

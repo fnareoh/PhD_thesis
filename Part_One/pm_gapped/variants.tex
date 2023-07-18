@@ -1,4 +1,4 @@
-\section{Gapped and top-\texorpdfstring{$k$}{k} consecutive pattern matching}
+\section{Gapped and Top-\texorpdfstring{$k$}{k} Consecutive Pattern Matching}
 We now explain how to modify the algorithm to report only the co-occurrences with a bounded gap (Corollary~\ref{cor:ab}) and only the top-$k$ co-occurrences in the text (Corollary~\ref{cor:topk}).
 
 \paragraph*{Bounded-gap co-occurrences.} We run the algorithm of Section~\ref{pmgapped:sec:consec} in $O(g+m)$ time to generate a description of all primary co-occurrences (the elements of this description are single co-occurrences and arithmetic progressions of co-occurrences with a fixed gap) and select the elements of this description with a gap in $[a,b]$. For each selected element, we apply the approach of~\cite[Section 6.4]{talg/ChristiansenEKN21}) to generate all co-occurrences with a gap in the interval $[a,b]$ in time $O(g+m+\occ)$. 
