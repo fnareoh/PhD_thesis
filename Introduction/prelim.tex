@@ -1,6 +1,6 @@
 \section{Preliminaries}\label{sec:prelim}
 
-This section aims at presenting some recurring concepts needed to understand the following chapters, as well as presenting the different sketches used in this work and their interconnections.
+This section aims at presenting some recurring concepts needed to understand the following chapters.
 
 \subsection{The Strong Exponential Time Hypothesis}\label{sec:prelim:seth}
 
@@ -91,14 +91,3 @@ In this thesis, in Chapters~\ref{chap:regexp} to~\ref{chap:gapped_pm} of Part~\r
     Next, because $|X| \leq 2|Y|$, $X[j..j+|Y|)$ and $X[k..k+|Y|)$ must overlap by at least $p$ position, i.e. $j+|Y|-1-k \geq p$. 
     $X[k..j+|Y|)$, is both a prefix and a suffix of $|Y|$ which implies a period of $k-j \leq |Y| - p $, by the same argument of the minimality of $p$ we have that $k-j$ must be a multiple of $p$ and thus the substring $X[i..k+|Y|)$ is a run of period $p$ and each position $i+np$ for $0 \leq n \leq \lfloor \frac{k-1+|Y|-i}{p} \rfloor$ is the start of an occurrence of $Y$.
 \end{proof}
-
-\subsection{Compression Techniques}\label{sec:prelim:compress}
-What type of compression is used on what problem and why ?
-\begin{itemize}
-\item RLE
-\item Grammar
-\item Lempel Ziv
-\item BWT
-\item State of the art on the equivalence through string attractors
-\item Sketches
-\end{itemize}
