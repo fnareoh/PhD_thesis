@@ -1,26 +1,23 @@
 %Context
 La simplicité et la versatilité des chaînes de caractères rendent leur traitement crucial pour de nombreuses applications, telles que la bio-informatique, la recherche d'informations et la cybersécurité.
-Le problème de la recherche exact d'un motif a naturellement été largement étudié~\cite{Charras2004}, cependant, de nombreuses applications nécessitent également des requêtes plus complexes. En outre, dans ces domaines applicatifs, la quantité de données à traiter augmente à une vitesse stupéfiante~\cite{muir2016real}, et les requêtes ne peuvent pas toujours passer à l'échelle.
+Le problème de la recherche exact d'un motif a naturellement été largement étudiée~\cite{Charras2004}, cependant, de nombreuses applications nécessitent également des requêtes plus complexes. De plus, dans ces domaines applicatifs, la quantité de données à traiter augmente à une vitesse stupéfiante~\cite{muir2016real}, et les complexités des requêtes ne permettent pas toujours de passer à l'échelle.
 % Sketches
-Dans cette thèse, nous proposons plusieurs algorithmes efficaces en termes d'espace et de temps pour plusieurs problèmes sur les chaînes de caractères, en nous appuyant sur les sketchs : des compressions (avec ou sans perte) qui ne conservent que les caractéristiques essentielles de l'entrée pour répondre à une requête précise.
+Dans cette thèse, nous proposons plusieurs algorithmes efficaces en termes de temps et d'espace pour divers problèmes sur les chaînes de caractères, en nous appuyant sur les sketchs : des compressions (avec ou sans perte) qui ne conservent que les caractéristiques essentielles de l'entrée pour répondre à une requête précise.
 
 %First part
 Dans la première partie de cette thèse, nous étudions des requêtes complexes telles que la recherche par expressions régulières, la recherche de motifs consécutifs avec espacement et la détection de carrés.
 %Regexp
-Pour la recherche d'expressions régulières, nous donnons un algorithme en streaming utilisant très peu d'espace : les caractères du texte arrivent un par un, et nous ne pouvons accéder aux anciens que si nous les avons stockés explicitement.
+Pour la recherche d'expressions régulières, nous présentons un algorithme utilisant peu d'espace dans le modèle de flot de données (streaming) : les caractères du texte arrivent un par un, et nous ne pouvons accéder aux anciens que si nous les avons stockés explicitement.
 %Gapped
-Ensuite, nous étudions la recherche de motifs consécutifs avec espacement, un type de requête plus simple, où étant donné deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacés d'une distance dans $[a, b]$. Nous étudions ce problème sous plusieurs angles : l'indexation compressée et la recherche de motifs dans un texte compressé.
+Ensuite, nous étudions la recherche de motifs consécutifs avec espacement, un type de requête plus simple, où étant donné deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacés d'une distance comprise entre $a$ et $b$. Nous étudions ce problème sous plusieurs angles : l'indexation compressée et la recherche de motifs dans un texte compressé.
 %Square
-%Nos solutions, pour les problèmes précédant, utilisent beaucoup la détection périodicité pour s'épargner des calculs redondants. Cette utilisation de la périodicité rend les carrés (sous-chaîne immédiatement répétée) intéressants à étudier au-delà de leur inhérente signification~\cite{Kolpakov2003}. 
-Motivés par l'importance de la périodicité, nous étudions ensuite la détection de carrés pour alphabets sans ordres (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée en 1984 par Main et Lorentz~\cite{Main1984}.
+Motivés par l'importance de la périodicité, nous étudions ensuite la détection de carrés pour alphabets sans ordres (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée par Main et Lorentz~\cite{Main1984} en 1984.
 
 % Second part
 La seconde partie de cette thèse propose quelques utilisations d'approximations pour aider à passer à l'échelle sur des grandes quantités de données, en particulier avec application à la bio-informatique.
 %
 Nous étudions tout d'abord la recherche approximative de motifs, où nous devons rapporter toutes les occurrences à une distance au plus égale à $k$ pour une mesure de similarité donnée.
 % LCS DTW
-%Motivés par les bornes inférieures pour le calcul des mesures de similarité les plus populaires,
-Nous fournissons des algorithmes paramétrés efficaces pour calculer la longueur de la plus longue sous-chaîne commune avec environ $k$ différences, puis pour la recherche de motifs apparaissant avec une dynamic time warping distance au plus $k$.
-%En raison de leur robustesse aux entrées bruitées, ces deux mesures peuvent être appliquées à la détection de passages répétés dans un texte, nécessaire pour des applications telles que la détection de plagiat~\cite{zou2010cluster} et l'alignement de séquences biologiques~\cite{leimeister2014kmacs,loose2016real,han2018accurate}.
+Nous fournissons des algorithmes paramétrés efficaces pour calculer la longueur de la plus longue sous-chaîne commune avec environ $k$ différences, puis pour permettre la recherche de motifs apparaissant avec une distance de ``dynamic time warping'' au plus $k$.
 % XBWT
-Enfin, nous proposons un index compressé pour des collections de lectures de séquençage redondantes. Cet index tire parti d'alignements sur un génome assemblé pour améliorer la compression, mais il peut en revanche renvoyer des faux positifs dans ses requêtes.
+Enfin, nous proposons un index compressé pour des collections de lectures de séquençage redondantes. Cet index tire parti d'alignements sur un génome assemblé pour améliorer la compression, mais l'index est approximatif car il peut renvoyer des faux positifs lors de ses requêtes.

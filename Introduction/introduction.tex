@@ -6,7 +6,7 @@ When answering the classic question ``What is your Ph.D. about?'' to family and 
 
 \section{Context}
 
-The exact pattern matching problem has been extensively studied, with in particular the famous Knuth-Morris-Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{Charras2004} on the various solutions to exact pattern matching which have also been thoroughly compared in practice~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
+The exact pattern matching problem has been extensively studied, with in particular the famous Knuth--Morris--Pratt algorithm\footnote{The elegance of this algorithm is what first drew me in this area of research as a bachelor student!} published in 1977~\cite{KMP} after being independently discovered by Morris-Pratt in a technical report in 1970 and Knuth in 1973. Since then, this has become one of the classic textbook algorithms, and Charras and Lecroq published a detailed handbook~\cite{Charras2004} on the various solutions to exact pattern matching which have also been thoroughly compared in practice~\cite{DBLP:journals/corr/abs-1012-2547, faro2013exact}.
 
 
 % String notations
@@ -122,7 +122,7 @@ All similarity measures and distances mentioned above are illustrated in Figure~
 We discussed pattern matching models and similarity measures, we now move to another central task in string processing: repetition detection. Locating repeated fragments inside a string can be useful to detect duplicated data to be removed or to compress its representation. For example, decomposing a string into maximal fragment that appeared earlier (and appending the next symbol) is the basis of the Lempel--Ziv factorization~\cite{ziv1977universal}. Once detected, highly repetitive regions of a string can also be treated differently (see~\cite{Porat:09} for example) allowing for a more efficient algorithm overall.
 
 In music~\cite{arom1989time}, genomic~\cite{pich2018somatic}, finance~\cite{harvey2007trends} and astronomy~\cite{hewish1979observation}\footnote{ When Jocelyn Bell first discovered signals coming from pulsars (a rotating neutron star that creates a lighthouse effect), their regularity was so surprising that speculations where made on the fact that they might be signal from extraterrestrial intelligence.}, a number of dataset present signs of repetition of a periodic phenomenon.
-Formally, we say that a string $T$ of length $n$ is periodic with period $p \leq n/2$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and the smallest period of $T$ is simply called the period of $T$.
+Formally, we say that a string $T$ of length $n$ is periodic with period $p$ if for all $0 \leq i < n - p$, $T[i]=T[i+p]$, and the smallest period of $T$ is simply called the period of $T$.
 %
 But often, input data only contains periodic substrings (rather than being entirely periodic), which naturally leads to the concept of runs. Runs are maximal substrings that are periodic with a given period, i.e. a substring $T[i..j]$ is a run if it is periodic with period $p$, and $T[i-1..j]$ and $T[i..j+1]$ (if well-defined, i.e. $0<i$ and $j<|T|-1$) are not periodic with period $p$. 
 
