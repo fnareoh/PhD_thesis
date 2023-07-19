@@ -54,7 +54,7 @@ We then reuse this structure for our main result: Theorem~\ref{thm:close_co_occu
 % Sketches
 The straight-line program input is the main sketch used in this work, but the index we construct also forms a grammar-based sketch specific to consecutive occurrences.
 % Comments
-The index of Theorem~\ref{thm:close_co_occurrences} circumvents the lower bound for highly compressible texts (such that $g^5 << n^2$), which is a non-trivial result since some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in Section~\ref{sec:intro:scalability}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case with $0 \leq a \leq b \leq |T|$ as open questions\footnote{We started writing a solution for the general case, but it was very technical and had an unreasonable space-complexity of $\tilde \Oh(g^{15})$...}. I contributed to every part.
+The index of Theorem~\ref{thm:close_co_occurrences} circumvents the lower bound for highly compressible texts (such that $g^5 << n^2$), which is a non-trivial result since some problems cannot avoid a high dependency on the size of the uncompressed string (as detailed in Section~\ref{intro:sec:sketching}). However, we expect our space complexity to be far from optimal and leave improvements as well as the general case with $0 \leq a \leq b \leq |T|$ as open questions\footnote{We started writing a solution for the general case, but it was very technical and had an unreasonable space-complexity of $\tilde \Oh(g^{15})$...}. I contributed to every part.
 
 
 % PM
@@ -118,7 +118,7 @@ Our interest and research on DTW is also motivated by potential applications to 
 % My contrib
 I contributed to every part of that work except for the approximation algorithms (given as corollary of our second algorithm) which were added by Tatiana Starikovskaya.
 % Update
-Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(N^2)$-time computation of the DTW distance between two strings of length $N$, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
+Since our publication, Boneh, Golan, Mozes, and Weimann uploaded a preprint~\cite{boneh2023near} with a $\tilde{\Oh}(n^2)$-time computation of the DTW distance between two strings with $n$ runs, which is optimal up to log factors. They follow the approach that Clifford et al.~\cite{clifford2019rle} used to show a similar result for the edit distance: they represent and manipulate the inputs and outputs with a piecewise-linear function.
 
 
 
