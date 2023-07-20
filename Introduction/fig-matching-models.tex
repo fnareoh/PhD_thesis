@@ -17,33 +17,38 @@
         %
         \textbf{Gapped consecutive} \cite{bille2022gapped} & \begin{minipage}{5cm}\centering $P_1=$ GATTA $P_2=$ TAC  $a=2$, $b=6$\\ \footnotesize{Consecutive occurrences $(i,j)$ of $(P_1,P_2)$ and s.t. $j-i \in [a,b]$ } \end{minipage} &  AGG\underline{GATTAC}TAC, distance between $P_1$ and $P_2$ $6-3=3 \in [a,b]$\\
         %
-        Degenerate \cite{abrahamson1987generalized}  & \begin{minipage}{5cm}\centering $P=$ GATTACAT \\ \footnotesize{Some positions can match several characters.}\end{minipage} &   {\renewcommand{\arraystretch}{1} A$\left\{
+        Degenerate \cite{abrahamson1987generalized}  &   {\renewcommand{\arraystretch}{1} $P=$$\left\{
             \begin{array}{l}
-                \mathrm{T}  \\
+                \mathrm{G}  \\
                 \mathrm{C}
-            \end{array}\right\}$\underline{GAT}$\left\{
-            \begin{array}{l}
-                \mathrm{\underline{T}}  \\
-                \mathrm{A}
-            \end{array}\right\} \mathrm{\underline{ACAT}A}$} \\
+            \end{array}\right\}$ATTA} & 
+        \begin{minipage}{6cm}\centering  \underline{GATTA}ATC\underline{CATTA}CCATGAAT \\ \footnotesize{Some positions can match several characters.}\end{minipage} \\
         %
-        Generalized degenerate \cite{alzamel_et_al:LIPIcs:2018:9323}  & \begin{minipage}{5cm}\centering $P=$ GATTACAT \\ \footnotesize{Some positions match a set  strings of a fixed length.} \end{minipage} &   {\renewcommand{\arraystretch}{1} AT$\left\{
+        Generalized degenerate \cite{alzamel_et_al:LIPIcs:2018:9323}  &
+        {\renewcommand{\arraystretch}{1} $P=$$\left\{
             \begin{array}{l}
-                \mathrm{\underline{G}}  \\
-                \mathrm{T}
-            \end{array}\right\}
-        \mathrm{\underline{AT}}\left\{
+                \mathrm{G}  \\
+                \mathrm{C}
+            \end{array}\right\}$AT$\left\{
             \begin{array}{l}
-                \mathrm{\underline{TA}}  \\
+                \mathrm{TA}  \\
                 \mathrm{AT}
-            \end{array}\right\} \mathrm{\underline{CAT}A}$} \\
+            \end{array}\right\}$} &
+        
+        \begin{minipage}{6cm}\centering  \underline{GATTA}ATC\underline{CATTA}CCAT\underline{GAAT} \\ \footnotesize{Some positions match a set  strings of a fixed length.}\end{minipage}\\
         %
         %
-        Elastic degenerate \cite{iliopoulos2021efficient}  & \begin{minipage}{5cm}\centering $P=$ GATTACAT \\ \footnotesize{Some positions match a set of strings (length can vary).} \end{minipage} &   {\renewcommand{\arraystretch}{1} AT\underline{GAT}$\left\{
+        Elastic degenerate \cite{iliopoulos2021efficient}  &
+        {\renewcommand{\arraystretch}{1} $P=$$\left\{
             \begin{array}{l}
-                \mathrm{\underline{TA}}  \\
-                \mathrm{A}
-            \end{array}\right\} \mathrm{\underline{CAT}A}$} \\
+                \mathrm{G}  \\
+                \mathrm{C}
+            \end{array}\right\}$A$\left\{
+            \begin{array}{l}
+                \mathrm{TTA}  \\
+                \mathrm{T}
+            \end{array}\right\}$}
+        & \begin{minipage}{6cm}\centering  \underline{GATTA}ATC\underline{CATTA}C\underline{CAT}GAAT \\ \footnotesize{Some positions match a set of strings (length can vary).}\end{minipage}\\
         %
         Abelian/Jumbled \cite{eres2004permutation} & \begin{minipage}{5cm}\centering $P=$ GATTACAT \\ \footnotesize{Characters can be in reordered.} \end{minipage} &  AGAG\underline{TATGATCA}GT\\
         %
