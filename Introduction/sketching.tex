@@ -23,8 +23,8 @@ In other words, sometimes, even if the input is given in compressed form, we can
 %
 %Streaming
 \item \textbf{Streaming algorithms:} there, the data is considered so large that it can only be handled as a stream.
-For the pattern-matching problem, the pattern and the length of the text are known in advance and can be preprocessed. Then the characters of the text arrive one by one and can only be accessed later if they are stored explicitly. 
-This model focuses on small space complexity and accounts for all space usage, including the space required to store the input.
+For the pattern-matching problem, the pattern and the length of the text are known and can be preprocessed in advance. Then the characters of the text arrive one by one and can only be accessed later if they are stored explicitly. 
+This model focuses on small space complexity and accounts for all the space used, including the space required to store the input.
 Thus, sketches are crucial to keep the necessary information about the data already seen while limiting space usage.
 Chapter~\ref{chap:regexp} studies the regular expression membership and pattern-matching problems in this model.
 % Secondary memory
@@ -56,7 +56,7 @@ It is a locality-sensitive hash: similar inputs will have similar sketches with 
 % Mash
 The first tool implementing this concept for $k$-mer set was Mash~\cite{ondov2016mash} and the speed at which it could compare two sets made it a game changer. However, it is important to note that it uses a variant of MinHash sometimes called KMV sketching or Bottom MinHash~\cite{bar2002counting} that uses a single hash function and is defined for a $k$-mer set $A$ as $\mathrm{mash}(A)=(h(a_1),h(a_2),...,h(a_S))$ where $h(a_1) < h(a_2) < ... <h(a_S)$ are the $S$ the smallest elements of ${h(a)}_{a\in A}$.
 The estimator of the Jaccard index is then computed as follows: $$ \mathrm{J}_{\mathrm{mash}}(A,B) = \frac{|\mathrm{mash}(A)\cap \mathrm{mash}(B) \cap \mathrm{mash}(A \cup B) |}{|\mathrm{mash}(A \cup B)|}$$
-and the authors show that it is an unbiased estimator. Since the publication of mash, multiple variants have been considered, but not all the corresponding estimators are unbiased~\cite{10.1093/bioinformatics/btac244}. For visual illustrations of the MinHash variants, I recommend Camille Marchet's blog post~\cite{camsketch}.
+and the authors show that it is an unbiased estimator. Since the publication of Mash, multiple variants have been considered, but not all the corresponding estimators are unbiased~\cite{10.1093/bioinformatics/btac244}. For visual illustrations of the MinHash variants, I recommend Camille Marchet's blog post~\cite{camsketch}.
 %
 MinHash and its variants are sketches for set similarity, but other sketches are used for other tasks: Bloom filters can be seen as sketches for set membership (``Is my element in the set?''), count-min sketches have been used for element frequency (``In how many sets does my element occur?''), and HyperLogLog sketches estimate set cardinality (``How many distinct elements are in my set ?''). Those are examples taken from the survey on sketching for genomics by Will P.M. Rowe~\cite{rowe2019levee}, and for more details see also the survey by Marçais et al.~\cite{marccais2019sketching} on ``Sketching and Sublinear Data Structures in Genomics''.
 
