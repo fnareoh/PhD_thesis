@@ -1,15 +1,15 @@
 %Context
-La simplicité et la versatilité des chaînes de caractères rendent leur traitement crucial pour de nombreuses applications, telles que la bio-informatique, la recherche d'informations et la cybersécurité.
-Le problème de la recherche exact d'un motif a naturellement été largement étudiée~\cite{Charras2004}, cependant, de nombreuses applications nécessitent également des requêtes plus complexes. De plus, dans ces domaines applicatifs, la quantité de données à traiter augmente à une vitesse stupéfiante~\cite{muir2016real}, et les complexités des requêtes ne permettent pas toujours de passer à l'échelle.
+La simplicité des chaînes de caractères rendent leur traitement crucial pour de nombreuses applications, telles que la bio-informatique, la recherche d'informations et la cybersécurité.
+Le problème de la recherche exact d'un motif a naturellement été largement étudié~\cite{Charras2004}, cependant, de nombreuses applications nécessitent également des requêtes plus complexes. De plus, dans ces domaines applicatifs, la quantité de données à traiter augmente à une vitesse stupéfiante~\cite{muir2016real}, et les complexités des requêtes ne permettent pas toujours de passer à l'échelle.
 % Sketches
-Dans cette thèse, nous proposons plusieurs algorithmes efficaces en termes de temps et d'espace pour divers problèmes sur les chaînes de caractères, en nous appuyant sur les sketchs : des compressions (avec ou sans perte) qui ne conservent que les caractéristiques essentielles de l'entrée pour répondre à une requête précise.
+Dans cette thèse, nous proposons plusieurs algorithmes efficaces en termes de temps et d'espace pour divers problèmes sur les chaînes de caractères, en nous appuyant sur les ``sketchs'' : des compressions (avec ou sans perte) qui ne conservent que les caractéristiques essentielles de l'entrée pour répondre à une requête précise.
 
 %First part
 Dans la première partie de cette thèse, nous étudions des requêtes complexes telles que la recherche par expressions régulières, la recherche de motifs consécutifs avec espacement et la détection de carrés.
 %Regexp
-Pour la recherche d'expressions régulières, nous présentons un algorithme utilisant peu d'espace dans le modèle de flot de données (streaming) : les caractères du texte arrivent un par un, et nous ne pouvons accéder aux anciens que si nous les avons stockés explicitement.
+Pour la recherche d'expressions régulières, nous présentons un algorithme utilisant peu d'espace dans le modèle de flot de données (``streaming'') : les caractères du texte arrivent un par un, et nous ne pouvons accéder aux anciens que si nous les avons stockés explicitement.
 %Gapped
-Ensuite, nous étudions la recherche de motifs consécutifs avec espacement, un type de requête plus simple, où étant donné deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacés d'une distance comprise entre $a$ et $b$. Nous étudions ce problème sous plusieurs angles : l'indexation compressée et la recherche de motifs dans un texte compressé.
+Ensuite, nous étudions la recherche de motifs consécutifs avec espacement, un type de requête plus simple, où étant donnés deux motifs $P_1$, $P_2$ et un intervalle $[a, b]$, il faut renvoyer toutes les occurrences consécutives (sans autres occurrences des motifs entre les deux) de $P_1$ suivies  de $P_2$ espacées d'une distance comprise entre $a$ et $b$. Nous étudions ce problème sous plusieurs angles : l'indexation compressée et la recherche de motifs dans un texte compressé.
 %Square
 Motivés par l'importance de la périodicité, nous étudions ensuite la détection de carrés pour alphabets sans ordres (le cadre le plus abstrait dans lequel les carrés peuvent être définis). Nous fournissons un algorithme optimal et répondons à une question ouverte posée par Main et Lorentz~\cite{Main1984} en 1984.
 
