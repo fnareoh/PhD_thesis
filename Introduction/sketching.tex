@@ -38,11 +38,11 @@ We use this approach of streaming on secondary memory to limit main memory usage
 The entire second part of this thesis is dedicated to this approach. In particular, in Chapter~\ref{chap:LCS}, we treat the problem of the Longest Common Subsequence with approximately $k$ mismatches with a probabilistic algorithm that answers correctly with high probability.
 \end{itemize}
 
-Before presenting the main contributions of this thesis, I would like to present MinHash, a sketch that has been very successfully applied in bioinformatics to the large amounts of genomic data we mentioned in Section~\ref{sec:intro:scalability}. I will also mention a few other popular sketches in bioinformatics for completeness. 
+Before presenting the main contributions of this thesis, I would like to present MinHash, a sketch that has been very successfully applied in Bioinformatics to the large amounts of genomic data we mentioned in Section~\ref{sec:intro:scalability}. I will also mention a few other popular sketches in Bioinformatics for completeness. 
 % Lossy only
 In this field, a sketch generally refers to lossy compression producing a small and approximate summary of the data, and does not include lossless compression as we do.
 % kmer decomposition
-Most of the sketching techniques in bioinformatics rely on the $k$-mer decomposition: the sequence (or sequences) are represented by their substrings of length $k$ (called $k$-mers)\footnote{In general, a $k$-mer and its reverse complement are seen as equivalent and represented by the smallest of the two according to the lexicographic order (called the canonical $k$-mer).}.
+Most of the sketching techniques in Bioinformatics rely on the $k$-mer decomposition: the sequence (or sequences) are represented by their substrings of length $k$ (called $k$-mers)\footnote{In general, a $k$-mer and its reverse complement are seen as equivalent and represented by the smallest of the two according to the lexicographic order (called the canonical $k$-mer).}.
 % Jaccard index
 Naturally, similar strings will tend to share a lot $k$-mers. The Jaccard index measures this similarity. For two $k$-mer sets $A$ and $B$, it is simply defined as $ \mathrm{J}(A,B) = \frac{|A\cap B|}{|A \cup B|} $.
 % The problem with just kmer set

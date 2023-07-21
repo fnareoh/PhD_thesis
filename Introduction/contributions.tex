@@ -75,12 +75,12 @@ We present our final algorithm in steps. We first assume that the alphabet size 
 In this work, I participated in formalizing and clarifying the proofs throughout the research process.
 
 % Part two
-\textbf{Part~\ref{part:approx-bio}} explores the use of approximation to further reduce the size of sketches and provide more efficient algorithms. Each chapter provides a proof of concept implementation for bioinformatics applications.
+\textbf{Part~\ref{part:approx-bio}} explores the use of approximation to further reduce the size of sketches and provide more efficient algorithms. Each chapter provides a proof of concept implementation for Bioinformatics applications.
 %
 % LCS approx k
 Earlier in this introduction, we detailed the importance of similarity measures for numerous applications.
 % ED
-In bioinformatics, the edit distance is arguably the most popular similarity measure, however, Backurs and Indyk~\cite{DBLP:conf/stoc/BackursI15} proved a conditional lower bound (based on SETH) which suggests it is unlikely to be computable in strongly subquadratic time.
+In Bioinformatics, the edit distance is arguably the most popular similarity measure, however, Backurs and Indyk~\cite{DBLP:conf/stoc/BackursI15} proved a conditional lower bound (based on SETH) which suggests it is unlikely to be computable in strongly subquadratic time.
 % ED approx
 The need to overcome this quadratic-time barrier led to the study of approximate algorithms for the edit distance. Chakraborty et al.~\cite{DBLP:conf/focs/ChakrabortyDGKS18} gave the first breakthrough result with a constant-factor approximation algorithm that computes the edit distance between two strings of length $n$ in time $\tilde{\Oh}(n^{2-2/7})$.
 Since our publication~\cite{DBLP:conf/cpm/GourdelKRS20} (presented in Chapter~\ref{chap:LCS}), a series of works have been published on approximating the edit distance~\cite{brakensiek2020constant,koucky2020constant} with the strongest result being~\cite{andoni2020edit} with a constant factor approximation in time $n^{1+\eps}$ for any $\eps>0$ (where the approximation constant depends solely on $\eps$).
@@ -123,7 +123,7 @@ Additionally, in this chapter, the perspective on approximation is different, in
 Recall that a read is a sequence of base pairs, generally short (the precise length depends on the sequencing technique), obtained when sequencing DNA. To be able to re-assemble the entire DNA sequence, each position of the sequence is generally covered by multiple reads. The average number of reads covering a position is called the sequencing coverage.
 The standard sequencing coverage for short reads to assemble a genome is now between $30$ and $50$, making the readsets highly repetitive, especially when the DNA sequenced comes from a single individual.
 % BWT and importance of the FM-index for bio tools
-To index a single repetitive string, the FM-index~\cite{ferragina2005indexing} based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block} is one of the most important data structures\footnote{The authors of both the BWT and FM-index received in 2022 the \textit{ACM Paris Kanellakis Theory and Practice Award} for those breakthroughs.}, and it has been applied in several bioinformatics tools for short read alignment~\cite{langmead2009ultrafast,langmead2012fast,li2009fast}.
+To index a single repetitive string, the FM-index~\cite{ferragina2005indexing} based on the Burrows-Wheeler transform (BWT)~\cite{burrows1994block} is one of the most important data structures\footnote{The authors of both the BWT and FM-index received in 2022 the \textit{ACM Paris Kanellakis Theory and Practice Award} for those breakthroughs.}, and it has been applied in several Bioinformatics tools for short read alignment~\cite{langmead2009ultrafast,langmead2012fast,li2009fast}.
 %Most recent improvement: r-index
 The most recent improvement on the FM-index is the $r$-index by Gagie et al.~\cite{gagie2020fully} that takes space proportional to $r$, the number of runs in the BWT of the indexed string. More precisely, for an indexed string of length $n$, the data structure occupies $\Oh(r\log\log n)$ space while still being able to count and locate all occurrences of a pattern in optimal time (up to a logarithmic factor). This makes the number of runs in the BWT an important parameter for space efficiency and is often seen as a measure of the repetitiveness of the text.
 
