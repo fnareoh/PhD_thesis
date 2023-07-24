@@ -165,7 +165,7 @@ The genetic information encoded in DNA can be abstracted as just a string over t
 We obtain this string after sequencing and assembling. When a genome is sequenced, the output is a set of fragments, called \emph{reads}, extracted from the original sequence. Reads can contain sequencing errors, including nucleotide insertions, deletions, and substitutions. The typical length and error rate of the reads vary depending on the sequencing techniques.
 %
 In any case, the original position of the read in the genome is lost during sequencing and the reads have to be aligned and merged in order to reconstruct the original genome, this problem is called sequence assembly. To make this reconstruction possible, the reads are extracted in such quantities that each position of the original genome is covered multiple times. This makes readsets larger and more redundant than the assembled genome. 
-An additional difficulty is that DNA is composed of two chains of complementary nucleotides (\texttt{A-T, C-G} pairing). During sequencing, those complementary chains are detached and processed in opposite directions, and reads come from both, thus, when assembling or aligning to a reference it is necessary to consider the reverse complement of a read.
+An additional difficulty is that DNA is composed of two chains of complementary nucleotides (\texttt{A-T, C-G} pairing). During sequencing, those complementary chains are detached and processed in opposite directions, and reads come from both chains, thus, when assembling or aligning to a reference it is necessary to consider the reverse complement of a read.
 
 
 % Redundancy
