@@ -1,5 +1,5 @@
 % Overall context on strings
-The simplicity of strings and their impactful usage puts their processing at the heart of many applications, including bioinformatics, information retrieval, and cybersecurity. Exact pattern matching has been extensively studied~\cite{Charras2004} as the most natural problem, however, many applications also need more complex queries. Additionally, in all those application fields, the quantity of information to process has been increasing at a staggering rate~\cite{muir2016real}, that obtaining scalable algorithm is difficult.
+The simplicity of strings and their impactful usage puts their processing at the heart of many applications, including Bioinformatics, Information Retrieval, and Cybersecurity. Exact pattern matching has been extensively studied~\cite{Charras2004} as the most natural problem, however, many applications also need more complex queries. Additionally, in all those application fields, the quantity of information to process has been increasing at such a staggering rate~\cite{muir2016real}, that obtaining scalable algorithms is difficult.
 % Sketches
 In this thesis we contribute multiple space- and time-efficient algorithms for various string problems, by relying on sketches: compressions (lossless or lossy) that only keep the essential characteristic of the input needed to answer a given query.%, and therefore are promising for scalability.
 
@@ -10,12 +10,12 @@ For regular expression search, we provide a space-efficient algorithm in the str
 % Gapped
 Next, gapped consecutive matching is a simpler type of query where, given two patterns $P_1$, $P_2$ and a range $[a,b]$, one must report all consecutive occurrences of $P_1$ followed by $P_2$ separated by a distance in $[a,b]$. We study this problem in two settings: compressed indexing and pattern matching on a compressed text.
 % Squares
-Motivated by the importance of periodicity detection, next, we investigate square detection for general alphabets (the most abstract setting where squares can be defined). We give an algorithm that we show is optimal, which answers an open question asked in 1984 by Main and Lorentz~\cite{Main1984}.
+Motivated by the importance of periodicity detection, next, we investigate square detection for general alphabets (the most abstract setting where squares can be defined). We give an optimal algorithm which answers an open question asked by Main and Lorentz~\cite{Main1984} in 1984.
 
 
 
 % Second part
-The second part of this thesis proposes ways to use approximation toward scaling up to large amounts of data in diverse applications including bioinformatics.
+The second part of this thesis proposes several ways to use approximation toward scaling up to large amounts of data in diverse applications including Bioinformatics.
 % LCS and DTW
 We first study approximate matching, where we must report all occurrences at distance at most $k$ for a given similarity measure. %Motivated by the lower bounds on the computation of the most popular similarity measures, 
 We provide efficient parametrized algorithms for computing the length of the longest common substring with approximately~$k$ mismatches and to compute all positions of a text where a pattern occurs with dynamic time warping distance at most $k$.

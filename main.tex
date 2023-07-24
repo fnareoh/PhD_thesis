@@ -34,6 +34,8 @@
 \clearemptydoublepage
 \input{./Acknowledgement/acknowledgement}\thispagestyle{empty}
 
+\frontmatter
+\clearemptydoublepage
 \selectlanguage{english}
 \pagestyle{empty}
 \clearpage
@@ -66,6 +68,7 @@
 
 \newpage
 \chapter*{The Cat and the Yarn}
+\thispagestyle{empty}
 \begin{center}
 \begin{minipage}{12.5cm}
 Inspired by the book "Le chat au pays des nombres" by Ivar Ekeland and John O'brien, which presents the Hilbert's paradox of the Grand Hotel in a kids book format, I decided (on my own time) to sketch a comic inspired by this thesis. I dedicate it to Hana, Mira, and all the little girls that may take an interest in computer science one day.
@@ -81,7 +84,7 @@ Inspired by the book "Le chat au pays des nombres" by Ivar Ekeland and John O'br
 \clearemptydoublepage
 % Pour avoir la quatrième de couverture sur une page paire
 % To have the back cover on an even page
-\cleartoevenpage[\thispagestyle{empty}]
+\cleartooddpage[\thispagestyle{empty}]
 \input{./Couverture-these/resume}
 
 \end{document}
