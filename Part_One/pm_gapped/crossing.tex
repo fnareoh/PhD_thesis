@@ -16,7 +16,6 @@ We defer the proof of the lemma to Section~\ref{pmgapped:sec:prooflem1}. The pro
 Let $w$ be the size of the machine word. A string $p$ of length $m$ can be preprocessed in $O(m)$ time so that:
 \begin{itemize}
 \item $q$ \emph{substring concatenation queries} on $p$ can be answered in $O(q+m/w)$ time. A substring concatenation query on a string $p$ asks: Given two substrings $(i,j)$ and $(k,\ell)$, let $u = p[i\dots j]$ and $v = p[k \dots \ell]$ of $p$, check whether $uv$ occurs in $p$ and, if so, return an occurrence; 
-\item Given $c$ substrings $u_1,\ldots,u_q$ of $p$ one can compute their longest prefix and longest suffix with given prefixes or suffixes of $p$ in $O(q)$ time. Below we refer to such queries as \emph{longest common extension queries}, slightly abusing the standard terminology;
 \item Given $q$ substrings $u_1,\ldots,u_q$ of $p$ one can compute $\prefix(u_i)$ and $\suffix(u_i)$ in $O(q+m/w)$ time.
 \end{itemize}
 \end{fact} 

@@ -113,8 +113,8 @@ Assume that $p_2$ is not a substring of $p_1$, and let $(i,j)$ be a co-occurrenc
 \end{observation}
        
 \begin{lemma}\label{lem:primary}
-Assume that $p_2$ is not a substring of $p_1$ and that we are given the information computed in Section~\ref{pmgapped:sec:boundary}. 
-There is a $O(g+m)$-time algorithm that reports all primary co-occurrences of $p_1$ and $p_2$ in the extensions of the non-terminals of $G$. If there is more than one primary co-occurrence in the extension of a non-terminal, they are output as a single arithmetic progression. 
+Assume that $p_2$ is not a substring of $p_1$ and that we are given the information computed in Section~\ref{pmgapped:sec:boundary}.
+There is a $O(g+m)$-time algorithm that reports all primary co-occurrences of $p_1$ and $p_2$ in the expansions of the non-terminals of $G$. If there is more than one primary co-occurrence in the expansion of a non-terminal, they are output as a single arithmetic progression. 
 \end{lemma}
 \begin{proof}
 Let $A$ be a non-terminal associated with a production $A \rightarrow BC$. We consider three types of co-occurrences of $p_1,p_2$ in $\str{A}$:

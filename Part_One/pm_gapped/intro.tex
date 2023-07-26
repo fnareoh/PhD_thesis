@@ -14,18 +14,18 @@ Gawrychowski et al.~\cite{DBLP:journals/corr/abs-2304-00887} showed that one can
 Unfortunately, the above upper bounds, despite their theoretical interest, are still far from providing an efficient solution. Motivated by this, we study the dual variant of the problem, where one must process the text and the patterns simultaneously. Note that if the text is uncompressed and has length $n$, the problem can be solved by classical online pattern matching in $O(n+m+\occ)$ time by keeping the most recent occurrences of $p_1$ and $p_2$. In this work, we show that a similar complexity can be achieved for very compressible texts by extending the ideas of~\cite{DBLP:conf/soda/GanardiG22}:
 
 \begin{theorem}\label{th:main}
-Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Omega(\log n)$. 
 \end{theorem}
 
 Using similar techniques, we derive an algorithm to output all consecutive occurrences with a bounded distance between them:
 
 \begin{corollary}\label{cor:ab}
-Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text separated by a distance $d \in [a,b]$ can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+Given a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, all consecutive occurrences of $p_1,p_2$ in the text separated by a distance $d \in [a,b]$ can be found in $O(g+m+\occ)$ time assuming the word-RAM model with a machine word of size $w = \Omega(\log n)$. 
 \end{corollary}
 
 Finally, our techniques allow to derive an efficient solution for 
 the variant of the problem suggested by Bille et al.~\cite{DBLP:conf/fsttcs/BilleGPRS20}, where one must report the top-$k$ consecutive occurrences of $p$ with smallest distances between them. 
 
 \begin{corollary}\label{cor:topk}
-Given an integer $k$, a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, the $k$ closest consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+k)$ time assuming the word-RAM model with a machine word of size $w = \Theta(\log n)$. 
+Given an integer $k$, a text of length $n$ represented by an SLP $G$ of size $g$ and patterns $p_1,p_2$ of total length $m$, the $k$ closest consecutive occurrences of $p_1,p_2$ in the text can be found in $O(g+m+k)$ time assuming the word-RAM model with a machine word of size $w = \Omega(\log n)$. 
 \end{corollary}
