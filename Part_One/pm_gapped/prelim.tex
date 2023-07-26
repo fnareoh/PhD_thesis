@@ -1,30 +1,38 @@
  
 \section{Preliminaries}
 \label{pmgapped:sec:prelim}
-A \emph{string} $s$ of length $|s| = n$ is a sequence $s[0]s[1]\dots s[n-1]$ of characters from an alphabet~$\Sigma$. We define $f = s[i \dots j]$ to be equal to $s[i] \dots s[j]$ which we call a \emph{substring} of $s$ if $i \le j$ and to the empty string which we denote by $\varepsilon$ otherwise. We say that a substring $s[i \dots j]$ is fully contained in another substring $s[i' \dots j']$ if $i' \le i \le j \le j'$. We call a substring $s[0 \dots i]$ \emph{a prefix} of $s$ and use a simplified notation $s[\dots i]$, and a substring $s[i \dots n-1]$ \emph{a suffix} of $s$ denoted by $s[i \dots]$. We say that a string $x$ occurs in $s$ if $x = s[i \dots j]$ for some $0 \le i \le j \le n-1$. Abusing notation, we call both the substring $s[i \dots j]$ and its starting position $i$ an occurrence  of $x$ in $s$. 
+A \emph{string} $s$ of length $|s| = n$ is a sequence $s[0]s[1]\dots s[n-1]$ of characters from an alphabet~$\Sigma$ and the size of the alphabet $|\Sigma|$ is at most polynomial in $g$ and $m$.
+A \emph{substring} of a string $s$ is a pair $(i,j)$ where  $0 \le i \le j < |s|$ and is identified with the string $s[i \dots j]=s[i] \dots s[j]$. We also use the notation $s[i \dots j)$ and $s(i \dots j]$ which stand for the substring $s[i \dots j-1]$ and $s[i-1 \dots j]$ respectively.
+We say that a substring $s[i \dots j]$ is fully contained in another substring $s[i' \dots j']$ if $i' \le i \le j \le j'$. 
+We call a substring $s[0 \dots i]$ \emph{a prefix} of $s$ and use a simplified notation $s[\dots i]$, and a substring $s[i \dots n-1]$ \emph{a suffix} of $s$ denoted by $s[i \dots]$. 
+We say that $x$ occurs in $s$ at position $i$ if $x = s[i \dots i+|x|)$, alternatively we say $i$ is an occurence of $x$ in $s$.
+Additionaly, an occurence $i$ is fully included in a substring $f$ of $s$ if $s[i \dots i+|x|)$ is fully included in $f$.
 %
 
-An occurrence $q_1$ of $p_1$ together with an occurrence $q_2$ of $p_2$ form a \emph{consecutive occurrence (co-occurrence)} $(q_1,q_2)$ of the strings $p_1,p_2$ in a string $s$ if there are no occurrences of $p_1$ in $(q_1,q_2]$ and no occurrences of $p_2$ in $[q_1,q_2)$. The distance $q_2-q_1$ is sometimes referred to as a \emph{gap}.
+An occurrence $k_1$ of $p_1$ together with an occurrence $k_2$ of $p_2$ form a \emph{consecutive occurrence (co-occurrence)} $(k_1,k_2)$ of the strings $p_1,p_2$ in a string $s$ if there are no occurrences of $p_1$ in $(k_1,k_2]$ and no occurrences of $p_2$ in $[k_1,k_2)$. The distance $k_2-k_1$ is sometimes referred to as a \emph{gap}.
 
 An integer $\pi$ is a \emph{period} of a string $s$ of length $n$ if $s[i]=s[i+\pi]$ for all $i=0,\dots, n-1-\pi$. We say that $s$ is \emph{periodic} if its smallest period, referred to as \emph{the period} of $s$, is at most $|s|/2$. We also exploit the well-known corollary of the Fine and Wilf's periodicity lemma~\cite{Fine1965}:
 
 
 \begin{corollary}\label{pmgapped:cor:arithmetic_progression}
-Let $x, y$ be strings and $i$ a fixed position in $x$. If there are at least three occurrences of a string $y$ in a string $x$ containing $i$, then they form an arithmetic progression with difference equal to the period of $y$. 
+Let $x, y$ be strings such that $|x|\leq 2|y|$. If there are at least three occurrences of $y$ in $x$, then all occurrences of $y$ in $x$ form an arithmetic progression with difference equal to the period of $y$. 
 \end{corollary}
 
 
 \begin{proposition}
 \label{prop:suffix_tree}
-One can preprocess a string $p$ of length $m$ in $O(m)$ time and space to maintain the following queries in constant time: Given a substring $x = p[i \dots j]$, find the leftmost and the rightmost occurrences of $x$ in $p$, as well as the total number of occurrences.  
+One can preprocess a string $p$ of length $m$ in $O(m)$ time and space to maintain the following queries in constant time: Given a substring $(i,j)$, find the leftmost and the rightmost occurrences of $p[i...j]$ in $p$, as well as the total number of occurrences.  
 \end{proposition}
 \begin{proof}
-We assume the reader to be familiar with suffix trees. We build the suffix tree of $p$ in $O(m)$ time and space. Belazzougui et al.~\cite{belazzougui_et_al:LIPIcs.CPM.2021.8} showed that the suffix tree can be preprocessed in linear time so that, being given a substring of $p$, to be able to find the node $u$ of the suffix tree labeled by it in constant time. The leaves of the subtree of $u$ correspond to the occurrences of $x$ in $p$. By maintaining the range minimum and the range maximum query data structures on the leaves of the suffix tree, that can be built in linear time and occupy linear space~\cite{10.1007/11780441_5}, one can find the leftmost and the rightmost occurrences of $x$ in $p$ in constant time. By storing the size of the subtrees of each node of the suffix tree, which can be precomputed in linear time and space as well, one can also output the total number of occurrences of $x$ in $p$ in constant time.
+We assume the reader to be familiar with suffix trees. We build the suffix tree of $p$ in $O(m)$ time and space. Belazzougui et al.~\cite{belazzougui_et_al:LIPIcs.CPM.2021.8} showed that the suffix tree can be preprocessed in linear time so that, given a substring $(i,j)$, one can find the node $u$ of the suffix tree labeled by $p[i...j]$ in constant time. The leaves of the subtree of $u$ correspond to the occurrences of $p[i...j]$ in $p$.
+%By maintaining the range minimum and the range maximum query data structures on the leaves of the suffix tree, that can be built in linear time and occupy linear space~\cite{10.1007/11780441_5}, one can find the leftmost and the rightmost occurrences of $x$ in $p$ in constant time.
+For each node, we can precompute in linear time, the size of its subtree, the lefmost and rightmost occurrences of its label. This is done by simply traversing the tree from the bottom to the top and propagating the information.
+%By storing the size of the subtrees of each node of the suffix tree, which can be precomputed in linear time and space as well, one can also output the total number of occurrences of $p[i..j]$ in $p$ in constant time.
 \end{proof}
 
 \begin{corollary}[{of Corollary~\ref{pmgapped:cor:arithmetic_progression} and Proposition~\ref{prop:suffix_tree}}]
 \label{cor:imp}
-One can preprocess a string $p$ of length $m$ in $O(m)$ time and space to maintain the following queries in constant time: Given a substring $x = p[i \dots j]$ of length $\ge m/2$, one can output the arithmetic progression of the starting positions of occurrences of $x$ in $p$ in constant time.
+One can preprocess a string $p$ of length $m$ in $O(m)$ time and space to maintain the following queries in constant time: Given a substring $(i,j)$, such that $j-i\ge m/2$, one can output the arithmetic progression of the occurrences of $p[i...j]$ in $p$ in constant time.
 \end{corollary}
 
 
