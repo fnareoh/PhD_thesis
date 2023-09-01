@@ -1,0 +1,117 @@
+\documentclass[aspectratio=169]{beamer}
+\input{my_template}
+\input{command_tikz.tex}
+
+\title{Sketch-based approaches to process massive string data}	
+\author{Garance Gourdel - Ph.D Defense}	
+\date{26th of October 2023}
+\addbibresource{../main.bib}
+
+\begin{document}
+
+\begin{frame}[noframenumbering,plain]
+
+  \titlepage
+  \begin{center}
+  \begin{tabular}{ccccc}
+    \includegraphics[width=3cm]{logos/01_UNIRENNES.png}&
+    \includegraphics[width=2.5cm]{logos/02_IRISA.png}&
+    \includegraphics[width=1.5cm]{logos/03_inria.png}&
+    \includegraphics[width=1.5cm]{logos/03b_logo_genscale.png}&
+    \includegraphics[width=3cm]{logos/05_EN_horiz.jpg}
+  \end{tabular}
+  \medskip
+  \small
+  \begin{tabular}{l l l}
+  \arrayrulecolor{gray}\hline \\
+    \textbf{Reviewers}  &   Thierry LECROQ	&   Professor \\
+                        & Simon J. PUGLISI	&    Professor\\
+    \textbf{Jury member}s    & Bastien CAZAUX & Assistant Professor\\
+                    & Élise PRIEUR-GASTON & Assistant Professor\\
+                    & Stéphane VIALETTE	 & Research Director\\
+    \textbf{Supervisors}     & Pierre PETERLONGO	& Research Director\\
+                    & Tatiana STARIKOVSKAYA	& Assistant Professor\\
+  \end{tabular}
+  \end{center}
+  \vfill
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+    \vfill
+    \mytitle{Introduction}
+    \bigskip
+    \begin{center}
+        \only<-1>{\textbf{Sketch-based approaches to process massive string data}}
+        \pause
+        \only<2>{\textbf{Sketch-based approaches to process massive \textcolor{red}{string data}}}
+    \end{center}
+    \vfill
+\end{frame}
+
+\def\stringseashells{S,h,e,\_,s,e,l,l,s,\_,s,e,a,s,h,e,l,l,s,\_,b,y,\_,t,h,e,\_,s,e,a,s,h,o,r,e}
+
+\begin{frame}{Context: Strings}
+    \def\stringstruggled{I, ,s,t,r,u,g,g,l,e,d, ,t,o, ,m,a,k,e, ,t,h,i,s, ,f,i,g,u,r,e, ,w,i,t,h, ,t,i,k,z,!}
+    A string $T$ of length $n$ is a sequence $T[0]T[1]...T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$.\\
+    \begin{center}
+        \begin{tikzpicture}[x = 2em]
+            \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
+            \numberedstring{\stringstruggled};
+            \only<1>{
+                \node at (20*0.25,-0.5) {
+                    $\sigma=20$
+                };
+            }
+            \only<2>{
+                \numberedsubstring[blue]{\stringstruggled}{8}{18};
+                \node at (13*0.25,-0.5) {$T[8..18]$};
+            }
+            \only<3>{
+                \numberedsubstring[blue]{\stringstruggled}{0}{9};
+                \node at (5*0.25,-0.5) {$T[0..9]$ is a prefix};
+            }
+            \only<4>{
+                \numberedsubstring[blue]{\stringstruggled}{25}{42};
+                \node at (33*0.25,-0.5) {$T[25..41]$ is a suffix};
+            }
+        \end{tikzpicture}
+        \\
+    \end{center}
+    The substring from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\
+    Substrings of the form $T[0..j]$ are \textbf{prefixes}.\\
+    Substring of the form $T[i..n-1]$ are \textbf{suffixes}.
+    \pause \pause
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+    \mytitle{Contributions}
+    \bigskip
+    \begin{columns}
+	   \column{.57\textwidth}
+      \begin{enumerate}
+        \item Streaming Regular Expressions
+        \item Gapped Consecutive Matching
+        \begin{enumerate}
+            \item Compressed Index
+            \item Compressed Pattern Matching
+        \end{enumerate}
+        \item Run-reporting for unordered alphabets
+        \item Approximate Longest Common Substring with approximately     mismatches
+        \item Pattern Matching for the Dynamic Time Warping distance
+        \item Compressing and Indexing Aligned Readsets
+      \end{enumerate}
+	   \column{.3\textwidth}
+        \begin{framed}
+            For each:
+            \begin{itemize}
+                \item Context
+                \item Problem
+                \item Results
+            \end{itemize}
+        \end{framed}
+        
+    \end{columns}
+\end{frame}
+
+
+\end{document}

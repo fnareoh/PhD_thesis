@@ -1,0 +1,56 @@
+\usepackage[english]{babel}				% Set language
+\usepackage[utf8]{inputenc}			% Set encoding
+\usepackage{tikz}			% Set encoding
+
+\usepackage{ifthen}
+
+\usetikzlibrary{calc}
+
+\mode<presentation>						% Set options
+{
+  \usetheme{default}					% Set theme
+  \usecolortheme{default} 				% Set colors
+  \usefonttheme{default}  				% Set font theme
+  \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
+}
+
+%\definecolor{UBCblue}{rgb}{0.04706, 0.13725, 0.26667} % UBC Blue (primary)
+
+%\usecolortheme[named=UBCblue]{structure}
+\setbeamercolor{math text}{fg=black!30!blue}
+
+% Uncomment this to have the outline at the beginning of each section highlighted.
+%\AtBeginSection[]
+%{
+%  \begin{frame}{Outline}
+%    \tableofcontents[currentsection]
+%  \end{frame}
+%}
+
+\usepackage{graphicx}					% For including figures
+\usepackage{booktabs}					% For table rules
+\usepackage{hyperref}					% For cross-referencing
+\usepackage[backend=biber]{biblatex}
+\usepackage{csquotes}
+\usepackage{bookmark}
+\usepackage{colortbl}                   % For color line
+\usepackage{framed}                     % For frames
+
+\beamertemplatenavigationsymbolsempty
+\setbeamertemplate{footline}[frame number]
+
+\setbeamerfont{author}{size=\large}
+\setbeamerfont{date}{size=\scriptsize}
+\setbeamercolor{date}{fg=gray}
+\defbeamertemplate*{title page}{customized}[1][]
+{
+  \centering
+  \vspace{1cm}
+  \usebeamerfont{title}\textbf{\inserttitle}\par
+  \bigskip
+  \usebeamerfont{author}\insertauthor\par
+  \medskip
+  \usebeamercolor[fg]{date}\usebeamerfont{date}\insertdate\par
+}
+
+\newcommand{\mytitle}[1]{\centering{\Huge #1}}

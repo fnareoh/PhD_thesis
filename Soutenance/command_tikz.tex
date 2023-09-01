@@ -1,0 +1,42 @@
+\newcommand{\numberedstring}[1]{
+    \foreach
+        [count=\pos from 0, 
+        evaluate=\pos as \med using {int(mod(\pos,10))},
+        ] \x in #1 
+    {
+        % String
+        \node (\pos) at (\pos*0.25, 0) {\smash{\texttt\x}$\vphantom{m}$};
+
+        % 123456789
+        \node (n\pos) at (\pos*0.25, 0.5) {\footnotesize{\texttt {\textcolor{gray}{\med}}}};
+        % Top row of numbers
+        \ifthenelse{\med=0}{\node at (\pos*0.25, 0.8) {\footnotesize{\texttt{\pgfmathparse{int((\pos)/10)}\pgfmathresult}}};}{}
+    }
+}
+
+\newcommand{\numberedsubstring}[4][red]{
+    %\tikz \fill [orange] (1,1) rectangle (0.1,0.1);
+    \node (c1) at (0,0) {};
+    \draw[fill=white,white] (#3*0.25-0.1,-0.25) rectangle (#4*0.25+0.1,1);
+    \foreach
+        [count=\pos from 0, 
+        evaluate=\pos as \med using {int(mod(\pos,10))},
+        ] \x in #2
+    {
+        \ifthenelse{\pos < #3 \OR \pos > #4}
+        {}
+        {
+            %
+            % String
+            \node (\pos) at (\pos*0.25, 0) {\smash{\texttt{\textcolor{#1}{\x}}}$\vphantom{m}$};
+
+            % 123456789
+            \node (n\pos) at (\pos*0.25, 0.5) {\footnotesize{\texttt {\textcolor{#1}{\med}}}};
+            % Top row of numbers
+            \ifthenelse{\med=0}{\node at (\pos*0.25, 0.8) {\footnotesize{\texttt{\textcolor{#1}{\pgfmathparse{int((\pos)/10)}\pgfmathresult}}}};}{}
+        }
+    }
+}
+
+
+%
