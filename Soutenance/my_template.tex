@@ -1,6 +1,7 @@
 \usepackage[english]{babel}				% Set language
 \usepackage[utf8]{inputenc}			% Set encoding
-\usepackage{tikz}			% Set encoding
+\usepackage{tikz}
+\usepackage{svg}
 
 \usepackage{ifthen}
 
@@ -52,5 +53,14 @@
   \medskip
   \usebeamercolor[fg]{date}\usebeamerfont{date}\insertdate\par
 }
+
+\definecolor{myred}{RGB}{176, 38, 0}
+\definecolor{myorange}{RGB}{255, 170, 0}
+\definecolor{myblue}{RGB}{0, 157, 196}
+\definecolor{mygreen}{RGB}{0, 140, 65}
+\newcommand{\bred}[1]{\textcolor{myred}{\textbf{#1}}}
+\newcommand{\borange}[1]{\textcolor{myorange}{\textbf{#1}}}
+\newcommand{\bblue}[1]{\textcolor{myblue}{\textbf{#1}}}
+\newcommand{\bgreen}[1]{\textcolor{mygreen}{\textbf{#1}}}
 
 \newcommand{\mytitle}[1]{\centering{\Huge #1}}

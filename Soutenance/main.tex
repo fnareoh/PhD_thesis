@@ -41,27 +41,23 @@
     \mytitle{Introduction}
     \bigskip
     \begin{center}
-        \only<-1>{\textbf{Sketch-based approaches to process massive string data}}
+        \only<-1>{\textbf{\bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}}
         \pause
-        \only<2>{\textbf{Sketch-based approaches to process massive \textcolor{red}{string data}}}
+        \only<2>{\textbf{\textcolor{gray}{Sketch-based approaches to process massive} \bblue{string data}}}
     \end{center}
     \vfill
 \end{frame}
 
 \def\stringseashells{S,h,e,\_,s,e,l,l,s,\_,s,e,a,s,h,e,l,l,s,\_,b,y,\_,t,h,e,\_,s,e,a,s,h,o,r,e}
+\def\stringstruggled{I, ,s,t,r,u,g,g,l,e,d, ,t,o, ,m,a,k,e, ,t,h,i,s, ,f,i,g,u,r,e, ,w,i,t,h, ,t,i,k,z,!}
 
-\begin{frame}{Context: Strings}
-    \def\stringstruggled{I, ,s,t,r,u,g,g,l,e,d, ,t,o, ,m,a,k,e, ,t,h,i,s, ,f,i,g,u,r,e, ,w,i,t,h, ,t,i,k,z,!}
+
+\begin{frame}{Strings}
     A string $T$ of length $n$ is a sequence $T[0]T[1]...T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$.\\
     \begin{center}
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
             \numberedstring{\stringstruggled};
-            \only<1>{
-                \node at (20*0.25,-0.5) {
-                    $\sigma=20$
-                };
-            }
             \only<2>{
                 \numberedsubstring[blue]{\stringstruggled}{8}{18};
                 \node at (13*0.25,-0.5) {$T[8..18]$};
@@ -77,10 +73,123 @@
         \end{tikzpicture}
         \\
     \end{center}
-    The substring from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\
+    \textbf{Definitions and Notations}\\
+    The \textbf{substring} from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\
     Substrings of the form $T[0..j]$ are \textbf{prefixes}.\\
     Substring of the form $T[i..n-1]$ are \textbf{suffixes}.
     \pause \pause
+\end{frame}
+
+\begin{frame}{Strings}
+    Simple and versatile, any file can be seen as a string.
+    They are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.
+
+    \medskip
+    \begin{tabular}{l  c c c c}
+        \emph{Strings} & Binary file & DNA sequence & ASCII text file & UTF-8 text file \\
+        \rule{0pt}{10ex}    
+        &
+        \includegraphics[width=1cm]{pictures/file-bin.png}&
+        \includegraphics[width=1cm]{pictures/file-dna.png}&
+        \includegraphics[width=1cm]{pictures/file-ascii.png}&
+        \includegraphics[width=1cm]{pictures/file-utf-8.png}
+        \\
+        \rule{0pt}{4ex}  
+        \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C, G}\}$ & $\sigma=128$ & $\sigma = 1,112,064$\\
+    \end{tabular}
+    \medskip
+
+    Most natural task: Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
+
+    \begin{center}
+        \begin{tikzpicture}[x = 2em]
+            \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
+            \numberedstring{\stringstruggled};
+            \numberedsubstring[myorange]{\stringstruggled}{20}{21};
+            \numberedsubstring[myblue]{\stringstruggled}{34}{35};
+            \only<1>{
+                \node at (20*0.25,-0.5) {
+                    Two occurences starting at positions \borange{20} and \bblue{34} respectively.
+                };
+            }
+        \end{tikzpicture}
+        \\
+    \end{center}
+
+\end{frame}
+
+
+\begin{frame}{Classic Pattern Matching}
+
+\end{frame}
+
+\begin{frame}{Algorithms vs Data-structures}
+
+\end{frame}
+
+\begin{frame}{Classic Indexing the suffix tree}
+
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+    \vfill
+    \mytitle{Introduction}
+    \bigskip
+    \begin{center}
+        \textbf{\textcolor{gray}{Sketch-based approaches to \borange{process} \bred{massive} string data}}
+    \end{center}
+    \vfill
+\end{frame}
+
+\begin{frame}{Challenges: Processing tasks}
+3 categories of task (for this thesis)
+Complex Matching
+Repetition detection
+Similarity Measures and distances
+\end{frame}
+
+ \begin{frame}{Complex Matching}
+    
+ \end{frame}
+
+ \begin{frame}{Repetition detection}
+    
+ \end{frame}
+
+ \begin{frame}{Similarity Measures and distances}
+    
+ \end{frame}
+
+\begin{frame}{Challenges: the scale}
+    A visualization as done for the loreal poster (starting a the base of wikipedia, which seems already very large)
+    And still growing
+\end{frame}
+
+\begin{frame}{Challenges: the scale}
+    The largerst archive are only searchable by metadata (and already it requires significant efforts...)
+    And the 
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+    \vfill
+    \mytitle{Introduction}
+    \bigskip
+    \begin{center}
+        \textbf{\textcolor{gray}{\bgreen{Sketch-based} approaches to process massive string data}}
+    \end{center}
+    \vfill
+\end{frame}
+
+\begin{frame}{What is a sketch ?}
+    
+\end{frame}
+
+\begin{frame}{Example of a lossy compression sketch: Karp--Rabin fingerprints}
+    
+\end{frame}
+
+\begin{frame}{Example of a lossless compression sketch: Lempel--ziv factorization}
+    
 \end{frame}
 
 \begin{frame}[noframenumbering,plain]
@@ -107,11 +216,22 @@
                 \item Context
                 \item Problem
                 \item Results
+                \item Use of sketches
             \end{itemize}
         \end{framed}
-        
     \end{columns}
 \end{frame}
 
+\begin{frame}{Streaming Regular Expressions: Membership and Pattern Matching}
+    
+\end{frame}
+
+\begin{frame}{Streaming Regular Expression: Streaming Model}
+    
+\end{frame}
+
+\begin{frame}{Streaming Regular Expression: Our contributions}
+    
+\end{frame}
 
 \end{document}
