@@ -181,16 +181,55 @@ Similarity Measures and distances
 \end{frame}
 
 \begin{frame}{What is a sketch ?}
+    \begin{columns}
+        \column{.6\textwidth}
+        A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.\\
+        \column{.35\textwidth}
+        \includegraphics[width=1.8cm]{pictures/photo_betisou.jpg}
+        \hspace{0.5cm}
+        \includegraphics[width=1.8cm]{pictures/betisou.png}\\
+        \begin{center}
+            "Is this a cat ?"
+        \end{center}
+    \end{columns}
+    \pause
+
+    {\LARGE Examples:}
+    \medskip
+    \pause 
+    \begin{columns}
+        \column{.01\textwidth}
+        \column{.48\textwidth}
+        {\borange{Lossy: Karp--Rabin fingerprints}}
+        \begin{itemize}
+            \item They occupy constant space,  
+            \item can check whether two strings match with high probability,
+            \item but cannot be used to reconstruct the original string. 
+        \end{itemize}
+        \column{.48\textwidth}
+        \pause
+        {\bblue{Lossless: Lempel--Ziv factorization}}
+        \begin{itemize}
+            \item It is a very efficient compression in practice (used in \texttt{.png} or \texttt{.zip}),
+            \item can reconstruct the original string,
+            \item but in the worst case it does not compress. 
+        \end{itemize}
+    \end{columns}
     
 \end{frame}
 
-\begin{frame}{Example of a lossy compression sketch: Karp--Rabin fingerprints}
-    
+\begin{frame}{How are they usefull and used ?}
+    \begin{columns}
+        \column{.58\textwidth}
+        A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.
+        \column{0.02\textwidth}
+        \smash{\LARGE $\rightarrow$}
+        \column{0.38\textwidth}
+        Sketches are typically much smaller, offering promissing scalibility potential.
+    \end{columns}
+
 \end{frame}
 
-\begin{frame}{Example of a lossless compression sketch: Lempel--ziv factorization}
-    
-\end{frame}
 
 \begin{frame}[noframenumbering,plain]
     \mytitle{Contributions}
