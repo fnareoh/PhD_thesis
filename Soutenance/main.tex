@@ -220,12 +220,35 @@ Similarity Measures and distances
 
 \begin{frame}{How are they usefull and used ?}
     \begin{columns}
-        \column{.58\textwidth}
-        A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.
-        \column{0.02\textwidth}
-        \smash{\LARGE $\rightarrow$}
-        \column{0.38\textwidth}
-        Sketches are typically much smaller, offering promissing scalibility potential.
+        \column{.52\textwidth}
+        \small{A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.}
+        \column{0.05\textwidth}
+        \LARGE{$\rightarrow$}
+        \column{0.33\textwidth}
+            \small{
+            Sketches are typically much \bgreen{smaller}, thus are promissing for \bgreen{scalibility}.}
+    \end{columns}
+    \pause
+    \bigskip
+    \hspace{-0.5cm} {\large Two main approaches in this thesis:}
+    \medskip
+    \pause 
+    \begin{columns}
+        \column{0.33\textwidth}
+        \begin{framed}
+            \centering
+            \textbf{Sketch as input}\\
+            Operating directly on the sketch (without the need to decompress)
+        \end{framed}
+        \column{0.66\textwidth}
+        \begin{framed}
+            \centering
+            Sketch on the fly
+            \begin{itemize}
+                \item For Streaming
+                \item For approximation
+            \end{itemize}
+        \end{framed}
     \end{columns}
 
 \end{frame}
