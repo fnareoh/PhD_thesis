@@ -285,7 +285,37 @@ Similarity Measures and distances
 \end{frame}
 
 \begin{frame}{Streaming Regular Expressions: Membership and Pattern Matching}
-    
+    \begin{columns}
+        \column{.6\textwidth}
+        \begin{block}{Regular expressions}
+            either a character from $\Sigma$ or recursively defined from $R_1$ and $R_2$ two regular expressions
+            \pause
+            \begin{enumerate}
+                \item $R_1 \cdot R_2$ (concatenation),
+                \pause
+                \item $R_1 | R_2$ (union),
+                \pause
+                \item $R_1^\ast$ (Kleene star).
+            \end{enumerate}
+            \pause
+        \end{block}
+        \column{.3\textwidth}
+        Example:
+        \begin{center}
+            $b(b|ab)^astab$ matches:\\
+            \checkmark $bbbbbabab$ \\
+            \checkmark $bbbabbbbab$\\
+            But does not match $baba$ or $abab$.
+        \end{center}
+    \end{columns}    
+    \pause
+    \bigskip
+    {
+        \beamermathcolor{myblue}
+        \bblue{Membership:} Given a regexp $R$ and a text $T$, check if $T\in L(R)$.
+        \bblue{Pattern matching:} Given a regexp $R$ and a text $T$, check if some substring of $T$ is in $L(R)$.
+    }
+    TODO: The classical approach with thomson automatas. 
 \end{frame}
 
 \begin{frame}{Streaming Regular Expression: Streaming Model}
