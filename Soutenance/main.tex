@@ -253,6 +253,19 @@ Similarity Measures and distances
 
 \end{frame}
 
+\begin{frame}{Karp Rabin fingerprint}
+    \begin{framed}
+        Definition: $$ \varphi(P) = P[1]r^{m-1}+P[2]r^{m-2} + \dots + P[m-1]r + P[m] \mod p$$ 
+        for $p$ a prime and $r < p$. \pause
+        
+        Testing if $\varphi(T[i+1..i+m])=\varphi(P)$ can be tested in $\Oh(1)$ and if so the strings match w.h.p.
+        \begin{tabular}{l c}
+        \textcolor{black}{Sliding window:} & \hspace{1cm}\includegraphics[width=0.5\textwidth]{pictures/slidding_window.png}
+        \end{tabular}
+        $$ \varphi(T[i+1..i+m]) = \varphi(T[i..i+m-1])\times r - S[i]r^k + S[i+m] \mod p$$\vspace{-0.5cm}
+    \end{framed}
+\end{frame}
+
 
 \begin{frame}[noframenumbering,plain]
     \mytitle{Contributions}
@@ -288,7 +301,7 @@ Similarity Measures and distances
     \begin{columns}
         \column{.6\textwidth}
         \begin{block}{Regular expressions}
-            either a character from $\Sigma$ or recursively defined from $R_1$ and $R_2$ two regular expressions
+            either a character from $\Sigma$ or recursively defined from other regular expressions $R_1$ and $R_2$:
             \pause
             \begin{enumerate}
                 \item $R_1 \cdot R_2$ (concatenation),
@@ -312,18 +325,44 @@ Similarity Measures and distances
     \bigskip
     {
         \beamermathcolor{myblue}
-        \bblue{Membership:} Given a regexp $R$ and a text $T$, check if $T\in L(R)$.
-        \bblue{Pattern matching:} Given a regexp $R$ and a text $T$, check if some substring of $T$ is in $L(R)$.
+        Given a regexp $R$ and a text $T$, two problems:\\
+        \bblue{Membership:} check if $R$ matches $T$.\\
+        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$.
     }
+    \bigskip
+
+
     TODO: The classical approach with thomson automatas. 
 \end{frame}
 
 \begin{frame}{Streaming Regular Expression: Streaming Model}
-    
+\begin{center}
+    \includegraphics[width=0.7\textwidth]{pictures/stream3}
+\end{center}
+
+\medskip
+
+The algorithm first receives and preprocesses the pattern. Next,
+it keeps reading characters from a very very long text.
+
+\smallskip
+\pause
+\begin{enumerate}
+\item No delay: After having seen the $i$-th character, immediately report whether there is an
+occurrence ending there.
+\pause
+\item No going back: Not possible to read any of the earlier characters.
+\pause
+\item Every space counts: No access to the original pattern (unless it has been stored in working space).
+\end{enumerate}
 \end{frame}
 
 \begin{frame}{Streaming Regular Expression: Our contributions}
-    
+    \begin{alertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+        \beamermathcolor{red}
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership
+        and pattern matching using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+    \end{alertblock}
 \end{frame}
 
 \end{document}
