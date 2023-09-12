@@ -194,66 +194,19 @@ Similarity Measures and distances
     \end{columns}
     \pause
 
-    {\LARGE Examples:}
+    {\Large Examples:}
     \medskip
-    \pause 
     \begin{columns}
         \column{.01\textwidth}
         \column{.48\textwidth}
         {\borange{Lossy: Karp--Rabin fingerprints}}
-        \begin{itemize}
-            \item They occupy constant space,  
-            \item can check whether two strings match with high probability,
-            \item but cannot be used to reconstruct the original string. 
-        \end{itemize}
         \column{.48\textwidth}
-        \pause
         {\bblue{Lossless: Lempel--Ziv factorization}}
-        \begin{itemize}
-            \item It is a very efficient compression in practice (used in \texttt{.png} or \texttt{.zip}),
-            \item can reconstruct the original string,
-            \item but in the worst case it does not compress. 
-        \end{itemize}
     \end{columns}
     
 \end{frame}
 
-\begin{frame}{How are they usefull and used ?}
-    \begin{columns}
-        \column{.52\textwidth}
-        \small{A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.}
-        \column{0.05\textwidth}
-        \LARGE{$\rightarrow$}
-        \column{0.33\textwidth}
-            \small{
-            Sketches are typically much \bgreen{smaller}, thus are promissing for \bgreen{scalibility}.}
-    \end{columns}
-    \pause
-    \bigskip
-    \hspace{-0.5cm} {\large Two main approaches in this thesis:}
-    \medskip
-    \pause 
-    \begin{columns}
-        \column{0.33\textwidth}
-        \begin{framed}
-            \centering
-            \textbf{Sketch as input}\\
-            Operating directly on the sketch (without the need to decompress)
-        \end{framed}
-        \column{0.66\textwidth}
-        \begin{framed}
-            \centering
-            Sketch on the fly
-            \begin{itemize}
-                \item For Streaming
-                \item For approximation
-            \end{itemize}
-        \end{framed}
-    \end{columns}
-
-\end{frame}
-
-\begin{frame}{Karp Rabin fingerprint}
+\begin{frame}{Example of lossy sketch: Karp--Rabin fingerprints}
     \begin{framed}
         Definition: $$ \varphi(P) = P[1]r^{m-1}+P[2]r^{m-2} + \dots + P[m-1]r + P[m] \mod p$$ 
         for $p$ a prime and $r < p$. \pause
@@ -264,6 +217,81 @@ Similarity Measures and distances
         \end{tabular}
         $$ \varphi(T[i+1..i+m]) = \varphi(T[i..i+m-1])\times r - S[i]r^k + S[i+m] \mod p$$\vspace{-0.5cm}
     \end{framed}
+\end{frame}
+
+\begin{frame}{Example of lossless sketch: Lempel--Ziv factorization}
+\end{frame}
+
+\begin{frame}{What is a sketch ?}
+    \begin{columns}
+        \column{.6\textwidth}
+        A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.\\
+        \column{.35\textwidth}
+        \includegraphics[width=1.8cm]{pictures/photo_betisou.jpg}
+        \hspace{0.5cm}
+        \includegraphics[width=1.8cm]{pictures/betisou.png}\\
+        \begin{center}
+            "Is this a cat ?"
+        \end{center}
+    \end{columns}
+
+    {\Large Examples:}
+    \medskip
+    \begin{columns}
+        \column{.01\textwidth}
+        \column{.48\textwidth}
+        {\borange{Lossy: Karp--Rabin fingerprints}}
+        \begin{itemize}
+            \item They occupy constant space,  
+            \item can check whether two strings match with high probability,
+            \item but cannot be used to reconstruct the original string. 
+        \end{itemize}
+        \column{.48\textwidth}
+        {\bblue{Lossless: Lempel--Ziv factorization}}
+        \begin{itemize}
+            \item It is a very efficient compression in practice (used in \texttt{.png} or \texttt{.zip}),
+            \item can reconstruct the original string,
+            \item but in the worst case it does not compress. 
+        \end{itemize}
+    \end{columns}
+    
+\end{frame}
+
+\begin{frame}{Why should I use sketches and how ?}
+    \begin{columns}
+        \column{.52\textwidth}
+        \small{A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.}
+        \column{0.05\textwidth}
+        \LARGE{$\rightarrow$}
+        \column{0.33\textwidth}
+            \small{
+            Sketches are typically much \bgreen{smaller}, thus can allow \bgreen{scaling to larger} datasets.}
+    \end{columns}
+    \bigskip
+    \pause
+
+
+    \hspace{-0.5cm} {\large \textcolor{black!30!blue}{Three main approaches in this thesis:}}
+    \begin{columns}
+        \column{0.33\textwidth}
+        \begin{framed}
+            \begin{center}
+                \textbf{Sketch as input}
+            \end{center}
+            Operating directly on the sketch given as input (not decompressing).
+        \end{framed}
+        \column{0.66\textwidth}
+        \begin{framed}
+            \begin{center}
+                \textbf{Sketch as you go}
+            \end{center}
+            Compute the sketch of the input on the fly and use it later on in your algorithm. 
+            \begin{itemize}
+                \item For Streaming
+                \item For approximation
+            \end{itemize}
+        \end{framed}
+    \end{columns}
 \end{frame}
 
 
@@ -363,6 +391,12 @@ occurrence ending there.
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership
         and pattern matching using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{alertblock}
+\end{frame}
+
+\begin{frame}{A simpler alternative to regular expression: Gapped Consecutive Matching}
+    % Regexp are hard to match
+    % Many alternative considered 
+    % A recent intrest in Gapped Consecutive matching
 \end{frame}
 
 \end{document}
