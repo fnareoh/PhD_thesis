@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169,10pt]{beamer}
 \input{my_template}
 \input{command_tikz.tex}
 
@@ -260,12 +260,11 @@ Similarity Measures and distances
 \begin{frame}{Why should I use sketches and how ?}
     \begin{columns}
         \column{.52\textwidth}
-        \small{A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.}
+        A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.
         \column{0.05\textwidth}
         \LARGE{$\rightarrow$}
         \column{0.33\textwidth}
-            \small{
-            Sketches are typically much \bgreen{smaller}, thus can allow \bgreen{scaling to larger} datasets.}
+            Sketches are typically much \bgreen{smaller}, thus can allow \bgreen{scaling to larger} datasets.
     \end{columns}
     \bigskip
     \pause
@@ -325,10 +324,10 @@ Similarity Measures and distances
     \end{columns}
 \end{frame}
 
-\begin{frame}{Streaming Regular Expressions: Membership and Pattern Matching}
+\begin{frame}{A powerful matching model: regular expressions}
     \begin{columns}
         \column{.6\textwidth}
-        \begin{block}{Regular expressions}
+        \begin{mydefblock}{Regular expressions}
             either a character from $\Sigma$ or recursively defined from other regular expressions $R_1$ and $R_2$:
             \pause
             \begin{enumerate}
@@ -339,58 +338,87 @@ Similarity Measures and distances
                 \item $R_1^\ast$ (Kleene star).
             \end{enumerate}
             \pause
-        \end{block}
+        \end{mydefblock}
         \column{.3\textwidth}
-        Example:
         \begin{center}
-            $b(b|ab)^astab$ matches:\\
-            \checkmark $bbbbbabab$ \\
-            \checkmark $bbbabbbbab$\\
-            But does not match $baba$ or $abab$.
+            $b(b|ab)^\ast ab$\\
+            \smallskip
+            \cmark ~ $bbbbbabab$ \\
+            \cmark ~ $bbbabbbbab$\\
+            \xmark ~ $bbbaabbbab$\\
+            \xmark ~ $baba$\\ 
+            \xmark ~ $abab$\\
         \end{center}
     \end{columns}    
+    \pause
+
+    \bigskip
+    TODO: Applications\\
     \pause
     \bigskip
     {
         \beamermathcolor{myblue}
-        Given a regexp $R$ and a text $T$, two problems:\\
+        Given a regular expression $R$ and a text $T$, two problems:\\
         \bblue{Membership:} check if $R$ matches $T$.\\
-        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$.
+        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \textcolor{myblue}{Reduces to membership!}
     }
-    \bigskip
-
-
-    TODO: The classical approach with thomson automatas. 
 \end{frame}
 
-\begin{frame}{Streaming Regular Expression: Streaming Model}
-\begin{center}
-    \includegraphics[width=0.7\textwidth]{pictures/stream3}
-\end{center}
-
-\medskip
-
-The algorithm first receives and preprocesses the pattern. Next,
-it keeps reading characters from a very very long text.
+\begin{frame}{A frugal model of computation: streaming}
+\begin{columns}
+    \column{.4\textwidth}
+    The algorithm first receives and preprocesses the expression.\\ Next, it keeps reading characters from a very very long text and:
+    \column{.5\textwidth}
+    \begin{center}
+        \includegraphics[width=\textwidth]{pictures/stream3}
+    \end{center}
+\end{columns}
 
 \smallskip
 \pause
 \begin{enumerate}
-\item No delay: After having seen the $i$-th character, immediately report whether there is an
-occurrence ending there.
+\item No delay: After having seen the $i$-th character, immediately report whether the string so far matches the regular expression.
 \pause
 \item No going back: Not possible to read any of the earlier characters.
 \pause
-\item Every space counts: No access to the original pattern (unless it has been stored in working space).
+\item Every space counts: No access to the original expression (unless stored explicitly).
 \end{enumerate}
+\pause
+\begin{mylemblock}{Classic pattern matching in streaming [Breslauer and Galil, TALG'14]}
+    For a pattern of length $m$, it takes $\Oh(\log m)$ space and $\Oh(1)$ time per position.
+\end{mylemblock}\pause
+\begin{center}
+    \small
+    It relies on a variant of the Karp--Rabin fingerprints introduced by \ntheme{[Porat and Porat, FOCS'09]}.
+\end{center}
 \end{frame}
 
-\begin{frame}{Streaming Regular Expression: Our contributions}
-    \begin{alertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        \beamermathcolor{red}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership
-        and pattern matching using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
-    \end{alertblock}
+\begin{frame}{What can we do for regular expression membership in streaming ?}
+    \begin{columns}
+        \column{.35\textwidth}
+        \ntheme{Classic:} Recursively build the \btheme{Thompson automata}, then check if $T$ is accepted.\\
+        $\Oh(m)$ space and time/character.
+        \column{.5\textwidth}
+        \centering
+        \begin{picture}(200,65)
+            \put(0,0){\includegraphics[width=\textwidth]{pictures/thomson1.png}}
+            \put(150,50){\small $b(b|ab)^\ast ab$}
+        \end{picture}
+    \end{columns}
+    \pause
+    \begin{itemize}
+        \item The best improvements on the time complexity \ntheme{only reduce by logarithmic factors}.\pause
+        \item Fine-grained complexity showed that for \ntheme{``hard to match'' expressions we cannot do better}.\pause
+        \item \ntheme{[Bille and Thorup, SODA'10]} Streaming time $\Oh(n\cdot (\frac{d\log w}{w}+\log d))$ and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$.\pause
+        \item What about \btheme{space efficiency} ?\pause
+    \end{itemize}
+    
+
+
+    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+    \end{myalertblock}\pause
+    \textcolor{gray}{\small{\textbf{Techniques:} Streaming P.M., Compact Thompson Automata, Circuit Machinery...}}
 \end{frame}
 
 \begin{frame}{A simpler alternative to regular expression: Gapped Consecutive Matching}

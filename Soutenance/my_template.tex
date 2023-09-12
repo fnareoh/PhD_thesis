@@ -15,7 +15,6 @@
   \setbeamertemplate{caption}[numbered]	% Set caption to be numbered
 }
 
-%\definecolor{UBCblue}{rgb}{0.04706, 0.13725, 0.26667} % UBC Blue (primary)
 
 %\usecolortheme[named=UBCblue]{structure}
 \setbeamercolor{math text}{fg=black!30!blue}
@@ -54,6 +53,7 @@
   \usebeamercolor[fg]{date}\usebeamerfont{date}\insertdate\par
 }
 
+
 \definecolor{myred}{RGB}{176, 38, 0}
 \definecolor{myorange}{RGB}{255, 170, 0}
 \definecolor{myblue}{RGB}{0, 157, 196}
@@ -62,6 +62,8 @@
 \newcommand{\borange}[1]{\textcolor{myorange}{\textbf{#1}}}
 \newcommand{\bblue}[1]{\textcolor{myblue}{\textbf{#1}}}
 \newcommand{\bgreen}[1]{\textcolor{mygreen}{\textbf{#1}}}
+\newcommand{\btheme}[1]{\textcolor{black!30!blue}{\textbf{#1}}}
+\newcommand{\ntheme}[1]{\textcolor{black!30!blue}{{#1}}}
 
 \newcommand{\mytitle}[1]{\centering{\Huge #1}}
 
@@ -78,3 +80,48 @@
 
 
 \newcommand\beamermathcolor[1]{\setbeamercolor{math text}{fg=#1}}
+
+
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\textcolor{mygreen}{\ding{51}}}%
+\newcommand{\xmark}{\textcolor{myred}{\ding{55}}}%
+
+
+\usepackage[framemethod=TikZ]{mdframed}
+\newenvironment{framedenv}{%
+\begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
+}{%
+\end{mdframed}
+}
+\newenvironment{myalertblock}[1]{%
+\begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
+\beamermathcolor{red}
+\textcolor{red}{#1}
+\vspace{0.3em}
+\textcolor{gray}{\hrule}
+\vspace{0.5em}
+}{%
+\end{mdframed}
+}
+
+\newenvironment{mydefblock}[1]{%
+\begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
+\beamermathcolor{black!30!blue}
+\textcolor{black!30!blue}{#1}
+\vspace{0.3em}
+\textcolor{gray}{\hrule}
+\vspace{0.5em}
+}{%
+\end{mdframed}
+}
+
+\newenvironment{mylemblock}[1]{%
+\begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
+\beamermathcolor{mygreen}
+\textcolor{mygreen}{#1}
+\vspace{0.3em}
+\textcolor{gray}{\hrule}
+\vspace{0.5em}
+}{%
+\end{mdframed}
+}
