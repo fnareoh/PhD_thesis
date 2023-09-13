@@ -339,24 +339,36 @@ Similarity Measures and distances
             \end{enumerate}
             \pause
         \end{mydefblock}
-        \column{.3\textwidth}
+        \column{.4\textwidth}
         \begin{center}
-            $b(b|ab)^\ast ab$\\
-            \smallskip
-            \cmark ~ $bbbbbabab$ \\
-            \cmark ~ $bbbabbbbab$\\
-            \xmark ~ $bbbaabbbab$\\
-            \xmark ~ $baba$\\ 
-            \xmark ~ $abab$\\
+            \only<1|handout:0>{\textbf{Ex:} For $\Sigma=\{a,b\}$,\\ 
+             $R_1=a$ only matches $a$,\\
+             and $R_2=b$ only matches $b$.}
+            \only<2|handout:0>{$R_1 \cdot R_2$ matches anything matching $R_1$ followed by anything matching $R_2$.\\
+            \textbf{Ex:} with $R_1=a$ and $R_2=b$, $R_1 \cdot R_2$ matches $ab$.}
+            \only<3|handout:0>{$R_1 | R_2$ matches anything matching $R_1$ or  $R_2$.\\
+            \textbf{Ex:} with $R_1=a \cdot b = ab$ and $R_2=b$, $R_1 \cdot R_2$ matches $ab$ and $b$.}
+            \only<4|handout:0>{$R_1^\ast$ matches any number of repetition of any string matching $R_1$.\\
+            \textbf{Ex:} with $R_1=(b|ab)$ matches $\varepsilon$, $ab$, $b$, $bbabb$...}
+            \only<5->{
+                \textbf{Ex:} $b(b|ab)^\ast ab$\\
+                \smallskip
+                \cmark ~ $bbbbbabab$ \\
+                \cmark ~ $bbbabbbbab$\\
+                \xmark ~ $bbbaabbbab$\\
+                \xmark ~ $baba$\\ 
+                \xmark ~ $abab$\\
+                }
         \end{center}
     \end{columns}    
     \pause
+    \pause
 
     \bigskip
-    TODO: Applications\\
+    \only<7->{Used in databases, \pause data mining, \pause secret detection,\pause computer networks, \pause protein search\pause ...\\}
     \pause
     \bigskip
-    {
+    \only<12->{
         \beamermathcolor{myblue}
         Given a regular expression $R$ and a text $T$, two problems:\\
         \bblue{Membership:} check if $R$ matches $T$.\\
