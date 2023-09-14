@@ -16,6 +16,11 @@
 }
 
 
+% emojis
+\usepackage{fontawesome}
+%\usepackage{fontspec}
+%\newfontfamily\DejaSans{DejaVu Sans}
+
 %\usecolortheme[named=UBCblue]{structure}
 \setbeamercolor{math text}{fg=black!30!blue}
 
@@ -119,6 +124,16 @@
 \begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
 \beamermathcolor{mygreen}
 \textcolor{mygreen}{#1}
+\vspace{0.3em}
+\textcolor{gray}{\hrule}
+\vspace{0.5em}
+}{%
+\end{mdframed}
+}
+
+\newenvironment{myblock}[1]{%
+\begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
+#1
 \vspace{0.3em}
 \textcolor{gray}{\hrule}
 \vspace{0.5em}

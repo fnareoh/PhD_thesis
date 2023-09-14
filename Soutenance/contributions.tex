@@ -138,9 +138,16 @@
     \textcolor{gray}{\small{\textbf{Techniques:} Streaming P.M., Compact Thompson Automata, Circuit Machinery...}}
 \end{frame}
 
-\begin{frame}{A simpler matching model: Gapped Consecutive Matching}
-    % Regexp are hard to match
-    Fine grained complexity prooved 
-    % Many alternative considered 
+\begin{frame}{Some regular expressions are hard to match... Does indexing help ?}
+    So far, we were looking to \ntheme{preprocess} $R$ and then \ntheme{as we discover $T$ check} if it is matched.\\
+    Does it get easier if instead \ntheme{we preprocess $T$ and then discover $R$} ? \btheme{(Indexing)}\\
+    % Regexp are hard to index for
+    \begin{myblock}{[Thankanchan and Gibney, 2021]}
+        For regular expressions, \textcolor{red}{there cannot be an index with polynomial-time preprocessing and sublinear query time}, {conditioned on the online matrix-vector multiplication conjecture.} 
+    \end{myblock}
+    {\large \faFrownO}  \pause ~But... if the query is \textbf{just a string} there are multiple time- and space-\textbf{efficient solutions}.\\
+    \smallskip
+    So what about simpler models with just two patterns ?
+        % Many alternative considered 
     % A recent intrest in Gapped Consecutive matching
 \end{frame}
