@@ -1,32 +1,16 @@
 
 \begin{frame}[noframenumbering,plain]
     \mytitle{Contributions}
-    \bigskip
-    \begin{columns}
-	   \column{.57\textwidth}
-      \begin{enumerate}
-        \item Streaming Regular Expressions
-        \item Gapped Consecutive Matching
-        \begin{enumerate}
-            \item Compressed Index
-            \item Compressed Pattern Matching
-        \end{enumerate}
-        \item Run-reporting for unordered alphabets
-        \item Approximate Longest Common Substring with approximately     mismatches
-        \item Pattern Matching for the Dynamic Time Warping distance
-        \item Compressing and Indexing Aligned Readsets
-      \end{enumerate}
-	   \column{.3\textwidth}
-        \begin{framed}
-            For each:
-            \begin{itemize}
-                \item Context
-                \item Problem
-                \item Results
-                \item Use of sketches
-            \end{itemize}
-        \end{framed}
-    \end{columns}
+    \vspace{1cm}
+
+    \includegraphics[width=\textwidth]{pictures/mindmap/co_auth.png}
+\end{frame}
+
+\begin{frame}[noframenumbering,plain]
+    \only<1|handout:0>{\includegraphics[width=\textwidth]{pictures/mindmap/3.png}}
+    \only<2|handout:0>{\includegraphics[width=\textwidth]{pictures/mindmap/4.png}}
+    \only<3|handout:0>{\includegraphics[width=\textwidth]{pictures/mindmap/5.png}}
+    \only<4>{\includegraphics[width=\textwidth]{pictures/mindmap/present.png}}
 \end{frame}
 
 \begin{frame}{A powerful matching model: regular expressions}
@@ -129,25 +113,20 @@
         \item \ntheme{[Bille and Thorup, SODA'10]} Streaming time $\Oh(n\cdot (\frac{d\log w}{w}+\log d))$ and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$.\pause
         \item What about \btheme{space efficiency} ?\pause
     \end{itemize}
-    
+\end{frame}
 
+\begin{frame}{What parameter is important for space-efficiency of regexp in Streaming ?}
+    TODO: Dictionary and wildcards matching 
 
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
-    \end{myalertblock}\pause
-    \textcolor{gray}{\small{\textbf{Techniques:} Streaming P.M., Compact Thompson Automata, Circuit Machinery...}}
+    \end{myalertblock}
 \end{frame}
 
-\begin{frame}{Some regular expressions are hard to match... Does indexing help ?}
-    So far, we were looking to \ntheme{preprocess} $R$ and then \ntheme{as we discover $T$ check} if it is matched.\\
-    Does it get easier if instead \ntheme{we preprocess $T$ and then discover $R$} ? \btheme{(Indexing)}\\
-    % Regexp are hard to index for
-    \begin{myblock}{[Thankanchan and Gibney, 2021]}
-        For regular expressions, \textcolor{red}{there cannot be an index with polynomial-time preprocessing and sublinear query time}, {conditioned on the online matrix-vector multiplication conjecture.} 
-    \end{myblock}
-    {\large \faFrownO}  \pause ~But... if the query is \textbf{just a string} there are multiple time- and space-\textbf{efficient solutions}.\\
-    \smallskip
-    So what about simpler models with just two patterns ?
-        % Many alternative considered 
-    % A recent intrest in Gapped Consecutive matching
+\begin{frame}{}
+
+    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+    \end{myalertblock}
+    TODO: Intuition of how it works  
 \end{frame}
