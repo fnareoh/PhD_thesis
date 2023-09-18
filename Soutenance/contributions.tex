@@ -141,6 +141,7 @@
 
 
 \newcommand{\dtw}{\mathrm{DTW}}
+\newcommand{\ed}{\mathrm{ED}}
 \newcommand{\RLE}{\mathrm{RLE}}
 
 \begin{frame}{Dynamic time warping (DTW) distance }
@@ -159,12 +160,15 @@ We focus on the setting where element are from a finite alphabet $\Sigma$, the s
 
 \end{frame}
 
-\begin{frame}{Formal definition of $\dtw(X,Y)$}
+\begin{frame}{Formal definition of $\dtw(X,Y)$ and dynamic programming}
+\vspace{-1cm}
+\begin{columns}
+\column{0.5\textwidth}
 \input{figures/grid_DTW}
 \begin{figure}
     \beamermathcolor{black}
     \centering
-    \begin{tikzpicture}[scale=1, every node/.style={scale=1.5}]
+    \begin{tikzpicture}[scale=0.8, every node/.style={scale=1.2}]
     \dtwgrid{5}{2}
 
     \foreach \i in {1,...,6} {
@@ -194,27 +198,34 @@ We focus on the setting where element are from a finite alphabet $\Sigma$, the s
 
     \end{tikzpicture}
 \end{figure}
+\column{0.4\textwidth}
+\centering
+\only<3>{
+$\text{cost}(\pi) = \sum_{(i,\ j)\in \pi} d(X[i],Y[j])$\\
+\vspace{0.5cm}
+$\dtw(X,Y) = \min_{\pi} \text{cost}(\pi)$\\
+\vspace{0.5cm}
+{\small s.t. $\pi$ goes from top left to bottom right.}}
+\end{columns}
 \pause %grid definition 
 \pause %draw the path
-\center 
-\begin{tabular}{c c}
-$\text{cost}(\pi) = \sum_{(i,\ j)\in \pi} d(X[i],Y[j])$ &
-$\dtw(X,Y) = \min_{\pi} \text{cost}(\pi)$ \\
-\end{tabular}\\
-s.t. $\pi$ goes from top left to bottom right.
-% example of alignment
 \pause
-\begin{exampleblock}{Alignment}
+
+\bigskip
+
+
+\only<4|handout:0>{
+\begin{exampleblock}{Path correspondance to alignment}
 \center
 \begin{figure}
 %\missingfigure{Under construction...}
 \centering
 \begin{tikzpicture}[scale=0.7, every node/.style={scale=1}]
 \foreach \x[count=\i] in {C,A,A,A,G,G} {
-    \node at ($(\i, 1)$) {\small{$\x$}};
+    \node at ($(\i, 1)$) {\small{\x}};
 }
 \foreach \y[count=\j] in {A,T,G} {
-    \node at ($(0.5+\j*1.5, 0)$) {\small{$\y$}};
+    \node at ($(0.5+\j*1.5, 0)$) {\small{\y}};
 }
 % align A
 \fill[myblue!25] (2, 0.25) -- (2,0.75) -- (4,0.75) -- (2.1,0.25) -- cycle;
@@ -226,64 +237,37 @@ s.t. $\pi$ goes from top left to bottom right.
 \end{tikzpicture}
 \end{figure}
 \vfill
-$\dtw($CAAAG,ATG$)=2$
-\end{exampleblock}
-%show corresponding alignment and cost
+$\dtw($CAAAG$,$ATG$)=2$
+\end{exampleblock}}
+
+\only<5->{
+
+\btheme{Dynamic Programming solution}\\
+\smallskip
+$D$ a matrix of size $(M+1)(N+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\pause
+\bigskip
+
+\begin{columns}
+    \column{0.27\textwidth}
+    \btheme{Initialization}\\
+    \smallskip
+    \small{
+        $D[0,0]= 0$ and for all $(i,j)$, $D[0,j]=D[i,0]=+\infty$ \pause
+        }
+    \column{0.67\textwidth}
+    \btheme{Recurrence}\\
+    \smallskip
+    \small{
+    $D[i,j] = \min\{$\beamermathcolor{black}
+        $\underbrace{\mathcolor{black!30!blue}{D[i-1,j-1]}}_\text{top-left},
+        \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{top},
+        \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{left}$
+    $\mathcolor{black!30!blue}{\}+ d(X[i], Y[j])}$}
+\end{columns}
+}
+
 \end{frame}
 
-
-
-
-\begin{frame}{Dynamic programming}
-\beamermathcolor{black}
-\begin{tabular}{c c}
-\begin{minipage}{0.5\textwidth}
-\small
-$\dtw(X,Y) = \min_{\pi} \sum_{(i,\ j)\in \pi} d(X[i],Y[j])$\\
-
-
-s.t. $\pi$ goes from top-left to bottom-right.
-\end{minipage} & 
-\begin{minipage}{0.4\textwidth}
-\input{figures/grid_DTW}
-\begin{figure}
-\centering
-\begin{tikzpicture}[scale=0.6, every node/.style={scale=1}]
-\dtwgrid{5}{2}
-
-\foreach \i in {1,...,6} {
-    \node at ($(\i-1, 2.4)$) {\tiny{$X[\i]$}};
-}
-\foreach \j in {1,...,3} {
-    \node at ($(-0.5, 3 -\j )$) {\tiny{$Y[\j]$}};
-}
-
-\dtwarrow{(0.1,2)}{(0.9,2)}
-\dtwarrow{(3.1,1.9)}{(3.9,1.1)}
-\dtwarrow{(1.1,2)}{(1.9,2)}
-\dtwarrow{(2.1,2)}{(2.9,2)}
-\dtwarrow{(4,0.9)}{(4,0.1)}
-\dtwarrow{(4.1,0)}{(4.9,0)}
-\node at (6,-0.3) {\bred{$\pi$}};
-\end{tikzpicture}
-\end{figure}
-\end{minipage}
-\end{tabular}\pause
-
-$D$ a matrix of size $(M+1)(N+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$ \pause
-
-Then $D[0,0]= 0$ and for all $(i,j)$, $D[0,j]=D[i,0]=+\infty$ \pause
-
-\[
-D[i,j] = {\min\{
-\underbrace{D[i-1,j-1]}_\text{top-left},
-\underbrace{D[i-1,j]}_\text{top},
-\underbrace{D[i,j-1]}_\text{left}
-\}+ d(X[i], Y[j])
-}
-    \]
-
-\end{frame}
 
 \begin{frame}{Comparison to the edit distance}
 \beamermathcolor{black}
@@ -308,10 +292,46 @@ ED[i,j] = {\min\{
 \pause
 
 \begin{exampleblock}{DTW vs ED}
-$ED(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=3$ whereas $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=1$.\\
+$\ed(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=3$ whereas $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=1$.\\
 $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}CCC)=3$
 \end{exampleblock} \pause
     
 $\Rightarrow$ Compresses runs of matching letters!
 
 \end{frame}
+
+\begin{frame}{Where DTW may perform better: third generation sequencing}
+    \begin{center}
+    \includegraphics[scale=0.25]{figures/ont-sequencing_yourgenome.png}\footnote{Figure credit: \href{https://www.yourgenome.org/facts/what-is-oxford-nanopore-technology-ont-sequencing/}{yourgenome.org}}
+    \end{center}
+    
+    Uneven speed of the DNA through the nanopore.\pause
+    
+    Tends to create errors on the homopolymer length...\pause
+    
+    DTW has been used by [Loose, M., Malla, S. Stout, 2016] and [R. Han, S. Wang, X. Gao, 2020] to try to counter this effect.
+    %DTW already used to align the raw signal. We propose using it to aling called reads and provide a visualization of the impact of homopolymer extensions on ED and DTW.
+    
+\end{frame}
+
+\begin{frame}{Theoretical motivation}
+    $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$.\\
+    The dynamic programming takes $\Oh(N^2)$-time if $M=N$. Can we do better?\pause
+    \begin{block}{No strongly subquadratic [Gold and Sharir]}
+    %There are no strongly subquadratic algorithms to compute the DTW distance between two strings over a ternary alphabet unless the Strong Exponential Hypothesis (SETH) is false.
+    $|\Sigma| \geq 3 \Rightarrow $ no $\Oh(N^{a})$ time algorithm with $a<2$ unless SETH is false.
+    \end{block}\pause
+    
+    \ntheme{\large Run-length compressed}\\
+    Let $n$ and $m$ be the number of runs in $X$ and $Y$. \pause
+    \begin{itemize}
+    \item General: $\Oh(mN+Mn)$-time [Froese et al.] \pause
+    \item Binary: $\Oh(nm)$-time [Dupont and Marteau] \pause
+    \end{itemize} \hfill
+    
+    \ntheme{\large Low distance regime}\\
+    Kuszmaul showed how to compute the distance if it is $\leq k$ in $\Oh(kN)$-time.
+    \end{frame}
+    
+    
+    
