@@ -1,0 +1,20 @@
+\newcommand{\dtwgrid}[2]{% height width 
+\foreach \i in {0,...,#1} {
+	\foreach \j in {0,...,#2} {
+		\filldraw[black] (\i , \j) circle (2pt);
+		\ifthenelse{ \not \equal{#2}{\j}}{ 
+			\draw[->] ($(\i , \j+0.9)$) -- ($(\i , \j+0.1)$);
+		};
+		\ifthenelse{ \not \equal{#1}{\i}}{
+  			\draw[->] ($(\i +0.1 , \j)$) -- ($(\i +0.9 , \j)$);
+		};
+		\ifthenelse{\not\equal{#1}{\i} \and \not \equal{#2}{\j}}{%
+  			\draw[->] ($(\i +0.1 , \j + 0.9)$) -- ($(\i +0.9, \j + 0.1)$);
+  		}
+	}
+}
+}
+
+\newcommand{\dtwarrow}[2]{%
+\draw[->,line width=0.3mm,red] #1 -- #2;
+}

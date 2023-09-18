@@ -1,0 +1,47 @@
+\newcommand{\dtwgrid}[2]{% height width 
+\foreach \i in {0,...,#1} {
+	\foreach \j in {0,...,#2} {
+		\filldraw[black] (\i , \j) circle (2pt);
+		\ifthenelse{ \not \equal{#2}{\j}}{ 
+			\draw[->] ($(\i , \j+0.9)$) -- ($(\i , \j+0.1)$);
+		};
+		\ifthenelse{ \not \equal{#1}{\i}}{
+  			\draw[->] ($(\i +0.1 , \j)$) -- ($(\i +0.9 , \j)$);
+		};
+		\ifthenelse{\not\equal{#1}{\i} \and \not \equal{#2}{\j}}{%
+  			\draw[->] ($(\i +0.1 , \j + 0.9)$) -- ($(\i +0.9, \j + 0.1)$);
+  		}
+	}
+}
+
+}
+
+\newcommand{\dtwarrow}[2]{%
+\draw[->,line width=0.3mm,red] #1 -- #2;
+
+}
+
+
+\begin{figure}
+%\missingfigure{Under construction...}
+\centering
+\begin{tikzpicture}[scale=0.7, every node/.style={scale=1}]
+\dtwgrid{6}{3}
+
+\foreach \i in {1,...,7} {
+	\node at ($(\i -1, 3.3)$) {\tiny{$T[\i]$}};
+}
+\foreach \j in {1,...,4} {
+	\node at ($(-0.4, 4 -\j )$) {\tiny{$P[\j]$}};
+}
+
+\dtwarrow{(1.1,2.9)}{(1.9,2.1)}
+\dtwarrow{(2.1,2)}{(2.9,2)}
+\dtwarrow{(3.1,2)}{(3.9,2)}
+\dtwarrow{(4,1.9)}{(4,1.1)}
+\dtwarrow{(4.1,0.9)}{(4.9,0.1)}
+\node at (5,-0.2) {\tiny{\red{$\pi$}}};
+
+\end{tikzpicture}
+\label{fig:wraping_path}
+\end{figure}

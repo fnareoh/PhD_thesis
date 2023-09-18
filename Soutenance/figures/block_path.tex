@@ -1,0 +1,79 @@
+ 
+\def\height{5}
+\def\width{4}
+\def\cell{0.5}
+
+\newcommand{\Block}{
+\node (bl) at (0,0) {};
+\node (br) at ($(bl)+(\width,0)$) {};
+\node (tl) at ($(bl)+(0,\height)$) {};
+\node[below,xshift=-15pt] () at ($(tl)$) {$i_p$};
+\node (tr) at ($(bl)+(\width,\height)$) {};
+\node[xshift=-15pt] () at ($(tr)+(1,-\width)$)  {$i_p+w$};
+\draw ($(bl)$) rectangle ($(tr)$);
+\draw[dashed] ($(tr)+(0,-\width)$) -- ($(tr)+(-\width,-\width)$) {};
+\draw[<->] ($(bl)+(0,-0.25)$) -- ($(bl)+(\width,-0.25)$)node [midway,yshift=-0.3cm] {$w$};
+\draw[<->] ($(bl)+(-0.25,0)$) -- ($(bl)+(-0.25,\height)$)node [midway,xshift=-0.3cm] {$h$};
+}
+
+\begin{figure}
+\centering
+
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+\Block
+
+\node (ra) at ($(tr)+(-\cell,0)$) {};
+\node (rb) at ($(tl)+(0.5,0)$) {};
+\node (rc) at ($(tl)+(0,-1.5)$) {};
+
+\only<1>{
+\draw[fill=gray!20] ($(tl)+(0,0)$) rectangle ($(bl)+(\cell,0)$);
+\draw[fill=gray!20] ($(tl)+(0,0)$) rectangle ($(tr)+(0,-\cell)$);
+}
+
+
+
+\only<3->{% Cases
+\draw[blue] ($(ra)$) rectangle ($(ra)+(\cell,-\cell)$)node [midway] {(a)};
+\draw[blue] ($(rb)$) rectangle ($(rb)+(\cell,-\cell)$)node [midway] {(b)};
+\draw[blue] ($(rc)$) rectangle ($(rc)+(\cell,-\cell)$)node [midway] {(c)};}
+
+
+\node (r1) at ($(tr)+(-2,0)$) {};
+\node (r2) at ($(tr)+(-\cell,-2+\cell)$) {};
+\draw ($(r2)$) rectangle ($(r2)+(\cell,-\cell)$)node [midway,xshift=0.8cm] {$(x,j_t)$};
+
+\only<2->{
+\draw ($(r1)$) rectangle ($(r1)+(\cell,-\cell)$)node [midway,yshift=0.5cm] {$(i_p,j_t-(x-i_p))$};
+\draw[dotted] ($(r1)+(\cell,-\cell)$) -- ($(r2)$);
+}
+
+\only<4>{
+%path a
+\draw[dashed,blue] ($(ra)+(0.5*\cell,-\cell)$) -- ($(r2)+(0.5*\cell,0)$);}
+
+
+\only<5>{
+%path b
+\draw[dotted] ($(r1)+(-1.5+\cell,-0.5*\cell)$) -- ($(r1) +(0,-0.5*\cell)$);
+\draw[dashed,blue] ($(r1)+(-1.5+\cell,-\cell)$) -- ($(r2)+(-1.5,0)$);
+\draw[dashed,blue] ($(r2)+(-1.5,0)$) -- ($(r2)$);}
+
+\only<6>{
+%path c
+\draw ($(tl)$) rectangle ($(tl)+(\cell,-\cell)$);
+\draw[dotted] ($(r1)+(-2+\cell,-0.5*\cell)$) -- ($(r1) +(0,-0.5*\cell)$);
+\draw[dashed,blue] ($(r1)+(-2+\cell,-\cell)$) -- ($(r2)+(-2,0)$);
+\draw[dashed,blue] ($(r2)+(-2,0)$) -- ($(r2)$);
+\draw[dashed,blue] ($(rc)+(\cell,-0.5*\cell)$) -- ($(r2) +(0,-0.5*\cell)$);
+}
+
+
+
+
+\end{tikzpicture}
+
+
+
+%\caption{Cases of Lemma~\ref{lm:border}. Possible locations of the cell $(a,b)$ are shown in blue.}\label{fig:border}
+\end{figure}

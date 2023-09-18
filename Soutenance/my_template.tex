@@ -86,6 +86,16 @@
 
 \newcommand\beamermathcolor[1]{\setbeamercolor{math text}{fg=#1}}
 
+% Color in math mode
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
 
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\textcolor{mygreen}{\ding{51}}}%

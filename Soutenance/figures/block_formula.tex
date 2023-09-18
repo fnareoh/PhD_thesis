@@ -1,0 +1,72 @@
+ 
+\def\height{4}
+\def\width{3}
+\def\cell{0.5}
+
+\newcommand{\Block}{
+\node (bl) at (0,0) {};
+\node (br) at ($(bl)+(\width,0)$) {};
+\node (tl) at ($(bl)+(0,\height)$) {};
+\node[below,xshift=-5pt] () at ($(tl)$) {$i_p$};
+\node (tr) at ($(bl)+(\width,\height)$) {};
+\node[xshift=-15pt] () at ($(tr)+(-\width,-\width)$)  {$i_p+w$};
+\draw ($(bl)$) rectangle ($(tr)$);
+\draw[dashed] ($(tr)+(0,-\width)$) -- ($(tr)+(-\width,-\width)$) {};
+%\draw[<->] ($(bl)+(0,-0.25)$) -- ($(bl)+(\width,-0.25)$)node [midway,yshift=-0.3cm] {$w$};
+%\draw[<->] ($(bl)+(-0.25,0)$) -- ($(bl)+(-0.25,\height)$)node [midway,xshift=-0.3cm] {$h$};
+}
+
+\begin{figure}
+\centering
+
+\begin{subfigure}{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+\Block
+\node (r1) at ($(tr)+(-1.5,0)$) {};
+\node (r2) at ($(tr)+(-\cell,-1.5+\cell)$) {};
+\draw ($(r1)$) rectangle ($(r1)+(\cell,-\cell)$)node [midway,yshift=0.5cm] {$(i_p,j_t-(x-i_p))$};
+\draw ($(r2)$) rectangle ($(r2)+(\cell,-\cell)$)node [midway,xshift=0.8cm] {$(x,j_t)$};
+\draw[dotted] ($(r1)+(\cell,-\cell)$) -- ($(r2)$);
+
+% Cases
+\node (ra) at ($(tr)+(-\cell,0)$) {};
+\draw[blue] ($(ra)$) rectangle ($(ra)+(\cell,-\cell)$)node [midway] {(a)};
+\node (rb) at ($(tl)+(0.5,0)$) {};
+\draw[blue] ($(rb)$) rectangle ($(rb)+(\cell,-\cell)$)node [midway] {(b)};
+\node (rc) at ($(tl)+(0,-2)$) {};
+\draw[blue] ($(rc)$) rectangle ($(rc)+(\cell,-\cell)$)node [midway] {(c)};
+\end{tikzpicture}
+\caption*{Case 1:  $x-i_p \leq w$}
+\label{fig:case1}
+\end{subfigure}
+%
+%
+%
+\begin{subfigure}{0.4\textwidth}
+\centering
+\begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8},]
+\Block
+\node (r1) at ($(bl)+(0,3)$) {};
+\node (r2) at ($(r1)+(+\width-\cell,-\width+\cell)$) {};
+\draw ($(r1)$) rectangle ($(r1)+(\cell,-\cell)$)node [midway,xshift=1.2cm] {$(x-w,i_t)$};
+\draw ($(r2)$) rectangle ($(r2)+(\cell,-\cell)$)node [midway,xshift=0.8cm] {$(x,j_t)$};
+\draw[dotted] ($(r1)+(\cell,-\cell)$) -- ($(r2)$);
+%hack to align
+\path ($(tl)+(0.5,0.55)$) rectangle ($(tl)+(\cell,-\cell)$);
+
+% Cases
+\node (ra) at ($(bl)+(0,2)$) {};
+\draw[blue] ($(ra)$) rectangle ($(ra)+(\cell,-\cell)$)node [midway] {(a)};
+\node (rb) at ($(tl)+(0,-0.5)$) {};
+\draw[blue] ($(rb)$) rectangle ($(rb)+(\cell,-\cell)$)node [midway] {(b)};
+\node (rc) at ($(tl)+(2,0)$) {};
+\draw[blue] ($(rc)$) rectangle ($(rc)+(\cell,-\cell)$)node [midway] {(c)};
+\end{tikzpicture}
+\caption*{Case 2: $x-i_p > w$}
+\label{fig:case2}
+\end{subfigure}
+
+
+%\caption{Cases of Lemma~\ref{lm:border}. Possible locations of the cell $(a,b)$ are shown in blue.}\label{fig:border}
+\end{figure}
