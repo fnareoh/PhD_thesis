@@ -62,6 +62,12 @@
     \end{tabular}
     \medskip
 
+
+\end{frame}
+
+
+\begin{frame}{Classic Pattern Matching}
+
     Most natural task: Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
 
     \begin{center}
@@ -78,20 +84,6 @@
         \end{tikzpicture}
         \\
     \end{center}
-
-\end{frame}
-
-
-\begin{frame}{Classic Pattern Matching}
-
-\end{frame}
-
-\begin{frame}{Algorithms vs Data-structures}
-
-\end{frame}
-
-\begin{frame}{Classic Indexing the suffix tree}
-
 \end{frame}
 
 \begin{frame}[noframenumbering,plain]
@@ -169,20 +161,133 @@ Similarity Measures and distances
     
 \end{frame}
 
-\begin{frame}{Example of lossy sketch: Karp--Rabin fingerprints}
-    \begin{framed}
-        Definition: $$ \varphi(P) = P[1]r^{m-1}+P[2]r^{m-2} + \dots + P[m-1]r + P[m] \mod p$$ 
-        for $p$ a prime and $r < p$. \pause
+\begin{frame}{Example of Lossy Sketch: Karp--Rabin Fingerprints}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{mydefblock}{Karp--Rabin fingerprints}
+            For $p>|\Sigma|$ a prime and $b > |\Sigma|$,
+            the fingerprint of a string $P$ of length $m$ is:
+            $$\varphi_{p}(P) = \sum_{i = 0}^{m-1}  P[i]b^{m-i-1} \bmod p$$
+        \end{mydefblock}
+        \pause
         
-        Testing if $\varphi(T[i+1..i+m])=\varphi(P)$ can be tested in $\Oh(1)$ and if so the strings match w.h.p.
-        \begin{tabular}{l c}
-        \textcolor{black}{Sliding window:} & \hspace{1cm}\includegraphics[width=0.5\textwidth]{pictures/slidding_window.png}
-        \end{tabular}
-        $$ \varphi(T[i+1..i+m]) = \varphi(T[i..i+m-1])\times r - S[i]r^k + S[i+m] \mod p$$\vspace{-0.5cm}
-    \end{framed}
+        \column{0.5\textwidth}
+        For a text $T$ and $i < |T|-m$:\\
+        \begin{itemize}
+            \item If $T[i+1..i+m]=P$, then $\varphi(T[i+1..i+m])=\varphi(P)$.\pause
+            \item If $\varphi(T[i+1..i+m])=\varphi(P)$ then the strings match w.h.p. and it can be tested in $\Oh(1)$ time.\pause
+            \item Occupies constant space, but we cannot reconstruct the original strings.\pause
+        \end{itemize}
+    \end{columns}
+
+    \bigskip
+    \begin{columns}
+    \column{0.3\textwidth}
+    \btheme{Sliding window property} 
+    \column{0.5\textwidth}
+    \includegraphics[width=\textwidth]{pictures/slidding_window.png}
+    \end{columns}\pause
+    $$ \varphi(T[i+1..i+m]) = \varphi(T[i..i+m-1])\times b - T[i]b^m + T[i+m] \mod p$$\vspace{-0.5cm}
 \end{frame}
 
+
+\newlength{\lzspacing}
+\setlength{\lzspacing}{1.25em}
+\newcounter{symbid}
 \begin{frame}{Example of lossless sketch: Lempel--Ziv factorization}
+
+    \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, \\
+    \onslide<3->{The unique LZ-phrase starting at position $s$, $f_i=T[s..e]$ is such that}
+    \begin{itemize}
+        \item<4-> $T[s..(e-1)]$ occurs at least twice in $T[1..(e-1)]$,\only<6->{ and}
+        \item<6-> either $e=|T|$ or $T[s..e]$ occurs only once in $T[1..e]$.
+    \end{itemize}
+
+    \vspace{.5\baselineskip}
+    
+    \onslide<2->{
+    \begin{center}
+    \begin{tikzpicture}
+    \tikzset{barcolor/.style={black, densely dotted}}
+    \tikzset{fcolor/.style={black}}
+    
+    \setcounter{symbid}{0}
+    \foreach[count=\factorid from 1, evaluate=\factorid as \prevfid using int(\factorid-1)] \factorset in {%
+    {a},
+    {b},%
+    {c},
+    {b,a},
+    {b,a,a},
+    {b,c,b,a,c},%
+    {b,a,b,a,a,b,c,z},%
+    {z,b},
+    {a,b,a}%
+    }
+    {
+
+        \only<3->{
+        \ifnum\factorid=7
+            \tikzset{barcolor/.style={black, densely dotted}}
+            \tikzset{fcolor/.style={black, font=\boldmath}}	
+        \else
+            \beamermathcolor{black!30!white}
+            \tikzset{barcolor/.style={black!20!white, densely dotted}}
+            \tikzset{fcolor/.style={barcolor}}
+        \fi}
+
+        \path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (leftbar) {};
+        \foreach \tsymb in \factorset {
+            \addtocounter{symbid}{1}
+            \node[inner sep=0] (\thesymbid) at (\thesymbid\lzspacing,0) {\smash{\texttt{\tsymb}\vphantom{$\strut$}}$\vphantom{m}$};
+            %\node at (\thesymbid\lzspacing,1) {$\scriptstyle\thesymbid$};
+        }
+        \path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (rightbar) {};
+        \path (leftbar) to node[midway] (centerbar) {} (rightbar);
+        %\node[above of=centerbar, fcolor] (flab\factorid) {$f_{\factorid}$};
+        \node[above=.75em of centerbar |- \thesymbid.north, fcolor] (flab\factorid) {$f_{\factorid}$};
+
+        \ifodd\factorid\else
+            \draw[thick, barcolor] (leftbar.center) to ++(0,1);
+            \draw[thick, barcolor] (rightbar.center) to ++(0,1);
+        \fi
+    }
+
+    \tikzset{hlbox/.style={draw, ultra thick, inner xsep=2.5pt}}
+
+  
+    
+    \foreach[count=\i from 14, evaluate=\i as \j using int(\i-10)] \x in {b,a,b,a,a,b,c} {
+    \node<4->[below=1em of \i, inner sep=0] (low\i) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+    \node<5->[below=1em of \j, inner sep=0] (low\j) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+    }
+
+    \only<4->{
+        \node[hlbox, fit=(low14)(low20), myblue] (ma) {};
+
+        \node[below=0 of ma] (malab) {\bblue{already seen}};
+
+    }
+    \node<5->[hlbox, fit=(low4)(low10), myblue] (fi) {};
+
+    
+    \node<7->[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
+    \node<7->[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
+    \node<7->[hlbox, fit=(low21), myorange] {};
+    \node<7->[hlbox, fit=(low11), myorange] {};
+
+    \only<8->{
+        \node[below right=0.3em of fi.south west] (start) {};
+        \node[below left=0.3em of ma.south west] (end) {};
+        \node[fit=(start)(end), inner sep=0pt] (mlarrowl) {\rightarrowfill};
+        \node[fit=(start)(end), inner sep=0pt] (mlarrowr) {\leftarrowfill};
+        \node[below=-.65em of mlarrowl] {$d$};
+    }    
+    \draw node[left=0 of 1] {$T = \strut$};
+    \end{tikzpicture}
+    \end{center}}
+
+    \only<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,s-e,T[e])$.}
+    \only<10->{In the worst case, no compression, but very efficient in practice.}
 \end{frame}
 
 \begin{frame}{What is a sketch ?}
@@ -256,10 +361,14 @@ Similarity Measures and distances
     \end{columns}
 \end{frame}
 
-\begin{frame}{Summary}
-    \only<1|handout:0>{\includegraphics[width=\textwidth]{pictures/mindmap/1.png}}
-    \only<2|handout:0>{\includegraphics[width=\textwidth]{pictures/mindmap/2.png}}
-    \only<3>{\includegraphics[width=\textwidth]{pictures/mindmap/3.png}}
+\begin{frame}{}
+    \centering
+    \textbf{\large \bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}
+    \medskip
+
+    \only<1|handout:0>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/1.png}}
+    \only<2|handout:0>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/2.png}}
+    \only<3>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/3.png}}
     \pause
     \pause
 \end{frame}
