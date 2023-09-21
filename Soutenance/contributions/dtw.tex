@@ -1,3 +1,4 @@
+\section{Pattern Matching DTW}
 
 \newcommand{\dtw}{\mathrm{DTW}}
 \newcommand{\ed}{\mathrm{ED}}
@@ -11,6 +12,8 @@
 \begin{frame}{Dynamic time warping (DTW) distance }
 
 A \ntheme{measure of similarity between two temporal sequences} which can vary in speed.
+
+\btheme{Definition:} Minimal distance obtained by \ntheme{duplicating} some items of the sequences (maintaining equal length) and then \ntheme{summing the distances} between items at the same position.
 
 \begin{center}
 \includegraphics[scale=0.3]{figures/dtw_vs_euc.png}\\
@@ -123,39 +126,11 @@ $D$ a matrix of size $(M+1)(N+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\pause
     $\mathcolor{black!30!blue}{\}+ d(X[i], Y[j])}$.
 }
 
-\end{frame}
-
-
-\begin{frame}{Comparison to the edit distance}
-\beamermathcolor{black}
-\[
-D[i,j] = {\min\{
-\underbrace{D[i-1,j-1]}_\text{top-left},
-\underbrace{D[i-1,j]}_\text{top},
-\underbrace{D[i,j-1]}_\text{left}
-\} \mathcolor{red}{+ d(X[i], Y[j])}
-}
-    \]
-
-\[
-ED[i,j] = {\min\{
-\underbrace{ED[i-1,j-1]}_\text{top-left} \mathcolor{red}{+ d(X[i], Y[j])},
-\underbrace{ED[i-1,j]}_\text{top} \mathcolor{red}{+1},
-\underbrace{ED[i,j-1]}_\text{left} \mathcolor{red}{+1}
-\}
-}
-    \]
-
-\pause
-
-\begin{exampleblock}{DTW vs ED}
-$\ed(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=3$ whereas $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=1$.\\
-$\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}CCC)=3$
-\end{exampleblock} \pause
-    
-$\Rightarrow$ Compresses runs of matching letters!
+\only<6>{
+    For $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$, $\Oh(NM)$ space and time.}
 
 \end{frame}
+
 
 \begin{frame}{Where DTW may perform better: third generation sequencing}
     \begin{center}
@@ -173,22 +148,50 @@ $\Rightarrow$ Compresses runs of matching letters!
 \end{frame}
 
 \begin{frame}{Theoretical motivation}
-    $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$.\\
-    The dynamic programming takes $\Oh(N^2)$-time if $M=N$. Can we do better?\pause
-    \begin{block}{No strongly subquadratic [Gold and Sharir]}
-    %There are no strongly subquadratic algorithms to compute the DTW distance between two strings over a ternary alphabet unless the Strong Exponential Hypothesis (SETH) is false.
-    $|\Sigma| \geq 3 \Rightarrow $ no $\Oh(N^{a})$ time algorithm with $a<2$ unless SETH is false.
-    \end{block}\pause
-    
-    \ntheme{\large Run-length compressed}\\
-    Let $n$ and $m$ be the number of runs in $X$ and $Y$. \pause
-    \begin{itemize}
-    \item General: $\Oh(mN+Mn)$-time [Froese et al.] \pause
-    \item Binary: $\Oh(nm)$-time [Dupont and Marteau] \pause
-    \end{itemize} \hfill
-    
-    \ntheme{\large Low distance regime}\\
-    Kuszmaul showed how to compute the distance if it is $\leq k$ in $\Oh(kN)$-time.
-    \end{frame}
-    
-    
+$X$ and $Y$ strings, $N=|X|$ and $M=|Y|$.\\
+The dynamic programming takes $\Oh(N^2)$-time if $M=N$. Can we do better?\pause
+\begin{block}{No strongly subquadratic [Gold and Sharir]}
+%There are no strongly subquadratic algorithms to compute the DTW distance between two strings over a ternary alphabet unless the Strong Exponential Hypothesis (SETH) is false.
+$|\Sigma| \geq 3 \Rightarrow $ no $\Oh(N^{a})$ time algorithm with $a<2$ unless SETH is false.
+\end{block}\pause
+
+\ntheme{\large Run-length compressed}\\
+Let $n$ and $m$ be the number of runs in $X$ and $Y$. \pause
+\begin{itemize}
+\item General: $\Oh(mN+Mn)$-time [Froese et al.] \pause
+\item Binary: $\Oh(nm)$-time [Dupont and Marteau] \pause
+\end{itemize} \hfill
+
+\ntheme{\large Low distance regime}\\
+Kuszmaul showed how to compute the distance if it is $\leq k$ in $\Oh(kN)$-time.
+\end{frame}
+
+\begin{frame}{The effect of runs on the dynamic programming matrix}
+\begin{myalertblock}{Theorem 1}
+Given $\RLE(P)$ and $\RLE(T)$ and an \textcolor{red}{integer} distance $d: \Sigma \times \Sigma \rightarrow \mathbb{Z}^+$,\\ we can compute all $\dtw$ distances below $k$ in $\Oh(k mn)$ time,\\ where $m=|\RLE(P)|$ and $n=|\RLE(T)|$.
+\end{myalertblock}\pause
+
+A subtable $D[i_p .. j_p, i_t .. j_t]$ is called a \bred{\emph{block}} if $P[i_p.. j_p]$ is a run in $P$, and $T[i_t .. j_t]$ is a run in $T$.
+
+
+%\input{figures/def_bloc}
+
+\[
+D[i,j] = {\min\{
+\underbrace{D[i-1,j-1]}_\text{top-left},
+\underbrace{D[i-1,j]}_\text{top},
+\underbrace{D[i,j-1]}_\text{left}
+\}+ d(X[i], Y[j])
+}
+\]
+
+Inside a block $d=d(X[i], Y[j])$ is constant.\\ \pause
+
+
+\begin{block}{Lemma}
+\label{lm:non-decreasing}
+The values in a block are non-decreasing left-to-right and top-to-bottom.
+\end{block}\pause
+
+
+\end{frame}

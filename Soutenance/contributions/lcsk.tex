@@ -9,7 +9,6 @@
 \newcommand{\Collisions}{C}
 \newcommand{\HD}{d_H}
 \newcommand{\sk}{\mathrm{sk}}
-\newcommand{\eps}{\varepsilon}
 \newcommand{\norm}[1]{\ensuremath{\lVert#1\rVert}}
 \newcommand{\Ham}{\mathrm{Ham}}
 
@@ -160,9 +159,9 @@ For $A = B$, Paul has a winning strategy for all $r < \frac{1}{3}$ asking $Q = \
 \frame{
 \frametitle{Decision variant }
 
-\bred{Input:} integers ${k, \ell}$, a constant ${\eps > 0}$, strings ${S_1, S_2}$ of length ${n}$
+\btheme{Input:} integers ${k, \ell}$, a constant ${\eps > 0}$, strings ${S_1, S_2}$ of length ${n}$
 
-\bred{Output:} 
+\btheme{Output:} 
 
 \begin{enumerate}
 \item YES if ${\ell \le \mathrm{LCS_k}}$;
@@ -252,7 +251,7 @@ With probability at least $1- n^{-\beta}$, for all $u,v \in P$:\\
 
 None of the previous solutions have been implemented. 
 
-The only algorithm that seemed to be practical enough is the dynamic programming one \bred{[Flouri et al.'15]}
+The only algorithm that seemed to be practical enough is the dynamic programming one \ntheme{[Flouri et al.'15]}
 
 \pause
 \bigskip
