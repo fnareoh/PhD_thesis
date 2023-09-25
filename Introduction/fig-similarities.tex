@@ -111,7 +111,7 @@
     % LCSubstring
     \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         \small \mbox{Length of the Longest Common Substring} \\
-        $$ \mathrm{LCS}(X,Y)= \max \{ l+1, \exists i,j \mbox{ s.t. } X[i:i+l]=Y[j:j+l] \}$$
+        $$ \mathrm{LCS}(X,Y)= \max \{ l+1, \exists i,j \mbox{ s.t. } X[i..i+l]=Y[j..j+l] \}$$
         \end{minipage}
         &
         \hfill
@@ -128,7 +128,7 @@
     % LCSubsting with k mismatches
     \begin{minipage}{10cm} \renewcommand{\arraystretch}{1}
         \small \mbox{\textbf{Length of the Longest Common Substring with $k$ Mismatches}} \\
-        $$ \lcsk(X,Y)= \max \{ l+1, \exists i,j \mbox{ s.t. } \mathrm{HD}(X[i:i+l],Y[j:j+l]) \leq k \}$$
+        $$ \lcsk(X,Y)= \max \{ l+1, \exists i,j \mbox{ s.t. } \mathrm{HD}(X[i..i+l],Y[j..j+l]) \leq k \}$$
         \end{minipage}
         &
         \hfill

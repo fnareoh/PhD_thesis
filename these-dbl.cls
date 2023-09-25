@@ -541,7 +541,7 @@
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername~\thechapter~--\ \textit{#1}}{}}
 \fancyhead[LE,RO]{\small\thepage}
     \fancyhead[RO]{\small\rightmark}   % \rightmark = section courante
-    \fancyhead[LE]{\small Partie~\thepart, \leftmark} % \leftmark = chapitre courant
+    \fancyhead[LE]{\small Part~\thepart, \leftmark} % \leftmark = chapitre courant
     \fancyfoot[C]{\thepage}               % marque la page au centre
 }     
 
