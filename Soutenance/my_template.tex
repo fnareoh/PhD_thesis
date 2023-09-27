@@ -9,6 +9,7 @@
   calc,
   fit,
   positioning,
+  arrows
 }
 
 \mode<presentation>						% Set options
@@ -44,7 +45,7 @@
 \usepackage{bookmark}
 \usepackage{colortbl}                   % For color line
 \usepackage{framed}                     % For frames
-\usepackage{lmodern} %Font
+\usepackage{lmodern} %Fontà
 
 
 \beamertemplatenavigationsymbolsempty
@@ -140,9 +141,6 @@
 \begin{mdframed}[roundcorner=1em, outerlinewidth=0px, innerlinecolor=gray, innerlinewidth=.1em]
 \beamermathcolor{mygreen}
 \textcolor{mygreen}{#1}
-\vspace{0.3em}
-\textcolor{gray}{\hrule}
-\vspace{0.5em}
 }{%
 \end{mdframed}
 }
@@ -178,3 +176,10 @@
 %multirow
 \usepackage{multirow}
 \usepackage{subcaption}
+
+%Jonas tikz wizardery
+\newenvironment{tikzoverlay}[1][]{\begin{tikzpicture}[overlay, remember picture, #1]}{\end{tikzpicture}}
+
+\newlength{\lzspacing}
+\setlength{\lzspacing}{1.25em}
+\newcounter{symbid}

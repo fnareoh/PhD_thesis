@@ -1,0 +1,372 @@
+
+\section{Squares for Unordered Alphabets}
+\newcommand{\absolute}[1]{\left\lvert#1\right\rvert}
+\newcommand{\orderof}[1]{\mathcal{O}(#1)}
+
+\begin{frame}
+    \centering
+    {\Large Optimal Square Detection  Over General Alphabets}
+  
+    \bigskip
+    {\large SODA'23}\\
+    \bigskip
+    \includegraphics{pictures/mindmap/squares.png}
+  
+    \bigskip
+    Jonas Ellert, Paweł Gawrychowski
+  \end{frame}
+
+\begin{frame}{Squares and repetition detection}
+
+\end{frame}
+
+
+\begin{frame}{Alphabet types for $w \in \Sigma^n$, where $|\Sigma| = \sigma$}
+    \small
+	\vspace{.75\baselineskip}	
+	
+	\setlength{\leftmargini}{1.1em}
+	\begin{itemize}
+	\onslide<2->{\item \textbf{linearly-sortable alphabet (LSA)}:\hfill \hspace{0.5cm}%
+	\onslide<3->{e.g.\ $\{\texttt A,\texttt C,\texttt G,\texttt T\}$, $\{0, \dots, 255\}$, or $\{1, \dots, n^{\Oh({1})}\}$}
+	\\sort $n$ symbols in $\Oh({n})$ time%\\e.g.\ $\{1, \dots, n^{\Oh{1}}\}$%
+	}
+	\vspace{.25\baselineskip}
+	\onslide<4->{\item \textbf{general ordered alphabet (GOA)}:\hfill %
+	\onslide<5->{\rlap{e.g.\ comparison sort}\phantom{e.g.\ $\{\texttt A,\texttt C,\texttt G,\texttt T\}$, $\{0, \dots, 255\}$, or $\{1, \dots, n^{\Oh{1}}\}$}}
+	\\test $w[i] < w[j]$ in constant time}
+	\vspace{.25\baselineskip}
+	\onslide<6->{\item \textbf{general unordered alphabet (GUA)}:\hfill%
+	\onslide<7->{\rlap{e.g.\ KMP pattern matching}\phantom{e.g.\ $\{\texttt A,\texttt C,\texttt G,\texttt T\}$, $\{0, \dots, 255\}$, or $\{1, \dots, n^{\Oh{1}}\}$}}
+	\\test $w[i] = w[j]$ in constant time}
+	\end{itemize}
+	
+	\vspace{1.5\baselineskip}
+	\onslide<8->
+	\begin{tabular}{r|ccc} 
+		& LSA & GOA & GUA \\\hline
+		%${}^{\strut}$Element Distinctness & $\Theta(\sigma)$ & $\Theta(\sigma \lg \sigma)$ & $\Theta(\sigma^2)$ \pause \\
+		$\strut^{\strut}$Lempel-Ziv & %
+		\onslide<9->{$\Oh({n})$} & %
+		\onslide<10->{$\Theta(n \lg \sigma)$} & %
+		\onslide<11->{$\Theta(n\sigma)$} \\ %
+		%
+		$\strut$Suffix Sorting & %
+		\onslide<9->{$\Oh({n})$} & %
+		\onslide<10->{$\Theta(n \lg \sigma)$} & %
+		\onslide<11->{$\Theta(n\sigma)$} \\
+		%
+		\onslide<12->{${}^{\strut}$\bfseries Square-Freeness} & %
+		\onslide<12->{\boldmath$\Oh({n})$\unboldmath} & %
+		\onslide<13->{\boldmath$\Theta(n)$\unboldmath} & %
+		\onslide<14->{\boldmath$\Oh(n \lg n)$\unboldmath} \begin{tikzoverlay}
+			\onslide<15->{
+            \beamermathcolor{black}
+			\tikzset{viscol1/.style={white}}
+			\tikzset{viscol2/.style={white}}
+			\tikzset{viscol3/.style={white}}
+			\only<16->{\tikzset{viscol1/.style={}}}
+			\only<17->{\tikzset{viscol2/.style={}}}
+			\only<17->{\tikzset{viscol3/.style={red}}}
+			\path (0,.1) node (a) {};
+			\draw (3,1.1) node (b) {optimal for $\sigma = n$};
+			\node[below=-.4em of b,viscol1] (c) {but what about $\sigma < n\strut$?};
+			\node[below=-.0em of c,viscol2] (d) {{\boldmath$\Theta(n \lg \sigma)$\unboldmath}};
+			\node[below=-.4em of d,viscol3] (e) {\textbf{\small Our contribution}};
+			\node[fit=(b)(c)(d)(e), ultra thick, draw=red, inner sep=.25em] (f) {};			
+			\draw[-latex] (f.west |- b.center) to[out=180, in=0] (a);
+			}
+		\end{tikzoverlay} \\
+		%
+		${}^{\strut}$ & %
+		\onslide<12->{\footnotesize\bfseries\color{red} Kolpakov \&} & %
+		\onslide<13->{\footnotesize\bfseries\color{red} Ellert \&} & %
+		\onslide<14->{\footnotesize\bfseries\color{red} e.g.\ Main \&} \\
+		& %
+		\onslide<12->{\footnotesize\bfseries\color{red} Kucherov '99} & %
+		\onslide<13->{\footnotesize\bfseries\color{red} Fischer '21} & %
+		\onslide<14->{\footnotesize\bfseries\color{red} Lorentz '84}
+	\end{tabular}	
+	
+\end{frame}
+
+\begin{frame}{The use of Lempel-Ziv factorization to detect squares}
+    
+\end{frame}
+
+\begin{frame}
+\frametitle{Sketching: $\Delta$-approximate Lempel-Ziv factorisation}
+\vspace{.5\baselineskip}
+
+
+\onslide<2->{\textbf{\boldmath$\Delta$\unboldmath-approximate Lempel-Ziv factorisation:} $w = f_1f_2\dots f_z$}\onslide<4->{ such that}
+\begin{itemize}
+\item<4-> $\absolute{f_i} > 0$ and $f_i = h_it_i$ (\emph{head} and \emph{tail}) with $\absolute{h_i} < \Delta$\onslide<6->{, and}
+\item<6-> $t_i$ is empty or occurs at least twice in $f_1f_2\dots f_i$\onslide<8->{, and}
+\item<8-> $f_if_{i + 1}[1]$ does not occur in $f_1f_2\dots f_i$ (or $i = z$).
+\end{itemize}
+
+\vspace{.5\baselineskip}
+
+\onslide<3->
+\begin{center}
+\begin{tikzpicture}
+\tikzset{barcolor/.style={black, densely dotted}}
+\tikzset{fcolor/.style={black}}
+
+\setcounter{symbid}{0}
+\foreach[count=\factorid from 1, evaluate=\factorid as \prevfid using int(\factorid-1)] \factorset in {%
+{a,b},%
+{c,b,a,b},%
+{a,a,b,c,b,a},%
+{c,b,a,b,a,a,b,c},%
+{z,z,b,a,b,a}%
+}
+{
+
+\only<5->{
+\ifnum\factorid=4
+	\tikzset{barcolor/.style={black, densely dotted}}
+	\tikzset{fcolor/.style={black, font=\boldmath}}	
+\else
+    \beamermathcolor{black!30!white}
+	\tikzset{barcolor/.style={black!30!white, densely dotted}}
+	\tikzset{fcolor/.style={barcolor}}
+\fi}
+
+\path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (leftbar) {};
+\foreach \tsymb in \factorset {
+	\addtocounter{symbid}{1}
+	\node[inner sep=0] (\thesymbid) at (\thesymbid\lzspacing,0) {\smash{\texttt{\tsymb}\vphantom{$\strut$}}$\vphantom{m}$};
+	%\node at (\thesymbid\lzspacing,1) {$\scriptstyle\thesymbid$};
+}
+\path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (rightbar) {};
+\path (leftbar) to node[midway] (centerbar) {} (rightbar);
+\node[above=.75em of centerbar |- \thesymbid.north, fcolor] (flab\factorid) {$f_{\factorid}$};
+
+\ifodd\factorid\else
+	\draw[thick, barcolor] (leftbar.center) to ++(0,1);
+	\draw[thick, barcolor] (rightbar.center) to ++(0,1);
+\fi
+}
+
+\foreach[count=\i from 13, evaluate=\i as \j using int(\i-10)] \x in {c,b} {
+\node<5->[below=1em of \i, inner sep=0] (low\i) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+\node<10->[below=1em of \j, inner sep=0] (low\j) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+}
+
+\foreach[count=\i from 15, evaluate=\i as \j using int(\i-10)] \x in {a,b,a,a,b,c} {
+\node<5->[below=1em of \i, inner sep=0] (low\i) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+\node<7->[below=1em of \j, inner sep=0] (low\j) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
+}
+
+\tikzset{hlbox/.style={draw, ultra thick, inner xsep=2.5pt}}
+
+\only<5->{
+\node[hlbox, fit=(low13)(low14), red] (h4) {};
+\node[hlbox, fit=(low15)(low20), myorange] (t4) {};
+
+\node[below=0 of h4] (h4lab) {$h_4$};
+\node[below=0 of t4] (t4lab) {$t_4$};
+
+\draw[thick, barcolor] (h4.south west) ++(0, -0.002em) to (h4.west |- h4lab.south);
+\draw[thick, barcolor] (h4.south east) ++(0, -0.002em) to (h4.east |- h4lab.south);
+\draw[thick, barcolor] (t4.south east) ++(0, -0.002em) to (t4.east |- h4lab.south);
+
+}
+
+\node<10->[hlbox, fit=(low3)(low4), red] {};
+\node<7->[hlbox, fit=(low5)(low10), myorange] {};
+
+\onslide<8->{
+\node<9->[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
+\node<11->[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
+\node<9->[hlbox, fit=(low21), mygreen] {};
+\node<11->[hlbox, fit=(low11), myblue] {};
+}
+
+\only<14->{
+\node[hlbox, fit=(17)] {};
+\node[hlbox, fit=(18)] {};
+
+\node<15->[hlbox, fit=(7)] {};
+\node<15->[hlbox, fit=(8)] {};
+}
+
+\draw node[left=0 of 1] {$w = \strut$};
+\node<5->[right=6em of t4lab] {$\Delta = 3$};
+
+\end{tikzpicture}
+\end{center}
+
+\vspace{.25\baselineskip}
+
+\begin{itemize}
+%\item<9-> if $f_i[1..\absolute{f_i})$ overlaps its earlier occurrence, then square already found
+\item<13-> no need to detect squares that are entirely contained in $t_i$
+\end{itemize}
+
+\onslide<12->
+\begin{mylemblock}{\textbf{Lemma}}
+\begin{tikzpicture}[overlay, remember picture]
+\node (mark) {};
+\end{tikzpicture}
+{\small $\frac\strut\strut$A $\Delta$-approximate LZ factorisation can be computed in $\orderof{n + \frac{n \cdot \lg n \cdot \sigma}{\sqrt{\Delta}}}$ time.}
+\end{mylemblock}
+
+\end{frame}
+
+\begin{frame}{Using our sketch to detect squares}
+
+\begin{center}
+    \small
+
+    \begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
+    \beamermathcolor{black}
+    \onslide<2->{
+    
+    \node (0) {$\qquad\quad w = {}$};
+    \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
+        \node[right=0 of \iminus, minimum width=1.05em] (\i) {\vphantom{a}};
+        \node[below=-0.75em of \i, minimum width=1.05em] (d\i) {\vphantom{a}};
+    }
+    
+    
+    \node[fit=(1)(30), fill=white, draw=black, inner sep=0pt] {};
+    \node[fit=(6)(15), fill=myblue!40!white, inner sep=0pt] (larm) {};
+    \node[fit=(16)(25), fill=myblue!40!white, inner sep=0pt] (rarm) {};
+    \node at (larm.center) {$\alpha$};
+    \node at (rarm.center) {$\alpha$};
+    
+    \node[fit=(1)(30), draw=black, inner sep=0pt] {};
+    \node[fit=(6)(15), thick, draw=black, inner sep=0pt] (larm) {};
+    \node[fit=(16)(25), thick, draw=black, inner sep=0pt] (rarm) {};
+    
+    \tikzset{barcolor/.style={densely dotted}}
+    \tikzset{fcolor/.style={}}
+    
+    \onslide<3->{
+    
+    \foreach[%
+    evaluate=\len as \lensum using int(\prevlensum+\len), %
+    evaluate=\prevlensum as \starti using int(\prevlensum+1),
+    remember=\lensum as \prevlensum initially 0,
+    count=\j from 1] %
+    \len in {1,2,4,6,5,5,7} {
+    
+        \node[fit=(\starti)(\lensum), inner sep=0pt] (fact\j) {};
+    
+        \only<4->{
+        \ifnum\j=6
+            \tikzset{fcolor/.style={font=\boldmath}}
+        \else
+            \beamermathcolor{black!30!white}
+            \tikzset{barcolor/.style={black!30!white, densely dotted}}
+            \tikzset{fcolor/.style={black!30!white}}
+        \fi}
+        
+        \node[above=0.25em of fact\j, fcolor] (flab\j) {$f_{\j}$};
+        
+        \ifodd\j\else\ifnum\j=6
+            \draw<-3>[thick, barcolor] (fact\j.south west) ++(0,-.002) to ++(0,1.002);
+            \draw<-3>[thick, barcolor] (fact\j.south east) ++(0,-.002) to ++(0,1.002);
+        \else
+            \draw[thick, barcolor] (fact\j.south west) ++(0,-.002) to ++(0,1.002);
+            \draw[thick, barcolor] (fact\j.south east) ++(0,-.002) to ++(0,1.002);
+        \fi\fi
+    }
+    
+    \onslide<4->{
+    \node[fit=(d19)(d20), thick, fill=red!50!white, draw=black, inner sep=0pt] (rhead) {};
+    \node[fit=(d21)(d23), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (rfac) {};
+    \node[fit=(d24.north west)(d24.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rnext) {};
+    \node at (rhead.center) {$h_6$};
+    \node at (rfac.center) {$t_6$};
+    \draw[thick, barcolor] (fact6.south west) ++(0,1) to (fact6.west |- rfac.south);
+    \draw[thick, barcolor] (fact6.south east) ++(0,1) to (fact6.east |- rfac.south);
+    }
+    
+    \onslide<5->{
+    \node[fit=(d9)(d10), thick, fill=red!50!white, draw=black, inner sep=0pt] (lhead) {};
+    \node[fit=(d11)(d13), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (lfac) {};
+    \node[fit=(d14.north west)(d14.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (lnext) {};
+    \node at (lhead.center) {$h_6$};
+    \node at (lfac.center) {$t_6$};
+    %\draw[thick, barcolor] (lfac.west |- larm.north) to (lfac.south west);
+    %\draw[thick, barcolor] (lfac.east |- larm.north) to (lfac.south east);
+    }
+    
+    \onslide<6->{\node [right=0em of flab6, red] {\LARGE\xmark};}
+    
+    }}
+    
+    \end{tikzpicture}
+    \end{center}
+    
+    \vspace{-.5\baselineskip}
+    
+    \begin{itemize}
+    \item<7-> The right arm of square intersects at most two factors.
+    \item<8-> Squares that are larger than $\geq 8\Delta$ intersect at least a tail of length $\geq \Delta$.
+    \item<9-> We can use the Main+Lorentz'84 to detect in $\Oh(n)$ time any such squares.
+    \item<10-> For squares $\leq 8\Delta$, we slice the text into overlapping small blocks.
+    \end{itemize}
+
+    
+    \begin{center}
+    \begin{tikzpicture}[scale=0.85, every node/.style={transform shape}]
+    
+    \node (0) {$w = {}$};
+    \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
+        \node[right=0 of \iminus, minimum width=1.05em] (\i) {\vphantom{a}};
+        \node[below=0em of \i, minimum width=1.05em] (d\i) {\vphantom{a}};
+    }
+    
+    \foreach[
+    evaluate=\x as \firstx using int((\x-1)*5+1),
+    evaluate=\x as \lastx using int(\x*5),
+    ] \x in {1,...,6} {
+    \beamermathcolor{black}
+    \node[fit=(\firstx)(\lastx), draw, inner sep=0pt] (x\x) {};
+    \node at (x\x) {$B_{\x}$};
+    }
+    
+    \node[fit=(d1)(d5)] {\leftarrowfill};
+    \node[fit=(d1)(d5)] (lenmark) {\rightarrowfill};
+    \node[below=0 of lenmark.center] {$\Theta(\Delta)$};
+    
+    
+    \pause\node[above=-.2em of x1.north east] (firstpair) {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+    %\node[above right=.25 and -.5 of firstpair] (fpnote) {\small $\text{algorithm by \textcolor{red}{\bfseries Main+Lorentz'84}}$};
+    %\draw[-latex] (fpnote) to[out=180, in=90] (firstpair);
+    \pause\node[below=-.2em of x2.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+    \pause\node[above=-.2em of x3.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+    \pause\node[below=-.2em of x4.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+    \pause\node[above=-.2em of x5.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+    
+    \pause
+    
+    \end{tikzpicture}
+    
+    \vspace{1.0\baselineskip}
+    \small
+    \onslide<9->{$\implies$ Choose $\Delta = (\sigma \lg n)^2$ to achieve $\orderof{n (\lg \sigma + \lg \lg n)}$ time.}
+    \onslide<10->{But we cannot know $\sigma$...\\}
+    \end{center}
+    \smallskip
+    \onslide<11->{\small We proceed in $\log \log n$ phases, with decreasing $\Delta_i$, detecting ``long'' squares until we see that the alphabet is too large and we can ``afford'' $\Oh(n\log \Delta_i)$ 
+    + Amortization across the levels.  }
+\end{frame}
+
+\begin{frame}{Summary}
+    \textbf{Repetition detection:} 
+    \vfill
+    
+    \textbf{Sketch:} 
+    \vfill
+    \begin{myalertblock}{}
+    \end{myalertblock}
+    \vfill
+    \textbf{Not shown:} .
+\end{frame}
+    
