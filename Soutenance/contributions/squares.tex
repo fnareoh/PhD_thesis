@@ -14,10 +14,80 @@
   
     \bigskip
     Jonas Ellert, Paweł Gawrychowski
-  \end{frame}
+\end{frame}
+
+
+
 
 \begin{frame}{Squares and repetition detection}
 
+    \vspace{1.5\baselineskip}
+    \noindent%
+    \begin{tikzpicture}[x = 2em, remember picture]
+    \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {m,i,s,s,i,s,s,i,p,p,i} {
+    \node<1> (\i) at (\pos, 0) {\smash{\texttt\x}$\vphantom{m}$};
+    \node<2->[color=white] (\i) at (\pos, 0) {\smash{\texttt\x}$\vphantom{m}$};
+    \node<2-> (s1-\i) at (\pos, 0) {\smash{\texttt\x}$\vphantom{m}$};
+    }
+    
+    %\foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {,i,s,s,i,s,s,,,,} {
+    %\node (s1-\i) at (\pos, 0) {\smash{\texttt\x}$\vphantom{m}$};
+    %}
+    
+    \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {,,s,s,i,s,s,i,,,} {
+    \node<5->[color=gray] (s2-\i) at (\pos, -.6) {\smash{\texttt\x}$\vphantom{m}$};
+    }
+    
+    \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {,,s,s,,s,s,,p,p,} {
+    \node<6->[color=gray] (s3-\i) at (\pos, -1.2) {\smash{\texttt\x}$\vphantom{m}$};
+    }
+    
+    \path<3-> (4) to node[midway, above=2.1em] {$\overbrace{\phantom{aaaaaaaaaaaaaaaaaaaaa}}^{\displaystyle\text{square of period $3$}}$} (5);
+    
+    \path<4-> (3) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{left arm}}$};
+    \path<4-> (6) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{right arm}}$};
+    
+    \draw<-6> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/mississippi.pdf}};
+    \draw<7-> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/square-states.pdf}};
+    \draw<7-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota, Mississippi,}};
+    
+    \path (1.south) ++(0,.25em) node (v0) {};
+    \path (v0) ++(0,-.5em) node (v1) {};
+    \path (v1) ++(0,-.5em) node (v2) {};
+    \path (v2) ++(0,-.5em) node (v3) {};
+    \path (v3) ++(0,-.5em) node (v4) {};
+    \path (v4) ++(0,-.5em) node (v5) {};
+    
+    \draw<2->[ultra thick, myorange] (s1-2.north west) rectangle (s1-4.south east);
+    \draw<2->[ultra thick, myorange] (s1-5.north west) rectangle (s1-7.south east);
+    
+    \draw<5->[ultra thick, mygreen] (s2-3.north west) rectangle (s2-5.south east);
+    \draw<5->[ultra thick, mygreen] (s2-6.north west) rectangle (s2-8.south east);
+    
+    \draw<6->[ultra thick, myred] (s3-3.north west) rectangle (s3-3.south east);
+    \draw<6->[ultra thick, myred] (s3-4.north west) rectangle (s3-4.south east);
+    
+    \draw<6->[ultra thick, myred] (s3-6.north west) rectangle (s3-6.south east);
+    \draw<6->[ultra thick, myred] (s3-7.north west) rectangle (s3-7.south east);
+    
+    \draw<6->[ultra thick, myblue] (s3-9.north west) rectangle (s3-9.south east);
+    \draw<6->[ultra thick, myblue] (s3-10.north west) rectangle (s3-10.south east);
+    
+    
+    \end{tikzpicture}
+    
+    \flushleft
+    
+    %\vspace{\baselineskip}
+    
+    
+    \onslide<8->{\textcolor<11->{gray}{\textbf{Some problems regarding squares:}}}
+    
+    \begin{itemize}
+    \item<8->\textbf<11->{test square-freeness, i.e., whether or not a word contains a square}
+    \item<9->\color<11->{gray} compute all squares (or runs) in a given word
+    \item<10->\color<11->{gray} compute all distinct squares in a given word
+    \end{itemize}
 \end{frame}
 
 
@@ -157,8 +227,8 @@
         
         \node[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
         \node[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
-        \node[hlbox, fit=(low21), myorange] {};
-        \node[hlbox, fit=(low11), myorange] {};
+        \node[hlbox, fit=(low21), mygreen] {};
+        \node[hlbox, fit=(low11), mygreen] {};
     
         \draw node[left=0 of 1] {$w = \strut$};
         \end{tikzpicture}
@@ -270,14 +340,14 @@
 
         \onslide<9->{
         \node[fit=(d19)(d23), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
-        \node[fit=(d23.north)(d23.south east), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (rfac) {};
+        \node[fit=(d23.north)(d23.south east), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
         \draw[thick, barcolor] (fact6.south west) ++(0,1) to (fact6.west |- rfac.south);
         \draw[thick, barcolor] (fact6.south east) ++(0,1) to (fact6.east |- rfac.south);
         }
         
         \onslide<10->{
         \node[fit=(d9)(d13), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
-        \node[fit=(d13.north)(d13.south east), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (rfac) {};
+        \node[fit=(d13.north)(d13.south east), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
         }
         
         \onslide<11->{\node [right=0em of flab6, red] {\LARGE\xmark};}
@@ -311,6 +381,7 @@
 \onslide<3->
 \begin{center}
 \begin{tikzpicture}
+\beamermathcolor{black}
 \tikzset{barcolor/.style={black, densely dotted}}
 \tikzset{fcolor/.style={black}}
 
@@ -364,7 +435,7 @@
 
 \only<5->{
 \node[hlbox, fit=(low13)(low14), red] (h4) {};
-\node[hlbox, fit=(low15)(low20), myorange] (t4) {};
+\node[hlbox, fit=(low15)(low20), mygreen] (t4) {};
 
 \node[below=0 of h4] (h4lab) {$h_4$};
 \node[below=0 of t4] (t4lab) {$t_4$};
@@ -376,7 +447,7 @@
 }
 
 \node<10->[hlbox, fit=(low3)(low4), red] {};
-\node<7->[hlbox, fit=(low5)(low10), myorange] {};
+\node<7->[hlbox, fit=(low5)(low10), mygreen] {};
 
 \onslide<8->{
 \node<9->[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
@@ -423,7 +494,7 @@
 
     \begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
     \beamermathcolor{black}
-    \onslide<2->{
+    \onslide<1->{
     
     \node (0) {$\qquad\quad w = {}$};
     \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
@@ -445,7 +516,7 @@
     \tikzset{barcolor/.style={densely dotted}}
     \tikzset{fcolor/.style={}}
     
-    \onslide<3->{
+    \onslide<1->{
     
     \foreach[%
     evaluate=\len as \lensum using int(\prevlensum+\len), %
@@ -456,7 +527,7 @@
     
         \node[fit=(\starti)(\lensum), inner sep=0pt] (fact\j) {};
     
-        \only<4->{
+        \only<1->{
         \ifnum\j=6
             \tikzset{fcolor/.style={font=\boldmath}}
         \else
@@ -476,9 +547,9 @@
         \fi\fi
     }
     
-    \onslide<4->{
+    \onslide<1->{
     \node[fit=(d19)(d20), thick, fill=red!50!white, draw=black, inner sep=0pt] (rhead) {};
-    \node[fit=(d21)(d23), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (rfac) {};
+    \node[fit=(d21)(d23), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
     \node[fit=(d24.north west)(d24.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rnext) {};
     \node at (rhead.center) {$h_6$};
     \node at (rfac.center) {$t_6$};
@@ -486,9 +557,9 @@
     \draw[thick, barcolor] (fact6.south east) ++(0,1) to (fact6.east |- rfac.south);
     }
     
-    \onslide<5->{
+    \onslide<1->{
     \node[fit=(d9)(d10), thick, fill=red!50!white, draw=black, inner sep=0pt] (lhead) {};
-    \node[fit=(d11)(d13), thick, fill=myorange!50!white, draw=black, inner sep=0pt] (lfac) {};
+    \node[fit=(d11)(d13), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (lfac) {};
     \node[fit=(d14.north west)(d14.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (lnext) {};
     \node at (lhead.center) {$h_6$};
     \node at (lfac.center) {$t_6$};
@@ -496,7 +567,7 @@
     %\draw[thick, barcolor] (lfac.east |- larm.north) to (lfac.south east);
     }
     
-    \onslide<6->{\node [right=0em of flab6, red] {\LARGE\xmark};}
+    \onslide<1->{\node [right=0em of flab6, red] {\LARGE\xmark};}
     
     }}
     
@@ -506,14 +577,15 @@
     \vspace{-.5\baselineskip}
     
     \begin{itemize}
-    \item<7-> The right arm of square intersects at most two factors.
-    \item<8-> Squares that are larger than $\geq 8\Delta$ intersect at least a tail of length $\geq \Delta$.
-    \item<9-> We can use the Main+Lorentz'84 to detect in $\Oh(n)$ time any such squares.
-    \item<10-> For squares $\leq 8\Delta$, we slice the text into overlapping small blocks.
+    \item The right arm of square intersects at most two factors.\pause
+    \item Squares that are larger than $\geq 8\Delta$ intersect at least a tail of length $\geq \Delta$.\pause
+    \item We can use the Main+Lorentz'84 to detect in $\Oh(n)$ time any such squares.\pause
+    \item For squares $\leq 8\Delta$, we slice the text into overlapping small blocks.\pause
     \end{itemize}
 
     
     \begin{center}
+    {
     \begin{tikzpicture}[scale=0.85, every node/.style={transform shape}]
     
     \node (0) {$w = {}$};
@@ -550,23 +622,25 @@
     
     \vspace{1.0\baselineskip}
     \small
-    \onslide<9->{$\implies$ Choose $\Delta = (\sigma \lg n)^2$ to achieve $\orderof{n (\lg \sigma + \lg \lg n)}$ time.}
-    \onslide<10->{But we cannot know $\sigma$...\\}
+    {$\implies$ Choose $\Delta = (\sigma \lg n)^2$ to achieve $\orderof{n (\lg \sigma + \lg \lg n)}$ time.}\pause
+    {But we cannot know $\sigma$...\\}\pause
+    }
     \end{center}
     \smallskip
-    \onslide<11->{\small We proceed in $\log \log n$ phases, with decreasing $\Delta_i$, detecting ``long'' squares until we see that the alphabet is too large and we can ``afford'' $\Oh(n\log \Delta_i)$ 
+    {\small We proceed in $\log \log n$ phases, with decreasing $\Delta_i$, detecting ``long'' squares until we see that the alphabet is too large and we can ``afford'' $\Oh(n\log \Delta_i)$ 
     + Amortization across the levels.  }
 \end{frame}
 
 \begin{frame}{Summary}
-    \textbf{Repetition detection:} 
+    \textbf{Repetition detection:} We analysed the complexity of square detection in the most general model where they are defined.
     \vfill
     
-    \textbf{Sketch:} 
+    \textbf{Sketch:} The $\Delta$-approximate Lempel--Ziv factorization relaxes the constraints on phrases starting position to make it easier to compute.
     \vfill
-    \begin{myalertblock}{}
+    \begin{myalertblock}{Ellert, Gawrychowski, Gourdel}
+        Testing square-freeness of a length-$n$ string  that contains $\sigma$ distinct symbols from a \textcolor{red}{general unordered alphabet} can be done in $\Oh(n \log \sigma)$
     \end{myalertblock}
     \vfill
-    \textbf{Not shown:} .
+    \textbf{Not shown:} Lowerbounds, extension to runs, construction of the factorization...
 \end{frame}
     
