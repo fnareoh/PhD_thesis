@@ -20,17 +20,17 @@
     \begin{center}
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
-            \numberedstring{\stringstruggled};
+            \numberedstring{\stringstruggled}
             \only<2|handout:0>{
-                \numberedsubstring[blue]{\stringstruggled}{8}{18};
+                \numberedsubstring[blue]{\stringstruggled}{8}{18}
                 \node at (13*0.25,-0.5) {$T[8..18]$};
             }
             \only<3>{
-                \numberedsubstring[blue]{\stringstruggled}{0}{9};
+                \numberedsubstring[blue]{\stringstruggled}{0}{9}
                 \node at (5*0.25,-0.5) {$T[0..9]$ is a prefix};
             }
             \only<4>{
-                \numberedsubstring[blue]{\stringstruggled}{25}{42};
+                \numberedsubstring[blue]{\stringstruggled}{25}{42}
                 \node at (33*0.25,-0.5) {$T[25..41]$ is a suffix};
             }
         \end{tikzpicture}
@@ -73,9 +73,9 @@
     \begin{center}
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
-            \numberedstring{\stringstruggled};
-            \numberedsubstring[myorange]{\stringstruggled}{20}{21};
-            \numberedsubstring[myblue]{\stringstruggled}{34}{35};
+            \numberedstring{\stringstruggled}
+            \numberedsubstring[myorange]{\stringstruggled}{20}{21}
+            \numberedsubstring[myblue]{\stringstruggled}{34}{35}
             \only<1>{
                 \node at (20*0.25,-0.5) {
                     Two occurences starting at positions \borange{20} and \bblue{34} respectively.

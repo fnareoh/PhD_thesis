@@ -160,6 +160,8 @@
 \newcommand{\backupbegin}{
    \newcounter{framenumberappendix}
    \setcounter{framenumberappendix}{\value{framenumber}}
+   %remove animations from backup slides
+   \RenewDocumentCommand{\onslide}{ R<>{} }{}
 }
 \newcommand{\backupend}{
    \addtocounter{framenumberappendix}{-\value{framenumber}}
