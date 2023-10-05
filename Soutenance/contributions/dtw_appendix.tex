@@ -1,4 +1,5 @@
 \subsection{Pattern Matching DTW}
+\newcommand{\dd}{\mathinner{..}}
 
 \begin{frame}
   \centering
@@ -192,5 +193,36 @@
     \end{center}
     \small{Unlike for the edit distance, \textcolor{red}{diagonals can be non-monotone}.}
   }
-      
+\end{frame}
+
+\begin{frame}{Border Formula}
+  \begin{center}
+    \input{figures/block_formula}
+  \end{center}
+  
+  \small
+  For a block $D[i_p \dd j_p, i_t \dd j_t]$ let $h=j_p-i_p$, $w =j_t-i_t$, and $d=d(P[i_p],T[i_t])$.
+  
+  
+  We have for every $i_p < x \leq j_p$:
+  \[
+  D[x,j_t]= \begin{cases}
+  D[i_p,j_t-(x-i_p)]+(x-i_p) \cdot d \text{ if } x-i_p \leq w; \\
+  D[x-w,i_t]+w \cdot d \text{ otherwise}.
+  \end{cases}
+  \]
+  
+  This formula implies a $\Oh(Nm+ Mn)$-time algorithm.
   \end{frame}
+  
+  \begin{frame}{Low-distance regime for integer distances}
+  We can just represent the values $\leq k$ in a compact format:
+  For $\ell$ an integer, $q_{\mathrm{top}}^\ell$ is the largest position such that $D[i_p,q_{\mathrm{top}}^\ell] \leq \ell$.\pause
+  \begin{center}
+    \input{figures/borders_represent}
+  \end{center}
+  
+  Computing $q_{\mathrm{bot}}^\ell$ and $q_{\mathrm{right}}^\ell$ from $q_{\mathrm{top}}^\ell$ and $q_{\mathrm{left}}^\ell$ can be done in $\Oh(k)$ time.\\\pause
+  The compact representation of the last row can be computed in $\Oh(nmk)$ time.
+  \end{frame}    
+      
