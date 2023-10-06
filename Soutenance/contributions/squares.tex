@@ -255,7 +255,7 @@
         }
 
         % Arrow occurs before
-        \only<5>{
+        \only<5|handout:0>{
             \node[fit=(6)(7), fill=mygreen!40!white, inner sep=0pt] (flarm) {};
             \node[fit=(8)(9), fill=mygreen!40!white, inner sep=0pt] (frarm) {};
             \node at (flarm.center) {$\alpha$};
@@ -266,7 +266,7 @@
         }
 
         % small square
-        \only<4-5>{
+        \only<4-5|handout:0>{
             \node[fit=(14)(15), fill=mygreen!40!white, inner sep=0pt] (olarm) {};
             \node[fit=(16)(17), fill=mygreen!40!white, inner sep=0pt] (orarm) {};
             \node at (olarm.center) {$\alpha$};
@@ -315,7 +315,7 @@
         }
 
         % OVERLAP WITH ITSELF
-        \onslide<7>{
+        \onslide<7|handout:0>{
             \node[fit=(17)(18), fill=mygreen!40!white, inner sep=0pt] (larm) {};
             \node[fit=(19)(20), fill=mygreen!40!white, inner sep=0pt] (rarm) {};
             \node at (larm.center) {$\alpha$};
@@ -324,7 +324,7 @@
             \node[fit=(19)(20), thick, draw=black, inner sep=0pt] (rarm) {};
         }  
             
-        \onslide<6-7>{
+        \onslide<6-7|handout:0>{
         \node[fit=(d17)(d21), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
         }
                   

@@ -1,6 +1,15 @@
 \subsection{Regular Expressions in Streaming}
 \begin{frame}
-    \includegraphics[width=\textwidth]{pictures/mindmap/regexp.png}
+  \centering
+  {\Large Streaming Regular Expression Membership and Pattern Matching}
+
+  \bigskip
+  {\large SODA'22}\\
+  \bigskip
+  \includegraphics{pictures/mindmap/regexp.png}
+
+  \bigskip
+  Bartłomiej Dudek, Paweł Gawrychowski, Tatiana Starikovskaya
 \end{frame}
 
 \begin{frame}{A powerful matching model: regular expressions}
@@ -51,11 +60,12 @@
         \beamermathcolor{myblue}
         Given a regular expression $R$ and a text $T$, two problems:\\
         \bblue{Membership:} check if $R$ matches $T$.\\
-        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \textcolor{myblue}{Reduces to membership!}
+        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \\
+        \textcolor{myblue}{Reduces to membership!}
     }
 \end{frame}
 
-\begin{frame}{A frugal model of computation: streaming}
+\begin{frame}{A frugal model of computation: Streaming}
 \begin{columns}
     \column{.4\textwidth}
     The algorithm first receives and preprocesses the expression.\\ Next, it keeps reading characters from a very very long text and:
@@ -84,9 +94,9 @@
 \end{center}
 \end{frame}
 
-\begin{frame}{What can we do for regular expression membership in streaming ?}
+\begin{frame}{State of the art on regular expression membership}
     \begin{columns}
-        \column{.35\textwidth}
+        \column{.4\textwidth}
         \ntheme{Classic:} Recursively build the \btheme{Thompson automata}, then check if $T$ is accepted.\\
         $\Oh(m)$ space and time/character.
         \column{.5\textwidth}
@@ -97,15 +107,19 @@
         \end{picture}
     \end{columns}
     \pause
+    \medskip
     \begin{itemize}
+        \setlength{\itemsep}{2ex}
         \item The best improvements on the time complexity \ntheme{only reduce by logarithmic factors}.\pause
-        \item Fine-grained complexity showed that for \ntheme{``hard to match'' expressions we cannot do better}.\pause
+        \item Fine-grained complexity proved conditional lowerbounds, with \ntheme{``hard to match'' expressions} where \textcolor{red}{improvements are unlikely}.\pause
         \item \ntheme{[Bille and Thorup, SODA'10]} Streaming time $\Oh(n\cdot (\frac{d\log w}{w}+\log d))$ and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$.\pause
-        \item What about \btheme{space efficiency} ?\pause
     \end{itemize}
+    \vfill
+    \begin{center} What about \textcolor{red}{\textbf{space efficiency}} ? 
+    \end{center}
 \end{frame}
 
-\begin{frame}{What parameter is important for space-efficiency of regexp in Streaming ?}
+\begin{frame}{Space-efficiency for regular expression}
     TODO: Dictionary and wildcards matching 
 
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
@@ -118,7 +132,34 @@
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
-    TODO: Intuition of how it works  
+    
+    \pause
+    \btheme{Main steps:}
+    \pause
+    \begin{itemize}
+    \item Define atomic strings: ``words" in the regular expression.
+    \pause
+    \item Store efficiently specific occurrences of prefixes of atomic strings.
+    \pause
+    \item Link those occurences stored to test if there is a ``partial" match of $R$.
+    \pause
+    \item Translate this in a graph problem.
+    \pause
+    \item Solve this problem efficiently by a circuit machinery !
+    \end{itemize}\pause 
+    We also improve the circuit framework.
 \end{frame}
 
+\begin{frame}{Summary}
+    \textbf{Complex matching:} regular expression, one of the most powerful and versatile model.
+
+    \vfill
     
+    \textbf{Sketch as we go: streaming} Karp-Rabin fingerprints as a space efficient way to keep information on the stream.
+
+    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+    \end{myalertblock}
+    \vfill
+    \textbf{Not shown:} Witness mechanism, circuit machinery.
+\end{frame}
