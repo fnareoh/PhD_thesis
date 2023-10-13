@@ -60,16 +60,10 @@
         \rule{0pt}{4ex}  
         \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C, G}\}$ & $\sigma=128$ & $\sigma = 1,112,064$\\
     \end{tabular}
-    \medskip
+    \bigskip
 
-
-\end{frame}
-
-
-\begin{frame}{Classic Pattern Matching}
-
-    Most natural task: Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
-
+    \textbf{Classical task:} Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
+    
     \begin{center}
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
@@ -84,17 +78,19 @@
         \end{tikzpicture}
         \\
     \end{center}
+
 \end{frame}
 
-\begin{frame}[noframenumbering,plain]
-    \vfill
-    \mytitle{Introduction}
-    \bigskip
-    \begin{center}
-        \textbf{\textcolor{gray}{Sketch-based approaches to \borange{process} \bred{massive} string data}}
-    \end{center}
-    \vfill
-\end{frame}
+
+%\begin{frame}[noframenumbering,plain]
+%    \vfill
+%    \mytitle{Introduction}
+%    \bigskip
+%    \begin{center}
+%        \textbf{\textcolor{gray}{Sketch-based approaches to \borange{process} \bred{massive} string data}}
+%    \end{center}
+%    \vfill
+%\end{frame}
 
 \begin{frame}{Challenges: Processing tasks}
 3 categories of task (for this thesis)
@@ -103,27 +99,35 @@ Repetition detection
 Similarity Measures and distances
 \end{frame}
 
- \begin{frame}{Complex Matching}
-    
- \end{frame}
-
- \begin{frame}{Repetition detection}
-    
- \end{frame}
-
- \begin{frame}{Similarity Measures and distances}
-    
- \end{frame}
-
+% Coin Coin COin
 \begin{frame}{Challenges: the scale}
-    A visualization as done for the loreal poster (starting a the base of wikipedia, which seems already very large)
-    And still growing
+    \begin{center}
+        \begin{tabular}{l c c c c}
+            File type & Webpage &  E.coli genome & Software repository & Human genome\\ \hline
+            Size & $\sim$ 2 Mb & $\sim$ 5Mb &  $<$ 1 Gb & $\sim$ 3 Gb 
+        \end{tabular}\pause
+
+        \bigskip
+
+        \begin{tabular}{l c c c}
+            Archive & Software Heritage & European Nucleotide & Wayback Machine  \\ \hline
+            Size & $>$ 1 Pb & $>$ 50 Pb &  $>$ 70 Pb
+        \end{tabular}
+    \end{center}\pause
+
+    \bigskip
+    Many datasets of intermediate size: Tara ocean, 661K bacterial genome from ENA...\pause
+
+    \bigskip
+
+    The \textbf{larger} the input, the \textbf{harder} it is \textbf{to process}, especially for complex queries.\pause
+
+    \bigskip
+
+    But some part of the data can be \btheme{redundant} or \btheme{not needed} for the queries we want ?\pause
+
 \end{frame}
 
-\begin{frame}{Challenges: the scale}
-    The largest archive are only searchable by metadata (and already it requires significant efforts...)
-    And the 
-\end{frame}
 
 \begin{frame}[noframenumbering,plain]
     \vfill
