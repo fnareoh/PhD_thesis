@@ -4,9 +4,8 @@
     \mytitle{Introduction}
     \bigskip
     \begin{center}
-        \only<-1|handout:0>{\textbf{\bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}}
-        \pause
-        \only<2>{\textbf{\textcolor{gray}{Sketch-based approaches to process massive} \bblue{string data}}}
+        \large
+        \textbf{\bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}
     \end{center}
     \vfill
 \end{frame}
@@ -15,7 +14,8 @@
 \def\stringstruggled{I, ,s,t,r,u,g,g,l,e,d, ,t,o, ,m,a,k,e, ,t,h,i,s, ,f,i,g,u,r,e, ,w,i,t,h, ,t,i,k,z,!}
 
 
-\begin{frame}{Strings}
+\begin{frame}{\textcolor{gray}{Sketch-based approaches to process massive \bblue{string data}}}
+    \pause
     A string $T$ of length $n$ is a sequence $T[0]T[1]...T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$.\\
     \begin{center}
         \begin{tikzpicture}[x = 2em]
@@ -43,7 +43,9 @@
     \pause \pause
 \end{frame}
 
-\begin{frame}{Strings}
+\begin{frame}{\textcolor{gray}{Sketch-based approaches to process massive \bblue{string data}}}
+    \pause
+    \small
     Simple and versatile, any file can be seen as a string.
     They are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.
 
@@ -81,26 +83,70 @@
 
 \end{frame}
 
-
-%\begin{frame}[noframenumbering,plain]
-%    \vfill
-%    \mytitle{Introduction}
-%    \bigskip
-%    \begin{center}
-%        \textbf{\textcolor{gray}{Sketch-based approaches to \borange{process} \bred{massive} string data}}
-%    \end{center}
-%    \vfill
-%\end{frame}
-
-\begin{frame}{Challenges: Processing tasks}
-3 categories of task (for this thesis)
-Complex Matching
-Repetition detection
-Similarity Measures and distances
+\begin{frame}{\textcolor{gray}{Sketch-based approaches \borange{to process} massive string data}}
+\pause
+\fbox{
+\begin{minipage}[t][6cm][t]{0.3\textwidth}
+    \begin{center}
+        \vspace{0.2cm}
+        \btheme{Complex matching}
+        \vfill
+        \includegraphics[width=0.8\textwidth]{pictures/complex.png}
+    \end{center}
+    \vfill
+    Examples:
+    \begin{itemize}
+        \item Regular expressions
+        \item Wildcards
+        \item Degenerate
+        \item ... 
+    \end{itemize}
+    \vspace{0.3cm}
+\end{minipage}}\pause
+\hfill
+\fbox{
+\begin{minipage}[t][6cm][t]{0.3\textwidth}
+    \begin{center}
+        \vspace{0.2cm}
+        \btheme{Similarity measures}\\
+        \btheme{and distances}
+        \vfill
+        \includegraphics[width=0.7\textwidth]{pictures/dist.png}
+    \end{center}
+    \vfill 
+    Examples:
+    \begin{itemize}
+        \item Hamming dist.
+        \item LCS(ubseq)
+        \item Edit dist.
+        \item ...
+    \end{itemize}
+    \vspace{0.3cm}
+\end{minipage}}\pause
+\hfill
+\fbox{
+\begin{minipage}[t][6cm][t]{0.3\textwidth}
+    \begin{center}
+        \vspace{0.2cm}
+        \btheme{Repetitions detection}
+        \vfill
+        \includegraphics[width=0.9\textwidth]{pictures/repet.png}
+    \end{center}
+    \vfill
+    Examples:
+    \begin{itemize}
+        \item Periods
+        \item Squares 
+        \item Runs
+        \item ...
+    \end{itemize}
+    \vspace{0.3cm}
+\end{minipage}}\pause
 \end{frame}
 
 % Coin Coin COin
-\begin{frame}{Challenges: the scale}
+\begin{frame}{\textcolor{gray}{Sketch-based approaches to process \bred{massive} string data}}
+    \pause
     \begin{center}
         \begin{tabular}{l c c c c}
             File type & Webpage &  E.coli genome & Software repository & Human genome\\ \hline
@@ -128,18 +174,8 @@ Similarity Measures and distances
 
 \end{frame}
 
-
-\begin{frame}[noframenumbering,plain]
-    \vfill
-    \mytitle{Introduction}
-    \bigskip
-    \begin{center}
-        \textbf{\textcolor{gray}{\bgreen{Sketch-based} approaches to process massive string data}}
-    \end{center}
-    \vfill
-\end{frame}
-
-\begin{frame}{What is a sketch ?}
+\begin{frame}{\textcolor{gray}{\bgreen{Sketch-based} approaches to process massive string data}}
+    \pause
     \begin{columns}
         \column{.6\textwidth}
         A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.\\
