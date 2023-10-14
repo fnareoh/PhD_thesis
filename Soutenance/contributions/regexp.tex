@@ -119,13 +119,27 @@
     \end{center}
 \end{frame}
 
+{\renewcommand{\arraystretch}{2}
 \begin{frame}{Space-efficiency for regular expression}
-    TODO: Dictionary and wildcards matching 
+    $O(m)$ space for the Thompson automata, can we do better ? \pause
 
+    \medskip
+    \textbf{Some intuition:} \ntheme{other problems studied in streaming} \pause
+
+    \medskip
+    \begin{tabular}{l c c}
+        Problem & Translation to regular expressions & Space complexity\\ 
+        \hline \pause
+        Dictionary matching & $(P_{1}|\ldots | P_{d})$ & $\Oh(d\log m)$\\ \pause
+        Wildcards matching & $P_{1}(1|\ldots|\sigma)P_{2}\ldots P_{d}(1|\ldots|\sigma)P_{d+1}$ & $\Oh(d\log m)$ \pause
+    \end{tabular}
+
+    \medskip
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
 \end{frame}
+}
 
 \begin{frame}{}
 
@@ -134,6 +148,7 @@
     \end{myalertblock}
     
     \pause
+    \medskip
     \btheme{Main steps:}
     \pause
     \begin{itemize}
