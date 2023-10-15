@@ -12,6 +12,32 @@
   Bartłomiej Dudek, Paweł Gawrychowski, Tatiana Starikovskaya
 \end{frame}
 
+
+\begin{frame}{}
+
+    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+    \end{myalertblock}
+    
+    \pause
+    \medskip
+    \btheme{Main steps:}
+    \pause
+    \begin{itemize}
+    \item Define atomic strings: ``words" in the regular expression.
+    \pause
+    \item Store efficiently specific occurrences of prefixes of atomic strings.
+    \pause
+    \item Link those occurences stored to test if there is a ``partial" match of $R$.
+    \pause
+    \item Translate this in a graph problem.
+    \pause
+    \item Solve this problem efficiently by a circuit machinery !
+    \end{itemize}\pause 
+    We also improve the circuit framework.
+\end{frame}
+
+
 \begin{frame}{Streaming pattern matching}
     \begin{mylemblock}{Porat and Porat, FOCS'09}
     $\Oh(\log m\cdot \log n)$ bits of space, $\Oh(\log m)$ time per position.

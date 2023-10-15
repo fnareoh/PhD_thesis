@@ -15,7 +15,7 @@
 \begin{frame}{A powerful matching model: regular expressions}
     \begin{columns}
         \column{.6\textwidth}
-        \begin{mydefblock}{Regular expressions}
+        \begin{mydefblock}{Regular expressions (regexp)}
             either a character from $\Sigma$ or recursively defined from other regular expressions $R_1$ and $R_2$:
             \pause
             \begin{enumerate}
@@ -35,7 +35,7 @@
             \only<2|handout:0>{$R_1 \cdot R_2$ matches anything matching $R_1$ followed by anything matching $R_2$.\\
             \textbf{Ex:} with $R_1=a$ and $R_2=b$, $R_1 \cdot R_2$ matches $ab$.}
             \only<3|handout:0>{$R_1 | R_2$ matches anything matching $R_1$ or  $R_2$.\\
-            \textbf{Ex:} with $R_1=a \cdot b = ab$ and $R_2=b$, $R_1 \cdot R_2$ matches $ab$ and $b$.}
+            \textbf{Ex:} with $R_1=a \cdot b = ab$ and $R_2=b$, $R_1 | R_2$ matches $ab$ and $b$.}
             \only<4|handout:0>{$R_1^\ast$ matches any number of repetition of any string matching $R_1$.\\
             \textbf{Ex:} with $R_1=(b|ab)$ matches $\varepsilon$, $ab$, $b$, $bbabb$...}
             \only<5->{
@@ -53,15 +53,14 @@
     \pause
 
     \bigskip
-    \only<7->{Used in databases, \pause data mining, \pause secret detection,\pause computer networks, \pause protein search\pause ...\\}
+    \only<7->{Used in databases, \pause data mining, \pause secret detection, \pause computer networks, \pause protein search\pause ...\\}
     \pause
     \bigskip
     \only<12->{
         \beamermathcolor{myblue}
-        Given a regular expression $R$ and a text $T$, two problems:\\
-        \bblue{Membership:} check if $R$ matches $T$.\\
-        \bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \\
-        \textcolor{myblue}{Reduces to membership!}
+        Given a regular expression $R$ and a text $T$, we want to solve \bblue{Membership:} check if $R$ matches $T$.\\
+        %\bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \\
+        %\textcolor{myblue}{Reduces to membership!}
     }
 \end{frame}
 
@@ -78,25 +77,27 @@
 \smallskip
 \pause
 \begin{enumerate}
-\item No delay: After having seen the $i$-th character, immediately report whether the string so far matches the regular expression.
+\item \textbf{No delay:} After having seen the $i$-th character, immediately report whether the string so far matches the regular expression.
 \pause
-\item No going back: Not possible to read any of the earlier characters.
+\item \textbf{No going back:} Not possible to read any of the earlier characters.
 \pause
-\item Every space counts: No access to the original expression (unless stored explicitly).
+\item \textbf{Every space counts:} No access to the original expression (unless stored explicitly).
 \end{enumerate}
 \pause
-\begin{mylemblock}{Classic pattern matching in streaming [Breslauer and Galil, TALG'14]}
-    For a pattern of length $m$, it takes $\Oh(\log m)$ space and $\Oh(1)$ time per position.
-\end{mylemblock}\pause
 \begin{center}
     \small
-    It relies on a variant of the Karp--Rabin fingerprints introduced by \ntheme{[Porat and Porat, FOCS'09]}.
-\end{center}
+    A crucial  tool is the variant of Karp--Rabin fingerprints of \ntheme{[Porat and Porat, FOCS'09]}.
+\end{center}\pause
+\begin{mylemblock}{Classic pattern matching in streaming [Breslauer and Galil, TALG'14]}
+    For a pattern of length $m$, it takes $\Oh(\log m)$ space and $\Oh(1)$ time per position.
+\end{mylemblock}
+
 \end{frame}
 
 \begin{frame}{State of the art on regular expression membership}
     \begin{columns}
         \column{.4\textwidth}
+        For a regexp of length $m$,\\
         \ntheme{Classic:} Recursively build the \btheme{Thompson automata}, then check if $T$ is accepted.\\
         $\Oh(m)$ space and time/character.
         \column{.5\textwidth}
@@ -112,7 +113,7 @@
         \setlength{\itemsep}{2ex}
         \item The best improvements on the time complexity \ntheme{only reduce by logarithmic factors}.\pause
         \item Fine-grained complexity proved conditional lowerbounds, with \ntheme{``hard to match'' expressions} where \textcolor{red}{improvements are unlikely}.\pause
-        \item \ntheme{[Bille and Thorup, SODA'10]} Streaming time $\Oh(n\cdot (\frac{d\log w}{w}+\log d))$ and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$.\pause
+        \item \ntheme{[Bille and Thorup, SODA'10]} $\Oh((\frac{d\log w}{w}+\log d))$ time/character and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$, and $w$ is the word size.\pause
     \end{itemize}
     \vfill
     \begin{center} What about \textcolor{red}{\textbf{space efficiency}} ? 
@@ -121,49 +122,25 @@
 
 {\renewcommand{\arraystretch}{2}
 \begin{frame}{Space-efficiency for regular expression}
-    $O(m)$ space for the Thompson automata, can we do better ? \pause
+    For a regexp of length $m$, $O(m)$ space for the Thompson automata, can we do better ? \pause
 
     \medskip
     \textbf{Some intuition:} \ntheme{other problems studied in streaming} \pause
 
     \medskip
-    \begin{tabular}{l c c}
+    \begin{tabular}{l c p{0.25\textwidth}}
         Problem & Translation to regular expressions & Space complexity\\ 
         \hline \pause
-        Dictionary matching & $(P_{1}|\ldots | P_{d})$ & $\Oh(d\log m)$\\ \pause
-        Wildcards matching & $P_{1}(1|\ldots|\sigma)P_{2}\ldots P_{d}(1|\ldots|\sigma)P_{d+1}$ & $\Oh(d\log m)$ \pause
+        Dictionary matching & $(P_{1}|\ldots | P_{d})$ & $\Oh(d\log m)$  \mbox{\footnotesize [Golan~and~Porat~ESA'17]}\\ \pause
+        Wildcards matching & $P_{1}(1|\ldots|\sigma)P_{2}\ldots P_{d}(1|\ldots|\sigma)P_{d+1}$ & $\Oh(d\log m)$ \mbox{\footnotesize [Golan et al.,~Algorithmica'19]} \pause
     \end{tabular}
 
     \medskip
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
 \end{frame}
 }
-
-\begin{frame}{}
-
-    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
-    \end{myalertblock}
-    
-    \pause
-    \medskip
-    \btheme{Main steps:}
-    \pause
-    \begin{itemize}
-    \item Define atomic strings: ``words" in the regular expression.
-    \pause
-    \item Store efficiently specific occurrences of prefixes of atomic strings.
-    \pause
-    \item Link those occurences stored to test if there is a ``partial" match of $R$.
-    \pause
-    \item Translate this in a graph problem.
-    \pause
-    \item Solve this problem efficiently by a circuit machinery !
-    \end{itemize}\pause 
-    We also improve the circuit framework.
-\end{frame}
 
 \begin{frame}{Summary}
     \textbf{Complex matching:} regular expression, one of the most powerful and versatile model.
@@ -173,8 +150,8 @@
     \textbf{Sketch as we go: streaming} Karp-Rabin fingerprints as a space efficient way to keep information on the stream.
 
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
     \vfill
-    \textbf{Not shown:} Witness mechanism, circuit machinery.
+    \textbf{Not shown:} Technical part, Witness mechanism, circuit machinery.
 \end{frame}

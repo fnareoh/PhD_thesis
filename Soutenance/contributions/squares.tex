@@ -131,7 +131,7 @@
 		\onslide<13->{\boldmath$\Theta(n)$\unboldmath} & %
 		\onslide<14->{\boldmath$\Oh(n \lg n)$\unboldmath} \begin{tikzoverlay}
 			\onslide<15->{
-            \beamermathcolor{black}
+            \beamermathcolor{white}
 			\tikzset{viscol1/.style={white}}
 			\tikzset{viscol2/.style={white}}
 			\tikzset{viscol3/.style={white}}
@@ -139,9 +139,9 @@
 			\only<17->{\tikzset{viscol2/.style={}}}
 			\only<17->{\tikzset{viscol3/.style={red}}}
 			\path (0,.1) node (a) {};
-			\draw (3,1.1) node (b) {optimal for $\sigma = n$};
-			\node[below=-.4em of b,viscol1] (c) {but what about $\sigma < n\strut$?};
-			\node[below=-.0em of c,viscol2] (d) {{\boldmath$\Theta(n \lg \sigma)$\unboldmath}};
+			\draw (3,1.1) node (b) {optimal for \beamermathcolor{black} $\sigma = n$};
+			\node[below=-.4em of b,viscol1] (c) {but what about \only<16->{\beamermathcolor{black}} $\sigma < n\strut$?};
+			\node[below=-.0em of c,viscol2] (d) {\only<17->{\beamermathcolor{red}}{\boldmath$\Theta(n \lg \sigma)$\unboldmath}};
 			\node[below=-.4em of d,viscol3] (e) {\textbf{\small Our contribution}};
 			\node[fit=(b)(c)(d)(e), ultra thick, draw=red, inner sep=.25em] (f) {};			
 			\draw[-latex] (f.west |- b.center) to[out=180, in=0] (a);

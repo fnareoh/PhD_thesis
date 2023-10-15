@@ -16,42 +16,42 @@
 
 \begin{frame}{\textcolor{gray}{Sketch-based approaches to process massive \bblue{string data}}}
     \pause
-    A string $T$ of length $n$ is a sequence $T[0]T[1]...T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$.\\
+    A string $T$ of length $n$ is a sequence $T[0]T[1]...T[n-1]$ of characters from a finite alphabet $\Sigma$ of size $\sigma$.\pause \\
     \begin{center}
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
             \numberedstring{\stringstruggled}
-            \only<2|handout:0>{
+            \only<4|handout:0>{
                 \numberedsubstring[blue]{\stringstruggled}{8}{18}
                 \node at (13*0.25,-0.5) {$T[8..18]$};
             }
-            \only<3>{
+            \only<5>{
                 \numberedsubstring[blue]{\stringstruggled}{0}{9}
                 \node at (5*0.25,-0.5) {$T[0..9]$ is a prefix};
             }
-            \only<4>{
+            \only<6>{
                 \numberedsubstring[blue]{\stringstruggled}{25}{42}
                 \node at (33*0.25,-0.5) {$T[25..41]$ is a suffix};
             }
         \end{tikzpicture}
         \\
     \end{center}
+    \pause
     \textbf{Definitions and Notations}\\
-    The \textbf{substring} from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\
-    Substrings of the form $T[0..j]$ are \textbf{prefixes}.\\
+    The \textbf{substring} from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\ \pause
+    Substrings of the form $T[0..j]$ are \textbf{prefixes}.\\ \pause
     Substring of the form $T[i..n-1]$ are \textbf{suffixes}.
-    \pause \pause
 \end{frame}
 
 \begin{frame}{\textcolor{gray}{Sketch-based approaches to process massive \bblue{string data}}}
-    \pause
+    
     \small
-    Simple and versatile, any file can be seen as a string.
-    They are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.
+    Simple and versatile, any file can be seen as a string.\pause
+    They are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.\pause
 
     \medskip
     \begin{tabular}{l  c c c c}
-        \emph{Strings} & Binary file & DNA sequence & ASCII text file & UTF-8 text file \\
+        \emph{Strings} & Binary file & DNA sequence & ASCII string file & UTF-8 string file \\
         \rule{0pt}{10ex}    
         &
         \includegraphics[width=1cm]{pictures/file-bin.png}&
@@ -60,11 +60,11 @@
         \includegraphics[width=1cm]{pictures/file-utf-8.png}
         \\
         \rule{0pt}{4ex}  
-        \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C, G}\}$ & $\sigma=128$ & $\sigma = 1,112,064$\\
-    \end{tabular}
+        \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C,G}\}$ & $\sigma=128$ & $\sigma = 1,112,064$\\
+    \end{tabular}\pause
     \bigskip
 
-    \textbf{Classical task:} Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
+    \textbf{Classical task:} \pause Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
     
     \begin{center}
         \begin{tikzpicture}[x = 2em]
@@ -72,7 +72,7 @@
             \numberedstring{\stringstruggled}
             \numberedsubstring[myorange]{\stringstruggled}{20}{21}
             \numberedsubstring[myblue]{\stringstruggled}{34}{35}
-            \only<1>{
+            \only<4->{
                 \node at (20*0.25,-0.5) {
                     Two occurences starting at positions \borange{20} and \bblue{34} respectively.
                 };
@@ -85,6 +85,7 @@
 
 \begin{frame}{\textcolor{gray}{Sketch-based approaches \borange{to process} massive string data}}
 \pause
+\ntheme{Three main type of tasks in this thesis:}\\ \pause
 \fbox{
 \begin{minipage}[t][6cm][t]{0.3\textwidth}
     \begin{center}
@@ -141,7 +142,7 @@
         \item ...
     \end{itemize}
     \vspace{0.3cm}
-\end{minipage}}\pause
+\end{minipage}}
 \end{frame}
 
 % Coin Coin COin
@@ -212,7 +213,7 @@
         \pause
         
         \column{0.5\textwidth}
-        For a text $T$ and $i < |T|-m$:\\
+        For a string $T$ and $i < |T|-m$:\\
         \begin{itemize}
             \item If $T[i+1..i+m]=P$, then $\varphi(T[i+1..i+m])=\varphi(P)$.\pause
             \item If $\varphi(T[i+1..i+m])=\varphi(P)$ then the strings match w.h.p. and it can be tested in $\Oh(1)$ time.\pause
@@ -322,7 +323,7 @@
     \end{tikzpicture}
     \end{center}}
 
-    \only<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,s-e,T[e])$.}
+    \only<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,e-s,T[e])$.}
     \only<10->{In the worst case, no compression, but very efficient in practice.}
 \end{frame}
 
@@ -374,7 +375,7 @@
     \pause
 
 
-    \hspace{-0.5cm} {\large \textcolor{black!30!blue}{Three main approaches in this thesis:}}
+    \hspace{-0.5cm} {\large \textcolor{black!30!blue}{Three main approaches in this thesis:}}\\
     \begin{columns}
         \column{0.33\textwidth}
         \begin{framed}
@@ -399,9 +400,6 @@
 
 \begin{frame}{}
     \centering
-    \textbf{\large \bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}
-    \medskip
-
     \only<1|handout:0>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/1.png}}
     \only<2|handout:0>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/2.png}}
     \only<3>{\includegraphics[width=0.5\textwidth]{pictures/mindmap/3.png}}

@@ -88,9 +88,9 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 \bigskip
 \btheme{Recurrence} ~~~ 
     $D[i,j] = \min\{$\beamermathcolor{black}
-        $\underbrace{\mathcolor{black!30!blue}{D[i-1,j-1]}}_\text{top-left},
-        \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{top},
-        \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{left}$
+        $\underbrace{\mathcolor{black!30!blue}{D[i-1,j-1]}}_\text{align},
+        \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{duplicate from Y},
+        \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{duplicate from X}$
     $\mathcolor{black!30!blue}{\}+ d(X[i], Y[j])}$.
 }
 
@@ -99,7 +99,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 
 \begin{frame}{Why is DTW on strings interesting ? Third generation sequencing}
     \small
-    When DNA is sequence, we obtain fragments (reads) of the DNA that have to be assembled.
+    When DNA is sequence, we obtain fragments (reads) of the DNA that have to be assembled.\pause
     \begin{columns}
     \column{0.4\textwidth}
     \smallskip
@@ -116,10 +116,10 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     {\tiny Figure credit: \href{https://www.yourgenome.org/facts/what-is-oxford-nanopore-technology-ont-sequencing/}{yourgenome.org}}
     \end{center}
     
-    \end{columns}
+    \end{columns}\pause
     \vfill
-    { DTW  was already used to \ntheme{align the raw signal} by [Loose et al. 2016] and [Han et al. 2020].\\
-    We propose to use it to \ntheme{align the reads (strings)} to a reference (string).\\ 
+    { DTW  was already used to \ntheme{align the raw signal} by [Loose et al. 2016] and [Han et al. 2020].\\ \pause
+    We propose to use it to \ntheme{align the reads (strings)} to a reference (string).\\ \pause
     So we want to find the position where it aligns best ($\neq$ similarity btw. two strings) ?}
     
 \end{frame}
@@ -184,20 +184,21 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     $T$ and $P$ strings, $N=|T|$ and $M=|P|$, with $n$ and $m$ runs. \pause
     \smallskip
 
-    We call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}} if $P[i_p.. j_p]$ is a run in $P$, and $T[i_t .. j_t]$ is a run in $T$.
+    If $P[i_p.. j_p]$ is a run in $P$, and $T[i_t .. j_t]$ is a run in $T$.\pause
     
     
     %\input{figures/def_bloc}
     {\beamermathcolor{black}
     \[
         D[i,j] = {\min\{D[i-1,j-1],D[i-1,j],D[i,j-1]\}
-        + \underbrace{d(X[i], Y[j])}_\text{\textcolor{red}{Constant inside a block!}}}
+        + \underbrace{d(T[i], P[j])}_\text{\textcolor{red}{Constant!}}}
     \]
     }
-            
-    Inside a block, the values are \ntheme{non-decreasing along a row/column/diagonal}.
-    We can take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\
-    If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}...
+
+    \pause       
+    We call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}}, and there the values are \ntheme{non-decreasing along a row/column/diagonal}.\pause
+    We can take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
+    If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}... \pause
     
     \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya}
         For an \textcolor{red}{integer} distance $d: \Sigma \times \Sigma \rightarrow \mathbb{Z}^+$, given $P$ and $T$ run-length compressed with $m$ and $n$ runs resp.,
