@@ -145,40 +145,25 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \end{columns}
     \pause
     
-    \bigskip
-    
-    
-    \begin{center}
-        \input{figures/example_block}\pause
-        \medskip
-        \small{\textcolor{red}{Diagonals can be non-monotone.}}
-    \end{center}
-    
-\end{frame}
-
-
-\begin{frame}{State of the art for DTW on strings}
-    $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$.
-    \only<3->{With $n$ and $m$ runs in $X$ and $Y$.}\\
     \smallskip
-    The dynamic programming takes $\Oh(NM)$ time $=\Oh(N^2)$ in the case $N=M$.\\ \pause
-    \begin{block}{No strongly subquadratic [Gold and Sharir]}
-    %There are no strongly subquadratic algorithms to compute the DTW distance between two strings over a ternary alphabet unless the Strong Exponential Hypothesis (SETH) is false.
-    $|\Sigma| \geq 3 \Rightarrow $ no $\Oh(N^{a})$ time algorithm with $a<2$ unless SETH is false.
-    \end{block}\pause
+    \noindent\textcolor{gray}{\rule{\textwidth}{0.1pt}}
 
-    \ntheme{Run-length compressed} \\
-    $\dtw(X,Y)$ can be computed $\Oh(mN+Mn)$-time [Froese et al.] 
-    
     \smallskip
-    \ntheme{Low distance regime}\\
-    If $\dtw(X,Y) \leq k$ it can be computed in $\Oh(kN)$-time [Kuszmaul]
+    \btheme{State of the art} to compute $\dtw(X,Y)$  with $N=|X|$ and $M=|Y|$:\pause
     
     \medskip
+    The dynamic programming takes $\Oh(NM)$.\pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithm are unlikely}.\pause
 
+    \medskip
+    What if $X$ and $Y$ are made of consecutive repetitions of the same letter ``runs'', $n$ and $m$ runs respectively ? \pause
+    $\Oh(mN+Mn)$-time \ntheme{[Froese et al.]} \pause
+
+    To compute the distance only if $\dtw(X,Y) < k$, \pause $\Oh(kN)$-time is possible \ntheme{[Kuszmaul]}. \pause
+
+    \medskip
     \textcolor{red}{Can we also use (and combine) those approaches for Pattern Matching ?}
-
 \end{frame}
+
 
 \begin{frame}{Runs simplify the dynamic programming matrix}
     $T$ and $P$ strings, $N=|T|$ and $M=|P|$, with $n$ and $m$ runs. \pause
@@ -196,8 +181,8 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     }
 
     \pause       
-    We call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}}, and there the values are \ntheme{non-decreasing along a row/column/diagonal}.\pause
-    We can take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
+    We call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}}, and there the values are \ntheme{non-decreasing along a row/column/diagonal}. \pause
+    We take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
     If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}... \pause
     
     \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya}
