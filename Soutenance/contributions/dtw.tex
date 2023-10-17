@@ -89,8 +89,8 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 \btheme{Recurrence} ~~~ 
     $D[i,j] = \min\{$\beamermathcolor{black}
         $\underbrace{\mathcolor{black!30!blue}{D[i-1,j-1]}}_\text{align},
-        \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{duplicate from Y},
-        \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{duplicate from X}$
+        \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{dupl. from Y},
+        \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{dupl. from X}$
     $\mathcolor{black!30!blue}{\}+ d(X[i], Y[j])}$.
 }
 
@@ -152,7 +152,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \btheme{State of the art} to compute $\dtw(X,Y)$  with $N=|X|$ and $M=|Y|$:\pause
     
     \medskip
-    The dynamic programming takes $\Oh(NM)$.\pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithm are unlikely}.\pause
+    The dynamic programming takes $\Oh(NM)$. \pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithm are unlikely}.\pause
 
     \medskip
     What if $X$ and $Y$ are made of consecutive repetitions of the same letter ``runs'', $n$ and $m$ runs respectively ? \pause

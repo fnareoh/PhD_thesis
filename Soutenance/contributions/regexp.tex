@@ -58,7 +58,7 @@
     \bigskip
     {
         \beamermathcolor{myblue}
-        Given a regular expression $R$ and a text $T$, \bblue{membership} is : check if $R$ matches $T$.\\
+        Given a regular expression $R$ and a string $T$, \bblue{membership} is : check if $R$ matches $T$.\\
         %\bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \\
         %\textcolor{myblue}{Reduces to membership!}
     }
@@ -72,7 +72,7 @@
 \begin{frame}{A frugal model of computation: Streaming}
 \begin{columns}
     \column{.4\textwidth}
-    The algorithm first receives and preprocesses the expression.\\ Next, it keeps reading characters from a very very long text and:
+    The algorithm first receives and preprocesses the expression.\\ Next, it keeps reading characters from a very very long string and:
     \column{.5\textwidth}
     \begin{center}
         \includegraphics[width=\textwidth]{pictures/stream3}
@@ -142,7 +142,7 @@
 
     \medskip
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a string of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
 \end{frame}
 }
@@ -155,7 +155,7 @@
     \textbf{Sketch as we go: streaming} Karp-Rabin fingerprints as a space efficient way to keep information on the stream.
 
     \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
-        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
+        For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a string of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
     \vfill
     \textbf{Not shown:} Technical part, Witness mechanism, circuit machinery.

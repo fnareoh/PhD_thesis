@@ -254,12 +254,12 @@
 \node<11->[hlbox, fit=(low11), myblue] {};
 }
 
-\only<14->{
+\only<12->{
 \node[hlbox, fit=(17)] {};
 \node[hlbox, fit=(18)] {};
 
-\node<15->[hlbox, fit=(7)] {};
-\node<15->[hlbox, fit=(8)] {};
+\node<13->[hlbox, fit=(7)] {};
+\node<13->[hlbox, fit=(8)] {};
 }
 
 \draw node[left=0 of 1] {$w = \strut$};
@@ -272,10 +272,10 @@
 
 \begin{itemize}
 %\item<9-> if $f_i[1..\absolute{f_i})$ overlaps its earlier occurrence, then square already found
-\item<13-> no need to detect squares that are entirely contained in $t_i$
+\item<11-> no need to detect squares that are entirely contained in $t_i$
 \end{itemize}
 
-\onslide<12->{
+\onslide<14->{
     We use this "easier to compute" approximation to detect squares.
 }
 
