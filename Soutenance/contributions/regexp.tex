@@ -147,7 +147,7 @@
 \end{frame}
 }
 
-\begin{frame}{Summary}
+\begin{frame}{Summary - Streaming Regular Expression}
     \textbf{Complex matching:} regular expression, one of the most powerful and versatile model.
 
     \vfill
@@ -158,5 +158,8 @@
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a string of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
     \vfill
-    \textbf{Not shown:} Technical part, Witness mechanism, circuit machinery.
+    \textbf{Not shown about this work:} Technical part, Witness mechanism, circuit machinery.
+
+    \smallskip
+    \textbf{Open questions:} improve the time complexity while still maintaining space $\sim \mathrm{poly}(d,\log n)$? Improving space complexity?
 \end{frame}

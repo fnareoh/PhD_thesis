@@ -51,7 +51,7 @@
     
     \draw<-6> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/mississippi.pdf}};
     \draw<7-> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/square-states.pdf}};
-    \draw<7-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota, Mississippi,}};
+    \draw<7-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota.}};
     
     \path (1.south) ++(0,.25em) node (v0) {};
     \path (v0) ++(0,-.5em) node (v1) {};
@@ -281,7 +281,7 @@
 
 \end{frame}
 
-\begin{frame}{Summary}
+\begin{frame}{Summary - Squares Over Unordered Alphabets}
     \textbf{Repetition detection:} We analysed the complexity of square detection in the most general model where they are defined.
     \vfill
     
@@ -291,6 +291,9 @@
         Testing square-freeness of a length-$n$ string  that contains $\sigma$ distinct symbols from a \textcolor{red}{general unordered alphabet} can be done in $\Oh(n \log \sigma)$
     \end{myalertblock}
     \vfill
-    \textbf{Not shown:} How to use the sketch, Lowerbounds, extension to runs, construction of the factorization...
+    \textbf{Not shown about this work:} How to use the sketch, Lowerbounds, extension to runs, construction of the factorization...
+
+    \smallskip
+    \textbf{Open questions:} adapt the lowerbound to randomized algorithms ?
 \end{frame}
     

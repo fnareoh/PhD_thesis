@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169, handout]{beamer}
+\documentclass[aspectratio=169]{beamer}
 \input{my_template}
 \input{command_tikz.tex}
 
@@ -38,6 +38,28 @@
   \vfill
 \end{frame}
 
+\begin{frame}[noframenumbering,plain] 
+  \begin{center}
+    \Large
+    \textbf{\bgreen{Sketch-based} \textcolor{gray}{approaches to} \borange{process} \bred{massive} \bblue{string data}}
+  \end{center}
+  \vfill
+  \LARGE
+  Introduction\\
+
+  \bigskip
+  Contributions\\
+  \begin{enumerate}\Large
+    \item Streaming Regular Expressions Membership
+    \item Pattern Matching for the Dynamic Time Warping Distance
+    \item Square Detection for Unordered Alphabets
+  \end{enumerate}
+
+  \bigskip
+  Conclusion
+  \vfill 
+\end{frame}
+
 \section{Introduction}
 \input{intro.tex}
 
@@ -70,7 +92,8 @@
   \mytitle{Conclusion}
   \bigskip
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{pictures/mindmap/present.png}
+    \only<1|handout:0>{\includegraphics[width=0.8\textwidth]{pictures/mindmap/present.png}}\pause
+    \only<2->{\includegraphics[width=0.8\textwidth]{pictures/mindmap/5.png}}
   \end{center}
   \vfill
 \end{frame}
@@ -79,30 +102,23 @@
   \begin{center}
     \mytitle{Conclusion}
   \end{center}
-  \btheme{Main thesis:} Sketches can enable fast and space-efficient algorithms!
+  \btheme{Main thesis:} Sketches (as input or computed on the fly) help in improving the complexity of most processing task.
 
   \medskip
-  \btheme{Open questions:}
+  \btheme{Future directions:} 
   \begin{itemize}
-    \item \ntheme{Streaming regular expressions:} improve the time complexity while still maintaining space $\sim \mathrm{poly}(d,\log n)$? Improving space complexity?
-    \item \ntheme{Pattern matching for the Dynamic Time Warping distance:} faster algorithms? \textcolor{gray}{[Boneh et al. arxiv'23]} Is $\tilde{\Oh}(k(n+m))$ space and time possible?
-    \item \ntheme{Squares over general alphabets:} adapt the lowerbound to randomized algorithms ?
+    \item $\Delta$ approximate Lempel-Ziv factorization, study the links with prefix free parsing and evaluate potential practical applications.
+    \item Gapped consecutive matching: explore connection to spaced seeds in Bioinformatics.
+    \item Grammar compression: a lot of recent progress with balanced grammars and local consistency. I would be interested in the construction phase of grammar because it seems to be the main practical downside...
   \end{itemize}
 
-  \medskip
-  \btheme{Larger perspectives:} applications of the sketches in practice, with a special interest on Lempel-Ziv scheme that are widely used in practice for their low memory usage when constructing the factorization.
+  \vfill
+  \begin{center}
+    \ntheme{Thank you for your attention!}
+  \end{center}
 \end{frame}
 
 \backupbegin
-\begin{frame}[noframenumbering,plain]
-  \vfill
-  \mytitle{Thank you !}
-  \bigskip
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{pictures/mindmap/5.png}
-  \end{center}
-  \vfill
-\end{frame}
 
 \input{appendix.tex}
 

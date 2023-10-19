@@ -84,7 +84,6 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 \bigskip
 
 \btheme{Initialization}~~~$D[0,0]= 0$ and for all $(i,j)$, $D[0,j]=D[i,0]=+\infty$.\\
-\pause
 \bigskip
 \btheme{Recurrence} ~~~ 
     $D[i,j] = \min\{$\beamermathcolor{black}
@@ -191,7 +190,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \end{myalertblock}
     \end{frame}
 
-\begin{frame}{Summary}
+\begin{frame}{Summary - Pattern Matching for DTW}
     \textbf{Similarity measure:} the Dynamic Time Warping distance on string can be used to align reads with homopolymers errors onto a reference genome.
 
     \vfill
@@ -204,6 +203,10 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
         we can compute all $\dtw$ distances $\leq k$ in $\Oh(k mn)$ time.
     \end{myalertblock}
     \vfill
-    \textbf{Not shown:} $\Oh(n+m)$ algorithm for $k=1$, \ntheme{approximations}  results and \ntheme{experiments}.
+    \textbf{Not shown about this work:} $\Oh(n+m)$ algorithm for $k=1$, \ntheme{approximations} results, and \ntheme{experiments}.
+
+
+    \smallskip
+    \textbf{Open questions:} faster algorithms? \textcolor{gray}{[Boneh et al. arxiv'23]} Is $\tilde{\Oh}(k(n+m))$ space and time possible?
 \end{frame}
     
