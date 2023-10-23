@@ -12,7 +12,7 @@
   Bartłomiej Dudek, Paweł Gawrychowski, Tatiana Starikovskaya
 \end{frame}
 
-\begin{frame}{A powerful matching model: regular expressions}
+\begin{frame}{Regular expressions}
     \begin{columns}
         \column{.6\textwidth}
         \begin{mydefblock}{Regular expressions (regexp)}
@@ -58,7 +58,7 @@
     \bigskip
     {
         \beamermathcolor{myblue}
-        Given a regular expression $R$ and a string $T$, \bblue{membership} is : check if $R$ matches $T$.\\
+        Given a regular expression $R$ and a string $T$, \bblue{membership} is: check if $R$ matches $T$.\\
         %\bblue{Pattern matching:} check if $R$ matches \textbf{some substring} of $T$. \pause \\
         %\textcolor{myblue}{Reduces to membership!}
     }
@@ -69,7 +69,7 @@
     We define the length of $R$ to be the number of $\cdot$, $|$, and $\ast$ that it contains.
 \end{frame}
 
-\begin{frame}{A frugal model of computation: Streaming}
+\begin{frame}{Streaming algorithms}
 \begin{columns}
     \column{.4\textwidth}
     The algorithm first receives and preprocesses the expression.\\ Next, it keeps reading characters from a very very long string and:
@@ -82,7 +82,7 @@
 \smallskip
 \pause
 \begin{enumerate}
-\item \textbf{No delay:} After having seen the $i$-th character, immediately report whether the string so far matches the regular expression.
+\item \textbf{No delay:} After having seen the $i$-th character, immediately report whether the string seen so far matches the regular expression.
 \pause
 \item \textbf{No going back:} Not possible to read any of the earlier characters.
 \pause
@@ -103,8 +103,8 @@
     \begin{columns}
         \column{.4\textwidth}
         For a regexp of length $m$,\\
-        \ntheme{Classic:} Recursively build the \btheme{Thompson automata}, then check if $T$ is accepted.\\
-        $\Oh(m)$ space and time/character.
+        \ntheme{Classic:} Recursively build the \btheme{Thompson automaton}, then check if $T$ is accepted.\\
+        $\Theta(m)$ space and time/character.
         \column{.5\textwidth}
         \centering
         \begin{picture}(200,65)
@@ -121,16 +121,16 @@
         \item \ntheme{[Bille and Thorup, SODA'10]} $\Oh(\frac{d\log w}{w}+\log d)$ time/character and $\Oh(m)$ space, where $d$ is the number of occurrences of $|$ and $\ast$, and $w$ is the word size.\pause
     \end{itemize}
     \vfill
-    \begin{center} What about \textcolor{red}{\textbf{space efficiency}} ? 
+    \begin{center} What about \textcolor{red}{\textbf{space efficiency}}? 
     \end{center}
 \end{frame}
 
 {\renewcommand{\arraystretch}{2}
 \begin{frame}{Space-efficiency for regular expression}
-    For a regexp of length $m$, $O(m)$ space for the Thompson automata, can we do better ? \pause
+    For a regexp of length $m$, $\Theta(m)$ space for the Thompson automaton, can we do better? \pause
 
     \medskip
-    \textbf{Some intuition:} \ntheme{other problems studied in streaming} \pause
+    \textbf{Some intuition:} \ntheme{special cases of regexp already studied in streaming} \pause
 
     \medskip
     \begin{tabular}{l c p{0.25\textwidth}}
@@ -141,7 +141,7 @@
     \end{tabular}
 
     \medskip
-    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya, SODA'22}
+    \begin{myalertblock}{Dudek, Gawrychowski, Gourdel, Starikovskaya - SODA'22}
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a string of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
 \end{frame}
@@ -158,8 +158,8 @@
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a string of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
     \vfill
-    \textbf{Not shown about this work:} Technical part, Witness mechanism, circuit machinery.
+    \textbf{Not shown about this work:} technical part, witness mechanism, circuit machinery.
 
     \smallskip
-    \textbf{Open questions:} improve the time complexity while still maintaining space $\sim \mathrm{poly}(d,\log n)$? Improving space complexity?
+    \textbf{Open questions:} is it possible to improve the time complexity while still maintaining space $\sim \mathrm{poly}(d,\log n)$ as well as improving space complexity?
 \end{frame}

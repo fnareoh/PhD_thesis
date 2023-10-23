@@ -23,7 +23,7 @@
     For a string $T$, $T[i..j]$ is a \btheme{square} if there exist a string $x$ such that $T[i..j]=xx$.
     \pause
 
-    \vspace{1.5\baselineskip}
+    \vspace{0.5\baselineskip}
     \noindent%
     \begin{tikzpicture}[x = 2em, remember picture]
     \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {m,i,s,s,i,s,s,i,p,p,i} {
@@ -44,13 +44,13 @@
     \node<6->[color=gray] (s3-\i) at (\pos, -1.2) {\smash{\texttt\x}$\vphantom{m}$};
     }
     
-    \path<3-> (4) to node[midway, above=2.1em] {$\overbrace{\phantom{aaaaaaaaaaaaaaaaaaaaa}}^{\displaystyle\text{square of period $3$}}$} (5);
+    %\path<3-> (4) to node[midway, above=2.1em] {$\overbrace{\phantom{aaaaaaaaaaaaaaaaaaaaa}}^{\displaystyle\text{square of period $3$}}$} (5);
     
-    \path<4-> (3) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{left arm}}$};
-    \path<4-> (6) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{right arm}}$};
+    %\path<4-> (3) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{left arm}}$};
+    %\path<4-> (6) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{right arm}}$};
     
-    \draw<-6> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/mississippi.pdf}};
-    \draw<7-> (11) node[right=2.5em] {\includegraphics[scale=0.15]{pictures/square-states.pdf}};
+    \draw<-6> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/mississippi.pdf}};
+    \draw<7-> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/square-states.pdf}};
     \draw<7-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota.}};
     
     \path (1.south) ++(0,.25em) node (v0) {};
@@ -93,7 +93,7 @@
 \end{frame}
 
 
-\begin{frame}{Alphabet types for $w \in \Sigma^n$, where $|\Sigma| = \sigma$}
+\begin{frame}{Alphabet assumptions for $T$ of length $n$, with $|\Sigma| = \sigma$}
     \small
 	\vspace{.75\baselineskip}	
 	
@@ -285,15 +285,16 @@
     \textbf{Repetition detection:} We analysed the complexity of square detection in the most general model where they are defined.
     \vfill
     
+    \beamermathcolor{black}
     \textbf{Sketch:} The $\Delta$-approximate Lempel--Ziv factorization relaxes the constraints on phrases starting position to make it easier to compute.
     \vfill
-    \begin{myalertblock}{Ellert, Gawrychowski, Gourdel}
+    \begin{myalertblock}{Ellert, Gawrychowski, Gourdel - SODA'23}
         Testing square-freeness of a length-$n$ string  that contains $\sigma$ distinct symbols from a \textcolor{red}{general unordered alphabet} can be done in $\Oh(n \log \sigma)$
     \end{myalertblock}
     \vfill
-    \textbf{Not shown about this work:} How to use the sketch, Lowerbounds, extension to runs, construction of the factorization...
+    \textbf{Not shown about this work:} how to use the sketch, lower bounds, extension to runs, construction of the factorization...
 
     \smallskip
-    \textbf{Open questions:} adapt the lowerbound to randomized algorithms ?
+    \textbf{Open questions:} adapt the lower bound to randomized algorithms ?
 \end{frame}
     

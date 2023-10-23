@@ -32,7 +32,7 @@
 Used in \ntheme{speech recognition} to deal with varying speeds and more generally for parametrized curves where each item is a \ntheme{multidimensional point}.\pause
 
 \vfill
-But what about \btheme{strings} where the items are characters from $\Sigma$ (finite) ?
+But what about \btheme{strings}, where the items are characters from a finite alphabet $\Sigma$ ?
 \end{frame}
 
 \begin{frame}{Dynamic Time Warping (DTW) Distance for Strings }
@@ -47,7 +47,7 @@ minimal distance obtained by \ntheme{duplicating} some characters (maintaining e
 \only<2->{
 \begin{mdframed}
 \center
-{\tiny Distance between characters = hamming distance.} 
+{\tiny Distance between characters = Hamming distance.} 
 \footnotesize
 \begin{figure}
 %\missingfigure{Under construction...}
@@ -96,9 +96,9 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 \end{frame}
 
 
-\begin{frame}{Why is DTW on strings interesting ? Third generation sequencing}
+\begin{frame}{Why is DTW on strings interesting? Third generation sequencing}
     \small
-    When DNA is sequence, we obtain fragments (reads) of the DNA that have to be assembled.\pause
+    When DNA is sequenced, we obtain fragments (reads) of the DNA that have to be assembled.\pause
     \begin{columns}
     \column{0.4\textwidth}
     \smallskip
@@ -119,7 +119,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \vfill
     { DTW  was already used to \ntheme{align the raw signal} by [Loose et al. 2016] and [Han et al. 2020].\\ \pause
     We propose to use it to \ntheme{align the reads (strings)} to a reference (string).\\ \pause
-    So we want to find the position where it aligns best ($\neq$ similarity btw. two strings) ?}
+    So we want to find the position where it aligns best ($\neq$ similarity btw. two strings)?}
     
 \end{frame}
 
@@ -151,16 +151,16 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \btheme{State of the art} to compute $\dtw(X,Y)$  with $N=|X|$ and $M=|Y|$:\pause
     
     \medskip
-    The dynamic programming takes $\Oh(NM)$. \pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithm are unlikely}.\pause
+    The dynamic programming takes $\Oh(NM)$. \pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithms are unlikely}.\pause
 
     \medskip
-    What if $X$ and $Y$ are made of consecutive repetitions of the same letter ``runs'', $n$ and $m$ runs respectively ? \pause
-    $\Oh(mN+Mn)$-time \ntheme{[Froese et al.]} \pause
+    What if $X$ and $Y$ are made of consecutive repetitions of the same character ``runs'', $n$ and $m$ runs respectively? \pause
+    $\Oh(mN+Mn)$-time \ntheme{[Froese et al. Algorithmica'22]} \pause
 
-    To compute the distance only if $\dtw(X,Y) < k$, \pause $\Oh(kN)$-time is possible \ntheme{[Kuszmaul]}. \pause
+    To compute the distance only if $\dtw(X,Y) < k$, \pause $\Oh(kN)$-time is possible \ntheme{[Kuszmaul ICALP'19]}. \pause
 
     \medskip
-    \textcolor{red}{Can we also use (and combine) those approaches for Pattern Matching ?}
+    \textcolor{red}{Can we also use (and combine) those approaches for Pattern Matching?}
 \end{frame}
 
 
@@ -184,7 +184,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     We take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
     If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}... \pause
     
-    \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya}
+    \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya - SPIRE'22}
         For an \textcolor{red}{integer} distance $d: \Sigma \times \Sigma \rightarrow \mathbb{Z}^+$, given $P$ and $T$ run-length compressed with $m$ and $n$ runs resp.,
         we can compute all $\dtw$ distances $\leq k$ in $\Oh(k mn)$ time.
     \end{myalertblock}
@@ -198,7 +198,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \textbf{Sketch as input:} Run-length compression sketch, suited to the metric, that allows a complexity proportional to the size of the sketch not the original input.
     
     \vfill
-    \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya}
+    \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya - SPIRE'22}
         For an \textcolor{red}{integer} distance $d: \Sigma \times \Sigma \rightarrow \mathbb{Z}^+$, given $P$ and $T$ run-length compressed with $m$ and $n$ runs resp.,
         we can compute all $\dtw$ distances $\leq k$ in $\Oh(k mn)$ time.
     \end{myalertblock}
@@ -207,6 +207,6 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 
 
     \smallskip
-    \textbf{Open questions:} faster algorithms? \textcolor{gray}{[Boneh et al. arxiv'23]} Is $\tilde{\Oh}(k(n+m))$ space and time possible?
+    \textbf{Open questions:} faster algorithms? \textcolor{gray}{\beamermathcolor{gray} $\tilde{\Oh}(nm)$ [Boneh et al. arxiv'23]}\\ Is $\tilde{\Oh}(k(n+m))$ space and time possible?
 \end{frame}
     
