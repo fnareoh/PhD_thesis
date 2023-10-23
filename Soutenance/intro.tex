@@ -29,7 +29,7 @@
     \textbf{Definitions and Notations}\\
     The \textbf{substring} from position $i$ to position $j$: $T[i]T[i+1]...T[j]$ is denoted $T[i..j]$.\\ \pause
     Substrings of the form $T[0..j]$ are \textbf{prefixes}.\\ \pause
-    Substring of the form $T[i..n-1]$ are \textbf{suffixes}.\\ \pause
+    Substrings of the form $T[i..n-1]$ are \textbf{suffixes}.\\ \pause
 
     \medskip
     In every algorithm in the presentation we assume \ntheme{the word RAM model} with word of length logarithmic in the size of the input.
@@ -38,8 +38,9 @@
 \begin{frame}{\textcolor{gray}{Sketch-based approaches to process massive \bblue{string data}}}
     
     \small
-    Simple and versatile, any file can be seen as a string.\pause
-    They are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.\pause
+    % any file can be seen as a string. 
+    %\pause
+    String are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.\pause
 
     \medskip
     \begin{tabular}{l  c c c c}
@@ -52,11 +53,11 @@
         \includegraphics[width=1cm]{pictures/file-utf-8.png}
         \\
         \rule{0pt}{4ex}  
-        \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C,G}\}$ & $\sigma=128$ & $\sigma = 1,112,064$\\
+        \emph{Alphabets} & $\Sigma=\{0,1\}$ & $\Sigma=\{\texttt{A,T,C,G}\}$ & $\Sigma=\{0,\dots , 127\}$ & $\Sigma = \{0, \dots, 1~112~063\}$\\
     \end{tabular}\pause
     \bigskip
 
-    \textbf{Classical task:} \pause Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where ?
+    \textbf{Classical task:} \pause Given a pattern $P =$ \texttt{th}, does it occur in  $T$ and where?
     
     \begin{center}
         \begin{tikzpicture}[x = 2em]
@@ -109,9 +110,9 @@
     \vfill 
     Examples:
     \begin{itemize}
-        \item Hamming dist.
-        \item LCS(ubseq)
-        \item Edit dist.
+        \item Hamming distance
+        \item LCS
+        \item Edit distance
         \item ...
     \end{itemize}
     \vspace{0.3cm}
@@ -139,17 +140,19 @@
 
 % Coin Coin COin
 \begin{frame}{\textcolor{gray}{Sketch-based approaches to process \bred{massive} string data}}
-    \pause
+
+    {\small String are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.}
     \begin{center}
+        \pause
         \begin{tabular}{l c c c c}
-            File type & Webpage &  E. coli genome & Software repository & Human genome\\ \hline
+            File type & \textcolor{black!10!myblue}{Webpage} &  \textcolor{black!10!mygreen}{E. coli genome} & \textcolor{black!10!myorange}{Software repository} & \textcolor{black!10!mygreen}{Human genome}\\ \hline
             Size & $\sim$ 2 Mb & $\sim$ 5Mb &  $<$ 1 Gb & $\sim$ 3 Gb 
         \end{tabular}\pause
 
         \bigskip
 
         \begin{tabular}{l c c c}
-            Archive & Software Heritage & European Nucleotide & Wayback Machine  \\ \hline
+            Archive & \textcolor{black!10!myorange}{Software Heritage} & \textcolor{black!10!mygreen}{European Nucleotide (ENA)} & \textcolor{black!10!myblue}{Wayback Machine}  \\ \hline
             Size & $>$ 1 Pb & $>$ 50 Pb &  $>$ 70 Pb
         \end{tabular}
     \end{center}\pause
@@ -159,11 +162,11 @@
 
     \bigskip
 
-    Queries with a \textbf{high complexity} in time of space \textbf{cannot scale to large datasets}. \pause
+    Queries with a \textbf{high complexity} in time or space \textbf{cannot scale to large datasets}. \pause
 
     \bigskip
 
-    But some part of the data can be \btheme{redundant} or \btheme{not needed} for the queries we want ?\pause
+    But some part of the data can be \btheme{redundant} or \btheme{not needed} for the queries we want?\pause
 
 \end{frame}
 
@@ -177,7 +180,7 @@
         \hspace{0.5cm}
         \includegraphics[width=1.8cm]{pictures/betisou.png}\\
         \begin{center}
-            "Is this a cat ?"
+            "Is this a cat?"
         \end{center}
     \end{columns}
     \pause
@@ -319,7 +322,7 @@
     \only<10->{In the worst case, no compression, but very efficient in practice.}
 \end{frame}
 
-\begin{frame}{What is a sketch ?}
+\begin{frame}{What is a sketch?}
     \begin{columns}
         \column{.6\textwidth}
         A \textbf{sketch} is a \bblue{lossless} or \borange{lossy} compression that \textbf{keeps only the essential characteristic of the input} needed to answer a specified type of query.\\
@@ -328,7 +331,7 @@
         \hspace{0.5cm}
         \includegraphics[width=1.8cm]{pictures/betisou.png}\\
         \begin{center}
-            "Is this a cat ?"
+            "Is this a cat?"
         \end{center}
     \end{columns}
 
@@ -354,7 +357,7 @@
     
 \end{frame}
 
-\begin{frame}{Why and how do we use sketches ?}
+\begin{frame}{Why and how do we use sketches?}
     Sketches are typically much \bgreen{smaller}, thus are promising for \bgreen{scaling to larger} datasets.
     
     \bigskip
