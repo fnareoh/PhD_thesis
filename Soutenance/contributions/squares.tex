@@ -37,11 +37,11 @@
     %}
     
     \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {,,s,s,i,s,s,i,,,} {
-    \node<5->[color=gray] (s2-\i) at (\pos, -.6) {\smash{\texttt\x}$\vphantom{m}$};
+    \node<3->[color=gray] (s2-\i) at (\pos, -.6) {\smash{\texttt\x}$\vphantom{m}$};
     }
     
     \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {,,s,s,,s,s,,p,p,} {
-    \node<6->[color=gray] (s3-\i) at (\pos, -1.2) {\smash{\texttt\x}$\vphantom{m}$};
+    \node<4->[color=gray] (s3-\i) at (\pos, -1.2) {\smash{\texttt\x}$\vphantom{m}$};
     }
     
     %\path<3-> (4) to node[midway, above=2.1em] {$\overbrace{\phantom{aaaaaaaaaaaaaaaaaaaaa}}^{\displaystyle\text{square of period $3$}}$} (5);
@@ -49,9 +49,9 @@
     %\path<4-> (3) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{left arm}}$};
     %\path<4-> (6) node[above=.25em] {$\overbrace{\phantom{aaaaaaaaaa}}^{\displaystyle\text{right arm}}$};
     
-    \draw<-6> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/mississippi.pdf}};
-    \draw<7-> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/square-states.pdf}};
-    \draw<7-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota.}};
+    \draw<-4> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/mississippi.pdf}};
+    \draw<5-> (11) node[right=4.5em] {\includegraphics[scale=0.1]{pictures/square-states.pdf}};
+    \draw<5-> (11) node[below right=5.5em and 3em] {\tiny{Connecticut, Hawaii, Illinois, Massachusetts, Minnesota.}};
     
     \path (1.south) ++(0,.25em) node (v0) {};
     \path (v0) ++(0,-.5em) node (v1) {};
@@ -63,17 +63,17 @@
     \draw<2->[ultra thick, myorange] (s1-2.north west) rectangle (s1-4.south east);
     \draw<2->[ultra thick, myorange] (s1-5.north west) rectangle (s1-7.south east);
     
-    \draw<5->[ultra thick, mygreen] (s2-3.north west) rectangle (s2-5.south east);
-    \draw<5->[ultra thick, mygreen] (s2-6.north west) rectangle (s2-8.south east);
+    \draw<3->[ultra thick, mygreen] (s2-3.north west) rectangle (s2-5.south east);
+    \draw<3->[ultra thick, mygreen] (s2-6.north west) rectangle (s2-8.south east);
     
-    \draw<6->[ultra thick, myred] (s3-3.north west) rectangle (s3-3.south east);
-    \draw<6->[ultra thick, myred] (s3-4.north west) rectangle (s3-4.south east);
+    \draw<4->[ultra thick, myred] (s3-3.north west) rectangle (s3-3.south east);
+    \draw<4->[ultra thick, myred] (s3-4.north west) rectangle (s3-4.south east);
     
-    \draw<6->[ultra thick, myred] (s3-6.north west) rectangle (s3-6.south east);
-    \draw<6->[ultra thick, myred] (s3-7.north west) rectangle (s3-7.south east);
+    \draw<4->[ultra thick, myred] (s3-6.north west) rectangle (s3-6.south east);
+    \draw<4->[ultra thick, myred] (s3-7.north west) rectangle (s3-7.south east);
     
-    \draw<6->[ultra thick, myblue] (s3-9.north west) rectangle (s3-9.south east);
-    \draw<6->[ultra thick, myblue] (s3-10.north west) rectangle (s3-10.south east);
+    \draw<4->[ultra thick, myblue] (s3-9.north west) rectangle (s3-9.south east);
+    \draw<4->[ultra thick, myblue] (s3-10.north west) rectangle (s3-10.south east);
     
     
     \end{tikzpicture}
@@ -83,12 +83,12 @@
     %\vspace{\baselineskip}
     
     
-    \onslide<8->{\textcolor<11->{gray}{\textbf{Some problems regarding squares:}}}
+    \onslide<6->{\textcolor<9->{gray}{\textbf{Some problems regarding squares:}}}
     
     \begin{itemize}
-    \item<8->\textbf<11->{test square-freeness, i.e., whether or not a word contains a square}
-    \item<9->\color<11->{gray} compute all squares (or runs) in a given word
-    \item<10->\color<11->{gray} compute all distinct squares in a given word
+    \item<6->\textbf<9->{test square-freeness, i.e., whether or not a string contains a square}
+    \item<7->\color<9->{gray} compute all squares (or runs) in a given string
+    \item<8->\color<9->{gray} compute all distinct squares in a given string
     \end{itemize}
 \end{frame}
 
@@ -106,11 +106,11 @@
 	\vspace{.25\baselineskip}
 	\onslide<4->{\item \textbf{general ordered alphabet (GOA)}:\hfill %
 	\onslide<5->{\rlap{e.g.\ comparison sort}\phantom{e.g.\ $\{\texttt A,\texttt C,\texttt G,\texttt T\}$, $\{0, \dots, 255\}$, or $\{1, \dots, n^{\Oh{1}}\}$}}
-	\\test $w[i] < w[j]$ in constant time}
+	\\test $T[i] < T[j]$ in constant time}
 	\vspace{.25\baselineskip}
 	\onslide<6->{\item \textbf{general unordered alphabet (GUA)}:\hfill%
 	\onslide<7->{\rlap{e.g.\ KMP pattern matching}\phantom{e.g.\ $\{\texttt A,\texttt C,\texttt G,\texttt T\}$, $\{0, \dots, 255\}$, or $\{1, \dots, n^{\Oh{1}}\}$}}
-	\\test $w[i] = w[j]$ in constant time}
+	\\test $T[i] = T[j]$ in constant time}
 	\end{itemize}
 	
 	\vspace{1.5\baselineskip}
@@ -167,7 +167,7 @@
 \vspace{.5\baselineskip}
 
 
-\onslide<2->{\textbf{\boldmath$\Delta$\unboldmath-approximate Lempel-Ziv factorisation:} $w = f_1f_2\dots f_z$}\onslide<4->{ such that}
+\onslide<2->{\textbf{\boldmath$\Delta$\unboldmath-approximate Lempel-Ziv factorisation:} $T = f_1f_2\dots f_z$}\onslide<4->{ such that}
 \begin{itemize}
 \item<4-> $\absolute{f_i} > 0$ and $f_i = h_it_i$ (\emph{head} and \emph{tail}) with $\absolute{h_i} < \Delta$\onslide<6->{, and}
 \item<6-> $t_i$ is empty or occurs at least twice in $f_1f_2\dots f_i$\onslide<8->{, and}
@@ -262,7 +262,7 @@
 \node<13->[hlbox, fit=(8)] {};
 }
 
-\draw node[left=0 of 1] {$w = \strut$};
+\draw node[left=0 of 1] {$T = \strut$};
 \node<5->[right=6em of t4lab] {$\Delta = 3$};
 
 \end{tikzpicture}
