@@ -25,6 +25,8 @@
 
     \vspace{0.5\baselineskip}
     \noindent%
+
+    \begin{overlayarea}{\textwidth}{3.5cm} 
     \begin{tikzpicture}[x = 2em, remember picture]
     \foreach[count=\i from 1, evaluate=\i as \pos using int(\i - 1)] \x in {m,i,s,s,i,s,s,i,p,p,i} {
     \node<1> (\i) at (\pos, 0) {\smash{\texttt\x}$\vphantom{m}$};
@@ -77,6 +79,8 @@
     
     
     \end{tikzpicture}
+    \end{overlayarea}
+    
     
     \flushleft
     
@@ -84,12 +88,13 @@
     
     
     \onslide<6->{\textcolor<9->{gray}{\textbf{Some problems regarding squares:}}}
-    
+    \begin{overlayarea}{\textwidth}{2cm} 
     \begin{itemize}
     \item<6->\textbf<9->{test square-freeness, i.e., whether or not a string contains a square}
     \item<7->\color<9->{gray} compute all squares (or runs) in a given string
     \item<8->\color<9->{gray} compute all distinct squares in a given string
     \end{itemize}
+    \end{overlayarea}
 \end{frame}
 
 
@@ -178,6 +183,7 @@
 
 \onslide<3->
 \begin{center}
+\begin{overlayarea}{\textwidth}{2.5cm}
 \begin{tikzpicture}
 \beamermathcolor{black}
 \tikzset{barcolor/.style={black, densely dotted}}
@@ -266,6 +272,7 @@
 \node<5->[right=6em of t4lab] {$\Delta = 3$};
 
 \end{tikzpicture}
+\end{overlayarea}
 \end{center}
 
 \vspace{.25\baselineskip}

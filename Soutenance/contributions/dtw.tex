@@ -35,7 +35,7 @@ Used in \ntheme{speech recognition} to deal with varying speeds and more general
 But what about \btheme{strings}, where the items are characters from a finite alphabet $\Sigma$ ?
 \end{frame}
 
-\begin{frame}{Dynamic Time Warping (DTW) Distance for Strings }
+\begin{frame}{Dynamic time warping (DTW) distance for strings}
 
 \begin{columns}
 \column{0.5\textwidth}
@@ -44,7 +44,7 @@ minimal distance obtained by \ntheme{duplicating} some characters (maintaining e
 \vfill
 \column{0.4\textwidth}
 
-\only<2->{
+\onslide<2->{
 \begin{mdframed}
 \center
 {\tiny Distance between characters = Hamming distance.} 
@@ -76,7 +76,7 @@ $\dtw($CAAAG$,$ATG$)=2$\\
 \pause
 
 
-\only<3->{
+\onslide<3->{
 
 \btheme{Dynamic Programming}\\
 \smallskip
@@ -123,7 +123,7 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     
 \end{frame}
 
-\begin{frame}{Our subject: Pattern Matching for DTW}
+\begin{frame}{Our subject: pattern matching for DTW}
 
     \begin{columns}
     \column{0.45\textwidth}

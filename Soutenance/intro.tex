@@ -10,15 +10,15 @@
         \begin{tikzpicture}[x = 2em]
             \node (t) at (-0.8,0) {\smash{$T=$}$\vphantom{m}$};
             \numberedstring{\stringstruggled}
-            \only<4|handout:0>{
+            \onslide<4|handout:0>{
                 \numberedsubstring[blue]{\stringstruggled}{8}{18}
                 \node at (13*0.25,-0.5) {$T[8..18]$};
             }
-            \only<5>{
+            \onslide<5>{
                 \numberedsubstring[blue]{\stringstruggled}{0}{9}
                 \node at (5*0.25,-0.5) {$T[0..9]$ is a prefix};
             }
-            \only<6>{
+            \onslide<6>{
                 \numberedsubstring[blue]{\stringstruggled}{25}{42}
                 \node at (33*0.25,-0.5) {$T[25..41]$ is a suffix};
             }
@@ -65,7 +65,7 @@
             \numberedstring{\stringstruggled}
             \numberedsubstring[myorange]{\stringstruggled}{20}{21}
             \numberedsubstring[myblue]{\stringstruggled}{34}{35}
-            \only<4->{
+            \onslide<4->{
                 \node at (20*0.25,-0.5) {
                     Two occurences starting at positions \borange{20} and \bblue{34} respectively.
                 };
@@ -197,7 +197,7 @@
     
 \end{frame}
 
-\begin{frame}{Example of Lossy Sketch: Karp--Rabin Fingerprints}
+\begin{frame}{Example of lossy sketch: Karp--Rabin fingerprints}
     \begin{columns}
         \column{0.5\textwidth}
         \begin{mydefblock}{Karp--Rabin fingerprints}
@@ -231,14 +231,15 @@
     \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, \\
     \onslide<3->{The unique LZ-phrase starting at position $s$, $f_i=T[s..e]$ is such that}
     \begin{itemize}
-        \item<4-> $T[s..(e-1)]$ occurs at least twice in $T[1..(e-1)]$,\only<6->{ and}
-        \item<6-> either $e=|T|$ or $T[s..e]$ occurs only once in $T[1..e]$.
+        \onslide<4->{\item $T[s..(e-1)]$ occurs at least twice in $T[1..(e-1)]$,}\onslide<6->{ and}
+        \onslide<6->{\item either $e=|T|$ or $T[s..e]$ occurs only once in $T[1..e]$.}
     \end{itemize}
 
     \vspace{.5\baselineskip}
     
     \onslide<2->{
     \begin{center}
+    \begin{overlayarea}{\textwidth}{2.5cm}
     \begin{tikzpicture}
     \tikzset{barcolor/.style={black, densely dotted}}
     \tikzset{fcolor/.style={black}}
@@ -316,10 +317,11 @@
     }    
     \draw node[left=0 of 1] {$T = \strut$};
     \end{tikzpicture}
+    \end{overlayarea}
     \end{center}}
 
-    \only<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,e-s,T[e])$.}
-    \only<10->{In the worst case, no compression, but very efficient in practice.}
+    \onslide<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,e-s,T[e])$.}
+    \onslide<10->{In the worst case, no compression, but very efficient in practice.}
 \end{frame}
 
 \begin{frame}{What is a sketch?}
