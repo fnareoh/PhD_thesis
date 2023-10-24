@@ -198,43 +198,49 @@
 \end{frame}
 
 \begin{frame}{Example of lossy sketch: Karp--Rabin fingerprints}
+    \pause
     \begin{columns}
-        \column{0.5\textwidth}
-        \begin{mydefblock}{Karp--Rabin fingerprints}
+        \column{0.6\textwidth}
+        A hash function $\varphi$ such that,\\ 
+        for two string $X$ and $Y$ with $|X|=|Y|$: 
+        \begin{itemize}
+            \item If $X=Y$, then $\varphi(X)=\varphi(Y)$. 
+            \item If $\varphi(X)=\varphi(Y)$ then the strings match w.h.p. and it can be tested in $\Oh(1)$ time.
+        \end{itemize} 
+
+        \column{0.35\textwidth}
+        \vspace{-1cm}
+        \begin{mydefblock}{\footnotesize \textcolor{gray}{Karp--Rabin fingerprints}}
+            \beamermathcolor{gray}
+            \scriptsize
             For $p>|\Sigma|$ a prime and $b > |\Sigma|$,
             the fingerprint of a string $P$ of length $m$ is:
-            $$\varphi_{p}(P) = \sum_{i = 0}^{m-1}  P[i]b^{m-i-1} \bmod p$$
+            \begin{equation*}
+                \resizebox{\hsize}{!}{$\varphi_{p,b}(P) = \mathop{\sum}_{i = 0}^{m-1}  P[i]b^{m-i-1} \bmod p$}
+            \end{equation*}
+            \vspace{-0.5cm}
         \end{mydefblock}
-        \pause
-        
-        \column{0.5\textwidth}
-        For a string $T$ and $i < |T|-m$:\\
-        \begin{itemize}
-            \item If $T[i+1..i+m]=P$, then $\varphi(T[i+1..i+m])=\varphi(P)$.\pause
-            \item If $\varphi(T[i+1..i+m])=\varphi(P)$ then the strings match w.h.p. and it can be tested in $\Oh(1)$ time.\pause
-            \item Occupies constant space, but we cannot reconstruct the original strings.\pause
-        \end{itemize}
-    \end{columns}
-
-    \bigskip
-    \begin{columns}
-    \column{0.3\textwidth}
-    \btheme{Sliding window property} 
-    \column{0.5\textwidth}
-    \includegraphics[width=\textwidth]{pictures/slidding_window.png}
     \end{columns}\pause
-    $$ \varphi(T[i+1..i+m]) = \varphi(T[i..i+m-1])\times b - T[i]b^m + T[i+m] \mod p$$\vspace{-0.5cm}
+
+    Occupies constant space, but we cannot reconstruct the original strings.\\ \pause
+    \smallskip
+    Given $X$, we can compute $\varphi(X)$ in $\Oh(|X|)$ time.\\ \pause
+    \medskip
+
+    \begin{columns}
+        \column{0.5\textwidth}
+        \btheme{Rolling hash function}\\ 
+        For a string $T$ and $i<j$, given $\varphi(T[i..j])$, $T[i]$ and $T[j+1]$,
+        we can compute $\varphi(T[i+1..j+1])$ in $\Oh(1)$ time.
+        \column{0.4\textwidth}
+        \includegraphics[width=\textwidth]{pictures/slidding_window.png}
+    \end{columns}
 \end{frame}
 
-\begin{frame}{Example of lossless sketch: Lempel--Ziv factorization}
+\begin{frame}{Example of lossless sketch: Lempel--Ziv  factorization}
 
-    \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, \\
-    \onslide<3->{The unique LZ-phrase starting at position $s$, $f_i=T[s..e]$ is such that}
-    \begin{itemize}
-        \onslide<4->{\item $T[s..(e-1)]$ occurs at least twice in $T[1..(e-1)]$,}\onslide<6->{ and}
-        \onslide<6->{\item either $e=|T|$ or $T[s..e]$ occurs only once in $T[1..e]$.}
-    \end{itemize}
-
+    \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, (76 with overlap version)\\
+    \onslide<3->{The unique LZ-phrase starting at position $s$, $f_i=T[s..e]$ is such that $T[s..e]$ is the longest prefix of $T[s..n-1]$ that has a previous occurrence in $T[0..e]$.}
     \vspace{.5\baselineskip}
     
     \onslide<2->{
@@ -303,12 +309,12 @@
     \node<5->[hlbox, fit=(low4)(low10), myblue] (fi) {};
 
     
-    \node<7->[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
-    \node<7->[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
-    \node<7->[hlbox, fit=(low21), myorange] {};
-    \node<7->[hlbox, fit=(low11), myorange] {};
+    \node<6->[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
+    \node<6->[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
+    \node<6->[hlbox, fit=(low21), myorange] {};
+    \node<6->[hlbox, fit=(low11), myorange] {};
 
-    \only<8->{
+    \only<7->{
         \node[below right=0.3em of fi.south west] (start) {};
         \node[below left=0.3em of ma.south west] (end) {};
         \node[fit=(start)(end), inner sep=0pt] (mlarrowl) {\rightarrowfill};
@@ -320,8 +326,8 @@
     \end{overlayarea}
     \end{center}}
 
-    \onslide<9->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,e-s,T[e])$.}
-    \onslide<10->{In the worst case, no compression, but very efficient in practice.}
+    \onslide<8->{Used for \btheme{compression} by representing $f_i=T[s..e]$ by $(d,e-s,T[e])$.}
+    \onslide<9->{In the worst case, no compression, but very efficient in practice.}
 \end{frame}
 
 \begin{frame}{What is a sketch?}
