@@ -19,21 +19,20 @@
         For any regular expression $R$ with $d$ occurrences of $|$ and $\ast$, we can solve regular expression membership on a text of length $n$ using $\Oh(d^{3}\polylog n)$ space and $\Oh(nd^{5}\polylog n)$ time per character.
     \end{myalertblock}
     
-    \pause
     \medskip
     \btheme{Main steps:}
-    \pause
+    
     \begin{itemize}
     \item Define atomic strings: ``words" in the regular expression.
-    \pause
+    
     \item Store efficiently specific occurrences of prefixes of atomic strings.
-    \pause
+    
     \item Link those occurences stored to test if there is a ``partial" match of $R$.
-    \pause
+    
     \item Translate this in a graph problem.
-    \pause
-    \item Solve this problem efficiently by a circuit machinery !
-    \end{itemize}\pause 
+    
+    \item Solve this problem efficiently by a circuit machinery!
+    \end{itemize} 
     We also improve the circuit framework.
 \end{frame}
 
@@ -48,16 +47,14 @@
     \bblue{Main idea:} Given an algorithm $\mathcal{A}_{k}$ which generates all occurrences of
     $P[1..2^{k}]$, we will develop a new algorithm
     $\mathcal{A}_{k+1}$ which generates all occurrences of $P[1..2^{k+1}]$ using just $\Oh(\log n)$ bits of additional memory.
-    \pause
+    
     \medskip
     \begin{overlayarea}{\textwidth}{3.5cm}
-    \only<2->{
     \begin{center}
     \includegraphics[width=0.7\textwidth]{pictures/more}
     \end{center}
-    }
     \end{overlayarea}
-    \only<3->{\centering \textcolor{red}{\textbf{But...}}\beamermathcolor{red} What if we have may occurrences of $P[1..2^{k}]$ in the window of size $2^{k+1}$ ?}
+    \centering \textcolor{red}{\textbf{But...}\beamermathcolor{red} What if we have may occurrences of $P[1..2^{k}]$ in the window of size $2^{k+1}$?}
     \end{frame}
     
     
@@ -65,7 +62,7 @@
     
     \begin{frame}
     
-    {\beamermathcolor{red} What if we have may occurrences of $P[1..2^{k}]$ in the window of size $2^{k+1}$ ?}\pause
+    {\beamermathcolor{red} What if we have may occurrences of $P[1..2^{k}]$ in the window of size $2^{k+1}$?}
     
     \begin{center}
     \begin{tikzpicture}[scale=0.3]
@@ -138,41 +135,91 @@
             \draw (34.center) to (35.center);
             \draw (33.center) to (36.center);
             \draw (36.center) to (35.center);
-            \only<2->{
+            
             \draw [bend right=90, looseness=1.50] (37.center) to (38.center);
             \draw [bend right=90, looseness=1.50] (44.center) to (45.center);
             \draw [bend right=90, looseness=1.50] (46.center) to (47.center);
             \draw [bend right=90, looseness=1.50] (49.center) to (50.center);
             \draw [bend right=90, looseness=1.50] (51.center) to (52.center);
-            \draw [bend right=90, looseness=1.50] (54.center) to (55.center);}
+            \draw [bend right=90, looseness=1.50] (54.center) to (55.center);
     \end{tikzpicture}
     \end{center}
     
-    \pause
-    \textcolor{red}{Then there is periodicity !} \pause 
-    The occurences can be stored efficiently:\pause
+    
+    \textcolor{red}{Then there is periodicity!}  
+    The occurences can be stored efficiently:
     \begin{itemize}
-    \pause
+    
     \item The start, the period, and the number of repetitions
-    \pause
+    
     \item The fingerprint of the prefix of the text up to the start of the progression and the fingerprint of the period
     \end{itemize}
     
     \medskip
-    \pause
+    
     
     {
         \beamermathcolor{red}
-        \alert{$\Oh(\log n)$ bits of space per level!} \pause \\ 
+        \alert{$\Oh(\log n)$ bits of space per level!}  \\ 
         \footnotesize{Correctness: if $P$ occurs, all $\log m$ prefixes will be there too and be detected w.h.p.}
     }
+
+\end{frame}
+
+
+\begin{frame}
+
+\begin{exampleblock}{Main idea}
+We run a separate pattern matching process for each of the atomic strings, and store some of the found occurrences as witnesses.
+\end{exampleblock}
+
+\pause
+\begin{block}{Witness}
+Let $P$ be a prefix of length $2^{i}$ of some atomic string that occurs ending at position $r$ in $T$. Then, $r$ is a witness
+if $T[1..r]$ is a partial occurrence of $R$ ending at $P$.
+\end{block}
+\pause
+
+This works \ntheme{if everything is aperiodic:}\pause \\
+there are only a constant number of witnesses for each prefix.\\
+\pause
+
+\vfill
+\textcolor{red}{However, this is not always the case...}
+
+\end{frame}
+    
+    
+    
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+% General witness
+
+
+\begin{frame} 
+\ntheme{For the general case:}
+\begin{itemize}
+\pause
+\item Periodic atomic string will be found in periodic regions of the text.
+\pause
+\item We keep some occurrences of earlier atomic strings on an accepting path (check acceptance via a graph problem).
+\pause 
+\item We carefully chose them to always be able to bound their number.
+\end{itemize}
+\pause
+
+\begin{center}
+\includegraphics[width=\textwidth]{pictures/anchors.png}
+\end{center}
+\pause
+
+\ntheme{Main novelty:} Treat the non-periodic and periodic cases together with a reasoning $\Oh(\log n)$ levels.
 
 \end{frame}
 
 \begin{frame}{Circuit framework}
     $$C_k[u,v][d]=\bigvee_{\substack{w\in V(G) \\  i\in \{0,\ldots,d\}}} C_{k-1}[u,w][i] \wedge C_{k-1}[w,v][d-i]$$
     
-    \pause 
+     
      
     \begin{block}{Lokshtanov and Nederlof, STOC'10; Bringmann, SODA'17}
     Consider a circuit $C$ with every gate being an addition or convolution gate and computing a vectors of the same length.
@@ -180,11 +227,11 @@
     we can efficiently compute an entry of the output vector in space depending on the size of the circuit
     (and not the length of the vectors).
     \end{block}
-    \pause
+    
     
     \begin{alertblock}{}
     We remove the dependency on the Extended Riemann Hypothesis, replacing it with an application of the Bombieri--Vinogradov theorem.\\ 
-    %\pause
+    %
     %(a major result of analytic number theory, obtained in the mid-1960s, concerning the distribution of primes in arithmetic progressions)
     \end{alertblock}
     

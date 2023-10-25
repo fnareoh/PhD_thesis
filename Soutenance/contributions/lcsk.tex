@@ -29,50 +29,36 @@
   Tomasz Kociumaka, Jakub Radoszewski, Tatiana Starikovskaya
 \end{frame}
 
-\frame{
-\frametitle{Similarity measures}
-
-\textbf{Problem:} Given two strings $X$ and $Y$, How similar are they? 
-\pause
-
-\vspace*{0.2cm}
-Ideally, something \textbf{Fast} and \textbf{Robust}:
-\begin{itemize}
-	\pause
-	\item Strongly subquadratic time
-	\pause
-	\item Small change in the input $\Rightarrow$ small change of the similarity measure
-\end{itemize}
-
-\pause
-\vspace*{0.2cm}
-Applications in \textbf{bioinformatics}, \textbf{search engines} and \textbf{detection of plagiarism}.
-}
-
 
 \frame{
-\frametitle{The Edit distance}
-A very relevant similarity measure for biological sequences.\\
-You are allowed \textbf{Insertion}, \textbf{Deletion}, and \textbf{Substitution}.
+\frametitle{The Longest Common Substring with Approximately $k$ mismatches}
+\begin{block}{$LCS_{\tilde{k}}$}
+\textbf{Input}: Two strings $X, Y$ of length $n$, an integer $k$.\\
+\textbf{Output}: A substring of $X$ of length at least $LCS_k$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches.
+\end{block}
 
 \pause
-\begin{center}
- EditDistance(GATTACAT, ATTACATT) = 2
-\end{center} 
- 
- \pause
- Unfortunately,
- 
- \begin{block}{[Backurs and Indik'15]}
- The Edit distance can't be computed in strongly subquadratic time, unless SETH is false.
- \end{block}
- 
-\pause
-\textbf{SETH} the Strong Exponential Time Hypothesis : 3-SAT cannot be solved in subexponential time in the worst case.\\
-Commonly believed to be true.
+
+\begin{block}{[Kociumaka, Radosweski, Starikovskaya'19]}
+  $LCS_{\tilde{k}}$ can be solved for $\eps < 2$, in $\Oh(n^{1+1/(1+\eps)}\log^2 n)$ time and $\Oh(n^{1+1/(1+\eps)})$ space.
+\end{block}
 
 }
 
+\frame{
+\frametitle{Our contributions}
+\begin{myalertblock}{Upper bounds}
+ Let $\eps > 0$ be an arbitrary constant. The \kApproxLCS problem can be solved correctly with high probability 
+\begin{enumerate}[1)]
+\item in $\Oh(n^{1+ 1/(1+2\eps) + o(1)} \log^2 n)$ time and $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ space assuming a constant-size alphabet;
+\item and $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ time and $\Oh(n)$ space for alphabets of arbitrary size. 
+\end{enumerate}
+\end{myalertblock}
+
+\begin{myalertblock}{Lower Bound}
+Assuming SETH, for every constant $\delta > 0$, there exists a constant $\eps = \eps(\delta)$ such that given $X$ and $Y$ of size $n$ computing the \kApproxLCS requires $\Omega(n^{2-\delta})$ time. 
+\end{myalertblock}
+}
 
 
 \frame{
@@ -107,38 +93,6 @@ However...
  There is a $k = \Theta (\log(n))$ such that $LCS_k$ can't be computed in strongly subquadratic time, unless SETH is false.
  \end{block}
 
-}
-
-\frame{
-\frametitle{The Longest Common Substring with Approximately $k$ mismatches}
-\begin{block}{$LCS_{\tilde{k}}$}
-\textbf{Input}: Two strings $X, Y$ of length $n$, an integer $k$.\\
-\textbf{Output}: A substring of $X$ of length at least $LCS_k$ that occurs in $Y$ with at most $(1+\eps) \cdot k$ mismatches.
-\end{block}
-
-\pause
-
-\begin{block}{[Kociumaka, Radosweski, Starikovskaya'19]}
-  $LCS_{\tilde{k}}$ can be solved for $\eps < 2$, in $\Oh(n^{1+1/(1+\eps)}\log^2 n)$ time and $\Oh(n^{1+1/(1+\eps)})$ space.
-\end{block}
-
-}
-
-\frame{
-\frametitle{Our contributions}
-\begin{myalertblock}{Upper bounds}{}{bg=Red,fg=white}
- Let $\eps > 0$ be an arbitrary constant. The \kApproxLCS problem can be solved correctly with high probability 
-\begin{enumerate}[1)]
-\item in $\Oh(n^{1+ 1/(1+2\eps) + o(1)} \log^2 n)$ time and $\Oh(n^{1+ 1/(1+2\eps) + o(1)})$ space assuming a constant-size alphabet;
-\item and $\Oh(n^{1+1/(1+\eps)} \log^3 n)$ time and $\Oh(n)$ space for alphabets of arbitrary size. 
-\end{enumerate}
-\end{myalertblock}
-
-\pause
-
-\begin{myalertblock}{Lower Bound}{}{bg=Red,fg=white}
-Assuming SETH, for every constant $\delta > 0$, there exists a constant $\eps = \eps(\delta)$ such that given $X$ and $Y$ of size $n$ computing the \kApproxLCS requires $\Omega(n^{2-\delta})$ time. 
-\end{myalertblock}
 }
 
 
@@ -286,9 +240,6 @@ Implemented in C++ available on github.
 \end{enumerate}
 
 }
-
-
-
 
 \frame{
 \frametitle{Running time}

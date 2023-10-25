@@ -40,35 +40,34 @@
       }
   
   
-      \only<2->{
-          \dtwarrow{(0.1,2)}{(0.9,2)}
-          \dtwarrow{(3.1,1.9)}{(3.9,1.1)}
-          \dtwarrow{(1.1,2)}{(1.9,2)}
-          \dtwarrow{(2.1,2)}{(2.9,2)}
-          \dtwarrow{(4,0.9)}{(4,0.1)}
-          \dtwarrow{(4.1,0)}{(4.9,0)}
-          \node at (5,-0.3) {\bred{$\pi$}};
-      }
+      
+      \dtwarrow{(0.1,2)}{(0.9,2)}
+      \dtwarrow{(3.1,1.9)}{(3.9,1.1)}
+      \dtwarrow{(1.1,2)}{(1.9,2)}
+      \dtwarrow{(2.1,2)}{(2.9,2)}
+      \dtwarrow{(4,0.9)}{(4,0.1)}
+      \dtwarrow{(4.1,0)}{(4.9,0)}
+      \node at (5,-0.3) {\bred{$\pi$}};
+      
   
       \end{tikzpicture}
   \end{figure}
   \column{0.45\textwidth}
   \centering
-  \only<3>{
   $\text{cost}(\pi) = \sum_{(i,\ j)\in \pi} d(X[i],Y[j])$\\
   \vspace{0.5cm}
   $\dtw(X,Y) = \min_{\pi} \text{cost}(\pi)$\\
   \vspace{0.5cm}
-  {\small s.t. $\pi$ goes from top left to bottom right.}}
+  {\small s.t. $\pi$ goes from top left to bottom right.}
   \end{columns}
-  \pause %grid definition 
-  \pause %draw the path
-  \pause
+   %grid definition 
+   %draw the path
+  
   
   \bigskip
   
   
-  \only<4|handout:0>{
+
   \begin{exampleblock}{Path correspondance to alignment}
   \center
   \begin{figure}
@@ -92,69 +91,8 @@
   \end{figure}
   \vfill
   $\dtw($CAAAG$,$ATG$)=2$
-  \end{exampleblock}}
+  \end{exampleblock}
   
-  \only<5->{
-  
-  \btheme{Dynamic Programming solution}\\
-  \smallskip
-  $D$ a matrix of size $(M+1)(N+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\pause
-  \bigskip
-  
-  \btheme{Initialization}~~~$D[0,0]= 0$ and for all $(i,j)$, $D[0,j]=D[i,0]=+\infty$.\\
-  \pause
-  \bigskip
-  \btheme{Recurrence} ~~~ 
-      $D[i,j] = \min\{$\beamermathcolor{black}
-          $\underbrace{\mathcolor{black!30!blue}{D[i-1,j-1]}}_\text{top-left},
-          \underbrace{\mathcolor{black!30!blue}{D[i-1,j]}}_\text{top},
-          \underbrace{\mathcolor{black!30!blue}{D[i,j-1]}}_\text{left}$
-      $\mathcolor{black!30!blue}{\}+ d(X[i], Y[j])}$.
-  }
-  
-\end{frame}
-  
-
-\begin{frame}{}
-
-  \textbf{Our contributions:}\\
-  For $T$ and $P$ two strings, $|T|=N$ and  $|P|=M$, $|\RLE(T)|=n$ and  $|\RLE(P)|=m$.
-  Pattern matching under DTW distance:
-  \begin{itemize}
-  \item $\Oh(Nm+nM)$-time general algorithm which can for an integer distance, compute all values bellow $k$ in $\Oh(nmk)$-time. \pause
-  \item Toy implementation available on github.\pause
-  \item An $\Oh(L^{\eps})$-approximation, for any $0 < \eps < 1$, in  $\Oh(L^{1-\eps} \cdot mn \log^3 L)$-time with $L=\max(N,M)$.\pause
-  \item (A $\Oh(n+m)$-time algorithm for $k=1$.)\pause
-  \end{itemize}
-  
-  
-  \textbf{Open questions:}
-  \begin{itemize}
-  \item Is a $\Oh(k(n+m))$-time algorithm possible? \pause
-  \item Can those improvements benefit applications?\pause
-  \end{itemize}
-  \end{frame}
-
-
- 
-
-\begin{frame}{Experiments: visualization on simulated data}
-  Problem: How to design a protocol that isn't biased towards ED ?\\
-  Model to illustrate the impact of homopolymers on ED.
-  \begin{center}
-    \includegraphics[scale=0.2]{figures/pipeline.png}
-  \end{center}
-  \vspace{-0.5cm}
-  \begin{columns}
-    \column{0.3\textwidth}
-    
-    We compare the values of the two distances as the probability of extending homopolymers increases.
-    
-    \column{0.5\textwidth}
-    \begin{center}
-      \includegraphics[scale=0.4]{figures/ecoli_10kb_N_100_fixed_ID_0.0005.png}
-    \end{center}
-  \end{columns}
 \end{frame}
 
 
@@ -178,24 +116,57 @@
   }
       \]
   
-  \pause
   
-  \only<2-3|handout:0>{
+  
   \begin{exampleblock}{DTW vs ED}
   $\ed(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=3$ whereas $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}C)=1$.\\
   $\dtw(AAAA\mathcolor{myblue}{T}G,AA\mathcolor{myblue}{T}CCC)=3$
   \end{exampleblock} 
   
-  \only<3>{$\Rightarrow$ Compresses runs of matching letters!}
-  }
-
-  \only<4>{
-    \begin{center}
-      \input{figures/example_block}\pause
-    \end{center}
-    \small{Unlike for the edit distance, \textcolor{red}{diagonals can be non-monotone}.}
-  }
 \end{frame}
+
+\begin{frame}{}
+
+  \textbf{Our contributions:}\\
+  For $T$ and $P$ two strings, $|T|=N$ and  $|P|=M$, $|\RLE(T)|=n$ and  $|\RLE(P)|=m$.
+  Pattern matching under DTW distance:
+  \begin{itemize}
+  \item $\Oh(Nm+nM)$-time general algorithm which can for an integer distance, compute all values bellow $k$ in $\Oh(nmk)$-time. 
+  \item Toy implementation available on github.
+  \item An $\Oh(L^{\eps})$-approximation, for any $0 < \eps < 1$, in  $\Oh(L^{1-\eps} \cdot mn \log^3 L)$-time with $L=\max(N,M)$.
+  \item (A $\Oh(n+m)$-time algorithm for $k=1$.)
+  \end{itemize}
+  
+  
+  \textbf{Open questions:}
+  \begin{itemize}
+  \item Is a $\Oh(k(n+m))$-time algorithm possible? 
+  \item Can those improvements benefit applications?
+  \end{itemize}
+  \end{frame}
+
+
+ 
+
+\begin{frame}{Experiments: visualization on simulated data}
+  Problem: How to design a protocol that isn't biased towards ED?\\
+  Model to illustrate the impact of homopolymers on ED.
+  \begin{center}
+    \includegraphics[scale=0.2]{figures/pipeline.png}
+  \end{center}
+  \vspace{-0.5cm}
+  \begin{columns}
+    \column{0.3\textwidth}
+    
+    We compare the values of the two distances as the probability of extending homopolymers increases.
+    
+    \column{0.5\textwidth}
+    \begin{center}
+      \includegraphics[scale=0.4]{figures/ecoli_10kb_N_100_fixed_ID_0.0005.png}
+    \end{center}
+  \end{columns}
+\end{frame}
+
 
 \begin{frame}{Border Formula}
   \begin{center}
@@ -219,12 +190,12 @@
   
   \begin{frame}{Low-distance regime for integer distances}
   We can just represent the values $\leq k$ in a compact format:
-  For $\ell$ an integer, $q_{\mathrm{top}}^\ell$ is the largest position such that $D[i_p,q_{\mathrm{top}}^\ell] \leq \ell$.\pause
+  For $\ell$ an integer, $q_{\mathrm{top}}^\ell$ is the largest position such that $D[i_p,q_{\mathrm{top}}^\ell] \leq \ell$.
   \begin{center}
     \input{figures/borders_represent}
   \end{center}
   
-  Computing $q_{\mathrm{bot}}^\ell$ and $q_{\mathrm{right}}^\ell$ from $q_{\mathrm{top}}^\ell$ and $q_{\mathrm{left}}^\ell$ can be done in $\Oh(k)$ time.\\\pause
+  Computing $q_{\mathrm{bot}}^\ell$ and $q_{\mathrm{right}}^\ell$ from $q_{\mathrm{top}}^\ell$ and $q_{\mathrm{left}}^\ell$ can be done in $\Oh(k)$ time.\\
   The compact representation of the last row can be computed in $\Oh(nmk)$ time.
   \end{frame}    
       
