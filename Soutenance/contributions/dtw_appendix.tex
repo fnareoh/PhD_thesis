@@ -136,28 +136,7 @@
   \end{frame}
 
 
-  \begin{frame}{State of the art for DTW on strings}
-    $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$.
-    \only<3->{With $n$ and $m$ runs in $X$ and $Y$.}\\
-    \smallskip
-    The dynamic programming takes $\Oh(NM)$ time $=\Oh(N^2)$ in the case $N=M$.\\ \pause
-    \begin{block}{No strongly subquadratic [Gold and Sharir]}
-    %There are no strongly subquadratic algorithms to compute the DTW distance between two strings over a ternary alphabet unless the Strong Exponential Hypothesis (SETH) is false.
-    $|\Sigma| \geq 3 \Rightarrow $ no $\Oh(N^{a})$ time algorithm with $a<2$ unless SETH is false.
-    \end{block}\pause
-
-    \ntheme{Run-length compressed} \\
-    $\dtw(X,Y)$ can be computed $\Oh(mN+Mn)$-time [Froese et al.] 
-    
-    \smallskip
-    \ntheme{Low distance regime}\\
-    If $\dtw(X,Y) \leq k$ it can be computed in $\Oh(kN)$-time [Kuszmaul]
-    
-    \medskip
-
-    \textcolor{red}{Can we also use (and combine) those approaches for Pattern Matching ?}
-
-\end{frame}
+ 
 
 \begin{frame}{Experiments: visualization on simulated data}
   Problem: How to design a protocol that isn't biased towards ED ?\\

@@ -95,35 +95,27 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
 
 \end{frame}
 
-
 \begin{frame}{Why is DTW on strings interesting? Third generation sequencing}
-    \small
-    When DNA is sequenced, we obtain fragments (reads) of the DNA that have to be assembled.\pause
+    \small \pause
+    \vspace{-0.5cm}
     \begin{columns}
-    \column{0.4\textwidth}
-    \smallskip
-    \btheme{Third generation sequencing}\\
-    \smallskip
-    \textcolor{mygreen}{Long reads, fast and portable.}\\
-    \smallskip
-    \textcolor{red}{Higher error rate.}\\
-    \smallskip
-    Uneven speed of the DNA through the nanopore, creates errors on the length when the same nucleotide is repeated (homopolymers/runs)...
-    \column{0.5\textwidth}
-    \begin{center}
-    \includegraphics[scale=0.20]{figures/ont-sequencing_yourgenome.png}\\
-    {\tiny Figure credit: \href{https://www.yourgenome.org/facts/what-is-oxford-nanopore-technology-ont-sequencing/}{yourgenome.org}}
-    \end{center}
-    
+        \column{0.5\textwidth}
+        \smallskip
+        \btheme{Third generation sequencing}\\
+        \smallskip
+        A new technique with multiple advantages, but it tends to have errors on the length of homopolymers (/``runs'': when the same nucleotide is repeated)...
+        \column{0.4\textwidth}
+        \begin{center}
+            {\tiny Figure credit: \href{https://www.yourgenome.org/facts/what-is-oxford-nanopore-technology-ont-sequencing/}{yourgenome.org}}
+            \includegraphics[scale=0.15]{figures/ont-sequencing_yourgenome.png}\\
+        \end{center}
     \end{columns}\pause
-    \vfill
-    { DTW  was already used to \ntheme{align the raw signal} by [Loose et al. 2016] and [Han et al. 2020].\\ \pause
-    We propose to use it to \ntheme{align the reads (strings)} to a reference (string).\\ \pause
-    So we want to find the position where it aligns best ($\neq$ similarity btw. two strings)?}
-    
-\end{frame}
 
-\begin{frame}{Our subject: pattern matching for DTW}
+    { DTW  was already used to \ntheme{align the electric signal} by [Loose et al. 2016] and [Han et al. 2020].\\ \pause
+    We propose to use it to \ntheme{align the reads (strings)} to a reference (string).\\ \pause
+    So we want to \textcolor{red}{find the positions where a string aligns best} ($\neq$ similarity btw. two strings)?}
+
+    %\noindent\textcolor{gray}{\rule{\textwidth}{0.1pt}}
 
     \begin{columns}
     \column{0.45\textwidth}
@@ -144,33 +136,55 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     \end{columns}
     \pause
     
-    \smallskip
-    \noindent\textcolor{gray}{\rule{\textwidth}{0.1pt}}
+\end{frame}
 
+\begin{frame}{State of the art for DTW on strings}
+    $X$ and $Y$ strings, $N=|X|$ and $M=|Y|$, compute $\dtw(X,Y)$.\\ \pause
     \smallskip
-    \btheme{State of the art} to compute $\dtw(X,Y)$  with $N=|X|$ and $M=|Y|$:\pause
+    The dynamic programming takes $\Oh(NM)$ time $=\Oh(N^2)$ in the case $N=M$.\\ \pause
+
+    \medskip
+    A conditional lowerbound by \ntheme{[Abboud et al. FOCS'15]} indicates that \textcolor{red}{strongly subquadratic algorithms are unlikely}.\pause
     
     \medskip
-    The dynamic programming takes $\Oh(NM)$. \pause Conditional lowerbound by \ntheme{[Gold and Sharir]} indicates that \textcolor{red}{strongly subquadratic algorithms are unlikely}.\pause
+    What if $X$ and $Y$ are made of consecutive repetitions of the same character ``runs'',\\ $n$ and $m$ runs respectively?\\ \pause
 
+    \smallskip
+    \ntheme{Run-length compressed} \\
+    $\dtw(X,Y)$ can be computed $\Oh(mN+Mn)$-time \ntheme{[Froese et al. Algorithmica'22]} \pause
+    
+    \smallskip
+    \ntheme{Low distance regime}\\ \pause
+    If $\dtw(X,Y) \leq k$ it can be computed in $\Oh(kN)$-time \ntheme{[Kuszmaul ICALP'19]} \pause 
+    
     \medskip
-    What if $X$ and $Y$ are made of consecutive repetitions of the same character ``runs'', $n$ and $m$ runs respectively? \pause
-    $\Oh(mN+Mn)$-time \ntheme{[Froese et al. Algorithmica'22]} \pause
 
-    To compute the distance only if $\dtw(X,Y) < k$, \pause $\Oh(kN)$-time is possible \ntheme{[Kuszmaul ICALP'19]}. \pause
-
-    \medskip
     \textcolor{red}{Can we also use (and combine) those approaches for Pattern Matching?}
+
 \end{frame}
 
 
 \begin{frame}{Runs simplify the dynamic programming matrix}
+    \small
     $T$ and $P$ strings, $N=|T|$ and $M=|P|$, with $n$ and $m$ runs. \pause
     \smallskip
 
-    If $P[i_p.. j_p]$ is a run in $P$, and $T[i_t .. j_t]$ is a run in $T$.\pause
+    \pause
     
+    \begin{overlayarea}{\textwidth}{2.5cm} 
+    \centering
+    \only<2-6>{
+        \input{figures/example_block}
+    }
+    \only<7-8|handout:0>{
+        \includegraphics[width=0.3\textwidth]{pictures/dtw_shortestpath.png}
+    }
+    \only<9-|handout:0>{
+        \includegraphics[width=0.3\textwidth]{pictures/dtw_nmk.png}
+    }
+    \end{overlayarea}\pause
     
+    If $P[i_p.. j_p]$ is a run in $P$, and $T[i_t .. j_t]$ is a run in $T$,  we call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}}:\pause
     %\input{figures/def_bloc}
     {\beamermathcolor{black}
     \[
@@ -180,9 +194,8 @@ $D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\p
     }
 
     \pause       
-    We call $D[i_p .. j_p, i_t .. j_t]$ a \btheme{\emph{block}}, and there the values are \ntheme{non-decreasing along a row/column/diagonal}. \pause
-    We take the shortest path inside a block $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
-    If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}... \pause
+   Inside a block we can take the shortest path \pause \pause $\rightarrow$ $\Oh(Nm+Mn)$ time.\\ \pause
+    If $d$ is an integer distance, the values $\leq k$ can take \ntheme{at most $k$ distinct values}... \pause 
     
     \begin{myalertblock}{Driemel, Gourdel, Peterlongo, Starikovskaya - SPIRE'22}
         For an \textcolor{red}{integer} distance $d: \Sigma \times \Sigma \rightarrow \mathbb{Z}^+$, given $P$ and $T$ run-length compressed with $m$ and $n$ runs resp.,
