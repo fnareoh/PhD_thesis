@@ -15,128 +15,31 @@
 
 
 \begin{frame}{The use of Lempel-Ziv factorization to detect squares}
-    \begin{center}
-        \begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
-        \tikzset{barcolor/.style={black, densely dotted}}
-        \tikzset{fcolor/.style={black}}
-        
-        \setcounter{symbid}{0}
-        \foreach[count=\factorid from 1, evaluate=\factorid as \prevfid using int(\factorid-1)] \factorset in {%
-        {a},
-        {b},%
-        {c},
-        {b,a},
-        {b,a,a},
-        {b,c,b,a,c},%
-        {b,a,b,a,a,b,c,z},%
-        {z,b},
-        {a,b,a}%
-        }
-        {
-    
-            \only{
-            \ifnum\factorid=7
-                \tikzset{barcolor/.style={black, densely dotted}}
-                \tikzset{fcolor/.style={black, font=\boldmath}}	
-            \else
-                \beamermathcolor{black!30!white}
-                \tikzset{barcolor/.style={black!20!white, densely dotted}}
-                \tikzset{fcolor/.style={barcolor}}
-            \fi}
-    
-            \path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (leftbar) {};
-            \foreach \tsymb in \factorset {
-                \addtocounter{symbid}{1}
-                \node[inner sep=0] (\thesymbid) at (\thesymbid\lzspacing,0) {\smash{\texttt{\tsymb}\vphantom{$\strut$}}$\vphantom{m}$};
-                %\node at (\thesymbid\lzspacing,1) {$\scriptstyle\thesymbid$};
-            }
-            \path (\thesymbid\lzspacing+0.5\lzspacing, -0.5em) node (rightbar) {};
-            \path (leftbar) to node[midway] (centerbar) {} (rightbar);
-            %\node[above of=centerbar, fcolor] (flab\factorid) {$f_{\factorid}$};
-            \node[above=.75em of centerbar |- \thesymbid.north, fcolor] (flab\factorid) {$f_{\factorid}$};
-    
-            \ifodd\factorid\else
-                \draw[thick, barcolor] (leftbar.center) to ++(0,1);
-                \draw[thick, barcolor] (rightbar.center) to ++(0,1);
-            \fi
-        }
-    
-        \tikzset{hlbox/.style={draw, ultra thick, inner xsep=2.5pt}}
-    
-      
-        
-        \foreach[count=\i from 14, evaluate=\i as \j using int(\i-10)] \x in {b,a,b,a,a,b,c} {
-        \node[below=1em of \i, inner sep=0] (low\i) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
-        \node[below=1em of \j, inner sep=0] (low\j) {\smash{\texttt{\x}\vphantom{$\strut$}}$\vphantom{m}$};
-        }
-    
-        \only{
-            \node[hlbox, fit=(low14)(low20), myblue] (ma) {};
-    
-            \node[below=0 of ma] (malab) {\bblue{already seen}};
-    
-        }
-        \node[hlbox, fit=(low4)(low10), myblue] (fi) {};
-    
-        
-        \node[below=1em of 21, inner sep=0] (low21) {\smash{\texttt{z}\vphantom{$\strut$}}$\vphantom{m}$};
-        \node[below=1em of 11, inner sep=0] (low11) {\smash{\texttt{b}\vphantom{$\strut$}}$\vphantom{m}$};
-        \node[hlbox, fit=(low21), mygreen] {};
-        \node[hlbox, fit=(low11), mygreen] {};
-    
-        \draw node[left=0 of 1] {$w = \strut$};
-        \end{tikzpicture}
-    \end{center}
-    \pause
-    We process $w$ \ntheme{left to right}, square testing, we can note that:\pause
+    We process $T$ \ntheme{left to right}, square testing, we can note that:
     \begin{itemize}
-        \item<3-> We don't have to look for a square fully included in $f_i[..-1]$.
-        \item<6-> If the previous occurrence of $f_i[..-1]$ overlaps with itself, then it implies a square.
-        \item<8-> The right arm of square can overlap at most two phrases.
-        \item<12-> For $x$ and $y$ square-free string we can detect squares in $xy$ with their right arm in $y$ contained in $\Oh(|y|)$ time.
+        \item We don't have to look for a square fully included in $f_i[..-1]$.
+        \item If the previous occurrence of $f_i[..-1]$ overlaps with itself, then it implies a square.
+        \item The right arm of square can overlap at most two phrases.
+        \item For $x$ and $y$ square-free string we can detect squares in $xy$ with their right arm in $y$ contained in $\Oh(|y|)$ time.
     \end{itemize}
 
 
     \begin{center}
     \begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
         \beamermathcolor{black}
-        \onslide<1->{
         
-        \node (0) {$\qquad\quad w = {}$};
+        \node (0) {$\qquad\quad T = {}$};
         \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
             \node[right=0 of \iminus, minimum width=1.05em] (\i) {\vphantom{a}};
             \node[below=-0.25em of \i, minimum width=1.05em] (d\i) {\vphantom{a}};
         }
 
-        % Arrow occurs before
-        \only<5|handout:0>{
-            \node[fit=(6)(7), fill=mygreen!40!white, inner sep=0pt] (flarm) {};
-            \node[fit=(8)(9), fill=mygreen!40!white, inner sep=0pt] (frarm) {};
-            \node at (flarm.center) {$\alpha$};
-            \node at (frarm.center) {$\alpha$};
-            \node[fit=(6)(7), thick, draw=black, inner sep=0pt] (flarm) {};
-            \node[fit=(8)(9), thick, draw=black, inner sep=0pt] (frarm) {};
-            \draw[-latex] (larm) to[out=-90, in=-90] (flarm);
-        }
 
-        % small square
-        \only<4-5|handout:0>{
-            \node[fit=(14)(15), fill=mygreen!40!white, inner sep=0pt] (olarm) {};
-            \node[fit=(16)(17), fill=mygreen!40!white, inner sep=0pt] (orarm) {};
-            \node at (olarm.center) {$\alpha$};
-            \node at (orarm.center) {$\alpha$};
-            \node[fit=(14)(15), thick, draw=black, inner sep=0pt] (olarm) {};
-            \node[fit=(16)(17), thick, draw=black, inner sep=0pt] (orarm) {};
-        }
-
-    
-        
         \node[fit=(1)(30), draw=black, inner sep=0pt] {};
         
         \tikzset{barcolor/.style={densely dotted}}
         \tikzset{fcolor/.style={}}
         
-        \onslide<1->{
         
         \foreach[%
         evaluate=\len as \lensum using int(\prevlensum+\len), %
@@ -147,7 +50,7 @@
         
             \node[fit=(\starti)(\lensum), inner sep=0pt] (fact\j) {};
         
-            \only<6->{
+            {
             \ifnum\j=6
                 \tikzset{barcolor/.style={black, densely dotted}}
                 \tikzset{fcolor/.style={font=\boldmath}}
@@ -168,67 +71,51 @@
             \fi\fi
         }
 
-        % OVERLAP WITH ITSELF
-        \onslide<7|handout:0>{
-            \node[fit=(17)(18), fill=mygreen!40!white, inner sep=0pt] (larm) {};
-            \node[fit=(19)(20), fill=mygreen!40!white, inner sep=0pt] (rarm) {};
-            \node at (larm.center) {$\alpha$};
-            \node at (rarm.center) {$\alpha$};
-            \node[fit=(17)(18), thick, draw=black, inner sep=0pt] (larm) {};
-            \node[fit=(19)(20), thick, draw=black, inner sep=0pt] (rarm) {};
-        }  
             
-        \onslide<6-7|handout:0>{
-        \node[fit=(d17)(d21), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
-        }
                   
         % LAST OBSERVATION
-        \only<8->{
         \node[fit=(6)(15), fill=mygreen!40!white, inner sep=0pt] (larm) {};
         \node[fit=(16)(25), fill=mygreen!40!white, inner sep=0pt] (rarm) {};
         \node at (larm.center) {$\alpha$};
         \node at (rarm.center) {$\alpha$};
         \node[fit=(6)(15), thick, draw=black, inner sep=0pt] (larm) {};
         \node[fit=(16)(25), thick, draw=black, inner sep=0pt] (rarm) {};
-        }
 
-        \onslide<9->{
         \node[fit=(d19)(d23), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
         \node[fit=(d23.north)(d23.south east), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
         \draw[thick, barcolor] (fact6.south west) ++(0,1) to (fact6.west |- rfac.south);
         \draw[thick, barcolor] (fact6.south east) ++(0,1) to (fact6.east |- rfac.south);
-        }
         
-        \onslide<10->{
+        
         \node[fit=(d9)(d13), thick, fill=myblue!50!white, draw=black, inner sep=0pt] (rhead) {};
         \node[fit=(d13.north)(d13.south east), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
-        }
         
-        \onslide<11->{\node [right=0em of flab6, red] {\LARGE\xmark};}
         
-        }}
+        \node [right=0em of flab6, red] {\LARGE\xmark};
+        
+        
         
     \end{tikzpicture}
     \end{center}
 
     \vfill 
-    \only<13>{
+    {
         \centering
         \textcolor{red}{\bfseries \boldmath \beamermathcolor{red} Building the factorization requires $\Omega(n\sigma)$ GUA comparisons... :(}
     }
 \end{frame}
 
 
-\begin{frame}{Using our sketch to detect squares}
+\begin{frame}{Using the $\Delta$-approximate factorization to detect squares}
 
     \begin{center}
         \small
     
         \begin{tikzpicture}[scale=0.9, every node/.style={transform shape}]
         \beamermathcolor{black}
-        \onslide<1->{
+        {
         
-        \node (0) {$\qquad\quad w = {}$};
+        \node (0) {$\qquad\quad T = {}$};
         \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
             \node[right=0 of \iminus, minimum width=1.05em] (\i) {\vphantom{a}};
             \node[below=-0.75em of \i, minimum width=1.05em] (d\i) {\vphantom{a}};
@@ -248,7 +135,6 @@
         \tikzset{barcolor/.style={densely dotted}}
         \tikzset{fcolor/.style={}}
         
-        \onslide<1->{
         
         \foreach[%
         evaluate=\len as \lensum using int(\prevlensum+\len), %
@@ -259,7 +145,7 @@
         
             \node[fit=(\starti)(\lensum), inner sep=0pt] (fact\j) {};
         
-            \only<1->{
+            {
             \ifnum\j=6
                 \tikzset{fcolor/.style={font=\boldmath}}
             \else
@@ -271,15 +157,14 @@
             \node[above=0.25em of fact\j, fcolor] (flab\j) {$f_{\j}$};
             
             \ifodd\j\else\ifnum\j=6
-                \draw<-3>[thick, barcolor] (fact\j.south west) ++(0,-.002) to ++(0,1.002);
-                \draw<-3>[thick, barcolor] (fact\j.south east) ++(0,-.002) to ++(0,1.002);
+                %\draw<-3>[thick, barcolor] (fact\j.south west) ++(0,-.002) to ++(0,1.002);
+                %\draw<-3>[thick, barcolor] (fact\j.south east) ++(0,-.002) to ++(0,1.002);
             \else
                 \draw[thick, barcolor] (fact\j.south west) ++(0,-.002) to ++(0,1.002);
                 \draw[thick, barcolor] (fact\j.south east) ++(0,-.002) to ++(0,1.002);
             \fi\fi
         }
         
-        \onslide<1->{
         \node[fit=(d19)(d20), thick, fill=red!50!white, draw=black, inner sep=0pt] (rhead) {};
         \node[fit=(d21)(d23), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rfac) {};
         \node[fit=(d24.north west)(d24.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (rnext) {};
@@ -289,7 +174,6 @@
         \draw[thick, barcolor] (fact6.south east) ++(0,1) to (fact6.east |- rfac.south);
         }
         
-        \onslide<1->{
         \node[fit=(d9)(d10), thick, fill=red!50!white, draw=black, inner sep=0pt] (lhead) {};
         \node[fit=(d11)(d13), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (lfac) {};
         \node[fit=(d14.north west)(d14.south), thick, fill=mygreen!50!white, draw=black, inner sep=0pt] (lnext) {};
@@ -297,11 +181,11 @@
         \node at (lfac.center) {$t_6$};
         %\draw[thick, barcolor] (lfac.west |- larm.north) to (lfac.south west);
         %\draw[thick, barcolor] (lfac.east |- larm.north) to (lfac.south east);
-        }
         
-        \onslide<1->{\node [right=0em of flab6, red] {\LARGE\xmark};}
         
-        }}
+        {\node [right=0em of flab6, red] {\LARGE\xmark};}
+        
+        
         
         \end{tikzpicture}
         \end{center}
@@ -309,10 +193,10 @@
         \vspace{-.5\baselineskip}
         
         \begin{itemize}
-        \item The right arm of square intersects at most two factors.\pause
-        \item Squares that are larger than $\geq 8\Delta$ intersect at least a tail of length $\geq \Delta$.\pause
-        \item We can use the Main+Lorentz'84 to detect in $\Oh(n)$ time any such squares.\pause
-        \item For squares $\leq 8\Delta$, we slice the text into overlapping small blocks.\pause
+        \item The right arm of square intersects at most two factors.
+        \item Squares that are larger than $\geq 8\Delta$ intersect at least a tail of length $\geq \Delta$.
+        \item We can use the Main+Lorentz'84 to detect in $\Oh(n)$ time any such squares.
+        \item For squares $\leq 8\Delta$, we slice the text into overlapping small blocks.
         \end{itemize}
     
         
@@ -320,7 +204,7 @@
         {
         \begin{tikzpicture}[scale=0.85, every node/.style={transform shape}]
         
-        \node (0) {$w = {}$};
+        \node (0) {$T = {}$};
         \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
             \node[right=0 of \iminus, minimum width=1.05em] (\i) {\vphantom{a}};
             \node[below=0em of \i, minimum width=1.05em] (d\i) {\vphantom{a}};
@@ -340,22 +224,22 @@
         \node[below=0 of lenmark.center] {$\Theta(\Delta)$};
         
         
-        \pause\node[above=-.2em of x1.north east] (firstpair) {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+        \node[above=-.2em of x1.north east] (firstpair) {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
         %\node[above right=.25 and -.5 of firstpair] (fpnote) {\small $\text{algorithm by \textcolor{red}{\bfseries Main+Lorentz'84}}$};
         %\draw[-latex] (fpnote) to[out=180, in=90] (firstpair);
-        \pause\node[below=-.2em of x2.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
-        \pause\node[above=-.2em of x3.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
-        \pause\node[below=-.2em of x4.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
-        \pause\node[above=-.2em of x5.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+        \node[below=-.2em of x2.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+        \node[above=-.2em of x3.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+        \node[below=-.2em of x4.south east] {$\underbrace{\hspace{10.25em}}_{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
+        \node[above=-.2em of x5.north east] {$\overbrace{\hspace{10.25em}}^{\text{$\orderof{\Delta \lg \Delta}$ time}}$};
         
-        \pause
+        
         
         \end{tikzpicture}
         
         \vspace{1.0\baselineskip}
         \small
-        {$\implies$ Choose $\Delta = (\sigma \lg n)^2$ to achieve $\orderof{n (\lg \sigma + \lg \lg n)}$ time.}\pause
-        {But we cannot know $\sigma$...\\}\pause
+        {$\implies$ Choose $\Delta = (\sigma \lg n)^2$ to achieve $\orderof{n (\lg \sigma + \lg \lg n)}$ time.}
+        {But we cannot know $\sigma$...\\}
         }
         \end{center}
         \smallskip
@@ -367,18 +251,18 @@
 \begin{frame}{Estimating the alphabet size}
     
     \begin{itemize}
-    \item<1-> proceed in $\orderof{\lg\lg n}$ phases, with $\Delta_1 = \Theta(\sqrt{n})$ and $\Delta_{i + 1} = \sqrt{\Delta_i}$
+    \item proceed in $\orderof{\lg\lg n}$ phases, with $\Delta_1 = \Theta(\sqrt{n})$ and $\Delta_{i + 1} = \sqrt{\Delta_i}$
     \vspace{.25\baselineskip}
-    \item<2-> in phase $i$, try to detect square of length $\Omega(\Delta_i)$ and $\orderof{\Delta_{i + 1}} = \orderof{\Delta_i^2}$
+    \item in phase $i$, try to detect square of length $\Omega(\Delta_i)$ and $\orderof{\Delta_{i + 1}} = \orderof{\Delta_i^2}$
     \end{itemize}
     
-    \onslide<3->
+    
     \vspace{\baselineskip}
     
     \begin{tikzpicture}
     
     
-    \node (1-0) {$w = {}$};
+    \node (1-0) {$T = {}$};
     \foreach[evaluate=\i as \iminus using int(\i-1)] \i in {1,...,30} {
         \node[right=0 of 1-\iminus, minimum width=.9em] (1-\i) {\vphantom{a}};
         \node[below=.25em of 1-\i, minimum width=.9em] (1a-\i) {\vphantom{a}};
@@ -401,7 +285,7 @@
     evaluate=\x as \lastx using int(\x*1),
     ] \x in {20,...,28} {
     
-    \onslide<12->{\node[fit=(2-\firstx)(2-\lastx), draw, inner sep=0pt] (2-x\x) {};}
+    {\node[fit=(2-\firstx)(2-\lastx), draw, inner sep=0pt] (2-x\x) {};}
     }
     
     \foreach[
@@ -409,21 +293,21 @@
     evaluate=\x as \lastx using int(\x*1),
     ] \x in {23,...,26} {
     
-    \node<13->[fill=red, fit=(2-\firstx)(2-\lastx), draw, inner sep=0pt] (2-x\x) {};
+    \node[fill=red, fit=(2-\firstx)(2-\lastx), draw, inner sep=0pt] (2-x\x) {};
     }
     
     
     
-    \node<12->[left=0 of 2-20] {$\cdots$};
-    \node<12->[right=0 of 2-28] {$\cdots$};
+    \node[left=0 of 2-20] {$\cdots$};
+    \node[right=0 of 2-28] {$\cdots$};
     
-    \node<11->[fill=myorange, fit=(1b-21.north)(1b-28.south), draw, inner sep=0pt] (tj) {};
-    \node<11-> at (tj.center) {$t_j$};
+    \node[fill=myorange, fit=(1b-21.north)(1b-28.south), draw, inner sep=0pt] (tj) {};
+    \node at (tj.center) {$t_j$};
     
-    \only<13->{
+    {
         \draw[thick, densely dotted] (tj.north west) to (tj.west |- 2-x23.south);
         \draw[thick, densely dotted] (tj.north east) to (tj.east |- 2-x23.south);
-        \node<14->[below right=.5em and -2em of tj.east |- 2-x23.south] {$\implies \orderof{n \lg \sigma}$ time};
+        \node[below right=.5em and -2em of tj.east |- 2-x23.south] {$\implies \orderof{n \lg \sigma}$ time};
     }
     
     \node[below=3em of 2-1] {};
@@ -438,10 +322,10 @@
     % time, if $\sigma = \orderof{\sqrt[4]{\Delta_i}}$
     %{\orderof{\Delta_i^2 + \frac{(\Delta_i)^2 \cdot \lg \Delta_i \cdot \sigma}{\sqrt{\Delta_i}}} = \orderof{\Delta^2}}}
     
-    \node<4->[above=-.2em of 1-x1.north east] (thebrace) {$\overbrace{\hspace{10.5em}}$};
-    \node<5->[above=.25em of thebrace, inner sep=0] (thetime) {$\strut\orderof{\Delta_i^2 + \frac{(\Delta_i)^2 \cdot \lg \Delta_i \cdot \sigma}{\sqrt{\Delta_i}}}$ time};
-    \node<6->[right=0 of thetime, inner sep=0] {, which is $\strut\orderof{\Delta_i^2}$ if $\sigma = \orderof{\sqrt[4]{\Delta_i}}$};
-    \node<4->[below=-.2em of 1-x2.south east] {$\underbrace{\hspace{10.5em}}$};
+    \node[above=-.2em of 1-x1.north east] (thebrace) {$\overbrace{\hspace{10.5em}}$};
+    \node[above=.25em of thebrace, inner sep=0] (thetime) {$\strut\orderof{\Delta_i^2 + \frac{(\Delta_i)^2 \cdot \lg \Delta_i \cdot \sigma}{\sqrt{\Delta_i}}}$ time};
+    \node[right=0 of thetime, inner sep=0] {, which is $\strut\orderof{\Delta_i^2}$ if $\sigma = \orderof{\sqrt[4]{\Delta_i}}$};
+    \node[below=-.2em of 1-x2.south east] {$\underbrace{\hspace{10.5em}}$};
     
     
     
@@ -451,11 +335,11 @@
     \vspace{-1.5\baselineskip}
     
     \begin{itemize}
-    \item<7-> single phase takes $\orderof{n}$ time
+    \item single phase takes $\orderof{n}$ time
     \vspace{.25\baselineskip}
-    \item<8-> if $\sigma = \Omega(\sqrt[4]{\Delta_i})$, then $\orderof{\Delta_i^2 \lg (\Delta_i^2)} = \orderof{\Delta_i^2 \lg \sigma}$\\[.25\baselineskip]
-    \onslide<9->$\implies$ run \textcolor{red}{\bfseries Main+Lorentz'84} on each block pair, finish in $\orderof{n \lg \sigma}$ time\\
-    \onslide<10->$\implies$ total time $\orderof{n (\lg \sigma + \lg\lg n)}$ without knowing $\sigma$
+    \item if $\sigma = \Omega(\sqrt[4]{\Delta_i})$, then $\orderof{\Delta_i^2 \lg (\Delta_i^2)} = \orderof{\Delta_i^2 \lg \sigma}$\\[.25\baselineskip]
+    $\implies$ run \textcolor{red}{\bfseries Main+Lorentz'84} on each block pair, finish in $\orderof{n \lg \sigma}$ time\\
+    $\implies$ total time $\orderof{n (\lg \sigma + \lg\lg n)}$ without knowing $\sigma$
     \end{itemize}
     
     
