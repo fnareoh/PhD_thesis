@@ -7,6 +7,8 @@
 
 \begin{frame}
     \centering
+    {\large 2nd Contribution}\\ 
+    \medskip
     {\Large Pattern Matching Under Dynamic Time Warping Distance}
   
     \bigskip
@@ -80,7 +82,7 @@ $\dtw($CAAAG$,$ATG$)=2$\\
 
 \btheme{Dynamic Programming}\\
 \smallskip
-$D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[1..i],Y[1..j])$\pause
+$D$ a matrix of size $(|X|+1)(|Y|+1)$ such that $D[i,j]=\dtw(X[0..i],Y[0..j])$\pause
 \bigskip
 
 \btheme{Initialization}~~~$D[0,0]= 0$ and for all $(i,j)$, $D[0,j]=D[i,0]=+\infty$.\\

@@ -40,7 +40,7 @@
     \small
     % any file can be seen as a string. 
     %\pause
-    String are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.\pause
+    Strings are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.\pause
 
     \medskip
     \begin{tabular}{l  c c c c}
@@ -78,7 +78,7 @@
 
 \begin{frame}{\textcolor{gray}{Sketch-based approaches \borange{to process} massive string data}}
 \pause
-\ntheme{Three main type of tasks in this thesis:}\\ \pause
+\ntheme{Three main types of tasks in this thesis:}\\ \pause
 \fbox{
 \begin{minipage}[t][6cm][t]{0.3\textwidth}
     \begin{center}
@@ -141,11 +141,11 @@
 % Coin Coin COin
 \begin{frame}{\textcolor{gray}{Sketch-based approaches to process \bred{massive} string data}}
 
-    {\small String are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.}
+    {\small Strings are used in fields such as \bgreen{Bioinformatics}, \bblue{Information Retrieval}, and \borange{Cyber-security}.}
     \begin{center}
         \pause
         \begin{tabular}{l c c c c}
-            File type & \textcolor{black!10!myblue}{Webpage} &  \textcolor{black!10!mygreen}{E. coli genome} & \textcolor{black!10!myorange}{Software repository} & \textcolor{black!10!mygreen}{Human genome}\\ \hline
+            Data type & \textcolor{black!10!myblue}{Webpage} &  \textcolor{black!10!mygreen}{E. coli genome} & \textcolor{black!10!myorange}{Software repository} & \textcolor{black!10!mygreen}{Human genome}\\ \hline
             Size & $\sim$ 2 Mb & $\sim$ 5Mb &  $<$ 1 Gb & $\sim$ 3 Gb 
         \end{tabular}\pause
 
@@ -239,7 +239,7 @@
 
 \begin{frame}{Example of lossless sketch: Lempel--Ziv  factorization}
 
-    \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, (76 with overlap version)\\
+    \ntheme{Decomposition in phrases:} $T = f_1f_2\dots f_z$, (LZ76 with overlap version)\\
     \onslide<3->{The unique LZ-phrase starting at position $s$, $f_i=T[s..e]$ is such that $T[s..e]$ is the longest prefix of $T[s..n-1]$ that has a previous occurrence in $T[0..e]$.}
     \vspace{.5\baselineskip}
     
@@ -392,7 +392,7 @@
             \end{center}
             Compute the sketch of the input on the fly and use it later on in your algorithm. 
             \begin{itemize}
-                \item For Streaming
+                \item For streaming
                 \item For approximation
             \end{itemize}
         \end{framed}
